@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zikirmatik</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📿</text></svg>">
+
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Zikirmatik">
+
+    <!-- Icônes pour iOS -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMzAiIGZpbGw9InVybCgjZ3JhZGllbnQwX2xpbmVhcl8xXzEpIi8+CjxwYXRoIGQ9Ik05NiA0OEM3My45MDg2IDQ4IDU2IDY1LjkwODYgNTYgODhDNTYgMTEwLjA5MSA3My45MDg2IDEyOCA5NiAxMjhDMTE4LjA5MSAxMjggMTM2IDExMC4wOTEgMTM2IDg4QzEzNiA2NS45MDg2IDExOC4wOTEgNDggOTYgNDhaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiLz4KPHA+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF9saW5lYXJfMV8xIiB4MT0iMCIgeTE9IjAiIHgyPSIxOTIiIHkyPSIxOTIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzY2N0VFQSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM3NjRCQTIiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📿 Zikirmatik</h1>
+            <p>Günlük zikir ve dualarınızı takip edin</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('counter')">Sayaç</button>
+            <button class="tab-button" onclick="showTab('group')">Grup</button>
+            <button class="tab-button" onclick="showTab('management')">Yönetim</button>
+            <button class="tab-button" onclick="showTab('stats')">İstatistikler</button>
+        </div>
+
+        <!-- Sayaç Sekmesi -->
+        <div id="counter" class="tab-content active">
+            <div class="counter-section">
+                <select id="categorySelect" class="category-select">
+                    <option value="">Kategori seçin</option>
+                </select>
+
+                <div class="counter-display">
+                    <div class="counter-number" id="counterDisplay">0</div>
+                    <div class="counter-label" id="counterLabel">Başlamak için tıklayın</div>
+                    <div class="timer-display">
+                        <span id="timerDisplay">00:00:00</span>
+                        <span class="timer-label">Süre</span>
+                    </div>
+
+                    <button class="counter-button" id="countButton" onclick="incrementCounter()">
+                        +1
+                    </button>
+
+                    <button class="sound-toggle" id="soundToggle" onclick="toggleSound(); playTickSound();" title="Ses Aç/Kapat">
+                        🔊
+                    </button>
+                    
+                    <button class="reset-button" onclick="resetDayCounter()">
+                        🔄 Görüntüyü sıfırla (istatistikler korunur)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yönetim Sekmesi -->
+        <div id="management" class="tab-content">
+            <div class="management-section">
+                <h2>Kategorileri Yönet</h2>
+                
+                <div class="add-category-form">
+                    <input type="text" id="newCategoryInput" class="category-input" placeholder="Yeni kategori adı">
+                    <button class="add-button" onclick="addCategory()">Ekle</button>
+                </div>
+
+                <ul id="categoriesList" class="categories-list">
+                    <!-- Kategoriler buraya eklenecek -->
+                </ul>
+            </div>
+
+            <div class="management-section">
+                <h2>Yedekleme ve Geri Yükleme</h2>
+                
+                <div class="backup-section">
+                    <div class="backup-status">
+                        <span id="saveStatus">💾 Otomatik yedekleme aktif</span>
+                        <small id="lastSave">Son yedekleme: şimdi</small>
+                    </div>
+                    
+                    <div class="backup-buttons">
+                        <button class="backup-button" onclick="exportData()">📥 Verilerimi dışa aktar</button>
+                        <button class="backup-button" onclick="document.getElementById('importFile').click()">📤 Veri içe aktar</button>
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                    </div>
+                    
+                    <div class="backup-info">
+                        <p>✅ Verileriniz otomatik olarak telefonunuzda yedeklenir</p>
+                        <p>📱 Uygulamaı kapattığınızda bile kalır</p>
+                        <p>🔒 Güvenlik yedeklemesi oluşturmak için dışa aktarma kullanın</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="management-section">
+                <h2>Zikirleri Sil</h2>
+                
+                <div class="reset-options">
+                    <div class="reset-option">
+                        <select id="categoryToReset" class="category-select">
+                            <option value="">Kategori seçin</option>
+                        </select>
+                        <div class="reset-buttons">
+                            <button class="reset-button" onclick="resetTodayCategory()">Bugünü sil</button>
+                            <button class="reset-button" onclick="resetWeekCategory()">Bu hafta sil</button>
+                            <button class="reset-button" onclick="resetMonthCategory()">Bu ay sil</button>
+                            <button class="reset-button danger" onclick="resetCategoryCompletely()">Tüm geçmişi sil</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="danger-zone">
+                    <h3>⚠️ Tehlike Bölgesi</h3>
+                    <button class="danger-button" onclick="resetAllData()">TÜM verileri sil</button>
+                    <p class="warning-text">Bu eylem tüm sayaçlarınızı kalıcı olarak silecek ve geri alınamaz!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grup Sekmesi -->
+        <div id="group" class="tab-content">
+            <div class="management-section">
+                <h2>👥 Grup Yarışması</h2>
+
+                <div class="group-simple-form">
+                    <div class="mode-selection">
+                        <button class="mode-button create-btn" onclick="createGroup()">🎆 Yeni Grup Oluştur</button>
+                        <button class="mode-button join-btn" onclick="showJoinForm()">🔗 Gruba Katıl</button>
+                    </div>
+
+                    <!-- Create Group -->
+                    <div id="createSection" class="section" style="display: none;">
+                        <h3>🎆 Grup Oluştur</h3>
+                        <div class="form-group">
+                            <input type="text" id="groupNameInput" class="form-input" placeholder="Grup adı (isteğe bağlı)" maxlength="30">
+                            <input type="text" id="creatorNameInput" class="form-input" placeholder="Adınız" maxlength="20" required>
+                            <button class="create-button" onclick="doCreateGroup()">🎆 Grup Oluştur</button>
+                        </div>
+                    </div>
+
+                    <!-- Join Group -->
+                    <div id="joinSection" class="section" style="display: none;">
+                        <h3>🔗 Gruba Katıl</h3>
+                        <div class="form-group">
+                            <input type="text" id="joinCodeInput" class="form-input" placeholder="Grup kodunu girin" maxlength="8">
+                            <input type="text" id="participantNameInput" class="form-input" placeholder="Adınız" maxlength="20" required>
+                            <button class="join-button" onclick="doJoinGroup()">🔗 Katıl</button>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div id="groupStatus" class="section" style="display: none;">
+                        <div class="status-info">
+                            <h3 id="statusTitle">Durum</h3>
+                            <p id="statusMessage">Yükleniyor...</p>
+                        </div>
+
+                        <div class="group-code-share" id="codeShare" style="display: none;">
+                            <div class="code-display">
+                                <label>Grup Kodu:</label>
+                                <div class="code" id="displayCode">-</div>
+                                <button class="share-btn" onclick="shareCode()">📤 Paylaş</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leaderboard -->
+                    <div id="leaderboard" class="section" style="display: none;">
+                        <h3>🏆 Grup Sıralaması</h3>
+                        <div class="leaderboard-table">
+                            <div id="leaderboardContent">Yükleniyor...</div>
+                        </div>
+
+                        <div class="group-controls">
+                            <button class="refresh-btn" onclick="refreshLeaderboard()">🔄 Yenile</button>
+                            <button class="leave-btn" onclick="leaveGroup()">🚪 Ayrıl</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İstatistikler Sekmesi -->
+        <div id="stats" class="tab-content">
+            <div class="stats-section">
+                <div class="total-today">
+                    <div class="total-number" id="totalToday">0</div>
+                    <div>Bugün Toplam</div>
+                </div>
+
+                <div class="stats-actions">
+                    <button class="share-button" onclick="shareStatsBySMS()">📱 SMS ile paylaş</button>
+                    <button class="refresh-button" onclick="updateStats()">🔄 Yenile</button>
+                </div>
+
+                <h2>Tüm İstatistiklerim</h2>
+                
+                <div class="table-container">
+                    <table class="complete-stats-table" id="completeStatsTable">
+                        <thead>
+                            <tr>
+                                <th>Kategori</th>
+                                <th>Bugün</th>
+                                <th>Bu Hafta</th>
+                                <th>Bu Ay</th>
+                                <th>Bu Yıl</th>
+                                <th>Genel Toplam</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- İstatistikler buraya eklenecek -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td><strong>TOPLAMLAR</strong></td>
+                                <td><strong id="totalDay">0</strong></td>
+                                <td><strong id="totalWeek">0</strong></td>
+                                <td><strong id="totalMonth">0</strong></td>
+                                <td><strong id="totalYear">0</strong></td>
+                                <td><strong id="totalAll">0</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="stats-summary">
+                    <p id="summaryText">📊 Zikir özetiniz</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicateur de sauvegarde -->
+    <div id="saveIndicator" class="save-indicator">✅ Kaydedildi</div>
+
+    <!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Backend Services -->
+    <script src="src/config/backend.config.js"></script>
+    <script src="src/services/BackendProvider.js"></script>
+    <script src="src/services/SupabaseProvider.js"></script>
+    <script src="src/services/InfomaniakProvider.js"></script>
+    <script src="src/services/GroupManager.js"></script>
+
+    <!-- App Scripts -->
+    <script src="script.js"></script>
+    <script src="script_group.js"></script>
+</body>
+</html>

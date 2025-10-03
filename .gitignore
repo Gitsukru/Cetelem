@@ -1,0 +1,26 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers de backup
+*.backup
+*_old_backup.js
+script_group_old_backup.js
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environnement (si tu utilises Node.js plus tard)
+node_modules/
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporaires
+*.tmp
