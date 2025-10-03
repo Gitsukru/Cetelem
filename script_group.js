@@ -237,12 +237,5 @@ function shareCode() {
   }
 }
 
-// Load existing group on page load
-document.addEventListener('DOMContentLoaded', function() {
-  // Si un groupe est déjà actif, afficher l'interface
-  if (groupManager && groupManager.hasActiveGroup()) {
-    const groupInfo = groupManager.getCurrentGroup()
-    showGroupInterface(groupInfo.group.code)
-    updateLeaderboard()
-  }
-})
+// La restauration du groupe est maintenant gérée dans script.js > initializeBackend()
+// Ce code n'est plus nécessaire ici

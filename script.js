@@ -592,10 +592,12 @@ function showTab(tabName) {
             // Restore group interface if a group is active
             if (groupManager && groupManager.hasActiveGroup()) {
                 const groupInfo = groupManager.getCurrentGroup();
+                console.log('🔄 Changement onglet groupe - Restauration:', groupInfo.group.name);
                 showGroupInterface(groupInfo.group.code);
                 updateLeaderboard();
             } else {
                 // Reset group interface when switching to group tab
+                console.log('🔄 Changement onglet groupe - Pas de groupe actif');
                 const createSection = document.getElementById('createSection');
                 const joinSection = document.getElementById('joinSection');
                 const leaderboard = document.getElementById('leaderboard');
@@ -1394,6 +1396,21 @@ function initializeBackend() {
         await updateLeaderboard()
       }
     })
+
+    // Restaurer l'interface du groupe si un groupe est actif
+    setTimeout(() => {
+      if (groupManager.hasActiveGroup()) {
+        const groupInfo = groupManager.getCurrentGroup()
+        console.log('🔄 Restauration du groupe:', groupInfo.group.name)
+
+        // Si on est sur l'onglet groupe, afficher l'interface
+        const groupTab = document.getElementById('group')
+        if (groupTab && groupTab.classList.contains('active')) {
+          showGroupInterface(groupInfo.group.code)
+          updateLeaderboard()
+        }
+      }
+    }, 300)
 
   } catch (error) {
     console.error('❌ Erreur initialisation backend:', error)
