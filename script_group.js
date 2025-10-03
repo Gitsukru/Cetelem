@@ -148,6 +148,9 @@ function displayLeaderboard(participants) {
     return
   }
 
+  // Calculer le max pour les barres de progression
+  const maxToday = Math.max(...participants.map(p => p.todayCount), 1)
+
   let html = '<div class="leaderboard-list">'
 
   participants.forEach((participant, index) => {
@@ -161,17 +164,29 @@ function displayLeaderboard(participants) {
     else medal = position
 
     html += `
-      <div class="leaderboard-item ${isMe ? 'current-user' : ''}">
-        <span class="position">${medal}</span>
-        <div class="participant-info">
-          <div class="name">${participant.name}${isMe ? ' (Siz)' : ''}</div>
-          <div class="details">
-            Bugün: ${participant.todayCount} •
-            Hafta: ${participant.weekCount} •
-            Toplam: ${participant.totalCount}
+      <div class="participant-row ${isMe ? 'my-row' : ''}">
+        <div class="rank-badge rank-${position <= 3 ? position : 'other'}">${medal}</div>
+        <div class="participant-details">
+          <div class="participant-name">${participant.name}${isMe ? ' <span class="you-badge">Sen</span>' : ''}</div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">📅 Bugün</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${(participant.todayCount / maxToday) * 100}%"></div>
+                <span class="stat-value">${participant.todayCount}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">📊 Hafta</span>
+              <span class="stat-value-small">${participant.weekCount}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">📆 Ay</span>
+              <span class="stat-value-small">${participant.monthCount || 0}</span>
+            </div>
           </div>
         </div>
-        <div class="score">${participant.points} pts</div>
+        <div class="points-badge">${participant.points}<span class="pts-label">pts</span></div>
       </div>
     `
   })

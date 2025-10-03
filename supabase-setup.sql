@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS participants (
   name VARCHAR(30) NOT NULL,
   today_count INTEGER DEFAULT 0 CHECK (today_count >= 0),
   week_count INTEGER DEFAULT 0 CHECK (week_count >= 0),
+  month_count INTEGER DEFAULT 0 CHECK (month_count >= 0),
   total_count INTEGER DEFAULT 0 CHECK (total_count >= 0),
   joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -63,7 +64,14 @@ CREATE TRIGGER update_participants_updated_at
 
 -- 6. ACTIVER LE TEMPS RÉEL (REALTIME)
 -- IMPORTANT: Sans ça, pas de mises à jour en temps réel !
-ALTER PUBLICATION supabase_realtime ADD TABLE participants;
+-- Note: Si erreur "already member", c'est normal, la table est déjà en temps réel
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE participants;
+EXCEPTION
+  WHEN duplicate_object THEN
+    NULL; -- Ignore si déjà ajouté
+END $$;
 
 -- 7. CONFIGURER ROW LEVEL SECURITY (RLS)
 -- Pour l'instant, on autorise tout (mode développement)
@@ -73,56 +81,89 @@ ALTER TABLE groups ENABLE ROW LEVEL SECURITY;
 ALTER TABLE participants ENABLE ROW LEVEL SECURITY;
 
 -- Politique: Tout le monde peut lire les groupes
-CREATE POLICY "Lecture publique des groupes"
-  ON groups FOR SELECT
-  TO authenticated, anon
-  USING (true);
+DO $$
+BEGIN
+  CREATE POLICY "Lecture publique des groupes"
+    ON groups FOR SELECT
+    TO authenticated, anon
+    USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Politique: Tout le monde peut créer un groupe
-CREATE POLICY "Création publique des groupes"
-  ON groups FOR INSERT
-  TO authenticated, anon
-  WITH CHECK (true);
+DO $$
+BEGIN
+  CREATE POLICY "Création publique des groupes"
+    ON groups FOR INSERT
+    TO authenticated, anon
+    WITH CHECK (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Politique: Tout le monde peut lire les participants
-CREATE POLICY "Lecture publique des participants"
-  ON participants FOR SELECT
-  TO authenticated, anon
-  USING (true);
+DO $$
+BEGIN
+  CREATE POLICY "Lecture publique des participants"
+    ON participants FOR SELECT
+    TO authenticated, anon
+    USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Politique: Tout le monde peut rejoindre un groupe
-CREATE POLICY "Insertion publique des participants"
-  ON participants FOR INSERT
-  TO authenticated, anon
-  WITH CHECK (true);
+DO $$
+BEGIN
+  CREATE POLICY "Insertion publique des participants"
+    ON participants FOR INSERT
+    TO authenticated, anon
+    WITH CHECK (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Politique: Tout le monde peut mettre à jour son score
-CREATE POLICY "Mise à jour publique des participants"
-  ON participants FOR UPDATE
-  TO authenticated, anon
-  USING (true)
-  WITH CHECK (true);
+DO $$
+BEGIN
+  CREATE POLICY "Mise à jour publique des participants"
+    ON participants FOR UPDATE
+    TO authenticated, anon
+    USING (true)
+    WITH CHECK (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Politique: Tout le monde peut quitter un groupe
-CREATE POLICY "Suppression publique des participants"
-  ON participants FOR DELETE
-  TO authenticated, anon
-  USING (true);
+DO $$
+BEGIN
+  CREATE POLICY "Suppression publique des participants"
+    ON participants FOR DELETE
+    TO authenticated, anon
+    USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- 8. CRÉER UNE VUE POUR LE CLASSEMENT (BONUS)
-CREATE OR REPLACE VIEW leaderboard_view AS
+DROP VIEW IF EXISTS leaderboard_view;
+
+CREATE VIEW leaderboard_view AS
 SELECT
   p.id,
   p.group_id,
   p.name,
   p.today_count,
   p.week_count,
+  p.month_count,
   p.total_count,
   p.updated_at,
   g.code as group_code,
   g.name as group_name,
-  -- Calculer les points (formule: today*10 + week*2 + total/10)
-  (p.today_count * 10 + p.week_count * 2 + FLOOR(p.total_count / 10)) as points,
+  -- Calculer les points (formule: today*10 + week*2 + month*1 + total/10)
+  (p.today_count * 10 + p.week_count * 2 + p.month_count * 1 + FLOOR(p.total_count / 10)) as points,
   -- Rang dans le groupe
   ROW_NUMBER() OVER (PARTITION BY p.group_id ORDER BY p.today_count DESC) as rank_in_group
 FROM participants p
