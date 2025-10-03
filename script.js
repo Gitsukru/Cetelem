@@ -589,8 +589,13 @@ function showTab(tabName) {
             updateCategoriesList();
             updateCategorySelect();
         } else if (tabName === 'group') {
-            // Reset group interface when switching to group tab
-            if (!isHost && connections.size === 0) {
+            // Restore group interface if a group is active
+            if (groupManager && groupManager.hasActiveGroup()) {
+                const groupInfo = groupManager.getCurrentGroup();
+                showGroupInterface(groupInfo.group.code);
+                updateLeaderboard();
+            } else {
+                // Reset group interface when switching to group tab
                 const createSection = document.getElementById('createSection');
                 const joinSection = document.getElementById('joinSection');
                 const leaderboard = document.getElementById('leaderboard');
