@@ -65,7 +65,7 @@
         <div id="management" class="tab-content">
             <div class="management-section">
                 <h2>Kategorileri Yönet</h2>
-                
+
                 <div class="add-category-form">
                     <input type="text" id="newCategoryInput" class="category-input" placeholder="Yeni kategori adı">
                     <button class="add-button" onclick="addCategory()">Ekle</button>
@@ -74,34 +74,11 @@
                 <ul id="categoriesList" class="categories-list">
                     <!-- Kategoriler buraya eklenecek -->
                 </ul>
-            </div>
 
-            <div class="management-section">
-                <h2>Yedekleme ve Geri Yükleme</h2>
-                
-                <div class="backup-section">
-                    <div class="backup-status">
-                        <span id="saveStatus">💾 Otomatik yedekleme aktif</span>
-                        <small id="lastSave">Son yedekleme: şimdi</small>
-                    </div>
-                    
-                    <div class="backup-buttons">
-                        <button class="backup-button" onclick="exportData()">📥 Verilerimi dışa aktar</button>
-                        <button class="backup-button" onclick="document.getElementById('importFile').click()">📤 Veri içe aktar</button>
-                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-                    </div>
-                    
-                    <div class="backup-info">
-                        <p>✅ Verileriniz otomatik olarak telefonunuzda yedeklenir</p>
-                        <p>📱 Uygulamaı kapattığınızda bile kalır</p>
-                        <p>🔒 Güvenlik yedeklemesi oluşturmak için dışa aktarma kullanın</p>
-                    </div>
-                </div>
-            </div>
+                <div class="divider"></div>
 
-            <div class="management-section">
-                <h2>Zikirleri Sil</h2>
-                
+                <h3 style="margin-top: 30px;">Zikir Verilerini Sil</h3>
+
                 <div class="reset-options">
                     <div class="reset-option">
                         <select id="categoryToReset" class="category-select">
@@ -120,6 +97,29 @@
                     <h3>⚠️ Tehlike Bölgesi</h3>
                     <button class="danger-button" onclick="resetAllData()">TÜM verileri sil</button>
                     <p class="warning-text">Bu eylem tüm sayaçlarınızı kalıcı olarak silecek ve geri alınamaz!</p>
+                </div>
+            </div>
+
+            <div class="management-section">
+                <h2>Yedekleme ve Geri Yükleme</h2>
+
+                <div class="backup-section">
+                    <div class="backup-status">
+                        <span id="saveStatus">💾 Otomatik yedekleme aktif</span>
+                        <small id="lastSave">Son yedekleme: şimdi</small>
+                    </div>
+
+                    <div class="backup-buttons">
+                        <button class="backup-button" onclick="exportData()">📥 Verilerimi dışa aktar</button>
+                        <button class="backup-button" onclick="document.getElementById('importFile').click()">📤 Veri içe aktar</button>
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                    </div>
+
+                    <div class="backup-info">
+                        <p>✅ Verileriniz otomatik olarak telefonunuzda yedeklenir</p>
+                        <p>📱 Uygulamayı kapattığınızda bile kalır</p>
+                        <p>🔒 Güvenlik yedeklemesi oluşturmak için dışa aktarma kullanın</p>
+                    </div>
                 </div>
             </div>
         </div>
