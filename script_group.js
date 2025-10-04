@@ -475,9 +475,17 @@ async function rejoinGroup(code) {
 
     if (!historyItem) return
 
-    // Si déjà dans un groupe, demander confirmation
+    // Si déjà dans un groupe, vérifier si c'est le même
     if (groupManager.hasActiveGroup()) {
       const currentGroup = groupManager.getCurrentGroup()
+
+      // Si c'est le même groupe, ne rien faire
+      if (currentGroup.group.code === code) {
+        showCustomAlert('✅ Zaten bu grupta bulunuyorsunuz', 'info', 2000)
+        return
+      }
+
+      // Sinon, demander confirmation pour changer de groupe
       showCustomConfirm(
         '⚠️ Grup Değiştir',
         `Şu anda "${currentGroup.group.name}" grubundasınız. "${groupData.name}" grubuna geçmek için mevcut gruptan ayrılmanız gerekir. Devam edilsin mi?`,

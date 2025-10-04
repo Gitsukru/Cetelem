@@ -153,7 +153,12 @@ class SupabaseProvider extends BackendProvider {
           categories: score.categories,
           lastUpdated: new Date().toISOString()
         }
+        console.log('📊 Envoi des statistiques détaillées:', score.categories)
+      } else {
+        console.warn('⚠️ Aucune catégorie dans score:', score)
       }
+
+      console.log('📤 Données envoyées à Supabase:', updateData)
 
       const { error } = await this.supabase
         .from('participants')
@@ -162,6 +167,8 @@ class SupabaseProvider extends BackendProvider {
         .eq('group_id', groupId)
 
       if (error) throw error
+
+      console.log('✅ Score mis à jour avec succès')
 
     } catch (error) {
       console.error('Erreur mise à jour score:', error)
