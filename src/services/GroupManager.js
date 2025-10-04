@@ -137,7 +137,20 @@ class GroupManager {
   }
 
   /**
-   * Quitter le groupe actuel
+   * Changer de groupe sans supprimer le participant (pour créer/rejoindre un autre groupe)
+   */
+  switchGroup() {
+    if (!this.currentGroup) {
+      return
+    }
+
+    // Juste se déconnecter localement sans supprimer de la DB
+    this.unsubscribeFromUpdates()
+    this.clearGroup()
+  }
+
+  /**
+   * Quitter le groupe actuel (supprime vraiment le participant de la DB)
    */
   async leaveGroup() {
     if (!this.currentGroup || !this.currentParticipant) {

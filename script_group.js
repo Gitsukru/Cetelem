@@ -10,9 +10,9 @@ function createGroup() {
     const groupInfo = groupManager.getCurrentGroup()
     showCustomConfirm(
       '⚠️ Grup Değiştir',
-      `Şu anda "${groupInfo.group.name}" grubundasınız. Yeni grup oluşturmak için mevcut gruptan ayrılmanız gerekir. Devam edilsin mi?`,
-      async function() {
-        await groupManager.leaveGroup()
+      `Şu anda "${groupInfo.group.name}" grubundasınız. Yeni grup oluşturmak için bu gruptan geçici olarak ayrılacaksınız (verileriniz korunur). Devam edilsin mi?`,
+      function() {
+        groupManager.switchGroup() // Juste changer sans supprimer
         showCreateForm()
       }
     )
@@ -35,9 +35,9 @@ function showJoinForm() {
     const groupInfo = groupManager.getCurrentGroup()
     showCustomConfirm(
       '⚠️ Grup Değiştir',
-      `Şu anda "${groupInfo.group.name}" grubundasınız. Başka bir gruba katılmak için mevcut gruptan ayrılmanız gerekir. Devam edilsin mi?`,
-      async function() {
-        await groupManager.leaveGroup()
+      `Şu anda "${groupInfo.group.name}" grubundasınız. Başka bir gruba katılmak için bu gruptan geçici olarak ayrılacaksınız (verileriniz korunur). Devam edilsin mi?`,
+      function() {
+        groupManager.switchGroup() // Juste changer sans supprimer
         showJoinFormUI()
       }
     )
@@ -488,9 +488,9 @@ async function rejoinGroup(code) {
       // Sinon, demander confirmation pour changer de groupe
       showCustomConfirm(
         '⚠️ Grup Değiştir',
-        `Şu anda "${currentGroup.group.name}" grubundasınız. "${groupData.name}" grubuna geçmek için mevcut gruptan ayrılmanız gerekir. Devam edilsin mi?`,
+        `Şu anda "${currentGroup.group.name}" grubundasınız. "${groupData.name}" grubuna geçmek için bu gruptan geçici olarak ayrılacaksınız (verileriniz korunur). Devam edilsin mi?`,
         async function() {
-          await groupManager.leaveGroup()
+          groupManager.switchGroup() // Juste changer sans supprimer
           await doRejoinGroup(code, groupData, historyItem)
         }
       )
