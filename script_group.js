@@ -4,19 +4,41 @@
  */
 
 // Show create group section
-function createGroup() {
+async function createGroup() {
+  // Quitter le groupe actuel si présent
+  if (groupManager && groupManager.hasActiveGroup()) {
+    await groupManager.leaveGroup()
+  }
+
   document.getElementById('createSection').style.display = 'block'
   document.getElementById('joinSection').style.display = 'none'
   document.getElementById('groupStatus').style.display = 'none'
   document.getElementById('leaderboard').style.display = 'none'
+
+  // Réafficher historique et boutons
+  const historyEl = document.getElementById('groupHistory')
+  const modeSelectionEl = document.querySelector('.mode-selection')
+  if (historyEl) historyEl.style.display = 'block'
+  if (modeSelectionEl) modeSelectionEl.style.display = 'grid'
 }
 
 // Show join group section
-function showJoinForm() {
+async function showJoinForm() {
+  // Quitter le groupe actuel si présent
+  if (groupManager && groupManager.hasActiveGroup()) {
+    await groupManager.leaveGroup()
+  }
+
   document.getElementById('createSection').style.display = 'none'
   document.getElementById('joinSection').style.display = 'block'
   document.getElementById('groupStatus').style.display = 'none'
   document.getElementById('leaderboard').style.display = 'none'
+
+  // Réafficher historique et boutons
+  const historyEl = document.getElementById('groupHistory')
+  const modeSelectionEl = document.querySelector('.mode-selection')
+  if (historyEl) historyEl.style.display = 'block'
+  if (modeSelectionEl) modeSelectionEl.style.display = 'grid'
 }
 
 // Create a new group
