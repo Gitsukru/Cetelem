@@ -4,41 +4,53 @@
  */
 
 // Show create group section
-async function createGroup() {
-  // Quitter le groupe actuel si présent
+function createGroup() {
+  // Si déjà dans un groupe, demander confirmation
   if (groupManager && groupManager.hasActiveGroup()) {
-    await groupManager.leaveGroup()
+    const groupInfo = groupManager.getCurrentGroup()
+    showCustomConfirm(
+      '⚠️ Grup Değiştir',
+      `Şu anda "${groupInfo.group.name}" grubundasınız. Yeni grup oluşturmak için mevcut gruptan ayrılmanız gerekir. Devam edilsin mi?`,
+      async function() {
+        await groupManager.leaveGroup()
+        showCreateForm()
+      }
+    )
+  } else {
+    showCreateForm()
   }
+}
 
+function showCreateForm() {
   document.getElementById('createSection').style.display = 'block'
   document.getElementById('joinSection').style.display = 'none'
   document.getElementById('groupStatus').style.display = 'none'
   document.getElementById('leaderboard').style.display = 'none'
-
-  // Réafficher historique et boutons
-  const historyEl = document.getElementById('groupHistory')
-  const modeSelectionEl = document.querySelector('.mode-selection')
-  if (historyEl) historyEl.style.display = 'block'
-  if (modeSelectionEl) modeSelectionEl.style.display = 'grid'
 }
 
 // Show join group section
-async function showJoinForm() {
-  // Quitter le groupe actuel si présent
+function showJoinForm() {
+  // Si déjà dans un groupe, demander confirmation
   if (groupManager && groupManager.hasActiveGroup()) {
-    await groupManager.leaveGroup()
+    const groupInfo = groupManager.getCurrentGroup()
+    showCustomConfirm(
+      '⚠️ Grup Değiştir',
+      `Şu anda "${groupInfo.group.name}" grubundasınız. Başka bir gruba katılmak için mevcut gruptan ayrılmanız gerekir. Devam edilsin mi?`,
+      async function() {
+        await groupManager.leaveGroup()
+        showJoinFormUI()
+      }
+    )
+  } else {
+    showJoinFormUI()
   }
+}
 
+function showJoinFormUI() {
   document.getElementById('createSection').style.display = 'none'
   document.getElementById('joinSection').style.display = 'block'
   document.getElementById('groupStatus').style.display = 'none'
   document.getElementById('leaderboard').style.display = 'none'
-
-  // Réafficher historique et boutons
-  const historyEl = document.getElementById('groupHistory')
-  const modeSelectionEl = document.querySelector('.mode-selection')
-  if (historyEl) historyEl.style.display = 'block'
-  if (modeSelectionEl) modeSelectionEl.style.display = 'grid'
 }
 
 // Create a new group
@@ -114,12 +126,6 @@ function showGroupInterface(code) {
   document.getElementById('joinSection').style.display = 'none'
   document.getElementById('groupStatus').style.display = 'block'
   document.getElementById('leaderboard').style.display = 'block'
-
-  // Masquer l'historique et les boutons quand groupe actif
-  const historyEl = document.getElementById('groupHistory')
-  const modeSelectionEl = document.querySelector('.mode-selection')
-  if (historyEl) historyEl.style.display = 'none'
-  if (modeSelectionEl) modeSelectionEl.style.display = 'none'
 
   const groupInfo = groupManager.getCurrentGroup()
 
@@ -250,12 +256,6 @@ function leaveGroup() {
         document.getElementById('groupStatus').style.display = 'none'
         document.getElementById('leaderboard').style.display = 'none'
 
-        // Réafficher l'historique et les boutons
-        const historyEl = document.getElementById('groupHistory')
-        const modeSelectionEl = document.querySelector('.mode-selection')
-        if (historyEl) historyEl.style.display = 'block'
-        if (modeSelectionEl) modeSelectionEl.style.display = 'grid'
-
         displayGroupHistory()
         showCustomAlert('👋 Gruptan ayrıldınız', 'success', 2000)
       } catch (error) {
@@ -383,7 +383,7 @@ async function rejoinGroup(code) {
       return
     }
 
-    // Récupérer les infos du groupe
+    // Récupérer les infos du groupe cible
     const { data: groupData, error } = await groupManager.provider.supabase
       .from('groups')
       .select('*')
@@ -401,6 +401,29 @@ async function rejoinGroup(code) {
 
     if (!historyItem) return
 
+    // Si déjà dans un groupe, demander confirmation
+    if (groupManager.hasActiveGroup()) {
+      const currentGroup = groupManager.getCurrentGroup()
+      showCustomConfirm(
+        '⚠️ Grup Değiştir',
+        `Şu anda "${currentGroup.group.name}" grubundasınız. "${groupData.name}" grubuna geçmek için mevcut gruptan ayrılmanız gerekir. Devam edilsin mi?`,
+        async function() {
+          await groupManager.leaveGroup()
+          await doRejoinGroup(code, groupData, historyItem)
+        }
+      )
+    } else {
+      await doRejoinGroup(code, groupData, historyItem)
+    }
+  } catch (error) {
+    console.error('Erreur rejoin:', error)
+    showCustomAlert('❌ Hata oluştu', 'error', 2000)
+  }
+}
+
+// Fonction helper pour rejoindre
+async function doRejoinGroup(code, groupData, historyItem) {
+  try {
     // Reconnecter au groupe
     groupManager.currentGroup = {
       group: groupData,
@@ -433,7 +456,7 @@ async function rejoinGroup(code) {
 
     showCustomAlert('✅ Gruba yeniden katıldınız', 'success', 2000)
   } catch (error) {
-    console.error('Erreur rejoin:', error)
+    console.error('Erreur doRejoin:', error)
     showCustomAlert('❌ Hata oluştu', 'error', 2000)
   }
 }
