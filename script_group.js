@@ -35,6 +35,7 @@ async function doCreateGroup() {
     const result = await groupManager.createGroup(groupName, creatorName)
 
     showGroupInterface(result.code)
+    saveGroupToHistory(result.code, groupName, true)
     showCustomAlert('✅ Grup başarıyla oluşturuldu!', 'success', 3000)
 
     // Mettre à jour immédiatement avec le score actuel
@@ -70,6 +71,7 @@ async function doJoinGroup() {
     const result = await groupManager.joinGroup(groupCode, participantName)
 
     showGroupInterface(result.code)
+    saveGroupToHistory(result.code, result.name, false)
     showCustomAlert(`✅ "${result.name}" grubuna katıldınız!`, 'success', 3000)
 
     // Mettre à jour immédiatement avec le score actuel
@@ -252,6 +254,166 @@ function shareCode() {
       showCustomAlert('❌ Kopyalama hatası<br>Kod: ' + groupInfo.group.code, 'warning', 4000)
     })
   }
+}
+
+// ========================================
+// HISTORIQUE DES GROUPES
+// ========================================
+
+// Sauvegarder un groupe dans l'historique
+function saveGroupToHistory(groupCode, groupName, isCreator) {
+  const history = JSON.parse(localStorage.getItem('groupHistory') || '[]')
+
+  // Vérifier si ce groupe existe déjà
+  const existingIndex = history.findIndex(item => item.code === groupCode)
+
+  const historyItem = {
+    code: groupCode,
+    name: groupName,
+    isCreator: isCreator,
+    lastAccess: new Date().toISOString()
+  }
+
+  if (existingIndex >= 0) {
+    // Mettre à jour l'existant
+    history[existingIndex] = historyItem
+  } else {
+    // Ajouter nouveau (max 5 groupes)
+    history.unshift(historyItem)
+    if (history.length > 5) history.pop()
+  }
+
+  localStorage.setItem('groupHistory', JSON.stringify(history))
+  displayGroupHistory()
+}
+
+// Afficher l'historique des groupes
+async function displayGroupHistory() {
+  const historyContainer = document.getElementById('groupHistory')
+  if (!historyContainer) return
+
+  const history = JSON.parse(localStorage.getItem('groupHistory') || '[]')
+
+  if (history.length === 0) {
+    historyContainer.innerHTML = ''
+    return
+  }
+
+  let html = '<div class="history-title">Önceki Gruplar</div><div class="history-list">'
+
+  for (const item of history) {
+    // Vérifier si le groupe existe toujours
+    let statusClass = 'inactive'
+    let statusText = 'Kapalı'
+
+    try {
+      const { data } = await window.supabase
+        .from('groups')
+        .select('id')
+        .eq('code', item.code)
+        .single()
+
+      if (data) {
+        statusClass = 'active'
+        statusText = 'Aktif'
+      }
+    } catch (e) {
+      // Groupe n'existe plus
+    }
+
+    const timeAgo = getTimeAgo(item.lastAccess)
+
+    html += `
+      <div class="history-item" onclick="rejoinGroup('${item.code}')">
+        <div class="history-item-info">
+          <div class="history-item-name">${item.name}</div>
+          <div class="history-item-meta">${item.isCreator ? '👑 Yönetici' : '👥 Üye'} • ${timeAgo}</div>
+        </div>
+        <div class="history-item-status ${statusClass}">${statusText}</div>
+      </div>
+    `
+  }
+
+  html += '</div>'
+  historyContainer.innerHTML = html
+}
+
+// Rejoindre un groupe depuis l'historique
+async function rejoinGroup(code) {
+  try {
+    // Récupérer les infos du groupe
+    const { data: groupData, error } = await window.supabase
+      .from('groups')
+      .select('*')
+      .eq('code', code)
+      .single()
+
+    if (error || !groupData) {
+      showCustomAlert('❌ Bu grup artık mevcut değil', 'error', 3000)
+      return
+    }
+
+    // Récupérer le nom de l'utilisateur depuis l'historique
+    const history = JSON.parse(localStorage.getItem('groupHistory') || '[]')
+    const historyItem = history.find(item => item.code === code)
+
+    if (!historyItem) return
+
+    // Reconnecter au groupe
+    groupManager.currentGroup = {
+      group: groupData,
+      isCreator: historyItem.isCreator
+    }
+
+    // Si pas créateur, chercher le participant existant
+    if (!historyItem.isCreator) {
+      const { data: participants } = await window.supabase
+        .from('participants')
+        .select('*')
+        .eq('group_id', groupData.id)
+
+      // Trouver le participant par son nom (approximatif)
+      const myParticipant = participants?.find(p => p.name)
+      if (myParticipant) {
+        groupManager.currentGroup.participant = myParticipant
+      }
+    }
+
+    localStorage.setItem('currentGroup', JSON.stringify(groupManager.currentGroup))
+
+    showGroupInterface(code)
+    saveGroupToHistory(groupData.name, groupData.name, historyItem.isCreator)
+
+    // Mettre à jour le classement
+    const stats = getCurrentUserStats()
+    await groupManager.updateMyScore(stats)
+    await updateLeaderboard()
+
+    showCustomAlert('✅ Gruba yeniden katıldınız', 'success', 2000)
+  } catch (error) {
+    console.error('Erreur rejoin:', error)
+    showCustomAlert('❌ Hata oluştu', 'error', 2000)
+  }
+}
+
+// Calculer le temps écoulé
+function getTimeAgo(dateString) {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diff = now - date
+
+  const minutes = Math.floor(diff / 60000)
+  const hours = Math.floor(diff / 3600000)
+  const days = Math.floor(diff / 86400000)
+
+  if (minutes < 60) return `${minutes}dk önce`
+  if (hours < 24) return `${hours}s önce`
+  return `${days}g önce`
+}
+
+// Afficher l'historique au chargement
+if (typeof window !== 'undefined') {
+  setTimeout(() => displayGroupHistory(), 100)
 }
 
 // La restauration du groupe est maintenant gérée dans script.js > initializeBackend()
