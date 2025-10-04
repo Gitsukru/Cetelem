@@ -202,10 +202,13 @@ function displayLeaderboard(participants) {
     else medal = position
 
     html += `
-      <div class="participant-row ${isMe ? 'my-row' : ''}">
+      <div class="participant-row ${isMe ? 'my-row' : ''}" onclick="toggleParticipantDetails('${participant.id}')">
         <div class="rank-badge rank-${position <= 3 ? position : 'other'}">${medal}</div>
         <div class="participant-details">
-          <div class="participant-name">${participant.name}${isMe ? ' <span class="you-badge">Sen</span>' : ''}</div>
+          <div class="participant-name">
+            ${participant.name}${isMe ? ' <span class="you-badge">Sen</span>' : ''}
+            <span class="expand-icon" id="expand-${participant.id}">▼</span>
+          </div>
           <div class="stats-grid">
             <div class="stat-item">
               <span class="stat-label">📅 Bugün</span>
@@ -223,6 +226,11 @@ function displayLeaderboard(participants) {
               <span class="stat-value-small">${participant.monthCount || 0}</span>
             </div>
           </div>
+
+          <!-- Détails dépliables -->
+          <div class="participant-detail-stats" id="detail-${participant.id}" style="display: none;">
+            <div class="detail-loading">Yükleniyor...</div>
+          </div>
         </div>
         <div class="points-badge">${participant.points}<span class="pts-label">pts</span></div>
       </div>
@@ -231,6 +239,72 @@ function displayLeaderboard(participants) {
 
   html += '</div>'
   container.innerHTML = html
+}
+
+// Toggle detailed stats for a participant
+async function toggleParticipantDetails(participantId) {
+  const detailDiv = document.getElementById(`detail-${participantId}`)
+  const expandIcon = document.getElementById(`expand-${participantId}`)
+
+  if (!detailDiv) return
+
+  if (detailDiv.style.display === 'none') {
+    // Ouvrir et charger les détails
+    detailDiv.style.display = 'block'
+    expandIcon.textContent = '▲'
+
+    // Charger les statistiques détaillées
+    await loadParticipantDetailedStats(participantId, detailDiv)
+  } else {
+    // Fermer
+    detailDiv.style.display = 'none'
+    expandIcon.textContent = '▼'
+  }
+}
+
+// Load detailed stats from localStorage (stored by the participant)
+async function loadParticipantDetailedStats(participantId, container) {
+  try {
+    // Récupérer les métadonnées du participant depuis Supabase
+    const { data: participant } = await groupManager.provider.supabase
+      .from('participants')
+      .select('metadata')
+      .eq('id', participantId)
+      .single()
+
+    // Les statistiques détaillées sont stockées dans metadata JSON
+    const detailedStats = participant?.metadata?.categories || null
+
+    if (!detailedStats || Object.keys(detailedStats).length === 0) {
+      container.innerHTML = '<div class="detail-empty">📊 Henüz detaylı istatistik paylaşılmadı</div>'
+      return
+    }
+
+    // Créer un tableau des catégories
+    let html = '<div class="detail-stats-table">'
+    html += '<div class="detail-header">📋 Detaylı İstatistikler</div>'
+    html += '<table class="stats-breakdown-table">'
+    html += '<thead><tr><th>Kategori</th><th>Bugün</th><th>Hafta</th><th>Ay</th></tr></thead>'
+    html += '<tbody>'
+
+    for (const [category, stats] of Object.entries(detailedStats)) {
+      html += `
+        <tr>
+          <td class="category-name">${category}</td>
+          <td class="stat-num">${stats.today || 0}</td>
+          <td class="stat-num">${stats.week || 0}</td>
+          <td class="stat-num">${stats.month || 0}</td>
+        </tr>
+      `
+    }
+
+    html += '</tbody></table></div>'
+    container.innerHTML = html
+
+  } catch (error) {
+    console.error('Erreur chargement détails:', error)
+    container.innerHTML = '<div class="detail-error">❌ Yükleme hatası</div>'
+  }
 }
 
 // Refresh leaderboard manually

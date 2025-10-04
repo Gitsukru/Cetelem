@@ -1960,19 +1960,34 @@ function calculatePoints(stats) {
 function getCurrentUserStats() {
     let totalToday = 0;
     let totalWeek = 0;
+    let totalMonth = 0;
     let totalGeneral = 0;
+
+    // Collecter aussi les détails par catégorie pour le groupe
+    const categoriesDetails = {};
 
     categories.forEach(cat => {
         const stats = getStatisticsForCategory(cat);
         totalToday += stats.day;
         totalWeek += stats.week;
+        totalMonth += stats.month;
         totalGeneral += stats.total;
+
+        // Ajouter les détails pour cette catégorie
+        categoriesDetails[cat] = {
+            today: stats.day,
+            week: stats.week,
+            month: stats.month,
+            total: stats.total
+        };
     });
 
     return {
         today: totalToday,
         week: totalWeek,
-        total: totalGeneral
+        month: totalMonth,
+        total: totalGeneral,
+        categories: categoriesDetails  // Détails par catégorie
     };
 }
 

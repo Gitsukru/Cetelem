@@ -973,6 +973,14 @@ body {
     align-items: center;
     gap: 6px;
     line-height: 1.2;
+    cursor: pointer;
+}
+
+.expand-icon {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-left: auto;
+    transition: transform 0.2s;
 }
 
 .you-badge {
@@ -1061,6 +1069,76 @@ body {
     font-weight: 500;
     opacity: 0.8;
     margin-top: -2px;
+}
+
+/* Statistiques détaillées dépliables */
+.participant-detail-stats {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.detail-loading, .detail-empty, .detail-error {
+    text-align: center;
+    padding: 12px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.detail-error {
+    color: #dc2626;
+}
+
+.detail-stats-table {
+    width: 100%;
+}
+
+.detail-header {
+    font-weight: 600;
+    font-size: 13px;
+    color: #475569;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stats-breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.stats-breakdown-table thead th {
+    text-align: left;
+    padding: 8px;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.stats-breakdown-table tbody td {
+    padding: 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.stats-breakdown-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.category-name {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.stat-num {
+    font-weight: 600;
+    color: #475569;
+    text-align: center;
 }
 
 /* ========================================

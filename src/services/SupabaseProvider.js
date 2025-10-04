@@ -135,18 +135,29 @@ class SupabaseProvider extends BackendProvider {
    * Mettre à jour le score d'un participant
    * @param {string} groupId - ID du groupe
    * @param {string} participantId - ID du participant
-   * @param {Object} score - {today, week, total}
+   * @param {Object} score - {today, week, month, total, categories}
    */
   async updateScore(groupId, participantId, score) {
     try {
+      const updateData = {
+        today_count: score.today || 0,
+        week_count: score.week || 0,
+        month_count: score.month || 0,
+        total_count: score.total || 0,
+        updated_at: new Date().toISOString()
+      }
+
+      // Ajouter les statistiques détaillées par catégorie dans metadata
+      if (score.categories) {
+        updateData.metadata = {
+          categories: score.categories,
+          lastUpdated: new Date().toISOString()
+        }
+      }
+
       const { error } = await this.supabase
         .from('participants')
-        .update({
-          today_count: score.today || 0,
-          week_count: score.week || 0,
-          total_count: score.total || 0,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', participantId)
         .eq('group_id', groupId)
 

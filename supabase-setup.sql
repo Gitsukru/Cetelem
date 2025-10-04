@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS participants (
   week_count INTEGER DEFAULT 0 CHECK (week_count >= 0),
   month_count INTEGER DEFAULT 0 CHECK (month_count >= 0),
   total_count INTEGER DEFAULT 0 CHECK (total_count >= 0),
+  metadata JSONB DEFAULT '{}'::jsonb,  -- Statistiques détaillées par catégorie
   joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
