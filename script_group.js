@@ -307,15 +307,17 @@ async function displayGroupHistory() {
     let statusText = 'Kapalı'
 
     try {
-      const { data } = await window.supabase
-        .from('groups')
-        .select('id')
-        .eq('code', item.code)
-        .single()
+      if (groupManager && groupManager.provider && groupManager.provider.supabase) {
+        const { data } = await groupManager.provider.supabase
+          .from('groups')
+          .select('id')
+          .eq('code', item.code)
+          .single()
 
-      if (data) {
-        statusClass = 'active'
-        statusText = 'Aktif'
+        if (data) {
+          statusClass = 'active'
+          statusText = 'Aktif'
+        }
       }
     } catch (e) {
       // Groupe n'existe plus
@@ -341,8 +343,13 @@ async function displayGroupHistory() {
 // Rejoindre un groupe depuis l'historique
 async function rejoinGroup(code) {
   try {
+    if (!groupManager || !groupManager.provider) {
+      showCustomAlert('❌ Backend henüz hazır değil', 'error', 2000)
+      return
+    }
+
     // Récupérer les infos du groupe
-    const { data: groupData, error } = await window.supabase
+    const { data: groupData, error } = await groupManager.provider.supabase
       .from('groups')
       .select('*')
       .eq('code', code)
@@ -367,7 +374,7 @@ async function rejoinGroup(code) {
 
     // Si pas créateur, chercher le participant existant
     if (!historyItem.isCreator) {
-      const { data: participants } = await window.supabase
+      const { data: participants } = await groupManager.provider.supabase
         .from('participants')
         .select('*')
         .eq('group_id', groupData.id)
