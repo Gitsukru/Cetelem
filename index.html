@@ -153,21 +153,53 @@
 
                     <!-- Create Group -->
                     <div id="createSection" class="section" style="display: none;">
-                        <h3>🎆 Grup Oluştur</h3>
-                        <div class="form-group">
-                            <input type="text" id="groupNameInput" class="form-input" placeholder="Grup adı (isteğe bağlı)" maxlength="30">
-                            <input type="text" id="creatorNameInput" class="form-input" placeholder="Adınız" maxlength="20" required>
-                            <button class="create-button" onclick="doCreateGroup()">🎆 Grup Oluştur</button>
+                        <div class="form-card">
+                            <div class="form-card-header">
+                                <span class="form-card-icon">✨</span>
+                                <h3 class="form-card-title">Yeni Grup Oluştur</h3>
+                                <p class="form-card-desc">Arkadaşlarınla zikir yarışması başlat</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-wrapper">
+                                    <label class="input-label">Grup Adı</label>
+                                    <input type="text" id="groupNameInput" class="form-input" placeholder="Örn: Akşam Grubu" maxlength="30">
+                                    <span class="input-hint">İsteğe bağlı</span>
+                                </div>
+                                <div class="input-wrapper">
+                                    <label class="input-label">Adınız <span class="required">*</span></label>
+                                    <input type="text" id="creatorNameInput" class="form-input" placeholder="Adınızı girin" maxlength="20" required>
+                                </div>
+                                <button class="form-submit-btn create-submit" onclick="doCreateGroup()">
+                                    <span class="btn-icon">✨</span>
+                                    <span class="btn-text">Grup Oluştur</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Join Group -->
                     <div id="joinSection" class="section" style="display: none;">
-                        <h3>🔗 Gruba Katıl</h3>
-                        <div class="form-group">
-                            <input type="text" id="joinCodeInput" class="form-input" placeholder="Grup kodunu girin" maxlength="8">
-                            <input type="text" id="participantNameInput" class="form-input" placeholder="Adınız" maxlength="20" required>
-                            <button class="join-button" onclick="doJoinGroup()">🔗 Katıl</button>
+                        <div class="form-card">
+                            <div class="form-card-header">
+                                <span class="form-card-icon">🔗</span>
+                                <h3 class="form-card-title">Gruba Katıl</h3>
+                                <p class="form-card-desc">Grup kodunu girerek yarışmaya katıl</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-wrapper">
+                                    <label class="input-label">Grup Kodu <span class="required">*</span></label>
+                                    <input type="text" id="joinCodeInput" class="form-input code-input" placeholder="ABC123" maxlength="8">
+                                    <span class="input-hint">6 karakterli kod</span>
+                                </div>
+                                <div class="input-wrapper">
+                                    <label class="input-label">Adınız <span class="required">*</span></label>
+                                    <input type="text" id="participantNameInput" class="form-input" placeholder="Adınızı girin" maxlength="20" required>
+                                </div>
+                                <button class="form-submit-btn join-submit" onclick="doJoinGroup()">
+                                    <span class="btn-icon">🚀</span>
+                                    <span class="btn-text">Katıl</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
