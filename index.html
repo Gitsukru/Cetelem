@@ -205,30 +205,51 @@
 
                     <!-- Status -->
                     <div id="groupStatus" class="section" style="display: none;">
-                        <div class="status-info">
-                            <h3 id="statusTitle">Durum</h3>
-                            <p id="statusMessage">Yükleniyor...</p>
+                        <div class="status-card">
+                            <div class="status-badge">
+                                <span class="status-icon" id="statusIcon">👑</span>
+                            </div>
+                            <h3 class="status-title" id="statusTitle">Durum</h3>
+                            <p class="status-message" id="statusMessage">Yükleniyor...</p>
                         </div>
 
                         <div class="group-code-share" id="codeShare" style="display: none;">
-                            <div class="code-display">
-                                <label>Grup Kodu:</label>
-                                <div class="code" id="displayCode">-</div>
-                                <button class="share-btn" onclick="shareCode()">📤 Paylaş</button>
+                            <div class="code-card">
+                                <label class="code-label">Grup Kodu</label>
+                                <div class="code-display-box">
+                                    <div class="code-value" id="displayCode">-</div>
+                                    <button class="share-code-btn" onclick="shareCode()">
+                                        <span class="share-icon">📤</span>
+                                        <span class="share-text">Paylaş</span>
+                                    </button>
+                                </div>
+                                <p class="code-hint">Arkadaşlarınla bu kodu paylaş</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Leaderboard -->
                     <div id="leaderboard" class="section" style="display: none;">
-                        <h3>🏆 Grup Sıralaması</h3>
+                        <div class="leaderboard-header">
+                            <div class="leaderboard-header-content">
+                                <span class="leaderboard-icon">🏆</span>
+                                <h3 class="leaderboard-title">Grup Sıralaması</h3>
+                            </div>
+                        </div>
+
                         <div class="leaderboard-table">
                             <div id="leaderboardContent">Yükleniyor...</div>
                         </div>
 
                         <div class="group-controls">
-                            <button class="refresh-btn" onclick="refreshLeaderboard()">🔄 Yenile</button>
-                            <button class="leave-btn" onclick="leaveGroup()">🚪 Ayrıl</button>
+                            <button class="control-btn refresh-btn" onclick="refreshLeaderboard()">
+                                <span class="control-icon">🔄</span>
+                                <span class="control-text">Yenile</span>
+                            </button>
+                            <button class="control-btn leave-btn" onclick="leaveGroup()">
+                                <span class="control-icon">🚪</span>
+                                <span class="control-text">Ayrıl</span>
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -94,12 +94,14 @@ function showGroupInterface(code) {
   const groupInfo = groupManager.getCurrentGroup()
 
   if (groupInfo.isCreator) {
-    document.getElementById('statusTitle').textContent = '👑 Grup Yöneticisi'
+    document.getElementById('statusIcon').textContent = '👑'
+    document.getElementById('statusTitle').textContent = 'Grup Yöneticisi'
     document.getElementById('statusMessage').textContent = `${groupInfo.group.name} grubunu yönetiyorsunuz`
     document.getElementById('codeShare').style.display = 'block'
     document.getElementById('displayCode').textContent = code
   } else {
-    document.getElementById('statusTitle').textContent = '👥 Grup Üyesi'
+    document.getElementById('statusIcon').textContent = '👥'
+    document.getElementById('statusTitle').textContent = 'Grup Üyesi'
     document.getElementById('statusMessage').textContent = `${groupInfo.group.name} grubundasınız`
     document.getElementById('codeShare').style.display = 'none'
   }
