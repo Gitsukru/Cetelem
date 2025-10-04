@@ -127,12 +127,28 @@
         <!-- Grup Sekmesi -->
         <div id="group" class="tab-content">
             <div class="management-section">
-                <h2>👥 Grup Yarışması</h2>
+                <div class="group-header">
+                    <div class="group-header-icon">👥</div>
+                    <h2 class="group-header-title">Grup Yarışması</h2>
+                    <p class="group-header-subtitle">Arkadaşlarınla yarış, motivasyonunu artır</p>
+                </div>
 
                 <div class="group-simple-form">
                     <div class="mode-selection">
-                        <button class="mode-button create-btn" onclick="createGroup()">🎆 Yeni Grup Oluştur</button>
-                        <button class="mode-button join-btn" onclick="showJoinForm()">🔗 Gruba Katıl</button>
+                        <button class="mode-button create-btn" onclick="createGroup()">
+                            <span class="mode-icon">✨</span>
+                            <div class="mode-text">
+                                <span class="mode-title">Yeni Grup Oluştur</span>
+                                <span class="mode-desc">Arkadaşlarını davet et</span>
+                            </div>
+                        </button>
+                        <button class="mode-button join-btn" onclick="showJoinForm()">
+                            <span class="mode-icon">🔗</span>
+                            <div class="mode-text">
+                                <span class="mode-title">Gruba Katıl</span>
+                                <span class="mode-desc">Grup kodu ile katıl</span>
+                            </div>
+                        </button>
                     </div>
 
                     <!-- Create Group -->
