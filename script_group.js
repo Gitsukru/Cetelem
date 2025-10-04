@@ -93,6 +93,12 @@ function showGroupInterface(code) {
   document.getElementById('groupStatus').style.display = 'block'
   document.getElementById('leaderboard').style.display = 'block'
 
+  // Masquer l'historique et les boutons quand groupe actif
+  const historyEl = document.getElementById('groupHistory')
+  const modeSelectionEl = document.querySelector('.mode-selection')
+  if (historyEl) historyEl.style.display = 'none'
+  if (modeSelectionEl) modeSelectionEl.style.display = 'none'
+
   const groupInfo = groupManager.getCurrentGroup()
 
   if (groupInfo.isCreator) {
@@ -222,6 +228,13 @@ function leaveGroup() {
         document.getElementById('groupStatus').style.display = 'none'
         document.getElementById('leaderboard').style.display = 'none'
 
+        // Réafficher l'historique et les boutons
+        const historyEl = document.getElementById('groupHistory')
+        const modeSelectionEl = document.querySelector('.mode-selection')
+        if (historyEl) historyEl.style.display = 'block'
+        if (modeSelectionEl) modeSelectionEl.style.display = 'grid'
+
+        displayGroupHistory()
         showCustomAlert('👋 Gruptan ayrıldınız', 'success', 2000)
       } catch (error) {
         console.error('Erreur quitter groupe:', error)
@@ -275,13 +288,13 @@ function saveGroupToHistory(groupCode, groupName, isCreator) {
   }
 
   if (existingIndex >= 0) {
-    // Mettre à jour l'existant
-    history[existingIndex] = historyItem
-  } else {
-    // Ajouter nouveau (max 5 groupes)
-    history.unshift(historyItem)
-    if (history.length > 5) history.pop()
+    // Supprimer l'ancien et remettre en premier
+    history.splice(existingIndex, 1)
   }
+
+  // Ajouter en premier (max 5 groupes)
+  history.unshift(historyItem)
+  if (history.length > 5) history.pop()
 
   localStorage.setItem('groupHistory', JSON.stringify(history))
   displayGroupHistory()
@@ -389,7 +402,7 @@ async function rejoinGroup(code) {
     localStorage.setItem('currentGroup', JSON.stringify(groupManager.currentGroup))
 
     showGroupInterface(code)
-    saveGroupToHistory(groupData.name, groupData.name, historyItem.isCreator)
+    saveGroupToHistory(code, groupData.name, historyItem.isCreator)
 
     // Mettre à jour le classement
     const stats = getCurrentUserStats()
