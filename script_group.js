@@ -430,20 +430,44 @@ async function doRejoinGroup(code, groupData, historyItem) {
       .select('*')
       .eq('group_id', groupData.id)
 
-    // Trouver le participant actuel (premier trouvé ou créateur)
+    // Trouver le participant actuel
     let myParticipant = null
 
     if (historyItem.isCreator) {
-      // Si créateur, prendre le premier participant
+      // Si créateur, prendre le premier participant ou en créer un
       myParticipant = participants?.[0]
+
+      // Si aucun participant n'existe, créer un participant pour le créateur
+      if (!myParticipant) {
+        const creatorName = 'Admin' // Nom par défaut
+        const { data: newParticipant, error } = await groupManager.provider.supabase
+          .from('participants')
+          .insert({
+            group_id: groupData.id,
+            name: creatorName,
+            today_count: 0,
+            week_count: 0,
+            month_count: 0,
+            total_count: 0
+          })
+          .select()
+          .single()
+
+        if (error) {
+          console.error('Erreur création participant:', error)
+          showCustomAlert('❌ Katılımcı oluşturulamadı', 'error', 3000)
+          return
+        }
+        myParticipant = newParticipant
+      }
     } else {
       // Si membre, chercher par nom (approximatif)
       myParticipant = participants?.find(p => p.name) || participants?.[0]
-    }
 
-    if (!myParticipant) {
-      showCustomAlert('❌ Bu grupta katılımcı bulunamadı', 'error', 3000)
-      return
+      if (!myParticipant) {
+        showCustomAlert('❌ Bu grupta katılımcı bulunamadı', 'error', 3000)
+        return
+      }
     }
 
     // Reconnecter au groupe avec le format GroupManager
