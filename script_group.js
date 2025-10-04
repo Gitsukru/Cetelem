@@ -424,24 +424,28 @@ async function rejoinGroup(code) {
 // Fonction helper pour rejoindre
 async function doRejoinGroup(code, groupData, historyItem) {
   try {
+    // Chercher tous les participants du groupe
+    const { data: participants } = await groupManager.provider.supabase
+      .from('participants')
+      .select('*')
+      .eq('group_id', groupData.id)
+
+    // Trouver le participant actuel (premier trouvé ou créateur)
+    let myParticipant = null
+
+    if (historyItem.isCreator) {
+      // Si créateur, prendre le premier participant
+      myParticipant = participants?.[0]
+    } else {
+      // Si membre, chercher par nom (approximatif)
+      myParticipant = participants?.find(p => p.name) || participants?.[0]
+    }
+
     // Reconnecter au groupe
     groupManager.currentGroup = {
       group: groupData,
+      participant: myParticipant,
       isCreator: historyItem.isCreator
-    }
-
-    // Si pas créateur, chercher le participant existant
-    if (!historyItem.isCreator) {
-      const { data: participants } = await groupManager.provider.supabase
-        .from('participants')
-        .select('*')
-        .eq('group_id', groupData.id)
-
-      // Trouver le participant par son nom (approximatif)
-      const myParticipant = participants?.find(p => p.name)
-      if (myParticipant) {
-        groupManager.currentGroup.participant = myParticipant
-      }
     }
 
     localStorage.setItem('currentGroup', JSON.stringify(groupManager.currentGroup))
@@ -449,9 +453,12 @@ async function doRejoinGroup(code, groupData, historyItem) {
     showGroupInterface(code)
     saveGroupToHistory(code, groupData.name, historyItem.isCreator)
 
-    // Mettre à jour le classement
-    const stats = getCurrentUserStats()
-    await groupManager.updateMyScore(stats)
+    // Mettre à jour le classement seulement si on a un participant
+    if (myParticipant) {
+      const stats = getCurrentUserStats()
+      await groupManager.updateMyScore(stats)
+    }
+
     await updateLeaderboard()
 
     showCustomAlert('✅ Gruba yeniden katıldınız', 'success', 2000)
