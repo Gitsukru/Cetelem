@@ -441,23 +441,40 @@ async function doRejoinGroup(code, groupData, historyItem) {
       myParticipant = participants?.find(p => p.name) || participants?.[0]
     }
 
-    // Reconnecter au groupe
-    groupManager.currentGroup = {
-      group: groupData,
-      participant: myParticipant,
-      isCreator: historyItem.isCreator
+    if (!myParticipant) {
+      showCustomAlert('❌ Bu grupta katılımcı bulunamadı', 'error', 3000)
+      return
     }
 
+    // Reconnecter au groupe avec le format GroupManager
+    groupManager.currentGroup = {
+      id: groupData.id,
+      code: groupData.code,
+      name: groupData.name,
+      provider: 'SupabaseProvider'
+    }
+
+    groupManager.currentParticipant = {
+      id: myParticipant.id,
+      name: myParticipant.name
+    }
+
+    groupManager.isCreator = historyItem.isCreator
+
+    // Sauvegarder dans localStorage
     localStorage.setItem('currentGroup', JSON.stringify(groupManager.currentGroup))
+    localStorage.setItem('currentParticipant', JSON.stringify(groupManager.currentParticipant))
+    localStorage.setItem('isCreator', historyItem.isCreator)
+
+    // S'abonner aux mises à jour temps réel
+    groupManager.subscribeToUpdates()
 
     showGroupInterface(code)
     saveGroupToHistory(code, groupData.name, historyItem.isCreator)
 
-    // Mettre à jour le classement seulement si on a un participant
-    if (myParticipant) {
-      const stats = getCurrentUserStats()
-      await groupManager.updateMyScore(stats)
-    }
+    // Mettre à jour le score
+    const stats = getCurrentUserStats()
+    await groupManager.updateMyScore(stats)
 
     await updateLeaderboard()
 
