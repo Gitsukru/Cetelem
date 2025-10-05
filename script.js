@@ -207,23 +207,20 @@ function playTickSound() {
     if (!soundEnabled || !tickSound) return;
 
     try {
-        // For real audio files
+        // For real audio files - use cloneNode for rapid clicks
         if (tickSound.currentTime !== undefined) {
-            // Ensure audio is ready to play
-            if (tickSound.readyState >= 2) { // HAVE_CURRENT_DATA
-                tickSound.currentTime = 0;
-                const playPromise = tickSound.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(e => {
-                        console.log('Sound play failed:', e);
-                        if (!audioEnabled) {
-                            enableAudioOnInteraction();
-                        }
-                    });
-                }
-            } else {
-                // Audio not ready, try again after a short delay
-                setTimeout(() => playTickSound(), 100);
+            // Clone the audio for simultaneous playback
+            const sound = tickSound.cloneNode();
+            sound.volume = tickSound.volume;
+
+            const playPromise = sound.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => {
+                    console.log('Sound play failed:', e);
+                    if (!audioEnabled) {
+                        enableAudioOnInteraction();
+                    }
+                });
             }
         }
         // For Web Audio API generated sounds
