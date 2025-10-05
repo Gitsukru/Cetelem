@@ -889,6 +889,34 @@ function updateStats() {
     }
 }
 
+// Obtenir les stats globales de l'utilisateur (pour le groupe)
+function getCurrentUserStats() {
+    let totalToday = 0;
+    let totalWeek = 0;
+    let totalMonth = 0;
+    let totalAll = 0;
+
+    // Agréger les stats de toutes les catégories
+    categories.forEach(cat => {
+        const stats = getStatisticsForCategory(cat);
+        totalToday += stats.day;
+        totalWeek += stats.week;
+        totalMonth += stats.month;
+        totalAll += stats.total;
+    });
+
+    return {
+        today: totalToday,
+        week: totalWeek,
+        month: totalMonth,
+        total: totalAll,
+        categories: categories.reduce((acc, cat) => {
+            acc[cat] = getStatisticsForCategory(cat).total;
+            return acc;
+        }, {})
+    };
+}
+
 // Fonctions d'effacement simplifiées et cohérentes
 function resetTodayCategory() {
     const category = document.getElementById('categoryToReset').value;
