@@ -911,7 +911,12 @@ function getCurrentUserStats() {
         month: totalMonth,
         total: totalAll,
         categories: categories.reduce((acc, cat) => {
-            acc[cat] = getStatisticsForCategory(cat).total;
+            const stats = getStatisticsForCategory(cat);
+            acc[cat] = {
+                today: stats.day,
+                week: stats.week,
+                month: stats.month
+            };
             return acc;
         }, {})
     };
