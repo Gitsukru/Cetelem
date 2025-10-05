@@ -133,14 +133,15 @@ function showGroupInterface(code) {
     document.getElementById('statusIcon').textContent = '👑'
     document.getElementById('statusTitle').textContent = 'Grup Yöneticisi'
     document.getElementById('statusMessage').textContent = `${groupInfo.group.name} grubunu yönetiyorsunuz`
-    document.getElementById('codeShare').style.display = 'block'
-    document.getElementById('displayCode').textContent = code
   } else {
     document.getElementById('statusIcon').textContent = '👥'
     document.getElementById('statusTitle').textContent = 'Grup Üyesi'
     document.getElementById('statusMessage').textContent = `${groupInfo.group.name} grubundasınız`
-    document.getElementById('codeShare').style.display = 'none'
   }
+
+  // Afficher le code pour tout le monde (créateur et membres)
+  document.getElementById('codeShare').style.display = 'block'
+  document.getElementById('displayCode').textContent = code
 }
 
 // Show status message
