@@ -124,6 +124,20 @@
                         <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
                     </div>
 
+                    <div class="device-transfer-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+                        <h3 style="font-size: 16px; margin-bottom: 12px;">📱 Cihaz Değiştirme</h3>
+                        <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">Verilerinizi yeni cihaza aktarın (giriş gerekmez)</p>
+                        <div class="backup-buttons">
+                            <button class="backup-button" onclick="DeviceBackup.showCreateBackupDialog()">
+                                📲 Kod Oluştur
+                            </button>
+                            <button class="backup-button" onclick="DeviceBackup.showRestoreBackupDialog()">
+                                🔓 Kod ile Geri Yükle
+                            </button>
+                        </div>
+                        <p style="font-size: 11px; color: #94a3b8; margin-top: 8px;">Kod 7 gün geçerlidir</p>
+                    </div>
+
                     <div class="backup-info">
                         <p>✅ Verileriniz otomatik olarak telefonunuzda yedeklenir</p>
                         <p>📱 Uygulamayı kapattığınızda bile kalır</p>
@@ -325,6 +339,24 @@
     <!-- Indicateur de sauvegarde -->
     <div id="saveIndicator" class="save-indicator">✅ Kaydedildi</div>
 
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <p class="footer-text">📿 Zikirmatik - Dijital Tesbih</p>
+                <p class="footer-version">v2.0 • 2025</p>
+            </div>
+            <div class="footer-section">
+                <a href="mailto:contact@zikirmatik.app" class="footer-link">
+                    📧 İletişim
+                </a>
+                <button onclick="QuotaMonitor.dashboard()" class="footer-link-btn" title="Sistem durumu">
+                    📊 Durum
+                </button>
+            </div>
+        </div>
+    </footer>
+
     <!-- Supabase Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -334,6 +366,8 @@
     <script src="src/utils/debounce.js"></script>
     <script src="src/utils/retry.js"></script>
     <script src="src/utils/offline-manager.js"></script>
+    <script src="src/utils/quota-monitor.js"></script>
+    <script src="src/utils/device-backup.js"></script>
 
     <!-- Backend Services -->
     <script src="src/config/backend.config.js"></script>
