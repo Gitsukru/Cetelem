@@ -209,37 +209,26 @@ function displayLeaderboard(participants) {
     else medal = position
 
     html += `
-      <div class="participant-row ${isMe ? 'my-row' : ''}" onclick="toggleParticipantDetails('${participant.id}')">
-        <div class="rank-badge rank-${position <= 3 ? position : 'other'}">${medal}</div>
-        <div class="participant-details">
+      <div class="participant-card ${isMe ? 'my-card' : ''}">
+        <!-- Header horizontal avec toggle -->
+        <div class="participant-header" onclick="toggleParticipantDetails('${participant.id}')">
+          <span class="expand-toggle" id="expand-${participant.id}">▶</span>
+          <div class="rank-badge rank-${position <= 3 ? position : 'other'}">${medal}</div>
           <div class="participant-name">
             ${participant.name}${isMe ? ' <span class="you-badge">Sen</span>' : ''}
-            <span class="expand-icon" id="expand-${participant.id}">▼</span>
           </div>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <span class="stat-label">📅 Bugün</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${(participant.todayCount / maxToday) * 100}%"></div>
-                <span class="stat-value">${participant.todayCount}</span>
-              </div>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">📊 Hafta</span>
-              <span class="stat-value-small">${participant.weekCount}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">📆 Ay</span>
-              <span class="stat-value-small">${participant.monthCount || 0}</span>
-            </div>
+          <div class="participant-stats-inline">
+            <span class="stat-inline">📅 ${participant.todayCount}</span>
+            <span class="stat-inline">📊 ${participant.weekCount}</span>
+            <span class="stat-inline">📆 ${participant.monthCount || 0}</span>
           </div>
-
-          <!-- Détails dépliables -->
-          <div class="participant-detail-stats" id="detail-${participant.id}" style="display: none;">
-            <div class="detail-loading">Yükleniyor...</div>
-          </div>
+          <div class="points-badge">${participant.points}<span class="pts-label">pts</span></div>
         </div>
-        <div class="points-badge">${participant.points}<span class="pts-label">pts</span></div>
+
+        <!-- Détails dépliables -->
+        <div class="participant-detail-stats" id="detail-${participant.id}" style="display: none;">
+          <div class="detail-loading">Yükleniyor...</div>
+        </div>
       </div>
     `
   })
@@ -258,14 +247,16 @@ async function toggleParticipantDetails(participantId) {
   if (detailDiv.style.display === 'none') {
     // Ouvrir et charger les détails
     detailDiv.style.display = 'block'
-    expandIcon.textContent = '▲'
+    expandIcon.textContent = '▼'
+    expandIcon.classList.add('expanded')
 
     // Charger les statistiques détaillées
     await loadParticipantDetailedStats(participantId, detailDiv)
   } else {
     // Fermer
     detailDiv.style.display = 'none'
-    expandIcon.textContent = '▼'
+    expandIcon.textContent = '▶'
+    expandIcon.classList.remove('expanded')
   }
 }
 

@@ -215,39 +215,43 @@
                         </div>
                     </div>
 
-                    <!-- Status -->
+                    <!-- Status + Leaderboard combinés -->
                     <div id="groupStatus" class="section" style="display: none;">
-                        <div class="status-card">
-                            <div class="status-badge">
-                                <span class="status-icon" id="statusIcon">👑</span>
-                            </div>
-                            <h3 class="status-title" id="statusTitle">Durum</h3>
-                            <p class="status-message" id="statusMessage">Yükleniyor...</p>
-                        </div>
-
-                        <div class="group-code-share" id="codeShare" style="display: none;">
-                            <div class="code-card">
-                                <label class="code-label">Grup Kodu</label>
-                                <div class="code-display-box">
-                                    <div class="code-value" id="displayCode">-</div>
-                                    <button class="share-code-btn" onclick="shareCode()">
-                                        <span class="share-icon">📤</span>
-                                        <span class="share-text">Paylaş</span>
-                                    </button>
+                        <!-- Header horizontal responsive avec 3 sections -->
+                        <div class="group-info-header">
+                            <!-- Section 1: Statut -->
+                            <div class="group-info-card">
+                                <div class="info-icon">👑</div>
+                                <div class="info-content">
+                                    <h3 class="info-title" id="statusTitle">Grup Yöneticisi</h3>
+                                    <p class="info-subtitle" id="statusMessage">Yükleniyor...</p>
                                 </div>
-                                <p class="code-hint">Arkadaşlarınla bu kodu paylaş</p>
+                            </div>
+
+                            <!-- Section 2: Code -->
+                            <div class="group-info-card" id="codeShare" style="display: none;">
+                                <div class="info-content">
+                                    <label class="info-label">Grup Kodu</label>
+                                    <div class="code-display">
+                                        <span class="code-value" id="displayCode">-</span>
+                                        <button class="share-icon-btn" onclick="shareCode()" title="Paylaş">📤</button>
+                                    </div>
+                                    <p class="info-hint">Arkadaşlarınla bu kodu paylaş</p>
+                                </div>
+                            </div>
+
+                            <!-- Section 3: Titre Leaderboard -->
+                            <div class="group-info-card">
+                                <div class="info-icon">🏆</div>
+                                <div class="info-content">
+                                    <h3 class="info-title">Grup Sıralaması</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Leaderboard -->
                     <div id="leaderboard" class="section" style="display: none;">
-                        <div class="leaderboard-header">
-                            <div class="leaderboard-header-content">
-                                <span class="leaderboard-icon">🏆</span>
-                                <h3 class="leaderboard-title">Grup Sıralaması</h3>
-                            </div>
-                        </div>
 
                         <div class="leaderboard-table">
                             <div id="leaderboardContent">Yükleniyor...</div>
