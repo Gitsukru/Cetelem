@@ -136,18 +136,19 @@ function showGroupInterface(code) {
   const groupInfo = groupManager.getCurrentGroup()
 
   if (groupInfo.isCreator) {
-    document.getElementById('statusIcon').textContent = '👑'
     document.getElementById('statusTitle').textContent = 'Grup Yöneticisi'
     document.getElementById('statusMessage').textContent = `${groupInfo.group.name} grubunu yönetiyorsunuz`
   } else {
-    document.getElementById('statusIcon').textContent = '👥'
     document.getElementById('statusTitle').textContent = 'Grup Üyesi'
     document.getElementById('statusMessage').textContent = `${groupInfo.group.name} grubundasınız`
   }
 
   // Afficher le code pour tout le monde (créateur et membres)
-  document.getElementById('codeShare').style.display = 'block'
-  document.getElementById('displayCode').textContent = code
+  const codeShareEl = document.getElementById('codeShare')
+  if (codeShareEl) codeShareEl.style.display = 'flex'
+
+  const displayCodeEl = document.getElementById('displayCode')
+  if (displayCodeEl) displayCodeEl.textContent = code
 }
 
 // Show status message
@@ -192,9 +193,6 @@ function displayLeaderboard(participants) {
     container.innerHTML = '<p style="text-align: center; color: #666;">Henüz katılımcı yok</p>'
     return
   }
-
-  // Calculer le max pour les barres de progression
-  const maxToday = Math.max(...participants.map(p => p.todayCount), 1)
 
   let html = '<div class="leaderboard-list">'
 
