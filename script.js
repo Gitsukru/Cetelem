@@ -1067,17 +1067,10 @@ function resetAllData() {
 
                     yesBtn.addEventListener('click', () => {
                         if (input.value === 'SİL') {
-                            // Réinitialiser toutes les catégories avec le nouveau système
-                            const today = new Date();
+                            // Réinitialiser toutes les données
                             counters = {};
                             categories.forEach(cat => {
-                                counters[cat] = {
-                                    daily: { [getDayKey(today)]: 0 },
-                                    weekly: { [getWeekKey(today)]: 0 },
-                                    monthly: { [getMonthKey(today)]: 0 },
-                                    yearly: { [getYearKey(today)]: 0 },
-                                    total: 0
-                                };
+                                counters[cat] = {};
                             });
 
                             saveCounters();
