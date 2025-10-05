@@ -16,6 +16,10 @@ node_modules/
 .env
 .env.local
 
+# Tests
+coverage/
+*.test.js.snap
+
 # IDE
 .vscode/
 .idea/

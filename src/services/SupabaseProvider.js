@@ -138,41 +138,58 @@ class SupabaseProvider extends BackendProvider {
    * @param {Object} score - {today, week, month, total, categories}
    */
   async updateScore(groupId, participantId, score) {
+    const updateData = {
+      today_count: score.today || 0,
+      week_count: score.week || 0,
+      month_count: score.month || 0,
+      total_count: score.total || 0,
+      updated_at: new Date().toISOString()
+    }
+
+    // Ajouter les statistiques détaillées par catégorie dans metadata
+    if (score.categories) {
+      updateData.metadata = {
+        categories: score.categories,
+        lastUpdated: new Date().toISOString()
+      }
+      logger.log('📊 Envoi des statistiques détaillées:', score.categories)
+    } else {
+      logger.warn('⚠️ Aucune catégorie dans score:', score)
+    }
+
+    logger.log('📤 Données envoyées à Supabase:', updateData)
+
+    // Utiliser retry avec exponential backoff
     try {
-      const updateData = {
-        today_count: score.today || 0,
-        week_count: score.week || 0,
-        month_count: score.month || 0,
-        total_count: score.total || 0,
-        updated_at: new Date().toISOString()
-      }
+      await retrySupabase(async () => {
+        const { error } = await this.supabase
+          .from('participants')
+          .update(updateData)
+          .eq('id', participantId)
+          .eq('group_id', groupId)
 
-      // Ajouter les statistiques détaillées par catégorie dans metadata
-      if (score.categories) {
-        updateData.metadata = {
-          categories: score.categories,
-          lastUpdated: new Date().toISOString()
+        if (error) throw error
+      }, {
+        maxRetries: 3,
+        onRetry: (attempt) => {
+          logger.warn(`🔄 Nouvelle tentative de sync (${attempt}/3)...`)
         }
-        logger.log('📊 Envoi des statistiques détaillées:', score.categories)
-      } else {
-        logger.warn('⚠️ Aucune catégorie dans score:', score)
-      }
-
-      logger.log('📤 Données envoyées à Supabase:', updateData)
-
-      const { error } = await this.supabase
-        .from('participants')
-        .update(updateData)
-        .eq('id', participantId)
-        .eq('group_id', groupId)
-
-      if (error) throw error
+      })
 
       logger.log('✅ Score mis à jour avec succès')
 
     } catch (error) {
-      console.error('Erreur mise à jour score:', error)
-      throw error
+      console.error('❌ Erreur mise à jour score après 3 tentatives:', error)
+
+      // Fallback: sauvegarder localement si offline
+      if (!offlineManager.checkOnline()) {
+        logger.warn('💾 Sauvegarde locale en attente de connexion')
+        offlineManager.addToQueue(async () => {
+          await this.updateScore(groupId, participantId, score)
+        })
+      } else {
+        throw error
+      }
     }
   }
 

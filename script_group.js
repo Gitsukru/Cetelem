@@ -72,6 +72,9 @@ async function doCreateGroup() {
     saveGroupToHistory(result.code, groupName, true)
     showCustomAlert('✅ Grup başarıyla oluşturuldu!', 'success', 3000)
 
+    // Analytics
+    analytics.groupCreated(groupName)
+
     // Mettre à jour immédiatement avec le score actuel
     const stats = getCurrentUserStats()
     await groupManager.updateMyScore(stats)
@@ -107,6 +110,9 @@ async function doJoinGroup() {
     showGroupInterface(result.code)
     saveGroupToHistory(result.code, result.name, false)
     showCustomAlert(`✅ "${result.name}" grubuna katıldınız!`, 'success', 3000)
+
+    // Analytics
+    analytics.groupJoined(result.code)
 
     // Mettre à jour immédiatement avec le score actuel
     const stats = getCurrentUserStats()

@@ -762,7 +762,10 @@ function incrementCounter() {
 
     if (saveCounters()) {
         updateCounterDisplay();
-        updateStats();
+
+        // ⚡ Utiliser debounce: attend 2s après le dernier clic avant de recalculer
+        debouncedUpdateStats()
+        debouncedAutoSave()
 
         // Update group count with new GroupManager system
         if (groupManager && groupManager.hasActiveGroup()) {
@@ -1302,9 +1305,16 @@ document.addEventListener('visibilitychange', function() {
     if (document.hidden) autoSave();
 });
 
-setInterval(autoSave, 30000);
+// ⚡ OPTIMISATION: Utiliser debounce au lieu d'intervals constants
+// Les stats sont mises à jour automatiquement quand on incrémente le compteur
+// Plus besoin de recalculer toutes les 60s !
+
+// Créer les fonctions debouncées
+const debouncedUpdateStats = debounce(updateStats, 2000) // 2s après changement
+const debouncedAutoSave = debounce(autoSave, 5000)       // 5s après changement
+
+// Garder juste un interval pour le status (peu coûteux)
 setInterval(updateSaveStatus, 60000);
-setInterval(updateStats, 60000);
 
 // Service Worker pour PWA
 if ('serviceWorker' in navigator) {

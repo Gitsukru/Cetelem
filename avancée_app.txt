@@ -271,3 +271,42 @@ Voilà l'analyse brutalement honnête sans filtre.
   Commercialisation : 4/10 ❌ Pas prêt
 
   Status actuel : 🟡 ORANGE - App fonctionnelle mais besoin d'un polish
+
+
+
+  ⏺ 🚀 LET'S GO ! On implémente TOUT !
+
+⏺ 🎯 PLAN D'ATTAQUE (6-8h de travail)
+
+  ┌─────────────────────────────────────┐
+  │  PHASE 1: OFFLINE INDICATOR (2h)   │
+  │  ✓ Badge visuel                     │
+  │  ✓ Detection online/offline         │
+  │  ✓ Queue de sync                    │
+  └─────────────────────────────────────┘
+             ↓
+  ┌─────────────────────────────────────┐
+  │  PHASE 2: RETRY LOGIC (3h)         │
+  │  ✓ Exponential backoff              │
+  │  ✓ Error handling                   │
+  │  ✓ Fallback local storage           │
+  └─────────────────────────────────────┘
+             ↓
+  ┌─────────────────────────────────────┐
+  │  PHASE 3: DEBOUNCE (1h)            │
+  │  ✓ Supprimer intervals              │
+  │  ✓ Recalcul à la demande            │
+  │  ✓ Performance boost                │
+  └─────────────────────────────────────┘
+             ↓
+  ┌─────────────────────────────────────┐
+  │  PHASE 4: ANALYTICS (30min)        │
+  │  ✓ Script Plausible                 │
+  │  ✓ Events tracking                  │
+  └─────────────────────────────────────┘
+             ↓
+  ┌─────────────────────────────────────┐
+  │  PHASE 5: TESTS (2h)               │
+  │  ✓ Setup Jest                       │
+  │  ✓ Tests critiques                  │
+  └─────────────────────────────────────┘

@@ -1,0 +1,33 @@
+{
+  "name": "zikirmatik",
+  "version": "2.0.0",
+  "description": "PWA pour compteur de zikir avec système de groupe en temps réel",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "zikirmatik",
+    "tesbih",
+    "zikir",
+    "pwa",
+    "supabase"
+  ],
+  "author": "Sukru",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/config/**"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
+  }
+}
