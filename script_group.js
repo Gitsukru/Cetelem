@@ -206,21 +206,29 @@ function displayLeaderboard(participants) {
     else if (position === 3) medal = '🥉'
     else medal = position
 
+    const hasNotes = participant.notes || participant.public_notes
+    const notesIcon = hasNotes ? '📝' : '📝'
+    const notesOpacity = hasNotes ? '1' : '0.3'
+
     html += `
       <div class="participant-card ${isMe ? 'my-card' : ''}">
         <!-- Header horizontal avec toggle -->
-        <div class="participant-header" onclick="toggleParticipantDetails('${participant.id}')">
-          <span class="expand-toggle" id="expand-${participant.id}">▶</span>
+        <div class="participant-header">
+          <span class="expand-toggle" id="expand-${participant.id}" onclick="toggleParticipantDetails('${participant.id}')">▶</span>
           <div class="rank-badge rank-${position <= 3 ? position : 'other'}">${medal}</div>
-          <div class="participant-name">
+          <div class="participant-name" onclick="toggleParticipantDetails('${participant.id}')">
             ${participant.name}${isMe ? ' <span class="you-badge">Sen</span>' : ''}
           </div>
-          <div class="participant-stats-inline">
+          <div class="participant-stats-inline" onclick="toggleParticipantDetails('${participant.id}')">
             <span class="stat-inline">📅 ${participant.todayCount}</span>
             <span class="stat-inline">📊 ${participant.weekCount}</span>
             <span class="stat-inline">📆 ${participant.monthCount || 0}</span>
           </div>
-          <div class="points-badge">${participant.points}<span class="pts-label">pts</span></div>
+          <button class="note-icon-btn" onclick="event.stopPropagation(); showNotesModal('${participant.id}', '${participant.name}', ${isMe})"
+            style="opacity: ${notesOpacity}" title="Not ekle/görüntüle">
+            ${notesIcon}
+          </button>
+          <div class="points-badge" onclick="toggleParticipantDetails('${participant.id}')">${participant.points}<span class="pts-label">pts</span></div>
         </div>
 
         <!-- Détails dépliables -->
@@ -609,3 +617,100 @@ if (typeof window !== 'undefined') {
 
 // La restauration du groupe est maintenant gérée dans script.js > initializeBackend()
 // Ce code n'est plus nécessaire ici
+
+// ============================================
+// NOTES SYSTÈME
+// ============================================
+
+// Afficher le modal de notes
+async function showNotesModal(participantId, participantName, isMe) {
+  const groupInfo = groupManager.getCurrentGroup()
+  if (!groupInfo) return
+
+  try {
+    // Récupérer les notes actuelles
+    const { data: participant, error } = await groupManager.provider.supabase
+      .from('participants')
+      .select('notes, public_notes')
+      .eq('id', participantId)
+      .single()
+
+    if (error) throw error
+
+    const personalNotes = participant?.notes || ''
+    const publicNotes = participant?.public_notes || ''
+
+    const html = `
+      <div class="custom-modal-overlay" id="notesModal">
+        <div class="custom-modal" style="max-width: 600px;">
+          <div class="modal-header">
+            <h3>📝 Notlar - ${participantName}</h3>
+            <button class="modal-close" onclick="document.getElementById('notesModal').remove()">✕</button>
+          </div>
+          <div class="modal-body">
+            ${isMe ? `
+              <div class="notes-section">
+                <label class="notes-label">🔒 Kişisel Notlarım (Sadece sen görürsün)</label>
+                <textarea id="personalNotes" class="notes-textarea" placeholder="Kişisel notlarınızı buraya yazın...">${personalNotes}</textarea>
+              </div>
+            ` : ''}
+            
+            <div class="notes-section" style="margin-top: 16px;">
+              <label class="notes-label">💬 ${isMe ? 'Herkese Açık Notlarım' : 'Açık Notlar'}</label>
+              <textarea id="publicNotes" class="notes-textarea" placeholder="${isMe ? 'Gruba görünecek notlarınızı yazın...' : 'Not yok'}" ${isMe ? '' : 'readonly'}>${publicNotes}</textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-secondary" onclick="document.getElementById('notesModal').remove()">İptal</button>
+            ${isMe ? `<button class="btn-primary" onclick="saveNotes('${participantId}')">💾 Kaydet</button>` : ''}
+          </div>
+        </div>
+      </div>
+    `
+
+    document.body.insertAdjacentHTML('beforeend', html)
+
+    // Auto-expand textareas
+    const textareas = document.querySelectorAll('.notes-textarea')
+    textareas.forEach(textarea => {
+      autoExpandTextarea(textarea)
+      textarea.addEventListener('input', () => autoExpandTextarea(textarea))
+    })
+  } catch (error) {
+    console.error('Erreur chargement notes:', error)
+    showCustomAlert('❌ Notlar yüklenemedi', 'error', 3000)
+  }
+}
+
+// Auto-expand textarea
+function autoExpandTextarea(textarea) {
+  textarea.style.height = 'auto'
+  textarea.style.height = Math.max(60, textarea.scrollHeight) + 'px'
+}
+
+// Sauvegarder les notes
+async function saveNotes(participantId) {
+  const personalNotes = document.getElementById('personalNotes')?.value || ''
+  const publicNotes = document.getElementById('publicNotes')?.value || ''
+
+  try {
+    const { error } = await groupManager.provider.supabase
+      .from('participants')
+      .update({
+        notes: personalNotes,
+        public_notes: publicNotes
+      })
+      .eq('id', participantId)
+
+    if (error) throw error
+
+    document.getElementById('notesModal').remove()
+    showCustomAlert('✅ Notlar kaydedildi!', 'success', 3000)
+
+    // Rafraîchir le leaderboard pour mettre à jour l'icône
+    await updateLeaderboard()
+  } catch (error) {
+    console.error('Erreur sauvegarde notes:', error)
+    showCustomAlert('❌ Kaydetme hatası', 'error', 3000)
+  }
+}
