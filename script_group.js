@@ -206,13 +206,6 @@ function displayLeaderboard(participants) {
     else if (position === 3) medal = '🥉'
     else medal = position
 
-    const hasNotes = participant.notes || participant.public_notes
-    const notesOpacity = hasNotes ? '1' : '0.3'
-    const notesIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-    </svg>`
-
     html += `
       <div class="participant-card ${isMe ? 'my-card' : ''}">
         <!-- Header horizontal avec toggle -->
@@ -227,10 +220,10 @@ function displayLeaderboard(participants) {
             <span class="stat-inline">📊 ${participant.weekCount}</span>
             <span class="stat-inline">📆 ${participant.monthCount || 0}</span>
           </div>
-          <button class="note-icon-btn" onclick="event.stopPropagation(); showNotesModal('${participant.id}', '${participant.name}', ${isMe})"
-            style="opacity: ${notesOpacity}" title="Not ekle/görüntüle">
-            ${notesIcon}
-          </button>
+          ${isMe ? `<button class="personal-note-btn" onclick="event.stopPropagation(); showNotesModal('${participant.id}', '${participant.name}', true)"
+            title="Kişisel notlarım">
+            Kendime Not
+          </button>` : ''}
           <div class="points-badge" onclick="toggleParticipantDetails('${participant.id}')">${participant.points}<span class="pts-label">pts</span></div>
         </div>
 
