@@ -2390,3 +2390,11 @@ body {
     border-color: #cbd5e1;
     color: #475569;
 }
+
+/* Stat labels in participant cards */
+.stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #64748b;
+    margin-right: 4px;
+}

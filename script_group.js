@@ -9,7 +9,7 @@ function createGroup() {
   if (groupManager && groupManager.hasActiveGroup()) {
     const groupInfo = groupManager.getCurrentGroup()
     showCustomConfirm(
-      '⚠️ Grup Değiştir',
+      'Grup Değiştir',
       `Şu anda "${groupInfo.group.name}" grubundasınız. Yeni grup oluşturmak için bu gruptan geçici olarak ayrılacaksınız (verileriniz korunur). Devam edilsin mi?`,
       function() {
         groupManager.switchGroup() // Juste changer sans supprimer
@@ -34,7 +34,7 @@ function showJoinForm() {
   if (groupManager && groupManager.hasActiveGroup()) {
     const groupInfo = groupManager.getCurrentGroup()
     showCustomConfirm(
-      '⚠️ Grup Değiştir',
+      'Grup Değiştir',
       `Şu anda "${groupInfo.group.name}" grubundasınız. Başka bir gruba katılmak için bu gruptan geçici olarak ayrılacaksınız (verileriniz korunur). Devam edilsin mi?`,
       function() {
         groupManager.switchGroup() // Juste changer sans supprimer
@@ -59,18 +59,18 @@ async function doCreateGroup() {
   const creatorName = document.getElementById('creatorNameInput').value.trim()
 
   if (!creatorName) {
-    showCustomAlert('⚠️ Lütfen adınızı girin!', 'warning', 2500)
+    showCustomAlert('Lütfen adınızı girin!', 'warning', 2500)
     return
   }
 
-  showStatus('🔄 Grup oluşturuluyor...', 'Lütfen bekleyin...')
+  showStatus('Grup oluşturuluyor...', 'Lütfen bekleyin...')
 
   try {
     const result = await groupManager.createGroup(groupName, creatorName)
 
     showGroupInterface(result.code)
     saveGroupToHistory(result.code, groupName, true)
-    showCustomAlert('✅ Grup başarıyla oluşturuldu!', 'success', 3000)
+    showCustomAlert('Grup başarıyla oluşturuldu!', 'success', 3000)
 
     // Analytics
     analytics.groupCreated(groupName)
@@ -82,7 +82,7 @@ async function doCreateGroup() {
 
   } catch (error) {
     console.error('Erreur création groupe:', error)
-    showCustomAlert(`❌ Grup oluşturulamadı!<br>${error.message}`, 'error', 4000)
+    showCustomAlert(`Grup oluşturulamadı!<br>${error.message}`, 'error', 4000)
     hideStatus()
   }
 }
@@ -93,23 +93,23 @@ async function doJoinGroup() {
   const participantName = document.getElementById('participantNameInput').value.trim()
 
   if (!groupCode) {
-    showCustomAlert('⚠️ Lütfen grup kodunu girin!', 'warning', 2500)
+    showCustomAlert('Lütfen grup kodunu girin!', 'warning', 2500)
     return
   }
 
   if (!participantName) {
-    showCustomAlert('⚠️ Lütfen adınızı girin!', 'warning', 2500)
+    showCustomAlert('Lütfen adınızı girin!', 'warning', 2500)
     return
   }
 
-  showStatus('🔍 Grup aranıyor...', 'Kod kontrol ediliyor...')
+  showStatus('Grup aranıyor...', 'Kod kontrol ediliyor...')
 
   try {
     const result = await groupManager.joinGroup(groupCode, participantName)
 
     showGroupInterface(result.code)
     saveGroupToHistory(result.code, result.name, false)
-    showCustomAlert(`✅ "${result.name}" grubuna katıldınız!`, 'success', 3000)
+    showCustomAlert(`"${result.name}" grubuna katıldınız!`, 'success', 3000)
 
     // Analytics
     analytics.groupJoined(result.code)
@@ -121,7 +121,7 @@ async function doJoinGroup() {
 
   } catch (error) {
     console.error('Erreur rejoindre groupe:', error)
-    showCustomAlert(`❌ Gruba katılamadı!<br>${error.message}`, 'error', 4000)
+    showCustomAlert(`Gruba katılamadı!<br>${error.message}`, 'error', 4000)
     hideStatus()
   }
 }
@@ -201,10 +201,10 @@ function displayLeaderboard(participants) {
     const position = index + 1
     let medal = ''
 
-    if (position === 1) medal = '🥇'
-    else if (position === 2) medal = '🥈'
-    else if (position === 3) medal = '🥉'
-    else medal = position
+    if (position === 1) medal = '#1'
+    else if (position === 2) medal = '#2'
+    else if (position === 3) medal = '#3'
+    else medal = `#${position}`
 
     html += `
       <div class="participant-card ${isMe ? 'my-card' : ''}">
@@ -216,9 +216,9 @@ function displayLeaderboard(participants) {
             ${participant.name}${isMe ? ' <span class="you-badge">Sen</span>' : ''}
           </div>
           <div class="participant-stats-inline" onclick="toggleParticipantDetails('${participant.id}')">
-            <span class="stat-inline">📅 ${participant.todayCount}</span>
-            <span class="stat-inline">📊 ${participant.weekCount}</span>
-            <span class="stat-inline">📆 ${participant.monthCount || 0}</span>
+            <span class="stat-inline"><span class="stat-label">Bugün:</span> ${participant.todayCount}</span>
+            <span class="stat-inline"><span class="stat-label">Hafta:</span> ${participant.weekCount}</span>
+            <span class="stat-inline"><span class="stat-label">Ay:</span> ${participant.monthCount || 0}</span>
           </div>
           ${isMe ? `<button class="personal-note-btn" onclick="event.stopPropagation(); showNotesModal('${participant.id}', '${participant.name}', true)"
             title="Kişisel notlarım">
@@ -276,13 +276,13 @@ async function loadParticipantDetailedStats(participantId, container) {
     const detailedStats = participant?.metadata?.categories || null
 
     if (!detailedStats || Object.keys(detailedStats).length === 0) {
-      container.innerHTML = '<div class="detail-empty">📊 Henüz detaylı istatistik paylaşılmadı</div>'
+      container.innerHTML = '<div class="detail-empty">Henüz detaylı istatistik paylaşılmadı</div>'
       return
     }
 
     // Créer un tableau des catégories
     let html = '<div class="detail-stats-table">'
-    html += '<div class="detail-header">📋 Detaylı İstatistikler</div>'
+    html += '<div class="detail-header">Detaylı İstatistikler</div>'
     html += '<table class="stats-breakdown-table">'
     html += '<thead><tr><th>Kategori</th><th>Bugün</th><th>Hafta</th><th>Ay</th><th style="width: 50px;">Not</th></tr></thead>'
     html += '<tbody>'
@@ -313,7 +313,7 @@ async function loadParticipantDetailedStats(participantId, container) {
 
   } catch (error) {
     console.error('Erreur chargement détails:', error)
-    container.innerHTML = '<div class="detail-error">❌ Yükleme hatası</div>'
+    container.innerHTML = '<div class="detail-error">Yükleme hatası</div>'
   }
 }
 
@@ -321,14 +321,14 @@ async function loadParticipantDetailedStats(participantId, container) {
 function refreshLeaderboard() {
   if (!groupManager.hasActiveGroup()) return
 
-  showCustomAlert('🔄 Güncelleniyor...', 'info', 1000)
+  showCustomAlert('Güncelleniyor...', 'info', 1000)
   updateLeaderboard()
 }
 
 // Leave group
 function leaveGroup() {
   showCustomConfirm(
-    '🚪 Gruptan Ayrıl',
+    'Gruptan Ayrıl',
     'Gruptan ayrılmak istediğinizden emin misiniz?',
     async function() {
       try {
@@ -341,10 +341,10 @@ function leaveGroup() {
         document.getElementById('leaderboard').style.display = 'none'
 
         displayGroupHistory()
-        showCustomAlert('👋 Gruptan ayrıldınız', 'success', 2000)
+        showCustomAlert('Gruptan ayrıldınız', 'success', 2000)
       } catch (error) {
         console.error('Erreur quitter groupe:', error)
-        showCustomAlert('❌ Hata!', 'error', 2000)
+        showCustomAlert('Hata!', 'error', 2000)
       }
     }
   )
@@ -355,11 +355,11 @@ function shareCode() {
   const groupInfo = groupManager.getCurrentGroup()
 
   if (!groupInfo.group) {
-    showCustomAlert('❌ Grup bilgisi bulunamadı', 'error', 2000)
+    showCustomAlert('Grup bilgisi bulunamadı', 'error', 2000)
     return
   }
 
-  const message = `🕌 Zikirmatik Grup Yarışmasına katıl!\n\nGrup: ${groupInfo.group.name}\nKod: ${groupInfo.group.code}\n\n📱 Zikirmatik uygulamasını aç\n👥 "Grup" sekmesinde "Gruba Katıl"\n🔤 Kodu gir: ${groupInfo.group.code}`
+  const message = `Zikirmatik Grup Yarışmasına katıl!\n\nGrup: ${groupInfo.group.name}\nKod: ${groupInfo.group.code}\n\nZikirmatik uygulamasını aç\n"Grup" sekmesinde "Gruba Katıl"\nKodu gir: ${groupInfo.group.code}`
 
   if (navigator.share) {
     navigator.share({
@@ -368,9 +368,9 @@ function shareCode() {
     }).catch(console.error)
   } else if (navigator.clipboard) {
     navigator.clipboard.writeText(message).then(() => {
-      showCustomAlert('📋 Grup kodu panoya kopyalandı!<br>WhatsApp\'ta paylaşabilirsiniz', 'success', 4000)
+      showCustomAlert('Grup kodu panoya kopyalandı!<br>WhatsApp\'ta paylaşabilirsiniz', 'success', 4000)
     }).catch(() => {
-      showCustomAlert('❌ Kopyalama hatası<br>Kod: ' + groupInfo.group.code, 'warning', 4000)
+      showCustomAlert('Kopyalama hatası<br>Kod: ' + groupInfo.group.code, 'warning', 4000)
     })
   }
 }
@@ -448,7 +448,7 @@ async function displayGroupHistory() {
       <div class="history-item" onclick="rejoinGroup('${item.code}')">
         <div class="history-item-info">
           <div class="history-item-name">${item.name}</div>
-          <div class="history-item-meta">${item.isCreator ? '👑 Yönetici' : '👥 Üye'} • ${timeAgo}</div>
+          <div class="history-item-meta">${item.isCreator ? 'Yönetici' : 'Üye'} • ${timeAgo}</div>
         </div>
         <div class="history-item-status ${statusClass}">${statusText}</div>
       </div>
@@ -463,7 +463,7 @@ async function displayGroupHistory() {
 async function rejoinGroup(code) {
   try {
     if (!groupManager || !groupManager.provider) {
-      showCustomAlert('❌ Backend henüz hazır değil', 'error', 2000)
+      showCustomAlert('Backend henüz hazır değil', 'error', 2000)
       return
     }
 
@@ -475,7 +475,7 @@ async function rejoinGroup(code) {
       .single()
 
     if (error || !groupData) {
-      showCustomAlert('❌ Bu grup artık mevcut değil', 'error', 3000)
+      showCustomAlert('Bu grup artık mevcut değil', 'error', 3000)
       return
     }
 
@@ -491,13 +491,13 @@ async function rejoinGroup(code) {
 
       // Si c'est le même groupe, ne rien faire
       if (currentGroup.group.code === code) {
-        showCustomAlert('✅ Zaten bu grupta bulunuyorsunuz', 'info', 2000)
+        showCustomAlert('Zaten bu grupta bulunuyorsunuz', 'info', 2000)
         return
       }
 
       // Sinon, demander confirmation pour changer de groupe
       showCustomConfirm(
-        '⚠️ Grup Değiştir',
+        'Grup Değiştir',
         `Şu anda "${currentGroup.group.name}" grubundasınız. "${groupData.name}" grubuna geçmek için bu gruptan geçici olarak ayrılacaksınız (verileriniz korunur). Devam edilsin mi?`,
         async function() {
           groupManager.switchGroup() // Juste changer sans supprimer
@@ -509,7 +509,7 @@ async function rejoinGroup(code) {
     }
   } catch (error) {
     console.error('Erreur rejoin:', error)
-    showCustomAlert('❌ Hata oluştu', 'error', 2000)
+    showCustomAlert('Hata oluştu', 'error', 2000)
   }
 }
 
@@ -547,7 +547,7 @@ async function doRejoinGroup(code, groupData, historyItem) {
 
         if (error) {
           console.error('Erreur création participant:', error)
-          showCustomAlert('❌ Katılımcı oluşturulamadı', 'error', 3000)
+          showCustomAlert('Katılımcı oluşturulamadı', 'error', 3000)
           return
         }
         myParticipant = newParticipant
@@ -557,7 +557,7 @@ async function doRejoinGroup(code, groupData, historyItem) {
       myParticipant = participants?.find(p => p.name) || participants?.[0]
 
       if (!myParticipant) {
-        showCustomAlert('❌ Bu grupta katılımcı bulunamadı', 'error', 3000)
+        showCustomAlert('Bu grupta katılımcı bulunamadı', 'error', 3000)
         return
       }
     }
@@ -594,10 +594,10 @@ async function doRejoinGroup(code, groupData, historyItem) {
 
     await updateLeaderboard()
 
-    showCustomAlert('✅ Gruba yeniden katıldınız', 'success', 2000)
+    showCustomAlert('Gruba yeniden katıldınız', 'success', 2000)
   } catch (error) {
     console.error('Erreur doRejoin:', error)
-    showCustomAlert('❌ Hata oluştu', 'error', 2000)
+    showCustomAlert('Hata oluştu', 'error', 2000)
   }
 }
 
@@ -650,25 +650,25 @@ async function showNotesModal(participantId, participantName, isMe) {
       <div class="custom-modal-overlay" id="notesModal">
         <div class="custom-modal" style="max-width: 600px;">
           <div class="modal-header">
-            <h3>📝 Notlar - ${participantName}</h3>
+            <h3>Notlar - ${participantName}</h3>
             <button class="modal-close" onclick="document.getElementById('notesModal').remove()">✕</button>
           </div>
           <div class="modal-body">
             ${isMe ? `
               <div class="notes-section">
-                <label class="notes-label">🔒 Kişisel Notlarım (Sadece sen görürsün)</label>
+                <label class="notes-label">Kişisel Notlarım (Sadece sen görürsün)</label>
                 <textarea id="personalNotes" class="notes-textarea" placeholder="Kişisel notlarınızı buraya yazın...">${personalNotes}</textarea>
               </div>
             ` : ''}
             
             <div class="notes-section" style="margin-top: 16px;">
-              <label class="notes-label">💬 ${isMe ? 'Herkese Açık Notlarım' : 'Açık Notlar'}</label>
+              <label class="notes-label">${isMe ? 'Herkese Açık Notlarım' : 'Açık Notlar'}</label>
               <textarea id="publicNotes" class="notes-textarea" placeholder="${isMe ? 'Gruba görünecek notlarınızı yazın...' : 'Not yok'}" ${isMe ? '' : 'readonly'}>${publicNotes}</textarea>
             </div>
           </div>
           <div class="modal-footer">
             <button class="btn-secondary" onclick="document.getElementById('notesModal').remove()">İptal</button>
-            ${isMe ? `<button class="btn-primary" onclick="saveNotes('${participantId}')">💾 Kaydet</button>` : ''}
+            ${isMe ? `<button class="btn-primary" onclick="saveNotes('${participantId}')">Kaydet</button>` : ''}
           </div>
         </div>
       </div>
@@ -684,7 +684,7 @@ async function showNotesModal(participantId, participantName, isMe) {
     })
   } catch (error) {
     console.error('Erreur chargement notes:', error)
-    showCustomAlert('❌ Notlar yüklenemedi', 'error', 3000)
+    showCustomAlert('Notlar yüklenemedi', 'error', 3000)
   }
 }
 
@@ -711,13 +711,13 @@ async function saveNotes(participantId) {
     if (error) throw error
 
     document.getElementById('notesModal').remove()
-    showCustomAlert('✅ Notlar kaydedildi!', 'success', 3000)
+    showCustomAlert('Notlar kaydedildi!', 'success', 3000)
 
     // Rafraîchir le leaderboard pour mettre à jour l'icône
     await updateLeaderboard()
   } catch (error) {
     console.error('Erreur sauvegarde notes:', error)
-    showCustomAlert('❌ Kaydetme hatası', 'error', 3000)
+    showCustomAlert('Kaydetme hatası', 'error', 3000)
   }
 }
 
@@ -791,7 +791,7 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
     textarea.focus()
   } catch (error) {
     console.error('Erreur chargement notes catégorie:', error)
-    showCustomAlert('❌ Notlar yüklenemedi', 'error', 3000)
+    showCustomAlert('Notlar yüklenemedi', 'error', 3000)
   }
 }
 
@@ -825,9 +825,9 @@ async function saveGroupCategoryNote(groupId, participantId, category) {
     }
 
     document.getElementById('categoryNoteModal').remove()
-    showCustomAlert('✅ Not kaydedildi!', 'success', 2000)
+    showCustomAlert('Not kaydedildi!', 'success', 2000)
   } catch (error) {
     console.error('Erreur sauvegarde note catégorie:', error)
-    showCustomAlert('❌ Kaydetme hatası', 'error', 3000)
+    showCustomAlert('Kaydetme hatası', 'error', 3000)
   }
 }

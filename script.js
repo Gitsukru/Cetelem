@@ -65,7 +65,7 @@ function initSound() {
     // Update button state
     const soundBtn = document.getElementById('soundToggle');
     if (soundBtn) {
-        soundBtn.textContent = soundEnabled ? '📿' : '🔇';
+        soundBtn.textContent = soundEnabled ? 'SES' : 'SESsiz';
         soundBtn.classList.toggle('muted', !soundEnabled);
     }
 }
@@ -276,7 +276,7 @@ function toggleSound() {
 
     const soundBtn = document.getElementById('soundToggle');
     if (soundBtn) {
-        soundBtn.textContent = soundEnabled ? '📿' : '🔇';
+        soundBtn.textContent = soundEnabled ? 'SES' : 'SESsiz';
         soundBtn.classList.toggle('muted', !soundEnabled);
     }
 
@@ -323,8 +323,8 @@ function showCustomConfirm(title, message, onYes, onNo = null) {
         <h3>${title}</h3>
         <p>${message}</p>
         <div class="confirm-buttons">
-            <button class="confirm-btn confirm-yes">✅ Evet</button>
-            <button class="confirm-btn confirm-no">❌ Hayır</button>
+            <button class="confirm-btn confirm-yes">Evet</button>
+            <button class="confirm-btn confirm-no">Hayır</button>
         </div>
     `;
     document.body.appendChild(confirmDiv);
@@ -520,7 +520,7 @@ function showSaveIndicator() {
         const div = document.createElement('div');
         div.id = 'saveIndicator';
         div.className = 'save-indicator';
-        div.textContent = '✅ Kaydedildi';
+        div.textContent = 'Kaydedildi';
         document.body.appendChild(div);
         indicator = div;
     }
@@ -589,12 +589,12 @@ function showTab(tabName) {
             // Restore group interface if a group is active
             if (groupManager && groupManager.hasActiveGroup()) {
                 const groupInfo = groupManager.getCurrentGroup();
-                console.log('🔄 Changement onglet groupe - Restauration:', groupInfo.group.name);
+                console.log('Changement onglet groupe - Restauration:', groupInfo.group.name);
                 showGroupInterface(groupInfo.group.code);
                 updateLeaderboard();
             } else {
                 // Reset group interface when switching to group tab
-                console.log('🔄 Changement onglet groupe - Pas de groupe actif');
+                console.log('Changement onglet groupe - Pas de groupe actif');
                 const createSection = document.getElementById('createSection');
                 const joinSection = document.getElementById('joinSection');
                 const leaderboard = document.getElementById('leaderboard');
@@ -677,11 +677,11 @@ function addCategory() {
         updateCategoriesList();
         updateStats();
         input.value = '';
-        showCustomAlert(`✅ Kategori "${newCategory}" eklendi!`, 'success', 2000);
+        showCustomAlert(`Kategori "${newCategory}" eklendi!`, 'success', 2000);
     } else if (categories.includes(newCategory)) {
-        showCustomAlert('⚠️ Bu kategori zaten mevcut!', 'warning', 2500);
+        showCustomAlert('Bu kategori zaten mevcut!', 'warning', 2500);
     } else {
-        showCustomAlert('⚠️ Lütfen bir kategori adı girin!', 'warning', 2500);
+        showCustomAlert('Lütfen bir kategori adı girin!', 'warning', 2500);
     }
 }
 
@@ -690,8 +690,8 @@ function deleteCategory(index) {
     const categoryName = categories[index];
 
     showCustomConfirm(
-        '🗑️ Kategoriyi Sil',
-        `"${categoryName}" kategorisini silmek istediğinizden emin misiniz?<br><br>⚠️ Bu işlem tüm verilerini de silecektir.`,
+        'Kategoriyi Sil',
+        `"${categoryName}" kategorisini silmek istediğinizden emin misiniz?<br><br>Bu işlem tüm verilerini de silecektir.`,
         function() {
             // Confirmation "Oui"
             categories.splice(index, 1);
@@ -711,7 +711,7 @@ function deleteCategory(index) {
                 if (counterLabel) counterLabel.textContent = 'Kategori seçin';
             }
 
-            showCustomAlert(`✅ Kategori "${categoryName}" silindi!`, 'success', 2000);
+            showCustomAlert(`Kategori "${categoryName}" silindi!`, 'success', 2000);
         }
     );
 }
@@ -737,7 +737,7 @@ function updateCounterDisplay() {
 // Incrémenter le compteur - VERSION SIMPLE ET FIABLE
 function incrementCounter() {
     if (!currentCategory) {
-        showCustomAlert('🔔 KATEGORİ SEÇİN!<br><br>Zikir saymaya başlamadan önce lütfen açılır menüden bir kategori seçin.', 'warning', 4000);
+        showCustomAlert('KATEGORİ SEÇİN!<br><br>Zikir saymaya başlamadan önce lütfen açılır menüden bir kategori seçin.', 'warning', 4000);
         return;
     }
 
@@ -787,23 +787,23 @@ function incrementCounter() {
 // Remettre à zéro SEULEMENT l'affichage visuel (pas les statistiques)
 function resetDayCounter() {
     if (!currentCategory) {
-        showCustomAlert('🔔 KATEGORİ SEÇİN!<br><br>Lütfen önce bir kategori seçin.', 'warning', 3000);
+        showCustomAlert('KATEGORİ SEÇİN!<br><br>Lütfen önce bir kategori seçin.', 'warning', 3000);
         return;
     }
 
     showCustomConfirm(
-        '🔄 Görüntü Sıfırlama',
-        `"${currentCategory}" için sayaç GÖRÜNTÜSÜNÜ sıfırlayın?<br><br>⚠️ İstatistikler etkilenMEYECEK.`,
+        'Görüntü Sıfırlama',
+        `"${currentCategory}" için sayaç GÖRÜNTÜSÜNÜ sıfırlayın?<br><br>İstatistikler etkilenMEYECEK.`,
         function() {
             // Confirmation "Oui"
             const stats = getStatisticsForCategory(currentCategory);
             visualOffset = stats.day; // L'affichage sera : realCount - realCount = 0
             updateCounterDisplay();
-            showCustomAlert('✅ Görüntü sıfırlandı!<br>📊 İstatistikleriniz korundu', 'success', 3000);
+            showCustomAlert('Görüntü sıfırlandı!<br>İstatistikleriniz korundu', 'success', 3000);
         },
         function() {
             // Confirmation "Non" - ne rien faire
-            showCustomAlert('❌ Sıfırlama iptal edildi', 'warning', 2000);
+            showCustomAlert('Sıfırlama iptal edildi', 'warning', 2000);
         }
     );
 }
@@ -882,7 +882,7 @@ function updateStats() {
         // Résumé
         const summaryElement = document.getElementById('summaryText');
         if (summaryElement) {
-            let summary = `📊 Bugün: ${totalToday} zikir`;
+            let summary = `Bugün: ${totalToday} zikir`;
             if (totalWeek > totalToday) summary += ` • Bu hafta: ${totalWeek} zikir`;
             if (totalMonth > totalWeek) summary += ` • Bu ay: ${totalMonth} zikir`;
             if (totalYear > totalMonth) summary += ` • Bu yıl: ${totalYear} zikir`;
@@ -932,13 +932,13 @@ function getCurrentUserStats() {
 function resetTodayCategory() {
     const category = document.getElementById('categoryToReset').value;
     if (!category) {
-        showCustomAlert('🔔 KATEGORİ SEÇİN!<br><br>Silinecek kategoriyi seçin.', 'warning', 3000);
+        showCustomAlert('KATEGORİ SEÇİN!<br><br>Silinecek kategoriyi seçin.', 'warning', 3000);
         return;
     }
 
     showCustomConfirm(
-        '🗑️ Bugünü Sil',
-        `"${category}" için BUGÜNÜN tüm zikirlerini sil?<br><br>⚠️ Bu işlem istatistikleri etkileyecek!`,
+        'Bugünü Sil',
+        `"${category}" için BUGÜNÜN tüm zikirlerini sil?<br><br>Bu işlem istatistikleri etkileyecek!`,
         function() {
             const today = new Date().toDateString();
             if (counters[category] && counters[category][today]) {
@@ -946,7 +946,7 @@ function resetTodayCategory() {
                 saveCounters();
                 updateCounterDisplay();
                 updateStats();
-                showCustomAlert('✅ Bugünün zikirleri silindi!', 'success', 2000);
+                showCustomAlert('Bugünün zikirleri silindi!', 'success', 2000);
             }
         }
     );
@@ -955,13 +955,13 @@ function resetTodayCategory() {
 function resetWeekCategory() {
     const category = document.getElementById('categoryToReset').value;
     if (!category) {
-        showCustomAlert('🔔 KATEGORİ SEÇİN!<br><br>Silinecek kategoriyi seçin.', 'warning', 3000);
+        showCustomAlert('KATEGORİ SEÇİN!<br><br>Silinecek kategoriyi seçin.', 'warning', 3000);
         return;
     }
 
     showCustomConfirm(
-        '🗑️ Bu Hafta Sil',
-        `"${category}" için BU HAFTANıN tüm zikirlerini sil?<br><br>⚠️ Bu işlem istatistikleri etkileyecek!`,
+        'Bu Hafta Sil',
+        `"${category}" için BU HAFTANıN tüm zikirlerini sil?<br><br>Bu işlem istatistikleri etkileyecek!`,
         function() {
             const today = new Date();
             const weekStart = getWeekStart(today);
@@ -977,7 +977,7 @@ function resetWeekCategory() {
                 saveCounters();
                 updateCounterDisplay();
                 updateStats();
-                showCustomAlert('✅ Bu haftanın zikirleri silindi!', 'success', 2000);
+                showCustomAlert('Bu haftanın zikirleri silindi!', 'success', 2000);
             }
         }
     );
@@ -986,13 +986,13 @@ function resetWeekCategory() {
 function resetMonthCategory() {
     const category = document.getElementById('categoryToReset').value;
     if (!category) {
-        showCustomAlert('🔔 KATEGORİ SEÇİN!<br><br>Silinecek kategoriyi seçin.', 'warning', 3000);
+        showCustomAlert('KATEGORİ SEÇİN!<br><br>Silinecek kategoriyi seçin.', 'warning', 3000);
         return;
     }
 
     showCustomConfirm(
-        '🗑️ Bu Ayı Sil',
-        `"${category}" için BU AYıN tüm zikirlerini sil?<br><br>⚠️ Bu işlem istatistikleri etkileyecek!`,
+        'Bu Ayı Sil',
+        `"${category}" için BU AYıN tüm zikirlerini sil?<br><br>Bu işlem istatistikleri etkileyecek!`,
         function() {
             const today = new Date();
             const monthStart = getMonthStart(today);
@@ -1008,7 +1008,7 @@ function resetMonthCategory() {
                 saveCounters();
                 updateCounterDisplay();
                 updateStats();
-                showCustomAlert('✅ Bu ayın zikirleri silindi!', 'success', 2000);
+                showCustomAlert('Bu ayın zikirleri silindi!', 'success', 2000);
             }
         }
     );
@@ -1017,17 +1017,17 @@ function resetMonthCategory() {
 function resetCategoryCompletely() {
     const category = document.getElementById('categoryToReset').value;
     if (!category) {
-        showCustomAlert('🔔 KATEGORİ SEÇİN!<br><br>Silinecek kategoriyi seçin.', 'warning', 3000);
+        showCustomAlert('KATEGORİ SEÇİN!<br><br>Silinecek kategoriyi seçin.', 'warning', 3000);
         return;
     }
 
     showCustomConfirm(
-        '⚠️ TEHLİKE - Tamamen Silme',
-        `"${category}" kategorisinin tüm geçmişini KALICI olarak sil?<br><br>🔥 Bu işlem GERİ ALINMAZ!`,
+        'TEHLİKE - Tamamen Silme',
+        `"${category}" kategorisinin tüm geçmişini KALICI olarak sil?<br><br>Bu işlem GERİ ALINMAZ!`,
         function() {
             showCustomConfirm(
-                '🚨 SON ŞANS',
-                `GERÇEKTEN emin misiniz?<br><br>💀 "${category}" kategorisinin TÜM geçmişi kaybolacak!`,
+                'SON ŞANS',
+                `GERÇEKTEN emin misiniz?<br><br>"${category}" kategorisinin TÜM geçmişi kaybolacak!`,
                 function() {
                     // Réinitialiser complètement la catégorie
                     counters[category] = {};
@@ -1036,7 +1036,7 @@ function resetCategoryCompletely() {
                     saveCounters();
                     updateCounterDisplay();
                     updateStats();
-                    showCustomAlert('💥 Geçmiş tamamen silindi!', 'warning', 3000);
+                    showCustomAlert('Geçmiş tamamen silindi!', 'warning', 3000);
                 }
             );
         }
@@ -1045,18 +1045,18 @@ function resetCategoryCompletely() {
 
 function resetAllData() {
     showCustomConfirm(
-        '🚨 AŞİRİ TEHLİKE',
-        'TÜM zikir verilerinizi silin?<br><br>💀 Bu KALICI olarak silecek:<br>• Tüm sayaçlar<br>• Tüm geçmiş<br>• Tüm istatistikler',
+        'AŞİRİ TEHLİKE',
+        'TÜM zikir verilerinizi silin?<br><br>Bu KALICI olarak silecek:<br>• Tüm sayaçlar<br>• Tüm geçmiş<br>• Tüm istatistikler',
         function() {
             showCustomConfirm(
-                '💣 SON ŞANS',
-                'KESİNLİKLE emin misiniz?<br><br>🔥 Bu işlem GERİ ALINMAZ!',
+                'SON ŞANS',
+                'KESİNLİKLE emin misiniz?<br><br>Bu işlem GERİ ALINMAZ!',
                 function() {
                     // Demander la confirmation par saisie
                     const confirmationDiv = document.createElement('div');
                     confirmationDiv.className = 'custom-confirm';
                     confirmationDiv.innerHTML = `
-                        <h3>🔒 Son Onay</h3>
+                        <h3>Son Onay</h3>
                         <p>Onaylamak için tam olarak <strong>"SİL"</strong> yazın:</p>
                         <input type="text" id="confirmInput" style="padding: 10px; font-size: 16px; margin: 10px 0; text-align: center; border: 2px solid #e53e3e; border-radius: 5px;">
                         <div class="confirm-buttons">
@@ -1086,16 +1086,16 @@ function resetAllData() {
                             updateCounterDisplay();
                             updateStats();
                             closeConfirmDiv();
-                            showCustomAlert('💥 TÜM verileriniz silindi!', 'warning', 4000);
+                            showCustomAlert('TÜM verileriniz silindi!', 'warning', 4000);
                         } else {
-                            showCustomAlert('❌ Yanlış metin! Veriler korundu.', 'warning', 3000);
+                            showCustomAlert('Yanlış metin! Veriler korundu.', 'warning', 3000);
                             closeConfirmDiv();
                         }
                     });
 
                     noBtn.addEventListener('click', () => {
                         closeConfirmDiv();
-                        showCustomAlert('✅ İptal - verileriniz korundu!', 'success', 3000);
+                        showCustomAlert('İptal - verileriniz korundu!', 'success', 3000);
                     });
 
                     setTimeout(() => {
@@ -1126,10 +1126,10 @@ function exportData() {
         link.download = `zikirmatik-${new Date().toISOString().split('T')[0]}.json`;
         link.click();
 
-        showCustomAlert('✅ Dışa aktarma başarılı!<br>Dosya başarıyla indirildi', 'success', 3000);
+        showCustomAlert('Dışa aktarma başarılı!<br>Dosya başarıyla indirildi', 'success', 3000);
     } catch (error) {
         console.error('Erreur export:', error);
-        showCustomAlert('❌ Dışa aktarma hatası', 'error', 3000);
+        showCustomAlert('Dışa aktarma hatası', 'error', 3000);
     }
 }
 
@@ -1147,8 +1147,8 @@ function importData(event) {
             }
 
             showCustomConfirm(
-                '📤 Veri İçe Aktar',
-                '⚠️ Bu verileri içe aktarmak mevcut TÜM verilerinizi değiştirecek.<br><br>Devam etmek istiyor musunuz?',
+                'Veri İçe Aktar',
+                'Bu verileri içe aktarmak mevcut TÜM verilerinizi değiştirecek.<br><br>Devam etmek istiyor musunuz?',
                 function() {
                     // Confirmation "Oui"
                     categories = importedData.categories;
@@ -1162,17 +1162,17 @@ function importData(event) {
                     updateCounterDisplay();
                     updateStats();
 
-                    showCustomAlert('✅ İçe aktarma başarılı!<br>Verileriniz geri yüklendi', 'success', 3000);
+                    showCustomAlert('İçe aktarma başarılı!<br>Verileriniz geri yüklendi', 'success', 3000);
                 },
                 function() {
                     // Confirmation "Non"
-                    showCustomAlert('❌ İçe aktarma iptal edildi<br>Mevcut verileriniz korundu', 'warning', 3000);
+                    showCustomAlert('İçe aktarma iptal edildi<br>Mevcut verileriniz korundu', 'warning', 3000);
                 }
             );
 
         } catch (error) {
             console.error('Erreur import:', error);
-            showCustomAlert('❌ İçe aktarma hatası<br>Dosyayı kontrol edin', 'error', 3000);
+            showCustomAlert('İçe aktarma hatası<br>Dosyayı kontrol edin', 'error', 3000);
         }
     };
     reader.readAsText(file);
@@ -1184,7 +1184,7 @@ function shareStatsBySMS() {
     const dateStr = today.toLocaleDateString('tr-TR');
     const todayDateString = today.toDateString();
 
-    let message = `🕌 MANEVİ ZİKİRLERİM - ${dateStr}\n`;
+    let message = `MANEVİ ZİKİRLERİM - ${dateStr}\n`;
     message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
     let totalToday = 0;
@@ -1204,17 +1204,17 @@ function shareStatsBySMS() {
         totalGeneral += categoryTotal;
 
         if (categoryTotal > 0) {
-            message += `📿 ${cat}:\n`;
+            message += `${cat}:\n`;
             message += `   Bugün: ${todayCount}\n`;
             message += `   Toplam: ${categoryTotal}\n\n`;
         }
     });
 
     message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-    message += `📊 ÖZET:\n`;
+    message += `ÖZET:\n`;
     message += `• Bugün: ${totalToday} zikir\n`;
     message += `• GENEL TOPLAM: ${totalGeneral} zikir\n\n`;
-    message += `🤲 Allah dualarımızı kabul etsin\n`;
+    message += `Allah dualarımızı kabul etsin\n`;
     message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
     try {
@@ -1227,24 +1227,24 @@ function shareStatsBySMS() {
         // Copier dans le presse-papiers
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(message).then(() => {
-                showCustomAlert('📱 SMS açıldı!<br>✅ Mesaj panoya kopyalandı', 'success', 4000);
+                showCustomAlert('SMS açıldı!<br>Mesaj panoya kopyalandı', 'success', 4000);
             }).catch(() => {
-                showCustomAlert('📱 SMS uygulaması açıldı!<br>📋 Gerekirse elle kopyalayın', 'success', 4000);
+                showCustomAlert('SMS uygulaması açıldı!<br>Gerekirse elle kopyalayın', 'success', 4000);
             });
         } else {
-            showCustomAlert('📱 SMS uygulaması açıldı!<br>📋 Gerekirse elle kopyalayın', 'success', 4000);
+            showCustomAlert('SMS uygulaması açıldı!<br>Gerekirse elle kopyalayın', 'success', 4000);
         }
 
     } catch (error) {
         // En cas d'erreur, juste copier dans le presse-papiers
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(message).then(() => {
-                showCustomAlert('📋 Mesaj panoya kopyalandı!<br>SMS uygulamanıza yapıştırın', 'success', 4000);
+                showCustomAlert('Mesaj panoya kopyalandı!<br>SMS uygulamanıza yapıştırın', 'success', 4000);
             }).catch(() => {
-                showCustomAlert('❌ SMS açılamadı<br>Elle kopyalamayı deneyin', 'warning', 4000);
+                showCustomAlert('SMS açılamadı<br>Elle kopyalamayı deneyin', 'warning', 4000);
             });
         } else {
-            showCustomAlert('❌ SMS açılamadı<br>Elle kopyalamayı deneyin', 'warning', 4000);
+            showCustomAlert('SMS açılamadı<br>Elle kopyalamayı deneyin', 'warning', 4000);
         }
     }
 }
@@ -1361,7 +1361,7 @@ if ('serviceWorker' in navigator) {
                     newWorker.addEventListener('statechange', function() {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                             // Nouvelle version disponible
-                            if (confirm('🔄 Yeni sürüm mevcut! Yeniden yükle?')) {
+                            if (confirm('Yeni sürüm mevcut! Yeniden yükle?')) {
                                 newWorker.postMessage({ type: 'SKIP_WAITING' });
                                 window.location.reload();
                             }
@@ -1390,13 +1390,13 @@ window.addEventListener('beforeinstallprompt', function(e) {
     setTimeout(() => {
         if (deferredPrompt && !localStorage.getItem('pwa-dismissed')) {
             showCustomConfirm(
-                '📱 Uygulama Kur',
-                'Zikirmatik\'i ana ekranınıza kurmak istiyor musunuz?<br><br>✅ Hızlı erişim<br>📱 Çevrim dışı çalışır<br>🔒 Verileriniz gizli kalır',
+                'Uygulama Kur',
+                'Zikirmatik\'i ana ekranınıza kurmak istiyor musunuz?<br><br>Hızlı erişim<br>Çevrim dışı çalışır<br>Verileriniz gizli kalır',
                 function() {
                     deferredPrompt.prompt();
                     deferredPrompt.userChoice.then((choiceResult) => {
                         if (choiceResult.outcome === 'accepted') {
-                            showCustomAlert('✅ Uygulama kuruldu!', 'success', 3000);
+                            showCustomAlert('Uygulama kuruldu!', 'success', 3000);
                         } else {
                             localStorage.setItem('pwa-dismissed', 'true');
                         }
@@ -1422,10 +1422,10 @@ function initializeBackend() {
     let provider
     if (config.type === 'supabase') {
       provider = new SupabaseProvider(config.url, config.key)
-      console.log('✅ Supabase initialisé')
+      console.log('Supabase initialisé')
     } else if (config.type === 'infomaniak') {
       provider = new InfomaniakProvider(config.apiUrl, config.apiKey)
-      console.log('✅ Infomaniak initialisé')
+      console.log('Infomaniak initialisé')
     }
 
     groupManager.initialize(provider)
@@ -1443,7 +1443,7 @@ function initializeBackend() {
     setTimeout(() => {
       if (groupManager.hasActiveGroup()) {
         const groupInfo = groupManager.getCurrentGroup()
-        console.log('🔄 Restauration du groupe:', groupInfo.group.name)
+        console.log('Restauration du groupe:', groupInfo.group.name)
 
         // Si on est sur l'onglet groupe, afficher l'interface
         const groupTab = document.getElementById('group')
@@ -1455,8 +1455,8 @@ function initializeBackend() {
     }, 300)
 
   } catch (error) {
-    console.error('❌ Erreur initialisation backend:', error)
-    showCustomAlert('⚠️ Backend non configuré<br>Le mode groupe ne sera pas disponible', 'warning', 3000)
+    console.error('Erreur initialisation backend:', error)
+    showCustomAlert('Backend non configuré<br>Le mode groupe ne sera pas disponible', 'warning', 3000)
   }
 }
 
@@ -1513,13 +1513,13 @@ function createLocalGroup(groupName, creatorName, groupCode) {
         participantName = creatorName;
         isGroupCreator = true;
 
-        showCustomAlert('✅ Yerel grup oluşturuldu!<br>Kod: ' + groupCode, 'success', 3000);
+        showCustomAlert('Yerel grup oluşturuldu!<br>Kod: ' + groupCode, 'success', 3000);
         showGroupInterface(groupCode);
         startLocalGroupSync();
 
     } catch (error) {
         console.error('Local group creation failed:', error);
-        showCustomAlert('❌ Grup oluşturulamadı', 'error', 3000);
+        showCustomAlert('Grup oluşturulamadı', 'error', 3000);
         hideStatus();
     }
 }
@@ -1529,7 +1529,7 @@ function joinLocalGroup(groupCode, participantName) {
         const groupData = JSON.parse(localStorage.getItem(`group_${groupCode}`));
 
         if (!groupData) {
-            showCustomAlert('❌ Grup bulunamadı<br>Kod: ' + groupCode, 'error', 3000);
+            showCustomAlert('Grup bulunamadı<br>Kod: ' + groupCode, 'error', 3000);
             return false;
         }
 
@@ -1552,7 +1552,7 @@ function joinLocalGroup(groupCode, participantName) {
             isLocal: true
         };
 
-        showCustomAlert('✅ Gruba katıldınız!', 'success', 2000);
+        showCustomAlert('Gruba katıldınız!', 'success', 2000);
         showGroupInterface(groupCode);
         startLocalGroupSync();
 
@@ -1560,7 +1560,7 @@ function joinLocalGroup(groupCode, participantName) {
 
     } catch (error) {
         console.error('Join local group failed:', error);
-        showCustomAlert('❌ Gruba katılınamadı', 'error', 3000);
+        showCustomAlert('Gruba katılınamadı', 'error', 3000);
         return false;
     }
 }
@@ -1682,7 +1682,7 @@ function showCategoryNoteModal(category, event) {
         <div class="custom-modal-overlay" id="categoryNoteModal">
             <div class="custom-modal" style="max-width: 500px;">
                 <div class="modal-header">
-                    <h3>📝 Not - ${category}</h3>
+                    <h3>Not - ${category}</h3>
                     <button class="modal-close" onclick="document.getElementById('categoryNoteModal').remove()">✕</button>
                 </div>
                 <div class="modal-body">
@@ -1724,7 +1724,7 @@ function saveCategoryNote(category) {
     document.getElementById('categoryNoteModal').remove();
     updateStats(); // Rafraîchir pour mettre à jour l'icône
     
-    showCustomAlert('✅ Not kaydedildi!', 'success', 2000);
+    showCustomAlert('Not kaydedildi!', 'success', 2000);
 }
 
 // Charger les notes au démarrage

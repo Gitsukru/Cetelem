@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zikirmatik-v2.4.2';
+const CACHE_NAME = 'zikirmatik-v3.0.0';
 const urlsToCache = [
   './',
   './index.html',
