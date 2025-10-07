@@ -207,8 +207,11 @@ function displayLeaderboard(participants) {
     else medal = position
 
     const hasNotes = participant.notes || participant.public_notes
-    const notesIcon = hasNotes ? '📝' : '📝'
     const notesOpacity = hasNotes ? '1' : '0.3'
+    const notesIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+    </svg>`
 
     html += `
       <div class="participant-card ${isMe ? 'my-card' : ''}">
@@ -288,8 +291,11 @@ async function loadParticipantDetailedStats(participantId, container) {
     let html = '<div class="detail-stats-table">'
     html += '<div class="detail-header">📋 Detaylı İstatistikler</div>'
     html += '<table class="stats-breakdown-table">'
-    html += '<thead><tr><th>Kategori</th><th>Bugün</th><th>Hafta</th><th>Ay</th></tr></thead>'
+    html += '<thead><tr><th>Kategori</th><th>Bugün</th><th>Hafta</th><th>Ay</th><th style="width: 50px;">Not</th></tr></thead>'
     html += '<tbody>'
+
+    const groupInfo = groupManager.getCurrentGroup()
+    const groupId = groupInfo?.group?.id
 
     for (const [category, stats] of Object.entries(detailedStats)) {
       html += `
@@ -298,6 +304,14 @@ async function loadParticipantDetailedStats(participantId, container) {
           <td class="stat-num">${stats.today || 0}</td>
           <td class="stat-num">${stats.week || 0}</td>
           <td class="stat-num">${stats.month || 0}</td>
+          <td style="text-align: center;">
+            <button class="category-note-btn-small"
+              onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}', event)"
+              style="color: #3b82f6;"
+              title="Not ekle/görüntüle">
+              📝
+            </button>
+          </td>
         </tr>
       `
     }
@@ -711,6 +725,119 @@ async function saveNotes(participantId) {
     await updateLeaderboard()
   } catch (error) {
     console.error('Erreur sauvegarde notes:', error)
+    showCustomAlert('❌ Kaydetme hatası', 'error', 3000)
+  }
+}
+
+// ============================================
+// NOTES DE CATÉGORIE (GROUPE)
+// ============================================
+
+// Afficher le modal pour ajouter/modifier une note de catégorie
+async function showGroupCategoryNoteModal(groupId, participantId, category, event) {
+  if (event) event.stopPropagation()
+
+  try {
+    // Récupérer toutes les notes existantes pour cette catégorie dans ce groupe
+    const { data: notes, error } = await groupManager.provider.supabase
+      .from('category_notes')
+      .select('*, participants(name)')
+      .eq('group_id', groupId)
+      .eq('category', category)
+
+    if (error) throw error
+
+    // Trouver la note du participant actuel
+    const myNote = notes?.find(n => n.participant_id === participantId)
+
+    // Créer la liste des notes des autres
+    const otherNotes = notes?.filter(n => n.participant_id !== participantId) || []
+
+    const html = `
+      <div class="custom-modal-overlay" id="categoryNoteModal" style="z-index: 10000;">
+        <div class="custom-modal" style="max-width: 600px;">
+          <div class="modal-header">
+            <h3>📝 ${category} - Notlar</h3>
+            <button class="modal-close" onclick="document.getElementById('categoryNoteModal').remove()">✕</button>
+          </div>
+          <div class="modal-body">
+            <!-- Ma note -->
+            <div class="notes-section">
+              <label class="notes-label">✍️ Notunuz</label>
+              <textarea id="myGroupCategoryNote" class="notes-textarea"
+                placeholder="Bu kategori için notunuzu yazın (herkes görecek)..."
+                style="min-height: 80px;">${myNote?.note || ''}</textarea>
+            </div>
+
+            <!-- Notes des autres -->
+            ${otherNotes.length > 0 ? `
+              <div class="notes-section" style="margin-top: 20px;">
+                <label class="notes-label">💬 Diğer Notlar</label>
+                <div class="other-notes-list">
+                  ${otherNotes.map(note => `
+                    <div class="other-note-item">
+                      <strong>${note.participants.name}:</strong>
+                      <p>${note.note}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+          <div class="modal-footer">
+            <button class="btn-secondary" onclick="document.getElementById('categoryNoteModal').remove()">İptal</button>
+            <button class="btn-primary" onclick="saveGroupCategoryNote('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}')">💾 Kaydet</button>
+          </div>
+        </div>
+      </div>
+    `
+
+    document.body.insertAdjacentHTML('beforeend', html)
+
+    // Auto-expand textarea
+    const textarea = document.getElementById('myGroupCategoryNote')
+    autoExpandTextarea(textarea)
+    textarea.addEventListener('input', () => autoExpandTextarea(textarea))
+    textarea.focus()
+  } catch (error) {
+    console.error('Erreur chargement notes catégorie:', error)
+    showCustomAlert('❌ Notlar yüklenemedi', 'error', 3000)
+  }
+}
+
+// Sauvegarder une note de catégorie
+async function saveGroupCategoryNote(groupId, participantId, category) {
+  const note = document.getElementById('myGroupCategoryNote').value.trim()
+
+  try {
+    if (note) {
+      // Insérer ou mettre à jour la note
+      const { error } = await groupManager.provider.supabase
+        .from('category_notes')
+        .upsert({
+          group_id: groupId,
+          participant_id: participantId,
+          category: category,
+          note: note
+        }, {
+          onConflict: 'group_id,participant_id,category'
+        })
+
+      if (error) throw error
+    } else {
+      // Supprimer la note si vide
+      await groupManager.provider.supabase
+        .from('category_notes')
+        .delete()
+        .eq('group_id', groupId)
+        .eq('participant_id', participantId)
+        .eq('category', category)
+    }
+
+    document.getElementById('categoryNoteModal').remove()
+    showCustomAlert('✅ Not kaydedildi!', 'success', 2000)
+  } catch (error) {
+    console.error('Erreur sauvegarde note catégorie:', error)
     showCustomAlert('❌ Kaydetme hatası', 'error', 3000)
   }
 }

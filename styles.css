@@ -2149,3 +2149,53 @@ body {
 .category-note-btn:hover {
     transform: scale(1.2);
 }
+
+/* Category note button in detail table */
+.category-note-btn-small {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    transition: all 0.2s;
+}
+
+.category-note-btn-small:hover {
+    transform: scale(1.3);
+}
+
+/* Other notes display */
+.other-notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.other-note-item {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #3b82f6;
+}
+
+.other-note-item strong {
+    color: #475569;
+    font-size: 13px;
+}
+
+.other-note-item p {
+    margin: 6px 0 0 0;
+    color: #1e293b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Fix modal z-index */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+}
