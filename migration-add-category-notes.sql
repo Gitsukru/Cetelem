@@ -65,6 +65,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS category_notes_updated_at ON category_notes;
+
 CREATE TRIGGER category_notes_updated_at
   BEFORE UPDATE ON category_notes
   FOR EACH ROW

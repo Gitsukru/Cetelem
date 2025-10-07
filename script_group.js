@@ -307,7 +307,6 @@ async function loadParticipantDetailedStats(participantId, container) {
           <td style="text-align: center;">
             <button class="category-note-btn-small"
               onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}', event)"
-              style="color: #3b82f6;"
               title="Not ekle/görüntüle">
               📝
             </button>
@@ -754,8 +753,8 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
     const otherNotes = notes?.filter(n => n.participant_id !== participantId) || []
 
     const html = `
-      <div class="custom-modal-overlay" id="categoryNoteModal" style="z-index: 10000;">
-        <div class="custom-modal" style="max-width: 600px;">
+      <div class="custom-modal-overlay" id="categoryNoteModal" onclick="if(event.target === this) this.remove()">
+        <div class="custom-modal-content">
           <div class="modal-header">
             <h3>📝 ${category} - Notlar</h3>
             <button class="modal-close" onclick="document.getElementById('categoryNoteModal').remove()">✕</button>
