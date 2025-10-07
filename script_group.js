@@ -220,10 +220,6 @@ function displayLeaderboard(participants) {
             <span class="stat-inline"><span class="stat-label">Hafta:</span> ${participant.weekCount}</span>
             <span class="stat-inline"><span class="stat-label">Ay:</span> ${participant.monthCount || 0}</span>
           </div>
-          ${isMe ? `<button class="personal-note-btn" onclick="event.stopPropagation(); showNotesModal('${participant.id}', '${participant.name}', true)"
-            title="Kişisel notlarım">
-            Kendime Not
-          </button>` : ''}
           <div class="points-badge" onclick="toggleParticipantDetails('${participant.id}')">${participant.points}<span class="pts-label">pts</span></div>
         </div>
 
@@ -753,13 +749,23 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
             <button class="modal-close" onclick="document.getElementById('categoryNoteModal').remove()">✕</button>
           </div>
           <div class="modal-body">
+            <!-- Note privée -->
             <div class="notes-section">
-              <label class="notes-label">Notunuz</label>
-              <textarea id="myGroupCategoryNote" class="notes-textarea"
-                placeholder="Bu kategori için notunuzu yazın (herkes görecek)..."
-                style="min-height: 80px;">${myNote?.note || ''}</textarea>
+              <label class="notes-label">Kişisel Notunuz (Sadece sen görürsün)</label>
+              <textarea id="myPrivateCategoryNote" class="notes-textarea"
+                placeholder="Kişisel notunuzu buraya yazın..."
+                style="min-height: 60px;">${myNote?.private_note || ''}</textarea>
             </div>
 
+            <!-- Note publique -->
+            <div class="notes-section" style="margin-top: 16px;">
+              <label class="notes-label">Herkese Açık Notunuz</label>
+              <textarea id="myPublicCategoryNote" class="notes-textarea"
+                placeholder="Gruba görünecek notunuzu yazın..."
+                style="min-height: 60px;">${myNote?.note || ''}</textarea>
+            </div>
+
+            <!-- Notes des autres participants -->
             ${otherNotes.length > 0 ? `
               <div class="notes-section" style="margin-top: 20px;">
                 <label class="notes-label">Diğer Katılımcılar</label>
@@ -784,11 +790,18 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
 
     document.body.insertAdjacentHTML('beforeend', html)
 
-    // Auto-expand textarea
-    const textarea = document.getElementById('myGroupCategoryNote')
-    autoExpandTextarea(textarea)
-    textarea.addEventListener('input', () => autoExpandTextarea(textarea))
-    textarea.focus()
+    // Auto-expand textareas
+    const textareas = [
+      document.getElementById('myPrivateCategoryNote'),
+      document.getElementById('myPublicCategoryNote')
+    ]
+    textareas.forEach(textarea => {
+      if (textarea) {
+        autoExpandTextarea(textarea)
+        textarea.addEventListener('input', () => autoExpandTextarea(textarea))
+      }
+    })
+    document.getElementById('myPrivateCategoryNote')?.focus()
   } catch (error) {
     console.error('Erreur chargement notes catégorie:', error)
     showCustomAlert('Notlar yüklenemedi', 'error', 3000)
@@ -797,25 +810,27 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
 
 // Sauvegarder une note de catégorie
 async function saveGroupCategoryNote(groupId, participantId, category) {
-  const note = document.getElementById('myGroupCategoryNote').value.trim()
+  const privateNote = document.getElementById('myPrivateCategoryNote').value.trim()
+  const publicNote = document.getElementById('myPublicCategoryNote').value.trim()
 
   try {
-    if (note) {
-      // Insérer ou mettre à jour la note
+    if (privateNote || publicNote) {
+      // Insérer ou mettre à jour les notes
       const { error } = await groupManager.provider.supabase
         .from('category_notes')
         .upsert({
           group_id: groupId,
           participant_id: participantId,
           category: category,
-          note: note
+          private_note: privateNote,
+          note: publicNote
         }, {
           onConflict: 'group_id,participant_id,category'
         })
 
       if (error) throw error
     } else {
-      // Supprimer la note si vide
+      // Supprimer la note si les deux sont vides
       await groupManager.provider.supabase
         .from('category_notes')
         .delete()
