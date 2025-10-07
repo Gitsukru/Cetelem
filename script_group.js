@@ -305,10 +305,10 @@ async function loadParticipantDetailedStats(participantId, container) {
           <td class="stat-num">${stats.week || 0}</td>
           <td class="stat-num">${stats.month || 0}</td>
           <td style="text-align: center;">
-            <button class="category-note-btn-small"
+            <button class="note-btn"
               onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}', event)"
               title="Not ekle/görüntüle">
-              📝
+              Not
             </button>
           </td>
         </tr>
@@ -754,29 +754,27 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
 
     const html = `
       <div class="custom-modal-overlay" id="categoryNoteModal" onclick="if(event.target === this) this.remove()">
-        <div class="custom-modal-content">
+        <div class="custom-modal-content modern-modal">
           <div class="modal-header">
-            <h3>📝 ${category} - Notlar</h3>
+            <h3>${category}</h3>
             <button class="modal-close" onclick="document.getElementById('categoryNoteModal').remove()">✕</button>
           </div>
           <div class="modal-body">
-            <!-- Ma note -->
             <div class="notes-section">
-              <label class="notes-label">✍️ Notunuz</label>
+              <label class="notes-label">Notunuz</label>
               <textarea id="myGroupCategoryNote" class="notes-textarea"
                 placeholder="Bu kategori için notunuzu yazın (herkes görecek)..."
                 style="min-height: 80px;">${myNote?.note || ''}</textarea>
             </div>
 
-            <!-- Notes des autres -->
             ${otherNotes.length > 0 ? `
               <div class="notes-section" style="margin-top: 20px;">
-                <label class="notes-label">💬 Diğer Notlar</label>
+                <label class="notes-label">Diğer Katılımcılar</label>
                 <div class="other-notes-list">
                   ${otherNotes.map(note => `
                     <div class="other-note-item">
-                      <strong>${note.participants.name}:</strong>
-                      <p>${note.note}</p>
+                      <div class="note-author">${note.participants.name}</div>
+                      <div class="note-text">${note.note}</div>
                     </div>
                   `).join('')}
                 </div>
@@ -785,7 +783,7 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
           </div>
           <div class="modal-footer">
             <button class="btn-secondary" onclick="document.getElementById('categoryNoteModal').remove()">İptal</button>
-            <button class="btn-primary" onclick="saveGroupCategoryNote('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}')">💾 Kaydet</button>
+            <button class="btn-primary" onclick="saveGroupCategoryNote('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}')">Kaydet</button>
           </div>
         </div>
       </div>
