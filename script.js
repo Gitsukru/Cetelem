@@ -841,6 +841,9 @@ function updateStats() {
             categories.forEach(cat => {
                 const row = document.createElement('tr');
                 const stats = getStatisticsForCategory(cat);
+                const categoryNote = getCategoryNote(cat);
+                const noteIcon = categoryNote ? '📝' : '📝';
+                const noteOpacity = categoryNote ? '1' : '0.3';
 
                 row.innerHTML = `
                     <td>${cat}</td>
@@ -849,6 +852,12 @@ function updateStats() {
                     <td>${stats.month}</td>
                     <td>${stats.year}</td>
                     <td>${stats.total}</td>
+                    <td style="text-align: center;">
+                        <button class="category-note-btn" onclick="showCategoryNoteModal('${cat.replace(/'/g, "\\'")}', event)"
+                            style="opacity: ${noteOpacity}; color: #3b82f6;" title="Not ekle/düzenle">
+                            ${noteIcon}
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(row);
             });
@@ -1633,3 +1642,92 @@ function updateLocalLeaderboard() {
     }
 }
 
+
+// ============================================
+// NOTES PAR CATÉGORIE
+// ============================================
+
+// Objet pour stocker les notes de catégories
+let categoryNotes = {};
+
+// Charger les notes depuis localStorage
+function loadCategoryNotes() {
+    const saved = localStorage.getItem('categoryNotes');
+    if (saved) {
+        try {
+            categoryNotes = JSON.parse(saved);
+        } catch (e) {
+            categoryNotes = {};
+        }
+    }
+}
+
+// Sauvegarder les notes dans localStorage
+function saveCategoryNotes() {
+    localStorage.setItem('categoryNotes', JSON.stringify(categoryNotes));
+}
+
+// Obtenir la note d'une catégorie
+function getCategoryNote(category) {
+    return categoryNotes[category] || '';
+}
+
+// Modal pour éditer une note de catégorie
+function showCategoryNoteModal(category, event) {
+    if (event) event.stopPropagation();
+    
+    const currentNote = getCategoryNote(category);
+    
+    const html = `
+        <div class="custom-modal-overlay" id="categoryNoteModal">
+            <div class="custom-modal" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h3>📝 Not - ${category}</h3>
+                    <button class="modal-close" onclick="document.getElementById('categoryNoteModal').remove()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">
+                        Bu kategori için notunuzu yazın (niyet, amaç, hatırlatma vs.)
+                    </p>
+                    <textarea id="categoryNoteInput" class="notes-textarea" 
+                        placeholder="Örnek: Allah rızası için, şifa duası, aileme dua..."
+                        style="min-height: 100px;">${currentNote}</textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="document.getElementById('categoryNoteModal').remove()">İptal</button>
+                    <button class="btn-primary" onclick="saveCategoryNote('${category.replace(/'/g, "\\'")}')">💾 Kaydet</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', html);
+    
+    // Auto-expand textarea
+    const textarea = document.getElementById('categoryNoteInput');
+    autoExpandTextarea(textarea);
+    textarea.addEventListener('input', () => autoExpandTextarea(textarea));
+    textarea.focus();
+}
+
+// Sauvegarder une note de catégorie
+function saveCategoryNote(category) {
+    const note = document.getElementById('categoryNoteInput').value.trim();
+    
+    if (note) {
+        categoryNotes[category] = note;
+    } else {
+        delete categoryNotes[category];
+    }
+    
+    saveCategoryNotes();
+    document.getElementById('categoryNoteModal').remove();
+    updateStats(); // Rafraîchir pour mettre à jour l'icône
+    
+    showCustomAlert('✅ Not kaydedildi!', 'success', 2000);
+}
+
+// Charger les notes au démarrage
+if (typeof window !== 'undefined') {
+    loadCategoryNotes();
+}
