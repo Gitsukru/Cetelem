@@ -28,3 +28,9 @@ coverage/
 
 # Temporaires
 *.tmp
+
+# Screenshots et captures
+*.png
+*.jpg
+*.jpeg
+Capture*.png
