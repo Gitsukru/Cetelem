@@ -815,20 +815,42 @@ async function saveGroupCategoryNote(groupId, participantId, category) {
 
   try {
     if (privateNote || publicNote) {
-      // Insérer ou mettre à jour les notes
-      const { error } = await groupManager.provider.supabase
+      // Vérifier si une note existe déjà
+      const { data: existing } = await groupManager.provider.supabase
         .from('category_notes')
-        .upsert({
-          group_id: groupId,
-          participant_id: participantId,
-          category: category,
-          private_note: privateNote,
-          note: publicNote
-        }, {
-          onConflict: 'group_id,participant_id,category'
-        })
+        .select('id')
+        .eq('group_id', groupId)
+        .eq('participant_id', participantId)
+        .eq('category', category)
+        .single()
 
-      if (error) throw error
+      if (existing) {
+        // UPDATE si existe
+        const { error } = await groupManager.provider.supabase
+          .from('category_notes')
+          .update({
+            private_note: privateNote,
+            note: publicNote
+          })
+          .eq('group_id', groupId)
+          .eq('participant_id', participantId)
+          .eq('category', category)
+
+        if (error) throw error
+      } else {
+        // INSERT si n'existe pas
+        const { error } = await groupManager.provider.supabase
+          .from('category_notes')
+          .insert({
+            group_id: groupId,
+            participant_id: participantId,
+            category: category,
+            private_note: privateNote,
+            note: publicNote
+          })
+
+        if (error) throw error
+      }
     } else {
       // Supprimer la note si les deux sont vides
       await groupManager.provider.supabase
