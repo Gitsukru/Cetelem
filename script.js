@@ -604,6 +604,11 @@ function showTab(tabName) {
                 if (joinSection) joinSection.style.display = 'none';
                 if (leaderboard) leaderboard.style.display = 'none';
                 if (groupStatus) groupStatus.style.display = 'none';
+
+                // Afficher l'historique des groupes
+                if (typeof displayGroupHistory === 'function') {
+                    displayGroupHistory();
+                }
             }
         }
     }, 100);
@@ -1441,15 +1446,23 @@ function initializeBackend() {
 
     // Restaurer l'interface du groupe si un groupe est actif
     setTimeout(() => {
+      const groupTab = document.getElementById('group')
+      const isGroupTabActive = groupTab && groupTab.classList.contains('active')
+
       if (groupManager.hasActiveGroup()) {
         const groupInfo = groupManager.getCurrentGroup()
         console.log('Restauration du groupe:', groupInfo.group.name)
 
         // Si on est sur l'onglet groupe, afficher l'interface
-        const groupTab = document.getElementById('group')
-        if (groupTab && groupTab.classList.contains('active')) {
+        if (isGroupTabActive) {
           showGroupInterface(groupInfo.group.code)
           updateLeaderboard()
+        }
+      } else {
+        // Pas de groupe actif - afficher l'historique si onglet groupe actif
+        if (isGroupTabActive && typeof displayGroupHistory === 'function') {
+          console.log('Affichage historique des groupes')
+          displayGroupHistory()
         }
       }
     }, 300)
