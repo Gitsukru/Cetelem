@@ -815,14 +815,18 @@ async function saveGroupCategoryNote(groupId, participantId, category) {
 
   try {
     if (privateNote || publicNote) {
-      // Vérifier si une note existe déjà
-      const { data: existing } = await groupManager.provider.supabase
+      // Vérifier si une note existe déjà (sans .single() qui cause 406)
+      const { data: existing, error: selectError } = await groupManager.provider.supabase
         .from('category_notes')
         .select('id')
         .eq('group_id', groupId)
         .eq('participant_id', participantId)
         .eq('category', category)
-        .single()
+        .maybeSingle()
+
+      if (selectError && selectError.code !== 'PGRST116') {
+        throw selectError
+      }
 
       if (existing) {
         // UPDATE si existe
