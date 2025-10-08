@@ -621,7 +621,7 @@ function updateCategorySelect() {
 
     // Sélecteur principal
     if (select) {
-        select.innerHTML = '<option value="">Kategori seçin</option>';
+        select.innerHTML = '<option value="">Zikir Seç</option>';
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
@@ -632,7 +632,7 @@ function updateCategorySelect() {
 
     // Sélecteur pour l'effacement
     if (resetSelect) {
-        resetSelect.innerHTML = '<option value="">Kategori seçin</option>';
+        resetSelect.innerHTML = '<option value="">Zikir Seç</option>';
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
@@ -713,7 +713,7 @@ function deleteCategory(index) {
                 const counterDisplay = document.getElementById('counterDisplay');
                 const counterLabel = document.getElementById('counterLabel');
                 if (counterDisplay) counterDisplay.textContent = '0';
-                if (counterLabel) counterLabel.textContent = 'Kategori seçin';
+                if (counterLabel) counterLabel.textContent = 'Zikir Seç';
             }
 
             showCustomAlert(`Kategori "${categoryName}" silindi!`, 'success', 2000);
@@ -735,7 +735,7 @@ function updateCounterDisplay() {
         label.textContent = `${currentCategory} - Bugün`;
     } else {
         display.textContent = '0';
-        label.textContent = 'Kategori seçin';
+        label.textContent = 'Zikir Seç';
     }
 }
 
