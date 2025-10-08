@@ -355,11 +355,11 @@ function shareCode() {
     return
   }
 
-  const message = `Zikirmatik Grup Yarışmasına katıl!\n\nGrup: ${groupInfo.group.name}\nKod: ${groupInfo.group.code}\n\nZikirmatik uygulamasını aç\n"Grup" sekmesinde "Gruba Katıl"\nKodu gir: ${groupInfo.group.code}`
+  const message = `Çetelem Grup Yarışmasına katıl!\n\nGrup: ${groupInfo.group.name}\nKod: ${groupInfo.group.code}\n\nÇetelem uygulamasını aç\n"Grup" sekmesinde "Gruba Katıl"\nKodu gir: ${groupInfo.group.code}`
 
   if (navigator.share) {
     navigator.share({
-      title: 'Zikirmatik Grup Kodu',
+      title: 'Çetelem Grup Kodu',
       text: message
     }).catch(console.error)
   } else if (navigator.clipboard) {

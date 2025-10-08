@@ -1,6 +1,6 @@
 {
-  "name": "Zikirmatik - Zikir Sayacı",
-  "short_name": "Zikirmatik",
+  "name": "Çetelem - Zikir Sayacı",
+  "short_name": "Çetelem",
   "description": "Günlük zikir ve dualarınızı takip edin - Track your daily dhikr and prayers",
   "start_url": "./index.html",
   "display": "standalone",

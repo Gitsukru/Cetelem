@@ -1396,7 +1396,7 @@ window.addEventListener('beforeinstallprompt', function(e) {
         if (deferredPrompt && !localStorage.getItem('pwa-dismissed')) {
             showCustomConfirm(
                 'Uygulama Kur',
-                'Zikirmatik\'i ana ekranınıza kurmak istiyor musunuz?<br><br>Hızlı erişim<br>Çevrim dışı çalışır<br>Verileriniz gizli kalır',
+                'Çetelem\'i ana ekranınıza kurmak istiyor musunuz?<br><br>Hızlı erişim<br>Çevrim dışı çalışır<br>Verileriniz gizli kalır',
                 function() {
                     deferredPrompt.prompt();
                     deferredPrompt.userChoice.then((choiceResult) => {
