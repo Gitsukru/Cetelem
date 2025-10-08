@@ -139,40 +139,43 @@ body {
 
 .counter-display {
     text-align: center;
-    margin: 30px 0;
+    margin: 10px 0;
+    margin-top: -20px;
 }
 
 .counter-number {
-    font-size: 48px;
+    font-size: 80px;
     font-weight: bold;
-    color: #667eea;
-    margin-bottom: 10px;
+    color: white;
+    display: block;
+    line-height: 1;
 }
 
 .counter-label {
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 20px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    font-weight: 500;
 }
 
 /* Timer Display */
 .timer-display {
-    margin: 20px 0;
+    margin: 4px 0 0 0;
     text-align: center;
 }
 
 #timerDisplay {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 600;
-    color: #4a5568;
+    color: rgba(255, 255, 255, 0.95);
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     font-family: 'Courier New', monospace;
 }
 
 .timer-label {
-    font-size: 14px;
-    color: #718096;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
     display: block;
 }
 
@@ -203,8 +206,8 @@ body {
 }
 
 .counter-button {
-    width: 300px;
-    height: 300px;
+    width: 360px;
+    height: 360px;
     border-radius: 50%;
     border: none;
     background: linear-gradient(135deg, #667eea, #764ba2);
@@ -213,7 +216,12 @@ body {
     font-weight: bold;
     cursor: pointer;
     margin: 20px auto;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px;
     box-shadow: 0 12px 36px rgba(102, 126, 234, 0.5);
     transition: all 0.2s ease;
     -webkit-tap-highlight-color: transparent;
@@ -666,13 +674,23 @@ body {
     }
 
     .counter-button {
-        width: 300px;
-        height: 300px;
+        width: 320px;
+        height: 320px;
         font-size: 42px;
+        gap: 4px;
+        padding: 15px;
     }
 
     .counter-number {
-        font-size: 36px;
+        font-size: 68px;
+    }
+
+    #timerDisplay {
+        font-size: 18px;
+    }
+
+    .counter-label {
+        font-size: 13px;
     }
 }
 

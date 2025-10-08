@@ -48,15 +48,13 @@
                 </select>
 
                 <div class="counter-display">
-                    <div class="counter-number" id="counterDisplay">0</div>
-                    <div class="counter-label" id="counterLabel">Başlamak için tıklayın</div>
-                    <div class="timer-display">
-                        <span id="timerDisplay">00:00:00</span>
-                        <span class="timer-label">Süre</span>
-                    </div>
-
                     <button class="counter-button" id="countButton" onclick="incrementCounter()">
-                        +1
+                        <span class="counter-number" id="counterDisplay">0</span>
+                        <div class="counter-label" id="counterLabel">Kategori seçin</div>
+                        <div class="timer-display">
+                            <span id="timerDisplay">00:00:00</span>
+                            <span class="timer-label">Süre</span>
+                        </div>
                     </button>
 
                     <button class="sound-toggle" id="soundToggle" onclick="toggleSound(); playTickSound();" title="Ses Aç/Kapat">
