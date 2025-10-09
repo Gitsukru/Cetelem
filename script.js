@@ -1203,6 +1203,9 @@ function exportData() {
         link.download = `zikirmatik-${new Date().toISOString().split('T')[0]}.json`;
         link.click();
 
+        // Marquer qu'une sauvegarde a été faite
+        markBackupDone();
+
         showCustomAlert('Dışa aktarma başarılı!<br>Dosya başarıyla indirildi', 'success', 3000);
     } catch (error) {
         console.error('Erreur export:', error);
@@ -1378,6 +1381,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize backend (Supabase)
     initializeBackend();
+
+    // Vérifier le rappel de sauvegarde (tous les 7 jours)
+    checkBackupReminder();
 
     // Événements
     const categorySelect = document.getElementById('categorySelect');
@@ -1815,4 +1821,50 @@ function saveCategoryNote(category) {
 // Charger les notes au démarrage
 if (typeof window !== 'undefined') {
     loadCategoryNotes();
+}
+
+// ============================================
+// RAPPEL DE SAUVEGARDE AUTOMATIQUE
+// ============================================
+
+// Vérifier si un rappel de sauvegarde doit être affiché
+function checkBackupReminder() {
+    try {
+        const lastBackupReminder = localStorage.getItem('lastBackupReminder');
+        const now = new Date().getTime();
+        const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000; // 7 jours en millisecondes
+
+        // Si jamais de rappel ou si le dernier rappel était il y a plus de 7 jours
+        if (!lastBackupReminder || (now - parseInt(lastBackupReminder)) > sevenDaysInMs) {
+            // Attendre 3 secondes après le chargement pour ne pas être intrusif
+            setTimeout(() => {
+                showBackupReminder();
+            }, 3000);
+        }
+    } catch (error) {
+        console.error('Erreur vérification rappel sauvegarde:', error);
+    }
+}
+
+// Afficher le rappel de sauvegarde
+function showBackupReminder() {
+    showCustomConfirm(
+        '💾 Rappel de Sauvegarde',
+        'Il est recommandé de sauvegarder régulièrement vos données de zikir.<br><br>Voulez-vous faire une sauvegarde maintenant ?<br><br><small style="color: #64748b;">Vos données sont en sécurité sur cet appareil, mais une sauvegarde vous permet de restaurer vos données si vous changez d\'appareil ou si vous réinstallez l\'application.</small>',
+        function() {
+            // L'utilisateur veut faire une sauvegarde
+            localStorage.setItem('lastBackupReminder', new Date().getTime().toString());
+            exportData(); // Utilise la fonction existante
+        },
+        function() {
+            // L'utilisateur refuse - enregistrer quand même le rappel
+            localStorage.setItem('lastBackupReminder', new Date().getTime().toString());
+            showCustomAlert('Rappel reporté de 7 jours', 'info', 2000);
+        }
+    );
+}
+
+// Marquer qu'une sauvegarde a été faite (appelé après export réussi)
+function markBackupDone() {
+    localStorage.setItem('lastBackupReminder', new Date().getTime().toString());
 }
