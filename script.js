@@ -573,8 +573,9 @@ function showTab(tabName) {
     buttons.forEach((btn, index) => {
         if ((tabName === 'counter' && index === 0) ||
             (tabName === 'group' && index === 1) ||
-            (tabName === 'management' && index === 2) ||
-            (tabName === 'stats' && index === 3)) {
+            (tabName === 'competition' && index === 2) ||
+            (tabName === 'management' && index === 3) ||
+            (tabName === 'stats' && index === 4)) {
             btn.classList.add('active');
         }
     });
