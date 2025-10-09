@@ -621,7 +621,7 @@ function updateCategorySelect() {
 
     // Sélecteur principal
     if (select) {
-        select.innerHTML = '<option value="">Zikir Seç</option>';
+        select.innerHTML = '<option value="">Zikir</option>';
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
@@ -632,7 +632,7 @@ function updateCategorySelect() {
 
     // Sélecteur pour l'effacement
     if (resetSelect) {
-        resetSelect.innerHTML = '<option value="">Zikir Seç</option>';
+        resetSelect.innerHTML = '<option value="">Zikir</option>';
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
@@ -713,7 +713,7 @@ function deleteCategory(index) {
                 const counterDisplay = document.getElementById('counterDisplay');
                 const counterLabel = document.getElementById('counterLabel');
                 if (counterDisplay) counterDisplay.textContent = '0';
-                if (counterLabel) counterLabel.textContent = 'Zikir Seç';
+                if (counterLabel) counterLabel.textContent = 'Zikir';
             }
 
             showCustomAlert(`Kategori "${categoryName}" silindi!`, 'success', 2000);
@@ -735,7 +735,81 @@ function updateCounterDisplay() {
         label.textContent = `${currentCategory} - Bugün`;
     } else {
         display.textContent = '0';
-        label.textContent = 'Zikir Seç';
+        label.textContent = 'Zikir';
+    }
+}
+
+// Afficher modal rapide pour ajouter un zikir
+function showQuickAddCategory() {
+    const modalHtml = `
+        <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+            <div class="custom-modal-content modern-modal">
+                <div class="modal-header">
+                    <h3>Yeni Zikir Ekle</h3>
+                    <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="quickCategoryInput" class="category-input"
+                        placeholder="Zikir adı girin..."
+                        style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn cancel" onclick="this.closest('.custom-modal-overlay').remove()">İptal</button>
+                    <button class="modal-btn confirm" onclick="addQuickCategory()">Ekle</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Focus sur l'input
+    setTimeout(() => {
+        const input = document.getElementById('quickCategoryInput');
+        if (input) {
+            input.focus();
+            // Enter pour ajouter
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addQuickCategory();
+                }
+            });
+        }
+    }, 100);
+}
+
+// Ajouter un zikir depuis le modal rapide
+function addQuickCategory() {
+    const input = document.getElementById('quickCategoryInput');
+    if (!input) return;
+
+    const newCategory = input.value.trim();
+
+    if (newCategory && !categories.includes(newCategory)) {
+        categories.push(newCategory);
+        saveCategories();
+        initializeCounters();
+        updateCategorySelect();
+        updateCategoriesList();
+        updateStats();
+
+        // Sélectionner automatiquement la nouvelle catégorie
+        const select = document.getElementById('categorySelect');
+        if (select) {
+            select.value = newCategory;
+            currentCategory = newCategory;
+            updateCounterDisplay();
+            resetTimer();
+        }
+
+        // Fermer le modal
+        document.querySelector('.custom-modal-overlay')?.remove();
+
+        showCustomAlert(`Zikir "${newCategory}" eklendi!`, 'success', 2000);
+    } else if (categories.includes(newCategory)) {
+        showCustomAlert('Bu zikir zaten mevcut!', 'warning', 2500);
+    } else {
+        showCustomAlert('Lütfen bir zikir adı girin!', 'warning', 2500);
     }
 }
 

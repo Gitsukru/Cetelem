@@ -43,14 +43,17 @@
         <!-- Sayaç Sekmesi -->
         <div id="counter" class="tab-content active">
             <div class="counter-section">
-                <select id="categorySelect" class="category-select">
-                    <option value="">Zikir Seç</option>
-                </select>
+                <div class="category-select-wrapper">
+                    <select id="categorySelect" class="category-select">
+                        <option value="">Zikir</option>
+                    </select>
+                    <button class="add-category-quick" onclick="showQuickAddCategory()" title="Yeni zikir ekle">+</button>
+                </div>
 
                 <div class="counter-display">
                     <button class="counter-button" id="countButton" onclick="incrementCounter()">
                         <span class="counter-number" id="counterDisplay">0</span>
-                        <div class="counter-label" id="counterLabel">Zikir Seç</div>
+                        <div class="counter-label" id="counterLabel">Zikir</div>
                         <div class="timer-display">
                             <span id="timerDisplay">00:00:00</span>
                             <span class="timer-label">Süre</span>
@@ -89,7 +92,7 @@
                 <div class="reset-options">
                     <div class="reset-option">
                         <select id="categoryToReset" class="category-select">
-                            <option value="">Zikir Seç</option>
+                            <option value="">Zikir</option>
                         </select>
                         <div class="reset-buttons">
                             <button class="reset-button" onclick="resetTodayCategory()">Bugünü sil</button>

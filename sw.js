@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cetelem-v3.3.1';
+const CACHE_NAME = 'cetelem-v3.4.0';
 const urlsToCache = [
   './',
   './index.html',
