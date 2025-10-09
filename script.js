@@ -571,9 +571,9 @@ function showTab(tabName) {
     // Find and activate the button that was clicked
     const buttons = document.querySelectorAll('.tab-button');
     buttons.forEach(btn => {
-        // Check if button's onclick matches the current tab
+        // Check if button's onclick contains the tab name
         const onclickAttr = btn.getAttribute('onclick');
-        if (onclickAttr && onclickAttr.includes(`'${tabName}'`)) {
+        if (onclickAttr && onclickAttr.includes(`showTab('${tabName}')`)) {
             btn.classList.add('active');
         }
     });
