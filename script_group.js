@@ -355,7 +355,7 @@ function shareCode() {
     return
   }
 
-  const message = `Çetelem Grup Yarışmasına katıl!\n\nGrup: ${groupInfo.group.name}\nKod: ${groupInfo.group.code}\n\nÇetelem uygulamasını aç\n"Grup" sekmesinde "Gruba Katıl"\nKodu gir: ${groupInfo.group.code}`
+  const message = `Çetelem Grup Çalışmasına katıl!\n\nGrup: ${groupInfo.group.name}\nKod: ${groupInfo.group.code}\n\nÇetelem uygulamasını aç\n"Grup" sekmesinde "Gruba Katıl"\nKodu gir: ${groupInfo.group.code}`
 
   if (navigator.share) {
     navigator.share({
