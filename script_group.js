@@ -630,16 +630,18 @@ async function showNotesModal(participantId, participantName, isMe) {
   if (!groupInfo) return
 
   try {
-    // Récupérer les notes actuelles
+    // Récupérer SEULEMENT les notes publiques depuis Supabase
     const { data: participant, error } = await groupManager.provider.supabase
       .from('participants')
-      .select('notes, public_notes')
+      .select('public_notes')
       .eq('id', participantId)
       .single()
 
     if (error) throw error
 
-    const personalNotes = participant?.notes || ''
+    // Notes personnelles stockées localement (seulement pour moi)
+    const localKey = `personal_note_${participantId}`
+    const personalNotes = isMe ? (localStorage.getItem(localKey) || '') : ''
     const publicNotes = participant?.public_notes || ''
 
     const html = `
@@ -696,10 +698,18 @@ async function saveNotes(participantId) {
   const publicNotes = document.getElementById('publicNotes')?.value || ''
 
   try {
+    // Sauvegarder les notes personnelles LOCALEMENT (pas dans Supabase)
+    const localKey = `personal_note_${participantId}`
+    if (personalNotes) {
+      localStorage.setItem(localKey, personalNotes)
+    } else {
+      localStorage.removeItem(localKey)
+    }
+
+    // Sauvegarder SEULEMENT les notes publiques dans Supabase
     const { error } = await groupManager.provider.supabase
       .from('participants')
       .update({
-        notes: personalNotes,
         public_notes: publicNotes
       })
       .eq('id', participantId)
@@ -726,7 +736,7 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
   if (event) event.stopPropagation()
 
   try {
-    // Récupérer toutes les notes existantes pour cette catégorie dans ce groupe
+    // Récupérer SEULEMENT les notes publiques depuis Supabase
     const { data: notes, error } = await groupManager.provider.supabase
       .from('category_notes')
       .select('*, participants(name)')
@@ -735,7 +745,11 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
 
     if (error) throw error
 
-    // Trouver la note du participant actuel
+    // Notes privées stockées localement
+    const localKey = `private_cat_note_${groupId}_${participantId}_${category}`
+    const myPrivateNote = localStorage.getItem(localKey) || ''
+
+    // Trouver la note publique du participant actuel
     const myNote = notes?.find(n => n.participant_id === participantId)
 
     // Créer la liste des notes des autres
@@ -754,7 +768,7 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
               <label class="notes-label">Kişisel Notunuz (Sadece sen görürsün)</label>
               <textarea id="myPrivateCategoryNote" class="notes-textarea"
                 placeholder="Kişisel notunuzu buraya yazın..."
-                style="min-height: 60px;">${myNote?.private_note || ''}</textarea>
+                style="min-height: 60px;">${myPrivateNote}</textarea>
             </div>
 
             <!-- Note publique -->
@@ -814,7 +828,16 @@ async function saveGroupCategoryNote(groupId, participantId, category) {
   const publicNote = document.getElementById('myPublicCategoryNote').value.trim()
 
   try {
-    if (privateNote || publicNote) {
+    // Sauvegarder la note privée LOCALEMENT (pas dans Supabase)
+    const localKey = `private_cat_note_${groupId}_${participantId}_${category}`
+    if (privateNote) {
+      localStorage.setItem(localKey, privateNote)
+    } else {
+      localStorage.removeItem(localKey)
+    }
+
+    // Sauvegarder SEULEMENT la note publique dans Supabase
+    if (publicNote) {
       // Vérifier si une note existe déjà (sans .single() qui cause 406)
       const { data: existing, error: selectError } = await groupManager.provider.supabase
         .from('category_notes')
@@ -833,7 +856,6 @@ async function saveGroupCategoryNote(groupId, participantId, category) {
         const { error } = await groupManager.provider.supabase
           .from('category_notes')
           .update({
-            private_note: privateNote,
             note: publicNote
           })
           .eq('group_id', groupId)
@@ -849,14 +871,13 @@ async function saveGroupCategoryNote(groupId, participantId, category) {
             group_id: groupId,
             participant_id: participantId,
             category: category,
-            private_note: privateNote,
             note: publicNote
           })
 
         if (error) throw error
       }
     } else {
-      // Supprimer la note si les deux sont vides
+      // Supprimer la note publique si vide
       await groupManager.provider.supabase
         .from('category_notes')
         .delete()

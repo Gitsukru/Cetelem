@@ -12,6 +12,8 @@ let timerInterval = null;
 // Sound variables
 let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
 let tickSound = null;
+let audioPool = []; // Pool d'instances audio pré-créées pour réduire la latence
+let poolIndex = 0;
 
 // Group variables
 let isHost = false;
@@ -49,6 +51,8 @@ function initSound() {
         // Test if the audio loads properly
         tickSound.addEventListener('canplaythrough', function() {
             console.log('Tesbih sound loaded successfully');
+            // ⚡ Créer un pool d'instances audio pré-chargées pour mobile (latence réduite)
+            createAudioPool();
         });
 
         tickSound.addEventListener('error', function(e) {
@@ -68,6 +72,19 @@ function initSound() {
         soundBtn.textContent = soundEnabled ? 'SES' : 'SESsiz';
         soundBtn.classList.toggle('muted', !soundEnabled);
     }
+}
+
+// ⚡ Créer un pool d'instances audio pour éliminer la latence sur mobile
+function createAudioPool() {
+    if (!tickSound || tickSound.currentTime === undefined) return;
+
+    // Créer 5 instances pré-chargées
+    for (let i = 0; i < 5; i++) {
+        const audio = tickSound.cloneNode();
+        audio.volume = tickSound.volume;
+        audioPool.push(audio);
+    }
+    console.log('Audio pool créé: 5 instances prêtes');
 }
 
 function createTickSoundWithWebAudio() {
@@ -207,11 +224,24 @@ function playTickSound() {
     if (!soundEnabled || !tickSound) return;
 
     try {
-        // For real audio files - use cloneNode for rapid clicks
+        // ⚡ Pour les fichiers audio - utiliser le pool pour latence minimale
         if (tickSound.currentTime !== undefined) {
-            // Clone the audio for simultaneous playback
-            const sound = tickSound.cloneNode();
-            sound.volume = tickSound.volume;
+            let sound;
+
+            // Si le pool est disponible, l'utiliser (BEAUCOUP plus rapide)
+            if (audioPool.length > 0) {
+                sound = audioPool[poolIndex];
+                poolIndex = (poolIndex + 1) % audioPool.length;
+
+                // Si le son est encore en train de jouer, le redémarrer
+                if (sound.currentTime > 0) {
+                    sound.currentTime = 0;
+                }
+            } else {
+                // Fallback: cloner si le pool n'est pas prêt
+                sound = tickSound.cloneNode();
+                sound.volume = tickSound.volume;
+            }
 
             const playPromise = sound.play();
             if (playPromise !== undefined) {
@@ -741,17 +771,20 @@ function showQuickAddCategory() {
         <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
             <div class="custom-modal-content modern-modal">
                 <div class="modal-header">
-                    <h3>Yeni Zikir Ekle</h3>
+                    <h3>✨ Yeni Zikir Ekle</h3>
                     <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" id="quickCategoryInput" class="category-input"
-                        placeholder="Zikir adı girin..."
-                        style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">
+                        Yeni bir zikir kategorisi ekleyin ve sayaç otomatik olarak seçilecek
+                    </p>
+                    <input type="text" id="quickCategoryInput" class="form-input"
+                        placeholder="Örn: Salavat, Tesbih, İstiğfar..."
+                        style="width: 100%;">
                 </div>
                 <div class="modal-footer">
-                    <button class="modal-btn cancel" onclick="this.closest('.custom-modal-overlay').remove()">İptal</button>
-                    <button class="modal-btn confirm" onclick="addQuickCategory()">Ekle</button>
+                    <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">İptal</button>
+                    <button class="btn-primary" onclick="addQuickCategory()">✅ Ekle</button>
                 </div>
             </div>
         </div>
@@ -813,6 +846,9 @@ function addQuickCategory() {
 
 // Incrémenter le compteur - VERSION SIMPLE ET FIABLE
 function incrementCounter() {
+    // ⚡ JOUER LE SON EN PREMIER pour réduire la latence perçue sur mobile
+    playTickSound();
+
     if (!currentCategory) {
         showCustomAlert('KATEGORİ SEÇİN!<br><br>Zikir saymaya başlamadan önce lütfen açılır menüden bir kategori seçin.', 'warning', 4000);
         return;
@@ -830,9 +866,6 @@ function incrementCounter() {
         counters[currentCategory][currentDate] = 0;
     }
     counters[currentCategory][currentDate]++;
-
-    // Play tick sound if enabled
-    playTickSound();
 
     if (saveCounters()) {
         updateCounterDisplay();
