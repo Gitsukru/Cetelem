@@ -793,6 +793,10 @@ function addQuickCategory() {
         updateCategoriesList();
         updateStats();
 
+        // Fermer le modal d'abord
+        const modal = document.querySelector('.custom-modal-overlay');
+        if (modal) modal.remove();
+
         // Sélectionner automatiquement la nouvelle catégorie
         const select = document.getElementById('categorySelect');
         if (select) {
@@ -802,9 +806,7 @@ function addQuickCategory() {
             resetTimer();
         }
 
-        // Fermer le modal
-        document.querySelector('.custom-modal-overlay')?.remove();
-
+        // Afficher la confirmation
         showCustomAlert(`Zikir "${newCategory}" eklendi!`, 'success', 2000);
     } else if (categories.includes(newCategory)) {
         showCustomAlert('Bu zikir zaten mevcut!', 'warning', 2500);
