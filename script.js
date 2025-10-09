@@ -556,6 +556,8 @@ function updateSaveStatus() {
 
 // Changer d'onglet
 function showTab(tabName, event) {
+    console.log('showTab called:', tabName, 'event:', event);
+
     // Remove active class from all tabs and buttons
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
@@ -568,11 +570,15 @@ function showTab(tabName, event) {
     const targetTab = document.getElementById(tabName);
     if (targetTab) {
         targetTab.classList.add('active');
+        console.log('Tab content activated:', tabName);
     }
 
     // Activate the clicked button
     if (event && event.currentTarget) {
         event.currentTarget.classList.add('active');
+        console.log('Button activated:', event.currentTarget.textContent);
+    } else {
+        console.warn('No event or currentTarget:', event);
     }
 
     setTimeout(() => {
