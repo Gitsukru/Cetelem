@@ -555,7 +555,8 @@ function updateSaveStatus() {
 }
 
 // Changer d'onglet
-function showTab(tabName) {
+function showTab(tabName, event) {
+    // Remove active class from all tabs and buttons
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
@@ -563,20 +564,16 @@ function showTab(tabName) {
         btn.classList.remove('active');
     });
 
+    // Activate the target tab content
     const targetTab = document.getElementById(tabName);
     if (targetTab) {
         targetTab.classList.add('active');
     }
 
-    // Find and activate the button that was clicked
-    const buttons = document.querySelectorAll('.tab-button');
-    buttons.forEach(btn => {
-        // Check if button's onclick contains the tab name
-        const onclickAttr = btn.getAttribute('onclick');
-        if (onclickAttr && onclickAttr.includes(`showTab('${tabName}')`)) {
-            btn.classList.add('active');
-        }
-    });
+    // Activate the clicked button
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
 
     setTimeout(() => {
         if (tabName === 'stats') {
