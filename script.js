@@ -570,12 +570,10 @@ function showTab(tabName) {
 
     // Find and activate the button that was clicked
     const buttons = document.querySelectorAll('.tab-button');
-    buttons.forEach((btn, index) => {
-        if ((tabName === 'counter' && index === 0) ||
-            (tabName === 'group' && index === 1) ||
-            (tabName === 'competition' && index === 2) ||
-            (tabName === 'management' && index === 3) ||
-            (tabName === 'stats' && index === 4)) {
+    buttons.forEach(btn => {
+        // Check if button's onclick matches the current tab
+        const onclickAttr = btn.getAttribute('onclick');
+        if (onclickAttr && onclickAttr.includes(`'${tabName}'`)) {
             btn.classList.add('active');
         }
     });
