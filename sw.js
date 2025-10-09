@@ -52,6 +52,27 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // Stratégie "Network First" pour les documents HTML (toujours vérifier le réseau en premier)
+  if (event.request.destination === 'document' || event.request.url.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Cloner et mettre en cache la nouvelle version
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        })
+        .catch(() => {
+          // Si le réseau échoue, utiliser le cache comme fallback
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Stratégie "Cache First" pour les autres ressources (CSS, JS, images)
   event.respondWith(
     caches.match(event.request)
       .then(response => {
