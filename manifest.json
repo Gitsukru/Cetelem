@@ -21,6 +21,11 @@
       "type": "image/svg+xml"
     }
   ],
-  "categories": ["lifestyle", "productivity", "utilities"],
-  "screenshots": []
+  "categories": [
+    "lifestyle",
+    "productivity",
+    "utilities"
+  ],
+  "screenshots": [],
+  "version": "3.4.1"
 }
