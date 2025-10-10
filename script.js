@@ -830,88 +830,50 @@ function updateCounterDisplay() {
 
 // Afficher modal rapide pour ajouter un zikir
 function showQuickAddCategory() {
-    const modalHtml = `
-        <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
-            <div class="custom-modal-content modern-modal">
-                <div class="modal-header">
-                    <h3>✨ Yeni Zikir Ekle</h3>
-                    <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
-                </div>
-                <div class="modal-body">
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">
-                        Yeni bir zikir kategorisi ekleyin ve sayaç otomatik olarak seçilecek
-                    </p>
-                    <input type="text" id="quickCategoryInput" class="form-input"
-                        placeholder="Örn: Salavat, Tesbih, İstiğfar..."
-                        style="width: 100%;">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">İptal</button>
-                    <button class="btn-primary" onclick="addQuickCategory()">✅ Ekle</button>
-                </div>
-            </div>
-        </div>
-    `;
+    // ⚡ Utiliser ModalUtils pour afficher la modale
+    ModalUtils.showInputModal({
+        title: '✨ Yeni Zikir Ekle',
+        description: 'Yeni bir zikir kategorisi ekleyin ve sayaç otomatik olarak seçilecek',
+        placeholder: 'Örn: Salavat, Tesbih, İstiğfar...',
+        initialValue: '',
+        onSubmit: (value) => {
+            // Valider avec Validators
+            const validation = Validators.validateCategoryName(value);
 
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
+            if (!validation.valid) {
+                showCustomAlert(`❌ ${validation.error}`, 'warning', 2500);
+                return;
+            }
 
-    // Focus sur l'input
-    setTimeout(() => {
-        const input = document.getElementById('quickCategoryInput');
-        if (input) {
-            input.focus();
-            // Enter pour ajouter
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addQuickCategory();
-                }
-            });
-        }
-    }, 100);
-}
+            const newCategory = validation.value;
 
-// Ajouter un zikir depuis le modal rapide
-function addQuickCategory() {
-    const input = document.getElementById('quickCategoryInput');
-    if (!input) return;
+            if (categories.includes(newCategory)) {
+                showCustomAlert('Bu zikir zaten mevcut!', 'warning', 2500);
+                return;
+            }
 
-    // ⚡ FIX: Valider avec Validators
-    const validation = Validators.validateCategoryName(input.value);
+            categories.push(newCategory);
+            saveCategories();
+            initializeCounters();
+            updateCategorySelect();
+            updateCategoriesList();
+            updateStats();
 
-    if (!validation.valid) {
-        showCustomAlert(`❌ ${validation.error}`, 'warning', 2500);
-        return;
-    }
+            // Sélectionner automatiquement la nouvelle catégorie
+            const select = document.getElementById('categorySelect');
+            if (select) {
+                select.value = newCategory;
+                currentCategory = newCategory;
+                updateCounterDisplay();
+                resetTimer();
+            }
 
-    const newCategory = validation.value;
-
-    if (categories.includes(newCategory)) {
-        showCustomAlert('Bu zikir zaten mevcut!', 'warning', 2500);
-        return;
-    }
-
-    categories.push(newCategory);
-    saveCategories();
-    initializeCounters();
-    updateCategorySelect();
-    updateCategoriesList();
-    updateStats();
-
-    // Fermer le modal d'abord
-    const modal = document.querySelector('.custom-modal-overlay');
-    if (modal) modal.remove();
-
-    // Sélectionner automatiquement la nouvelle catégorie
-    const select = document.getElementById('categorySelect');
-    if (select) {
-        select.value = newCategory;
-        currentCategory = newCategory;
-        updateCounterDisplay();
-        resetTimer();
-    }
-
-    // Afficher la confirmation
-    showCustomAlert(`Zikir "${newCategory}" eklendi!`, 'success', 2000);
+            // Afficher la confirmation
+            showCustomAlert(`Zikir "${newCategory}" eklendi!`, 'success', 2000);
+        },
+        submitText: '✅ Ekle',
+        cancelText: 'İptal'
+    });
 }
 
 // Incrémenter le compteur - VERSION SIMPLE ET FIABLE
@@ -1903,56 +1865,29 @@ function getCategoryNote(category) {
 // Modal pour éditer une note de catégorie
 function showCategoryNoteModal(category, event) {
     if (event) event.stopPropagation();
-    
-    const currentNote = getCategoryNote(category);
-    
-    const html = `
-        <div class="custom-modal-overlay" id="categoryNoteModal">
-            <div class="custom-modal" style="max-width: 500px;">
-                <div class="modal-header">
-                    <h3>Not - ${category}</h3>
-                    <button class="modal-close" onclick="document.getElementById('categoryNoteModal').remove()">✕</button>
-                </div>
-                <div class="modal-body">
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">
-                        Bu kategori için notunuzu yazın (niyet, amaç, hatırlatma vs.)
-                    </p>
-                    <textarea id="categoryNoteInput" class="notes-textarea" 
-                        placeholder="Örnek: Allah rızası için, şifa duası, aileme dua..."
-                        style="min-height: 100px;">${currentNote}</textarea>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="document.getElementById('categoryNoteModal').remove()">İptal</button>
-                    <button class="btn-primary" onclick="saveCategoryNote('${category.replace(/'/g, "\\'")}')">💾 Kaydet</button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', html);
-    
-    // Auto-expand textarea
-    const textarea = document.getElementById('categoryNoteInput');
-    autoExpandTextarea(textarea);
-    textarea.addEventListener('input', () => autoExpandTextarea(textarea));
-    textarea.focus();
-}
 
-// Sauvegarder une note de catégorie
-function saveCategoryNote(category) {
-    const note = document.getElementById('categoryNoteInput').value.trim();
-    
-    if (note) {
-        categoryNotes[category] = note;
-    } else {
-        delete categoryNotes[category];
-    }
-    
-    saveCategoryNotes();
-    document.getElementById('categoryNoteModal').remove();
-    updateStats(); // Rafraîchir pour mettre à jour l'icône
-    
-    showCustomAlert('Not kaydedildi!', 'success', 2000);
+    const currentNote = getCategoryNote(category);
+
+    // ⚡ Utiliser ModalUtils pour afficher la modale de note
+    ModalUtils.showNoteModal({
+        title: `Not - ${category}`,
+        description: 'Bu kategori için notunuzu yazın (niyet, amaç, hatırlatma vs.)',
+        placeholder: 'Örnek: Allah rızası için, şifa duası, aileme dua...',
+        initialValue: currentNote,
+        onSave: (note) => {
+            // Sauvegarder la note
+            if (note) {
+                categoryNotes[category] = note;
+            } else {
+                delete categoryNotes[category];
+            }
+
+            saveCategoryNotes();
+            updateStats(); // Rafraîchir pour mettre à jour l'icône
+
+            showCustomAlert('Not kaydedildi!', 'success', 2000);
+        }
+    });
 }
 
 // Charger les notes au démarrage
