@@ -111,26 +111,24 @@ CREATE POLICY "analytics_summary_select_all" ON analytics_summary
 -- 6. TABLE: category_notes
 -- ============================================================================
 
--- Activer RLS sur la table category_notes (si elle existe)
--- Si la table n'existe pas encore, créer la structure d'abord:
-
--- CREATE TABLE IF NOT EXISTS category_notes (
---   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
---   user_id TEXT NOT NULL,  -- ID temporaire (localStorage) ou user auth ID
---   category TEXT NOT NULL,
+-- Activer RLS sur la table category_notes
+-- Structure attendue:
+-- category_notes (
+--   id UUID PRIMARY KEY,
+--   group_id UUID REFERENCES groups(id),
+--   participant_id UUID REFERENCES participants(id),
+--   category VARCHAR(100),
 --   note TEXT,
---   created_at TIMESTAMPTZ DEFAULT NOW(),
---   updated_at TIMESTAMPTZ DEFAULT NOW(),
---   UNIQUE(user_id, category)
--- );
+--   created_at TIMESTAMPTZ,
+--   updated_at TIMESTAMPTZ
+-- )
 
 ALTER TABLE category_notes ENABLE ROW LEVEL SECURITY;
 
--- Politique: Les utilisateurs peuvent lire leurs propres notes
--- (Dans l'app actuelle, user_id = localStorage ID temporaire)
-CREATE POLICY "category_notes_select_own" ON category_notes
+-- Politique: Tout le monde peut lire les notes du groupe
+CREATE POLICY "category_notes_select_all" ON category_notes
   FOR SELECT
-  USING (true);  -- Temporaire: tout le monde peut lire (app anonyme)
+  USING (true);
 
 -- Politique: Les utilisateurs peuvent créer leurs notes
 CREATE POLICY "category_notes_insert_all" ON category_notes
@@ -184,8 +182,10 @@ CREATE INDEX IF NOT EXISTS idx_device_backups_expires ON device_backups(expires_
 -- Index sur analytics_events.created_at pour requêtes temporelles
 CREATE INDEX IF NOT EXISTS idx_analytics_events_created ON analytics_events(created_at DESC);
 
--- Index sur category_notes (user_id, category) pour lookup rapide
-CREATE INDEX IF NOT EXISTS idx_category_notes_user_category ON category_notes(user_id, category);
+-- Index sur category_notes pour lookup rapide
+CREATE INDEX IF NOT EXISTS idx_category_notes_group ON category_notes(group_id);
+CREATE INDEX IF NOT EXISTS idx_category_notes_participant ON category_notes(participant_id);
+CREATE INDEX IF NOT EXISTS idx_category_notes_category ON category_notes(category);
 
 -- ============================================================================
 -- ✅ VÉRIFICATION
