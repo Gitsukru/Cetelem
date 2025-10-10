@@ -1,0 +1,299 @@
+/**
+ * 🎨 Variables CSS Globales - Çetelem
+ *
+ * Système de design tokens pour cohérence visuelle
+ * Facilite les thèmes et la maintenance
+ */
+
+:root {
+  /* ========================================
+     COULEURS PRINCIPALES
+     ======================================== */
+
+  /* Gradients primaires */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --gradient-danger: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+
+  /* Couleurs de base */
+  --color-primary: #667eea;
+  --color-primary-dark: #764ba2;
+  --color-primary-light: #8b9dff;
+
+  --color-success: #48bb78;
+  --color-success-dark: #38a169;
+  --color-success-light: #68d391;
+
+  --color-warning: #ed8936;
+  --color-warning-dark: #dd6b20;
+  --color-warning-light: #f6ad55;
+
+  --color-danger: #e53e3e;
+  --color-danger-dark: #c53030;
+  --color-danger-light: #fc8181;
+
+  --color-info: #4299e1;
+  --color-info-dark: #3182ce;
+  --color-info-light: #63b3ed;
+
+  /* ========================================
+     COULEURS NEUTRES (Slate palette)
+     ======================================== */
+
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e0;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
+
+  /* Aliases sémantiques */
+  --color-text-primary: var(--color-gray-800);
+  --color-text-secondary: var(--color-gray-600);
+  --color-text-muted: var(--color-gray-500);
+
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: var(--color-gray-50);
+  --color-bg-tertiary: var(--color-gray-100);
+
+  --color-border-light: var(--color-gray-200);
+  --color-border-medium: var(--color-gray-300);
+  --color-border-dark: var(--color-gray-400);
+
+  /* ========================================
+     TYPOGRAPHIE
+     ======================================== */
+
+  --font-family-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-family-mono: 'Courier New', monospace;
+
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 32px;
+  --font-size-5xl: 48px;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* ========================================
+     ESPACEMENTS (Système 4px)
+     ======================================== */
+
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+
+  /* ========================================
+     BORDURES & RADIUS
+     ======================================== */
+
+  --border-width: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 3px;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
+  --radius-3xl: 16px;
+  --radius-full: 50%;
+
+  /* ========================================
+     OMBRES (Élévations)
+     ======================================== */
+
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 12px 36px rgba(102, 126, 234, 0.5);
+  --shadow-2xl: 0 20px 60px -15px rgba(15, 23, 42, 0.3);
+
+  /* Ombres colorées */
+  --shadow-primary: 0 4px 12px rgba(102, 126, 234, 0.3);
+  --shadow-primary-lg: 0 6px 20px rgba(102, 126, 234, 0.4);
+  --shadow-success: 0 4px 12px rgba(16, 185, 129, 0.3);
+  --shadow-success-lg: 0 6px 16px rgba(16, 185, 129, 0.4);
+
+  /* ========================================
+     TRANSITIONS & ANIMATIONS
+     ======================================== */
+
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.4s ease;
+
+  --transition-all: all var(--transition-base);
+  --transition-transform: transform var(--transition-base);
+  --transition-colors: background-color var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+
+  /* ========================================
+     Z-INDEX (Système de couches)
+     ======================================== */
+
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 1000;
+  --z-modal: 1001;
+  --z-popover: 1002;
+  --z-tooltip: 1003;
+  --z-toast: 9999;
+
+  /* ========================================
+     COMPOSANTS SPÉCIFIQUES
+     ======================================== */
+
+  /* Counter button */
+  --counter-size-desktop: 360px;
+  --counter-size-mobile: 320px;
+  --counter-number-size-desktop: 80px;
+  --counter-number-size-mobile: 68px;
+
+  /* Container */
+  --container-max-width: 1200px;
+  --container-padding: 10px;
+
+  /* Footer */
+  --footer-height: 60px;
+
+  /* Modals */
+  --modal-max-width: 500px;
+  --modal-width: 90%;
+  --modal-max-height: 80vh;
+
+  /* ========================================
+     BREAKPOINTS (Pour référence en JS)
+     ======================================== */
+
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* ========================================
+     AUTRES PROPRIÉTÉS
+     ======================================== */
+
+  --backdrop-blur: blur(10px);
+  --backdrop-blur-sm: blur(8px);
+
+  /* Opacités */
+  --opacity-disabled: 0.5;
+  --opacity-hover: 0.8;
+  --opacity-pressed: 0.7;
+}
+
+/* ========================================
+   THÈME SOMBRE (Préparation future)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* À implémenter plus tard */
+    /* --color-bg-primary: #1e293b; */
+    /* --color-text-primary: #f8fafc; */
+    /* etc. */
+  }
+}
+
+/* ========================================
+   CLASSES UTILITAIRES
+   ======================================== */
+
+/* Typographie */
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-2xl { font-size: var(--font-size-2xl); }
+.text-3xl { font-size: var(--font-size-3xl); }
+
+.font-normal { font-weight: var(--font-weight-normal); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+/* Couleurs de texte */
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-muted { color: var(--color-text-muted); }
+.text-success { color: var(--color-success); }
+.text-danger { color: var(--color-danger); }
+.text-warning { color: var(--color-warning); }
+
+/* Espacements */
+.p-0 { padding: 0; }
+.p-1 { padding: var(--spacing-1); }
+.p-2 { padding: var(--spacing-2); }
+.p-3 { padding: var(--spacing-3); }
+.p-4 { padding: var(--spacing-4); }
+.p-5 { padding: var(--spacing-5); }
+.p-6 { padding: var(--spacing-6); }
+
+.m-0 { margin: 0; }
+.m-1 { margin: var(--spacing-1); }
+.m-2 { margin: var(--spacing-2); }
+.m-3 { margin: var(--spacing-3); }
+.m-4 { margin: var(--spacing-4); }
+.m-5 { margin: var(--spacing-5); }
+.m-6 { margin: var(--spacing-6); }
+
+/* Affichage */
+.hidden { display: none !important; }
+.block { display: block; }
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.grid { display: grid; }
+
+/* Flexbox */
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.items-center { align-items: center; }
+.flex-col { flex-direction: column; }
+.gap-1 { gap: var(--spacing-1); }
+.gap-2 { gap: var(--spacing-2); }
+.gap-3 { gap: var(--spacing-3); }
+.gap-4 { gap: var(--spacing-4); }
+
+/* Coins arrondis */
+.rounded { border-radius: var(--radius-md); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* Ombres */
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }

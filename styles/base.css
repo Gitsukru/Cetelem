@@ -1,0 +1,86 @@
+/**
+ * 🎨 Styles de base - Çetelem
+ * Reset et styles globaux
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background: var(--gradient-primary);
+  min-height: 100vh;
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+/* Container principal */
+.container {
+  max-width: var(--container-max-width);
+  padding: var(--container-padding);
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: var(--backdrop-blur);
+  border-radius: var(--radius-3xl);
+  padding: var(--spacing-5);
+  margin-bottom: var(--spacing-5);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.header h1 {
+  color: var(--color-gray-600);
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-3);
+  font-weight: var(--font-weight-semibold);
+}
+
+.header p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-border-light), transparent);
+  margin: var(--spacing-8) 0;
+}
+
+/* Sections */
+.management-section,
+.stats-section,
+.counter-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-3xl);
+  padding: var(--spacing-5);
+  margin-bottom: var(--spacing-5);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Save indicator */
+.save-indicator {
+  position: fixed;
+  top: var(--spacing-5);
+  right: var(--spacing-5);
+  background: var(--color-success);
+  color: white;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--spacing-5);
+  font-size: var(--font-size-base);
+  opacity: 0;
+  transition: opacity var(--transition-medium);
+  z-index: var(--z-toast);
+}
+
+.save-indicator.show {
+  opacity: 1;
+}

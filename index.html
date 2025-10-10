@@ -18,6 +18,10 @@
 
     <!-- Analytics: Supabase (100% gratuit, tes données) -->
 
+    <!-- CSS Variables & Base Styles (v3.5.0+) -->
+    <link rel="stylesheet" href="styles/variables.css">
+
+    <!-- Main Styles (Refactoring progressif en cours) -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -372,6 +376,9 @@
 
     <!-- Supabase Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Polyfills pour compatibilité navigateurs anciens (iOS 9+, Android 4.4+) -->
+    <script src="src/utils/polyfills.js"></script>
 
     <!-- Utilities (charger error-handler EN PREMIER) -->
     <script src="src/utils/error-handler.js"></script>
