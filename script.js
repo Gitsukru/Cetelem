@@ -754,22 +754,29 @@ function addCategory() {
     const input = document.getElementById('newCategoryInput');
     if (!input) return;
 
-    const newCategory = input.value.trim();
+    // ⚡ FIX: Valider avec Validators
+    const validation = Validators.validateCategoryName(input.value);
 
-    if (newCategory && !categories.includes(newCategory)) {
-        categories.push(newCategory);
-        saveCategories();
-        initializeCounters();
-        updateCategorySelect();
-        updateCategoriesList();
-        updateStats();
-        input.value = '';
-        showCustomAlert(`Kategori "${newCategory}" eklendi!`, 'success', 2000);
-    } else if (categories.includes(newCategory)) {
-        showCustomAlert('Bu kategori zaten mevcut!', 'warning', 2500);
-    } else {
-        showCustomAlert('Lütfen bir kategori adı girin!', 'warning', 2500);
+    if (!validation.valid) {
+        showCustomAlert(`❌ ${validation.error}`, 'warning', 2500);
+        return;
     }
+
+    const newCategory = validation.value;
+
+    if (categories.includes(newCategory)) {
+        showCustomAlert('Bu kategori zaten mevcut!', 'warning', 2500);
+        return;
+    }
+
+    categories.push(newCategory);
+    saveCategories();
+    initializeCounters();
+    updateCategorySelect();
+    updateCategoriesList();
+    updateStats();
+    input.value = '';
+    showCustomAlert(`Kategori "${newCategory}" eklendi!`, 'success', 2000);
 }
 
 // Supprimer une catégorie
@@ -868,36 +875,43 @@ function addQuickCategory() {
     const input = document.getElementById('quickCategoryInput');
     if (!input) return;
 
-    const newCategory = input.value.trim();
+    // ⚡ FIX: Valider avec Validators
+    const validation = Validators.validateCategoryName(input.value);
 
-    if (newCategory && !categories.includes(newCategory)) {
-        categories.push(newCategory);
-        saveCategories();
-        initializeCounters();
-        updateCategorySelect();
-        updateCategoriesList();
-        updateStats();
-
-        // Fermer le modal d'abord
-        const modal = document.querySelector('.custom-modal-overlay');
-        if (modal) modal.remove();
-
-        // Sélectionner automatiquement la nouvelle catégorie
-        const select = document.getElementById('categorySelect');
-        if (select) {
-            select.value = newCategory;
-            currentCategory = newCategory;
-            updateCounterDisplay();
-            resetTimer();
-        }
-
-        // Afficher la confirmation
-        showCustomAlert(`Zikir "${newCategory}" eklendi!`, 'success', 2000);
-    } else if (categories.includes(newCategory)) {
-        showCustomAlert('Bu zikir zaten mevcut!', 'warning', 2500);
-    } else {
-        showCustomAlert('Lütfen bir zikir adı girin!', 'warning', 2500);
+    if (!validation.valid) {
+        showCustomAlert(`❌ ${validation.error}`, 'warning', 2500);
+        return;
     }
+
+    const newCategory = validation.value;
+
+    if (categories.includes(newCategory)) {
+        showCustomAlert('Bu zikir zaten mevcut!', 'warning', 2500);
+        return;
+    }
+
+    categories.push(newCategory);
+    saveCategories();
+    initializeCounters();
+    updateCategorySelect();
+    updateCategoriesList();
+    updateStats();
+
+    // Fermer le modal d'abord
+    const modal = document.querySelector('.custom-modal-overlay');
+    if (modal) modal.remove();
+
+    // Sélectionner automatiquement la nouvelle catégorie
+    const select = document.getElementById('categorySelect');
+    if (select) {
+        select.value = newCategory;
+        currentCategory = newCategory;
+        updateCounterDisplay();
+        resetTimer();
+    }
+
+    // Afficher la confirmation
+    showCustomAlert(`Zikir "${newCategory}" eklendi!`, 'success', 2000);
 }
 
 // Incrémenter le compteur - VERSION SIMPLE ET FIABLE

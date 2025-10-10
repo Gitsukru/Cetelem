@@ -55,11 +55,34 @@ function showJoinFormUI() {
 
 // Create a new group
 async function doCreateGroup() {
-  const groupName = document.getElementById('groupNameInput').value.trim() || 'Zikir Grubu'
-  const creatorName = document.getElementById('creatorNameInput').value.trim()
+  const groupNameInput = document.getElementById('groupNameInput').value || 'Zikir Grubu'
+  const creatorNameInput = document.getElementById('creatorNameInput').value
 
-  if (!creatorName) {
-    showCustomAlert('Lütfen adınızı girin!', 'warning', 2500)
+  // ⚡ FIX: Valider le nom du créateur
+  const creatorValidation = Validators.validateParticipantName(creatorNameInput)
+  if (!creatorValidation.valid) {
+    showCustomAlert(`❌ ${creatorValidation.error}`, 'warning', 2500)
+    return
+  }
+
+  // ⚡ FIX: Valider le nom du groupe
+  const groupValidation = Validators.validateGroupName(groupNameInput)
+  if (!groupValidation.valid) {
+    showCustomAlert(`❌ ${groupValidation.error}`, 'warning', 2500)
+    return
+  }
+
+  const groupName = groupValidation.value
+  const creatorName = creatorValidation.value
+
+  // ⚡ FIX: Rate limiting (max 3 groupes créés par heure)
+  const rateLimitCheck = rateLimiter.check('createGroup', {
+    maxAttempts: 3,
+    windowMs: 60 * 60 * 1000 // 1 heure
+  })
+
+  if (!rateLimitCheck.allowed) {
+    showCustomAlert(`⚠️ ${rateLimitCheck.message}`, 'warning', 4000)
     return
   }
 
@@ -89,16 +112,34 @@ async function doCreateGroup() {
 
 // Join an existing group
 async function doJoinGroup() {
-  const groupCode = document.getElementById('joinCodeInput').value.trim().toUpperCase()
-  const participantName = document.getElementById('participantNameInput').value.trim()
+  const groupCodeInput = document.getElementById('joinCodeInput').value
+  const participantNameInput = document.getElementById('participantNameInput').value
 
-  if (!groupCode) {
-    showCustomAlert('Lütfen grup kodunu girin!', 'warning', 2500)
+  // ⚡ FIX: Valider le code du groupe
+  const codeValidation = Validators.validateGroupCode(groupCodeInput)
+  if (!codeValidation.valid) {
+    showCustomAlert(`❌ ${codeValidation.error}`, 'warning', 2500)
     return
   }
 
-  if (!participantName) {
-    showCustomAlert('Lütfen adınızı girin!', 'warning', 2500)
+  // ⚡ FIX: Valider le nom du participant
+  const nameValidation = Validators.validateParticipantName(participantNameInput)
+  if (!nameValidation.valid) {
+    showCustomAlert(`❌ ${nameValidation.error}`, 'warning', 2500)
+    return
+  }
+
+  const groupCode = codeValidation.value
+  const participantName = nameValidation.value
+
+  // ⚡ FIX: Rate limiting (max 10 tentatives de join par heure)
+  const rateLimitCheck = rateLimiter.check('joinGroup', {
+    maxAttempts: 10,
+    windowMs: 60 * 60 * 1000 // 1 heure
+  })
+
+  if (!rateLimitCheck.allowed) {
+    showCustomAlert(`⚠️ ${rateLimitCheck.message}`, 'warning', 4000)
     return
   }
 
