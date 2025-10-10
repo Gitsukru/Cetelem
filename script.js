@@ -1550,10 +1550,41 @@ if ('serviceWorker' in navigator) {
                     newWorker.addEventListener('statechange', function() {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                             // Nouvelle version disponible
-                            if (confirm('Yeni sürüm mevcut! Yeniden yükle?')) {
-                                newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                window.location.reload();
-                            }
+                            showCustomConfirm(
+                                '🆕 Yeni Sürüm Mevcut',
+                                'Yeni bir sürüm bulundu!<br><br>' +
+                                '✅ Verileriniz <strong>otomatik olarak kaydedilecek</strong><br>' +
+                                '🔄 Uygulama yeniden yüklenecek<br><br>' +
+                                'Şimdi güncellemek ister misiniz?',
+                                function() {
+                                    // ⚡ FIX: Sauvegarder AVANT le rechargement
+                                    console.log('🔄 Mise à jour PWA - Sauvegarde automatique...');
+
+                                    // Afficher un indicateur de sauvegarde
+                                    showCustomAlert('💾 Veriler kaydediliyor...', 'info', 1000);
+
+                                    try {
+                                        autoSave(); // Sauvegarde synchrone des compteurs et catégories
+                                        console.log('✅ Données sauvegardées avant mise à jour');
+
+                                        // Confirmation visuelle
+                                        showCustomAlert('✅ Kaydedildi! Güncelleniyor...', 'success', 800);
+                                    } catch (error) {
+                                        console.error('⚠️ Erreur sauvegarde avant MAJ:', error);
+                                        showCustomAlert('⚠️ Kaydetme hatası, yine de güncelleniyor...', 'warning', 1000);
+                                    }
+
+                                    // Délai pour afficher les messages et s'assurer de la sauvegarde
+                                    setTimeout(() => {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }, 1200);
+                                },
+                                function() {
+                                    // L'utilisateur refuse la mise à jour
+                                    showCustomAlert('Güncelleme iptal edildi<br>Sonra tekrar sorulacak', 'info', 2000);
+                                }
+                            );
                         }
                     });
                 });
