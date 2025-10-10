@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test RLS - Çetelem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #1e293b;
+            font-size: 20px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+        .test-item.pending {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+        }
+        .test-item.success {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+        }
+        .test-item.error {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+        }
+        .test-icon {
+            font-size: 24px;
+            margin-right: 12px;
+        }
+        .test-content {
+            flex: 1;
+        }
+        .test-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        .test-result {
+            font-size: 13px;
+            color: #64748b;
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 16px;
+            transition: background 0.2s;
+        }
+        .test-button:hover {
+            background: #5568d3;
+        }
+        .test-button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        .stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .stat-card {
+            flex: 1;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        .success .stat-number { color: #10b981; }
+        .error .stat-number { color: #ef4444; }
+        .pending .stat-number { color: #f59e0b; }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Test Row Level Security (RLS)</h1>
+
+        <div class="test-section">
+            <h2>📊 Résumé</h2>
+            <div class="stats">
+                <div class="stat-card success">
+                    <div class="stat-number" id="successCount">0</div>
+                    <div class="stat-label">Réussis</div>
+                </div>
+                <div class="stat-card error">
+                    <div class="stat-number" id="errorCount">0</div>
+                    <div class="stat-label">Échecs</div>
+                </div>
+                <div class="stat-card pending">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+            <button class="test-button" onclick="runAllTests()">🚀 Lancer tous les tests</button>
+        </div>
+
+        <div class="test-section">
+            <h2>1. Test Table: groups</h2>
+            <div id="test-groups"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Test Table: participants</h2>
+            <div id="test-participants"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Test Table: device_backups</h2>
+            <div id="test-backups"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. Test Table: analytics_events</h2>
+            <div id="test-analytics"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Logs</h2>
+            <pre id="logs"></pre>
+        </div>
+    </div>
+
+    <!-- Chargement des scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../src/config/env.local.js"></script>
+    <script src="../src/config/env.js"></script>
+
+    <script>
+        // Initialiser Supabase
+        const supabaseClient = supabase.createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY);
+
+        // Stats
+        let stats = { success: 0, error: 0, total: 0 };
+
+        // Logger
+        function log(message) {
+            const logsEl = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            logsEl.textContent += `[${timestamp}] ${message}\n`;
+            logsEl.scrollTop = logsEl.scrollHeight;
+        }
+
+        // Mettre à jour les stats
+        function updateStats() {
+            document.getElementById('successCount').textContent = stats.success;
+            document.getElementById('errorCount').textContent = stats.error;
+            document.getElementById('totalCount').textContent = stats.total;
+        }
+
+        // Créer un élément de test
+        function createTestItem(name, status = 'pending', result = 'En attente...') {
+            const icons = {
+                pending: '⏳',
+                success: '✅',
+                error: '❌'
+            };
+
+            return `
+                <div class="test-item ${status}">
+                    <div class="test-icon">${icons[status]}</div>
+                    <div class="test-content">
+                        <div class="test-name">${name}</div>
+                        <div class="test-result">${result}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Exécuter un test
+        async function runTest(containerId, name, testFn) {
+            const container = document.getElementById(containerId);
+            stats.total++;
+            updateStats();
+
+            // Afficher en attente
+            container.innerHTML += createTestItem(name, 'pending', 'En cours...');
+            log(`▶ Test: ${name}`);
+
+            try {
+                const result = await testFn();
+                stats.success++;
+                container.lastElementChild.outerHTML = createTestItem(name, 'success', result);
+                log(`✅ ${name}: ${result}`);
+            } catch (error) {
+                stats.error++;
+                container.lastElementChild.outerHTML = createTestItem(name, 'error', error.message);
+                log(`❌ ${name}: ${error.message}`);
+            }
+
+            updateStats();
+        }
+
+        // Tests pour la table groups
+        async function testGroups() {
+            const container = document.getElementById('test-groups');
+            container.innerHTML = '';
+
+            // Test 1: SELECT
+            await runTest('test-groups', 'SELECT groups', async () => {
+                const { data, error } = await supabaseClient
+                    .from('groups')
+                    .select('*')
+                    .limit(5);
+
+                if (error) throw error;
+                return `${data.length} groupe(s) trouvé(s)`;
+            });
+
+            // Test 2: INSERT
+            await runTest('test-groups', 'INSERT group', async () => {
+                const testCode = 'TEST' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                const { data, error } = await supabaseClient
+                    .from('groups')
+                    .insert({ code: testCode, name: 'Test RLS Group' })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+                return `Groupe créé: ${data.code}`;
+            });
+        }
+
+        // Tests pour la table participants
+        async function testParticipants() {
+            const container = document.getElementById('test-participants');
+            container.innerHTML = '';
+
+            // Test 1: SELECT
+            await runTest('test-participants', 'SELECT participants', async () => {
+                const { data, error } = await supabaseClient
+                    .from('participants')
+                    .select('*')
+                    .limit(5);
+
+                if (error) throw error;
+                return `${data.length} participant(s) trouvé(s)`;
+            });
+
+            // Test 2: INSERT
+            await runTest('test-participants', 'INSERT participant', async () => {
+                // D'abord créer un groupe
+                const testCode = 'PT' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                const { data: group, error: groupError } = await supabaseClient
+                    .from('groups')
+                    .insert({ code: testCode, name: 'Test Participant Group' })
+                    .select()
+                    .single();
+
+                if (groupError) throw groupError;
+
+                // Puis créer le participant
+                const { data, error } = await supabaseClient
+                    .from('participants')
+                    .insert({
+                        group_id: group.id,
+                        name: 'Test User',
+                        today_count: 0,
+                        week_count: 0,
+                        total_count: 0,
+                        joined_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+                return `Participant créé: ${data.name}`;
+            });
+
+            // Test 3: UPDATE
+            await runTest('test-participants', 'UPDATE participant', async () => {
+                // Récupérer un participant existant
+                const { data: participants, error: selectError } = await supabaseClient
+                    .from('participants')
+                    .select('*')
+                    .limit(1)
+                    .single();
+
+                if (selectError || !participants) throw new Error('Aucun participant trouvé');
+
+                // Mettre à jour
+                const { data, error } = await supabaseClient
+                    .from('participants')
+                    .update({ today_count: 999 })
+                    .eq('id', participants.id)
+                    .select()
+                    .single();
+
+                if (error) throw error;
+                return `Score mis à jour: ${data.today_count}`;
+            });
+        }
+
+        // Tests pour device_backups
+        async function testDeviceBackups() {
+            const container = document.getElementById('test-backups');
+            container.innerHTML = '';
+
+            // Test 1: INSERT
+            await runTest('test-backups', 'INSERT backup', async () => {
+                const testCode = 'BK' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+                const { data, error } = await supabaseClient
+                    .from('device_backups')
+                    .insert({
+                        backup_code: testCode,
+                        backup_data: { test: true, categories: [] },
+                        expires_at: expiresAt
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+                return `Backup créé: ${data.backup_code}`;
+            });
+
+            // Test 2: SELECT (seulement non expirés)
+            await runTest('test-backups', 'SELECT backups actifs', async () => {
+                const { data, error } = await supabaseClient
+                    .from('device_backups')
+                    .select('*')
+                    .gt('expires_at', new Date().toISOString())
+                    .limit(5);
+
+                if (error) throw error;
+                return `${data.length} backup(s) actif(s)`;
+            });
+        }
+
+        // Tests pour analytics_events
+        async function testAnalytics() {
+            const container = document.getElementById('test-analytics');
+            container.innerHTML = '';
+
+            // Test 1: INSERT event
+            await runTest('test-analytics', 'INSERT analytics event', async () => {
+                const { data, error } = await supabaseClient
+                    .from('analytics_events')
+                    .insert({
+                        event_name: 'test_rls',
+                        event_data: { test: true },
+                        created_at: new Date().toISOString()
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+                return `Événement enregistré: ${data.event_name}`;
+            });
+        }
+
+        // Lancer tous les tests
+        async function runAllTests() {
+            stats = { success: 0, error: 0, total: 0 };
+            document.getElementById('logs').textContent = '';
+            log('🚀 Démarrage des tests RLS...\n');
+
+            await testGroups();
+            await testParticipants();
+            await testDeviceBackups();
+            await testAnalytics();
+
+            log(`\n📊 Résultat final: ${stats.success}/${stats.total} tests réussis`);
+
+            if (stats.success === stats.total) {
+                log('🎉 Tous les tests sont passés! RLS fonctionne correctement.');
+            } else {
+                log(`⚠️ ${stats.error} test(s) échoué(s). Vérifiez les politiques RLS.`);
+            }
+        }
+    </script>
+</body>
+</html>
