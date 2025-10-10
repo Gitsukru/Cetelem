@@ -40,5 +40,8 @@
     "testMatch": [
       "**/tests/**/*.test.js"
     ]
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.75.0"
   }
 }

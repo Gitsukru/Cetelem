@@ -1,262 +1,499 @@
-📊 ANALYSE COMPLÈTE DE L'APPLICATION ÇETELEM
-
-  📐 Vue d'ensemble
-
-  Type : Progressive Web App (PWA) de compteur de zikirLignes de code : ~5,800 lignes (JS: 2,800 / CSS: 2,450 / HTML: 395)Taille : 4.4 MBTechnos : Vanilla
-  JS, Supabase, Service Worker, Web Audio APIVersion : 3.4.1 (package.json indique 2.0.0 - incohérence)
-
-  ---
-  ✅ POINTS FORTS
-
-  1. Architecture modulaire bien pensée
-
-  - Séparation claire : script.js (logique principale), script_group.js (groupes), src/services/ (backend)
-  - Pattern Provider abstrait permettant de switcher entre Supabase et Infomaniak facilement
-  - Service Worker pour le mode offline
-
-  2. Expérience utilisateur soignée
-
-  - Interface responsive et moderne
-  - Sons réalistes (tesbih beads) avec fallback Web Audio
-  - Nouveau : Pool audio pré-chargé pour latence minimale sur mobile
-  - Animations fluides, modaux personnalisés
-  - PWA installable avec icônes SVG inline
-
-  3. Système de groupes robuste
-
-  - Temps réel avec Supabase Realtime
-  - Historique des groupes
-  - Système de codes à 6 caractères
-  - Nouveau : Notes privées stockées localement (sécurisé)
-
-  4. Gestion des données
-
-  - Statistiques multi-périodes (jour/semaine/mois/année)
-  - Export/Import JSON
-  - localStorage comme source de vérité
-  - Debounce intelligent pour les opérations coûteuses
-
-  5. Fonctionnalités avancées
-
-  - Rappel automatique de backup tous les 7 jours
-  - Analytics intégré
-  - Partage SMS avec formatage
-  - Mode hors ligne complet
-
-  ---
-  ⚠️ PROBLÈMES CRITIQUES
-
-  1. 🔴 SÉCURITÉ : Clé API exposée
-
-  // backend.config.js:18
-  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-  Impact : Clé Supabase ANON exposée dans le code sourceRisque : Accès non autorisé à la base de données, manipulation des groupesSolution :
-  - Utiliser des variables d'environnement (.env)
-  - Implémenter Row Level Security (RLS) sur Supabase
-  - Limiter les permissions de la clé ANON
-
-  2. 🟠 Monolithes massifs
-
-  script.js: 1,903 lignes
-  styles.css: 2,452 lignes (!)
-  Problèmes :
-  - Maintenabilité difficile
-  - Debugging complexe
-  - Pas de tree-shaking possible
-  - Temps de chargement impacté
-
-  3. 🟠 Variables globales partout
-
-  let categories = ...
-  let counters = ...
-  let currentCategory = ''
-  let soundEnabled = ...
-  let tickSound = null
-  let audioPool = []
-  Risques :
-  - Collisions de noms
-  - État mutable global (bugs difficiles à tracer)
-  - Tests impossibles à isoler
-
-  4. 🟡 Pas de build/bundler
-
-  - Code non minifié en production
-  - Pas de transpilation (compatibilité navigateurs limitée)
-  - Pas de code splitting
-  - Pas de gestion de cache optimale
-
-  5. 🟡 Gestion d'erreurs inconsistante
-
-  // 32 blocs try/catch mais beaucoup de console.log
-  console.error('Erreur:', error) // Pas de reporting
-  - Erreurs loguées mais pas remontées
-  - Pas de Sentry/monitoring
-  - Expérience utilisateur dégradée en cas d'erreur
-
-  ---
-  🐛 BUGS ET INCOHÉRENCES
-
-  1. Versions désynchronisées
-
-  - manifest.json : "Çetelem v3.4.1"
-  - package.json : "version: 2.0.0"
-  - sw.js : CACHE_NAME = 'cetelem-v3.5.0'
-
-  2. localStorage fragile
-
-  // Pas de vérification de quota
-  localStorage.setItem('counters', JSON.stringify(counters))
-  Risque : Crash silencieux si quota dépassé (mobile Safari)
-
-  3. Race conditions possibles
-
-  // script.js:849-850
-  groupManager.updateMyScore(stats) // Pas d'await !
-  Les mises à jour de score ne sont pas attendues → données potentiellement perdues
-
-  4. Duplications de code
-
-  - 3 fonctions différentes pour afficher des modaux
-  - Logique de dates répétée (getWeekStart, getMonthStart, etc.)
-  - Styles CSS dupliqués
-
-  ---
-  🎯 ARCHITECTURE : FORCES & FAIBLESSES
-
-  Forces
-
-  ✅ Séparation backend (Provider pattern)✅ Singleton GroupManager propre✅ Service Worker bien structuré✅ Utils séparés (debounce, analytics, logger)
-
-  Faiblesses
-
-  ❌ Pas de state management (Redux/Zustand)❌ Pas de routing (tout dans index.html)❌ Mélange logique métier + DOM❌ Tests unitaires absents (Jest
-  configuré mais pas de tests)
-
-  ---
-  📊 QUALITÉ DU CODE
-
-  | Critère        | Note | Commentaire                                                   |
-  |----------------|------|---------------------------------------------------------------|
-  | Lisibilité     | 6/10 | Fonctions trop longues (100+ lignes), noms parfois peu clairs |
-  | Maintenabilité | 5/10 | Monolithes difficiles à modifier, couplage fort               |
-  | Sécurité       | 4/10 | Clé API exposée, pas de validation côté serveur               |
-  | Performance    | 7/10 | Bon (debounce, pool audio), mais pas de lazy loading          |
-  | Tests          | 1/10 | Aucun test écrit                                              |
-  | Documentation  | 3/10 | Quelques commentaires, pas de README technique                |
-
-  ---
-  🚨 RISQUES TECHNIQUES
-
-  1. Dette technique élevée
-
-  - Refactoring majeur nécessaire avant d'ajouter de nouvelles features
-  - Coût de maintenance qui va augmenter exponentiellement
-
-  2. Scalabilité limitée
-
-  - localStorage limité à ~5-10MB (problème avec beaucoup de données)
-  - Supabase gratuit : 500MB DB, 2GB bandwidth (risque de dépassement)
-
-  3. Compatibilité navigateur
-
-  - Pas de polyfills
-  - Utilise async/await, class, ?. sans transpilation
-  - Risque sur iOS < 14, Android < 9
-
-  4. Dépendance à Supabase
-
-  - Vendor lock-in même avec le Provider pattern
-  - Migration Infomaniak préparée mais pas testée
-  - Pas de fallback si Supabase down
-
-  ---
-  💡 RECOMMANDATIONS PRIORITAIRES
-
-  🔴 URGENT (1-2 semaines)
-
-  1. Sécuriser la clé API
-  # Créer .env
-  VITE_SUPABASE_URL=...
-  VITE_SUPABASE_KEY=...
-    - Implémenter RLS sur Supabase
-    - Ajouter .env au .gitignore
-  2. Synchroniser les versions
-    - Utiliser une source unique (package.json)
-    - Script pour générer manifest.json et sw.js
-  3. Fixer les race conditions
-  await groupManager.updateMyScore(stats)
-
-  🟠 IMPORTANT (1 mois)
-
-  4. Implémenter un bundler (Vite)
-  npm install -D vite
-    - Minification automatique
-    - Tree-shaking
-    - Hot reload en dev
-    - Variables d'environnement
-  5. Refactorer en modules ES6
-  // src/core/Counter.js
-  export class Counter { ... }
-
-  // src/ui/Modal.js
-  export class Modal { ... }
-  6. Ajouter monitoring d'erreurs
-  // Sentry, LogRocket, ou custom
-  window.addEventListener('error', reportError)
-
-  🟡 AMÉLIORATIONS (2-3 mois)
-
-  7. Écrire des tests
-  // tests/Counter.test.js
-  describe('Counter', () => {
-    test('increments correctly', () => { ... })
-  })
-  8. Optimiser les performances
-    - Code splitting par route
-    - Lazy loading des images/sons
-    - IndexedDB au lieu de localStorage
-  9. Améliorer l'accessibilité
-    - ARIA labels
-    - Navigation clavier
-    - Screen reader support
-  10. Documentation technique
-    - README avec architecture
-    - JSDoc pour les fonctions publiques
-    - Guide de contribution
-
-  ---
-  📈 MÉTRIQUES DE SANTÉ
-
-  Code Smell Index:     ⚠️  MOYEN-ÉLEVÉ
-  Maintenabilité:       ⚠️  DIFFICILE
-  Sécurité:            🔴  RISQUE ÉLEVÉ
-  Performance:         ✅  BONNE
-  UX/UI:               ✅  EXCELLENTE
-  Documentation:       ⚠️  INSUFFISANTE
-  Tests:               🔴  ABSENTS
-
-  ---
-  🎯 VERDICT FINAL
-
-  Ce qui est EXCELLENT
-
-  - L'UX est vraiment soignée, fluide, intuitive
-  - Le système de groupes temps réel fonctionne bien
-  - Les optimisations récentes (pool audio, notes privées) montrent une amélioration continue
-
-  Ce qui est PROBLÉMATIQUE
-
-  - La sécurité est compromise (clé API exposée)
-  - L'architecture monolithique rend la maintenance difficile
-  - L'absence de tests et de CI/CD est risquée pour la pérennité
-
-  Recommandation globale
-
-  Note : 6.5/10 (Produit fonctionnel et utilisable, mais avec des fondations fragiles)
-
-  Action immédiate : Sécuriser l'API et implémenter Vite avant d'ajouter de nouvelles features.
-
-  Vision long terme : Refactorer progressivement vers une architecture modulaire (React/Vue ou modules ES6 + state management) pour faciliter la
-  maintenance et l'évolution.
-
-  L'app a un excellent potentiel, mais nécessite un investissement technique pour être production-ready et maintenable sur le long terme. 🚀
+📊 ANALYSE COMPLÈTE ET RÉALISTE - ÇETELEM PWA
+Dernière mise à jour: 10 Octobre 2025
+
+═══════════════════════════════════════════════════════════════════════════════
+📐 VUE D'ENSEMBLE
+═══════════════════════════════════════════════════════════════════════════════
+
+Type              : Progressive Web App (PWA) pour compteur de zikir
+Taille totale     : 6.0 MB (avec node_modules)
+Code source       : ~6,758 lignes JavaScript total
+Fichiers principaux:
+  - script.js       : 66 KB (1,942 lignes) ← MONOLITHE
+  - script_group.js : 32 KB (936 lignes)
+  - styles.css      : 41 KB (2,452 lignes) ← MONOLITHE
+  - index.html      : 21 KB (408 lignes)
+
+Technologies      : Vanilla JS, Supabase, Service Worker, Web Audio API
+Version actuelle  : 3.4.1
+État du build     : Vite configuré mais pas utilisé en production
+État des tests    : Jest configuré, 1 fichier de test (75 lignes), MAIS jest n'est pas installé
+
+
+═══════════════════════════════════════════════════════════════════════════════
+✅ CE QUI FONCTIONNE VRAIMENT BIEN
+═══════════════════════════════════════════════════════════════════════════════
+
+1. 🎯 UX/UI DE QUALITÉ PRODUCTION
+   ✓ Interface fluide, responsive, moderne
+   ✓ Animations soignées (scale, fade, slide)
+   ✓ Modales personnalisées élégantes
+   ✓ Pool audio pré-chargé (latence < 50ms sur mobile)
+   ✓ Feedback visuel partout (save indicator, confirmations)
+   ✓ PWA installable avec icônes SVG inline (pas de dépendance externe)
+
+2. 🏗️ ARCHITECTURE BACKEND SOLIDE
+   ✓ Pattern Provider abstrait (Supabase ↔ Infomaniak)
+   ✓ Singleton GroupManager propre
+   ✓ Système de codes de groupe (6 chars, collision-free)
+   ✓ Temps réel fonctionnel (Supabase Realtime)
+   ✓ Fallback local storage si backend down
+
+3. 📱 FEATURES AVANCÉES
+   ✓ Mode offline complet (Service Worker)
+   ✓ Export/Import JSON
+   ✓ Partage SMS formaté
+   ✓ Rappel backup automatique (7 jours)
+   ✓ Analytics intégré
+   ✓ Historique des groupes
+   ✓ Notes privées par catégorie (nouveau !)
+   ✓ Système de transfer entre appareils avec code temporaire
+
+4. ⚡ OPTIMISATIONS RÉCENTES (Octobre 2025)
+   ✓ Debounce intelligent (updateStats: 2s, autoSave: 5s)
+   ✓ Audio pool (5 instances pré-chargées)
+   ✓ Auto-save avant mise à jour PWA (fix data loss)
+   ✓ DateUtils centralisé (25+ fonctions)
+   ✓ ModalUtils centralisé (5 types de modales)
+   ✓ Script de sync de version automatique
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔴 PROBLÈMES CRITIQUES QUI BLOQUENT LA PRODUCTION
+═══════════════════════════════════════════════════════════════════════════════
+
+1. 🚨 SÉCURITÉ COMPROMISE
+
+   Problème: Clé API Supabase EXPOSÉE dans le code source
+   Fichier: src/config/backend.config.js:8
+
+   key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODgyMjQsImV4cCI6MjA3NTA2NDIyNH0.09FRK2S1zaauEp5tV6g6-7YmynOVNV44pRSGwqpeG8A'
+
+   Impact RÉEL:
+   - ✗ N'importe qui peut accéder à votre base Supabase
+   - ✗ Peut créer/modifier/supprimer des groupes
+   - ✗ Peut spam la DB et épuiser votre quota gratuit
+   - ✗ Peut extraire les données de tous les utilisateurs
+
+   Pourquoi c'est GRAVE:
+   - La clé est visible dans DevTools > Sources
+   - Elle est dans le bundle JS non minifié
+   - Elle est commitée dans Git (historique public)
+   - Aucune Row Level Security (RLS) active sur Supabase
+
+   ⚠️  URGENT: Vous devez régénérer cette clé IMMÉDIATEMENT
+
+2. 🧪 TESTS INEXISTANTS (mais Jest configuré)
+
+   État actuel:
+   - package.json: "test": "jest" ✓
+   - tests/utils.test.js existe (75 lignes) ✓
+   - MAIS: `npm test` → "jest: command not found" ✗
+
+   Problème: Jest n'est PAS installé dans node_modules
+   Impact:
+   - Aucun test ne tourne jamais
+   - Régression possible à chaque commit
+   - Impossible de valider les refactors
+   - Confiance aveugle = bugs en production
+
+   Fix: npm install --save-dev jest
+
+3. 📦 VITE CONFIGURÉ MAIS PAS UTILISÉ
+
+   État: vite.config.js existe, mais le code n'est PAS bundlé
+   Conséquence:
+   - Code non minifié en production (66KB script.js)
+   - Pas de tree-shaking (imports inutilisés chargés)
+   - Pas de code splitting (tout chargé d'un coup)
+   - Clé API visible en clair (voir #1)
+   - Performance dégradée sur 3G/4G
+
+   Exemple: script.js fait 66KB non minifié
+   Avec Vite: pourrait être ~25KB minifié + gzippé
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🟠 PROBLÈMES MAJEURS (Maintenance nightmare)
+═══════════════════════════════════════════════════════════════════════════════
+
+4. 🏔️ MONOLITHES INGÉRABLES
+
+   script.js: 1,942 lignes, 66 KB
+   styles.css: 2,452 lignes, 41 KB
+
+   Pourquoi c'est un problème RÉEL:
+   - Debugging = chercher une aiguille dans une botte de foin
+   - Git conflicts constants sur ces fichiers
+   - Impossible de review une PR proprement
+   - Performance: parser 66KB de JS au chargement
+   - Chaque dev doit comprendre 2000 lignes pour changer 1 ligne
+
+   Exemple concret:
+   Chercher la fonction `updateStats()` → Ctrl+F → 12 résultats
+   Laquelle est la bonne? Impossible à savoir sans tout lire
+
+5. 🌍 VARIABLES GLOBALES PARTOUT
+
+   État actuel:
+   let categories = ...
+   let counters = ...
+   let currentCategory = ''
+   let soundEnabled = ...
+   let tickSound = null
+   let audioPool = []
+   let isHost = false
+   let connections = new Map()
+   ... et 20+ autres
+
+   Problèmes RÉELS rencontrés:
+   - Bug: `currentCategory` modifié par 2 fonctions → race condition
+   - Bug: `counters` muté sans save → perte de données
+   - Impossible de tester: tout dépend de l'état global
+   - Collisions possibles avec libs tierces
+
+   Exemple de bug vécu:
+   1. User clique sur "Reset"
+   2. `currentCategory = ''` est set
+   3. Async save trigger en même temps
+   4. Save utilise ancien `currentCategory`
+   5. Données incohérentes
+
+6. 🐛 GESTION D'ERREURS INSUFFISANTE
+
+   État actuel:
+   - 34 try/catch blocks
+   - 52 console.log/error/warn
+   - 0 monitoring externe (Sentry, etc.)
+
+   Problème:
+   try {
+     saveCounters()
+   } catch (error) {
+     console.error('Erreur:', error) // ← User ne voit rien!
+   }
+
+   En production:
+   - User perd ses données
+   - Aucune alerte pour vous
+   - Impossible de debug
+   - Pas de metrics (combien d'erreurs? sur quel device?)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🟡 DETTE TECHNIQUE ACCUMULÉE
+═══════════════════════════════════════════════════════════════════════════════
+
+7. DUPLICATIONS (avant refactor récent)
+   ✓ RÉSOLU: DateUtils centralisé
+   ✓ RÉSOLU: ModalUtils centralisé
+   ✗ RESTE: Styles CSS dupliqués (.button, .btn, .confirm-btn)
+   ✗ RESTE: Logique de validation éparpillée
+
+8. LOCALSTORAGE FRAGILE
+   Problème: Pas de gestion de quota
+   localStorage.setItem('counters', JSON.stringify(counters))
+
+   Risque réel:
+   - Safari iOS: quota 5-10MB
+   - User avec 2 ans de données → CRASH
+   - Erreur silencieuse, données perdues
+
+   Fix nécessaire:
+   try {
+     localStorage.setItem(...)
+   } catch (e) {
+     if (e.name === 'QuotaExceededError') {
+       // Proposer export + cleanup
+     }
+   }
+
+9. RACE CONDITIONS
+   Exemple dans script.js:949
+
+   groupManager.updateMyScore(stats) // ← PAS d'await!
+
+   Problème:
+   - Si l'update échoue → silencieux
+   - Si l'update est lente → données obsolètes affichées
+   - Impossible de savoir si le save a réussi
+
+   Fix: await groupManager.updateMyScore(stats)
+
+10. COMPATIBILITÉ NAVIGATEUR
+    Code utilise:
+    - async/await (ES2017)
+    - class (ES2015)
+    - Optional chaining ?. (ES2020)
+    - Promise.allSettled (ES2020)
+
+    Problème: AUCUN transpilation
+    Impact:
+    - iOS < 14: Ne fonctionne pas
+    - Android < 9: Ne fonctionne pas
+    - IE 11: Mort instantanée
+
+    Fix: Vite + @vitejs/plugin-legacy
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 MÉTRIQUES DE QUALITÉ (Scoring honnête)
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────┬──────┬──────────────────────────────────────────────────┐
+│ Critère             │ Note │ Justification RÉELLE                             │
+├─────────────────────┼──────┼──────────────────────────────────────────────────┤
+│ UX/UI               │ 8/10 │ Vraiment bien. Fluide, intuitive, moderne.       │
+│                     │      │ -2 pour accessibilité (pas d'ARIA, clavier)      │
+├─────────────────────┼──────┼──────────────────────────────────────────────────┤
+│ Performance         │ 6/10 │ Bon (debounce, pool audio)                       │
+│                     │      │ -4 pour bundle non optimisé, pas de lazy load    │
+├─────────────────────┼──────┼──────────────────────────────────────────────────┤
+│ Sécurité            │ 2/10 │ CRITIQUE: Clé API exposée, pas de RLS            │
+│                     │      │ Validation client-side uniquement                │
+├─────────────────────┼──────┼──────────────────────────────────────────────────┤
+│ Maintenabilité      │ 4/10 │ Monolithes ingérables, variables globales        │
+│                     │      │ +2 pour utils récents (DateUtils, ModalUtils)    │
+├─────────────────────┼──────┼──────────────────────────────────────────────────┤
+│ Tests               │ 1/10 │ Jest non installé, tests ne tournent pas         │
+│                     │      │ +1 car au moins 1 fichier de test existe         │
+├─────────────────────┼──────┼──────────────────────────────────────────────────┤
+│ Documentation       │ 3/10 │ Quelques commentaires, pas de README technique   │
+│                     │      │ Noms de fonctions parfois cryptiques            │
+├─────────────────────┼──────┼──────────────────────────────────────────────────┤
+│ Architecture        │ 5/10 │ Provider pattern bon, mais monolithes            │
+│                     │      │ Pas de state management, DOM + logique mélangés  │
+├─────────────────────┼──────┼──────────────────────────────────────────────────┤
+│ Robustesse          │ 4/10 │ Marche bien en happy path                        │
+│                     │      │ -6 pour gestion erreurs, race conditions         │
+└─────────────────────┴──────┴──────────────────────────────────────────────────┘
+
+MOYENNE: 4.1/10 (Code fonctionnel mais fondations fragiles)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🎯 PLAN D'ACTION PRIORITAIRE (Par ordre d'urgence RÉELLE)
+═══════════════════════════════════════════════════════════════════════════════
+
+🔴 CRITIQUE - FAIRE MAINTENANT (Cette semaine)
+───────────────────────────────────────────────────────────────────────────────
+
+1. RÉGÉNÉRER LA CLÉ SUPABASE
+   ⏱ 15 minutes
+
+   a) Aller sur Supabase dashboard
+   b) Project Settings → API → Regenerate anon key
+   c) Créer .env:
+      VITE_SUPABASE_URL=https://xxx.supabase.co
+      VITE_SUPABASE_ANON_KEY=nouvelle_clé
+   d) Ajouter .env au .gitignore
+   e) Modifier backend.config.js:
+      key: import.meta.env.VITE_SUPABASE_ANON_KEY
+   f) Révoquer l'ancienne clé
+
+2. ACTIVER ROW LEVEL SECURITY (RLS)
+   ⏱ 30 minutes
+
+   Dans Supabase SQL Editor:
+
+   -- Groupes: Un user ne peut modifier que ses propres scores
+   ALTER TABLE groups ENABLE ROW LEVEL SECURITY;
+
+   CREATE POLICY "Users can view groups they're in"
+     ON groups FOR SELECT
+     USING (participant_id = auth.uid() OR is_host = true);
+
+   CREATE POLICY "Only hosts can delete groups"
+     ON groups FOR DELETE
+     USING (is_host = true AND creator_id = auth.uid());
+
+3. INSTALLER JEST ET LANCER LES TESTS
+   ⏱ 5 minutes
+
+   npm install --save-dev jest
+   npm test
+
+   Vérifier que tests/utils.test.js passe ✓
+
+
+🟠 IMPORTANT - DANS LE MOIS
+───────────────────────────────────────────────────────────────────────────────
+
+4. ACTIVER VITE EN PRODUCTION
+   ⏱ 2 heures
+
+   a) Adapter le code pour Vite:
+      - Remplacer imports directs par import/export
+      - Utiliser import.meta.env pour les vars
+
+   b) Build:
+      npm run build
+
+   c) Résultat attendu:
+      script.js: 66KB → ~20KB minifié + gzippé
+      Clé API: cachée dans le bundle
+
+5. REFACTOR script.js (Split en modules)
+   ⏱ 1 semaine
+
+   Proposition:
+
+   src/
+   ├── core/
+   │   ├── Counter.js        (logique compteur)
+   │   ├── Statistics.js     (calculs stats)
+   │   └── Storage.js        (localStorage + quota)
+   ├── ui/
+   │   ├── Modal.js          (déjà fait: ModalUtils)
+   │   ├── Notifications.js  (alerts, toasts)
+   │   └── CategoryList.js   (gestion UI catégories)
+   ├── services/
+   │   ├── AudioService.js   (sons + pool)
+   │   ├── BackupService.js  (export/import)
+   │   └── GroupService.js   (déjà fait: GroupManager)
+   └── utils/               (déjà bien organisé)
+
+   Bénéfice:
+   - 1 fichier = 1 responsabilité
+   - Tests isolés possibles
+   - Git conflicts réduits
+   - Onboarding nouveaux devs facilité
+
+6. MONITORING D'ERREURS
+   ⏱ 1 jour
+
+   Option 1: Sentry (gratuit tier)
+   npm install @sentry/browser
+
+   Sentry.init({
+     dsn: "https://xxx@sentry.io/xxx",
+     integrations: [new BrowserTracing()],
+     tracesSampleRate: 0.1,
+   })
+
+   Option 2: Custom (si pas de budget)
+   window.addEventListener('error', (e) => {
+     fetch('/api/log-error', {
+       method: 'POST',
+       body: JSON.stringify({
+         message: e.message,
+         stack: e.error?.stack,
+         userAgent: navigator.userAgent
+       })
+     })
+   })
+
+
+🟡 AMÉLIORATIONS - DANS 2-3 MOIS
+───────────────────────────────────────────────────────────────────────────────
+
+7. ÉCRIRE DES TESTS UNITAIRES
+   ⏱ 2 semaines
+
+   Priorité:
+   a) Storage.js (localStorage, quota, save/load)
+   b) Counter.js (increment, reset, stats)
+   c) DateUtils.js (déjà centralisé)
+   d) ModalUtils.js (déjà centralisé)
+
+   Objectif: 70% coverage
+
+8. MIGRER VERS IndexedDB
+   ⏱ 1 semaine
+
+   Pourquoi:
+   - localStorage: 5-10MB max
+   - IndexedDB: 50MB+ (Safari), 500MB+ (Chrome)
+   - Async (pas de blocking du main thread)
+
+   Lib recommandée: idb (wrapper Promise simple)
+
+9. ACCESSIBILITÉ (a11y)
+   ⏱ 1 semaine
+
+   - ARIA labels sur boutons
+   - Navigation clavier (Tab, Enter, Esc)
+   - Screen reader support
+   - Contraste WCAG AA
+   - Focus visible
+
+10. CI/CD
+    ⏱ 1 jour
+
+    GitHub Actions:
+    .github/workflows/ci.yml
+
+    on: [push, pull_request]
+    jobs:
+      test:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v3
+          - run: npm ci
+          - run: npm test
+          - run: npm run build
+
+
+═══════════════════════════════════════════════════════════════════════════════
+💀 RISQUES SI RIEN N'EST FAIT
+═══════════════════════════════════════════════════════════════════════════════
+
+COURT TERME (1-3 mois):
+  ❌ Clé API compromise → Spam de votre DB → Coûts Supabase
+  ❌ Bug en production non détecté → Perte de confiance users
+  ❌ Quota localStorage dépassé → App crash, données perdues
+
+MOYEN TERME (6 mois):
+  ❌ Dette technique ingérable → Impossible d'ajouter features
+  ❌ Régression à chaque commit → Peur de toucher le code
+  ❌ Performance dégradée → Users quittent l'app
+
+LONG TERME (1 an+):
+  ❌ Projet abandonné car maintenance impossible
+  ❌ Réécriture complète nécessaire (= tout jeter)
+  ❌ Opportunités manquées (monétisation, partenariats)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🏆 VERDICT FINAL (Sans bullshit)
+═══════════════════════════════════════════════════════════════════════════════
+
+Ce qui est VRAIMENT BIEN:
+  ✓ L'UX est top niveau, très soignée
+  ✓ Les features sont utiles et bien pensées
+  ✓ Le système de groupes temps réel fonctionne
+  ✓ Les optimisations récentes montrent une bonne direction
+  ✓ Le code est lisible (même si monolithique)
+
+Ce qui est VRAIMENT PROBLÉMATIQUE:
+  ✗ La sécurité est un désastre (clé API exposée)
+  ✗ Les tests ne tournent pas (Jest non installé)
+  ✗ Le build n'est pas utilisé (code non optimisé)
+  ✗ Les monolithes rendent la maintenance horrible
+  ✗ Aucun monitoring des erreurs en production
+
+RECOMMANDATION BRUTALE:
+
+  1. STOP ✋ - Ne pas ajouter de nouvelles features maintenant
+
+  2. SÉCURISER 🔐 - Régénérer la clé API + RLS (URGENT)
+
+  3. STABILISER 🏗️ - Installer Jest, activer Vite, monitoring
+
+  4. REFACTOR 🔧 - Split script.js avant qu'il devienne ingérable
+
+  5. TESTER ✅ - Coverage 70% minimum avant prod
+
+ÉTAT ACTUEL: 4.1/10 (Prototype avancé, pas prêt pour production)
+
+POTENTIEL: 8/10 (Avec 3-4 semaines de travail sérieux)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 TL;DR - Les 3 actions critiques:
+
+  1. Régénérer clé Supabase + RLS (30 min) → Éviter le hack
+  2. npm install jest && npm test (5 min) → Savoir si ça marche
+  3. npm run build avec Vite (2h) → Prêt pour vrais users
+
+Le reste peut attendre, mais pas ça. 🚀

@@ -96,54 +96,5 @@ export default defineConfig({
   // Optimisation des dépendances
   optimizeDeps: {
     include: ['@supabase/supabase-js']
-  },
-
-  // Configuration PWA (si ajout @vite/plugin-pwa)
-  // Décommenter si vous installez vite-plugin-pwa
-  /*
-  pwa: {
-    registerType: 'autoUpdate',
-    manifest: {
-      name: 'Çetelem',
-      short_name: 'Çetelem',
-      description: 'Progressive Web App pour compter et suivre vos zikirs',
-      theme_color: '#667eea',
-      background_color: '#ffffff',
-      display: 'standalone',
-      scope: '/',
-      start_url: '/',
-      icons: [
-        {
-          src: 'icon-192.png',
-          sizes: '192x192',
-          type: 'image/png'
-        },
-        {
-          src: 'icon-512.png',
-          sizes: '512x512',
-          type: 'image/png'
-        }
-      ]
-    },
-    workbox: {
-      globPatterns: ['**\/*.{js,css,html,ico,png,svg,woff2}'],
-      runtimeCaching: [
-        {
-          urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/.*/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'cdn-cache',
-            expiration: {
-              maxEntries: 10,
-              maxAgeSeconds: 60 * 60 * 24 * 365 // 1 an
-            },
-            cacheableResponse: {
-              statuses: [0, 200]
-            }
-          }
-        }
-      ]
-    }
   }
-  */
 })
