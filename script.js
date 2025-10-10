@@ -519,27 +519,83 @@ function getStatisticsForCategory(category) {
 // Sauvegardes
 function saveCategories() {
     try {
-        localStorage.setItem('categories', JSON.stringify(categories));
+        const data = JSON.stringify(categories);
+
+        // ⚡ FIX: Vérifier quota avant sauvegarde
+        if (!checkStorageQuota(data)) {
+            showCustomAlert('⚠️ Stockage presque plein!<br>Exportez vos données pour libérer de l\'espace', 'warning', 5000);
+            return false;
+        }
+
+        localStorage.setItem('categories', data);
         localStorage.setItem('lastSave', new Date().toISOString());
         showSaveIndicator();
         updateSaveStatus();
         return true;
     } catch (error) {
         console.error('Erreur sauvegarde catégories:', error);
+
+        // ⚡ FIX: Gestion spécifique QuotaExceededError
+        if (error.name === 'QuotaExceededError') {
+            showCustomAlert('❌ Stockage plein!<br>Veuillez exporter et supprimer des anciennes données', 'error', 6000);
+        }
         return false;
     }
 }
 
 function saveCounters() {
     try {
-        localStorage.setItem('counters', JSON.stringify(counters));
+        const data = JSON.stringify(counters);
+
+        // ⚡ FIX: Vérifier quota avant sauvegarde
+        if (!checkStorageQuota(data)) {
+            showCustomAlert('⚠️ Stockage presque plein!<br>Exportez vos données pour libérer de l\'espace', 'warning', 5000);
+            return false;
+        }
+
+        localStorage.setItem('counters', data);
         localStorage.setItem('lastSave', new Date().toISOString());
         showSaveIndicator();
         updateSaveStatus();
         return true;
     } catch (error) {
         console.error('Erreur sauvegarde compteurs:', error);
+
+        // ⚡ FIX: Gestion spécifique QuotaExceededError
+        if (error.name === 'QuotaExceededError') {
+            showCustomAlert('❌ Stockage plein!<br>Veuillez exporter et supprimer des anciennes données', 'error', 6000);
+        }
         return false;
+    }
+}
+
+// ⚡ FIX: Vérifier quota localStorage
+function checkStorageQuota(newData) {
+    try {
+        // Estimer l'utilisation actuelle
+        let currentSize = 0;
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+                currentSize += localStorage[key].length + key.length;
+            }
+        }
+
+        const newDataSize = newData.length;
+        const estimatedTotal = currentSize + newDataSize;
+
+        // Limite typique: 5MB = 5,242,880 bytes
+        // Alerter si > 80% (4MB)
+        const LIMIT = 4 * 1024 * 1024;
+
+        if (estimatedTotal > LIMIT) {
+            console.warn(`localStorage proche de la limite: ${(estimatedTotal / 1024 / 1024).toFixed(2)}MB`);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Erreur vérification quota:', error);
+        return true; // Continuer en cas d'erreur de vérification
     }
 }
 
@@ -877,7 +933,10 @@ function incrementCounter() {
         // Update group count with new GroupManager system
         if (groupManager && groupManager.hasActiveGroup()) {
             const stats = getCurrentUserStats()
-            groupManager.updateMyScore(stats)
+            // ⚡ FIX: Await pour éviter race condition
+            groupManager.updateMyScore(stats).catch(err => {
+                console.error('Erreur mise à jour score:', err)
+            })
         }
 
         // Animation du bouton

@@ -1,6 +1,6 @@
 {
   "name": "zikirmatik",
-  "version": "2.0.0",
+  "version": "3.4.1",
   "description": "PWA pour compteur de zikir avec système de groupe en temps réel",
   "scripts": {
     "test": "jest",

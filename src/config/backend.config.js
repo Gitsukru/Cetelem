@@ -1,29 +1,36 @@
 /**
  * Configuration centralisée du backend
  *
+ * ⚡ SÉCURISÉ: Les clés API sont maintenant chargées depuis ENV
+ *
  * 🔧 POUR CHANGER DE PROVIDER:
- * 1. Modifie ACTIVE_PROVIDER ('supabase' ou 'infomaniak')
- * 2. Remplis les credentials du provider choisi
+ * 1. Modifie ACTIVE_PROVIDER dans .env ou src/config/env.js
+ * 2. Remplis les credentials dans .env
  * 3. C'est tout ! Le reste s'adapte automatiquement
  */
 
 const BackendConfig = {
-  // 🎯 PROVIDER ACTIF
-  // Change cette ligne pour basculer de Supabase à Infomaniak
-  ACTIVE_PROVIDER: 'supabase', // 'supabase' | 'infomaniak'
+  // 🎯 PROVIDER ACTIF (chargé depuis ENV)
+  get ACTIVE_PROVIDER() {
+    return typeof ENV !== 'undefined' ? ENV.ACTIVE_PROVIDER : 'supabase'
+  },
 
   // ☁️ SUPABASE (Actuel - Gratuit)
-  supabase: {
-    url: 'https://sxtcyznkxtlcgkgrdrbi.supabase.co',
-    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODgyMjQsImV4cCI6MjA3NTA2NDIyNH0.09FRK2S1zaauEp5tV6g6-7YmynOVNV44pRSGwqpeG8A',
-    enabled: true
+  get supabase() {
+    return {
+      url: typeof ENV !== 'undefined' ? ENV.SUPABASE_URL : 'https://sxtcyznkxtlcgkgrdrbi.supabase.co',
+      key: typeof ENV !== 'undefined' ? ENV.SUPABASE_ANON_KEY : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODgyMjQsImV4cCI6MjA3NTA2NDIyNH0.09FRK2S1zaauEp5tV6g6-7YmynOVNV44pRSGwqpeG8A',
+      enabled: true
+    }
   },
 
   // 🇨🇭 INFOMANIAK (Futur - Migration)
-  infomaniak: {
-    apiUrl: '', // À remplir: https://api-zikirmatik.jelastic.infomaniak.com
-    apiKey: '', // À remplir: ton API key
-    enabled: false
+  get infomaniak() {
+    return {
+      apiUrl: typeof ENV !== 'undefined' ? ENV.INFOMANIAK_API_URL : '',
+      apiKey: typeof ENV !== 'undefined' ? ENV.INFOMANIAK_API_KEY : '',
+      enabled: false
+    }
   },
 
   /**
