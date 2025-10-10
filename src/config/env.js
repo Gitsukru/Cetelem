@@ -1,27 +1,47 @@
 /**
  * ⚡ Chargement des variables d'environnement
  *
- * En développement avec bundler (Vite/Webpack):
- *   - Les variables sont injectées via import.meta.env ou process.env
+ * 🔧 MODE HYBRIDE:
+ * - Avec Vite (npm run dev/build): Charge depuis .env via import.meta.env
+ * - Sans Vite (index.html direct): Charge depuis window.__ENV__ injecté par un script
  *
- * En production sans bundler (comme actuellement):
- *   - Fallback sur les valeurs codées en dur
- *   - IMPORTANT: Ne jamais commit .env avec de vraies valeurs
+ * ⚠️  SÉCURITÉ:
+ * - Ne JAMAIS commit de vraies clés API dans ce fichier
+ * - Les vraies valeurs sont dans .env (déjà dans .gitignore)
+ * - En production, injecter les variables via script ou serveur
  */
 
 const ENV = {
   // Détection de l'environnement
   isDevelopment: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
 
-  // Charger depuis import.meta.env (Vite) ou fallback
+  // ⚡ Support Vite (avec bundler) OU injection manuelle (sans bundler)
   get SUPABASE_URL() {
-    return typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL
-      || 'https://sxtcyznkxtlcgkgrdrbi.supabase.co'
+    // Mode 1: Vite (import.meta.env)
+    if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL) {
+      return import.meta.env.VITE_SUPABASE_URL;
+    }
+
+    // Mode 2: Injection manuelle (window.__ENV__)
+    if (typeof window !== 'undefined' && window.__ENV__?.SUPABASE_URL) {
+      return window.__ENV__.SUPABASE_URL;
+    }
+
+    throw new Error('❌ SUPABASE_URL manquant! Configurez soit .env (Vite) soit window.__ENV__ (sans Vite)');
   },
 
   get SUPABASE_ANON_KEY() {
-    return typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_ANON_KEY
-      || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODgyMjQsImV4cCI6MjA3NTA2NDIyNH0.09FRK2S1zaauEp5tV6g6-7YmynOVNV44pRSGwqpeG8A'
+    // Mode 1: Vite (import.meta.env)
+    if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_ANON_KEY) {
+      return import.meta.env.VITE_SUPABASE_ANON_KEY;
+    }
+
+    // Mode 2: Injection manuelle (window.__ENV__)
+    if (typeof window !== 'undefined' && window.__ENV__?.SUPABASE_ANON_KEY) {
+      return window.__ENV__.SUPABASE_ANON_KEY;
+    }
+
+    throw new Error('❌ SUPABASE_ANON_KEY manquant! Configurez soit .env (Vite) soit window.__ENV__ (sans Vite)');
   },
 
   get INFOMANIAK_API_URL() {
@@ -40,13 +60,8 @@ const ENV = {
   }
 }
 
-// ⚠️ Avertissement en développement si variables manquantes
-if (ENV.isDevelopment) {
-  if (!ENV.SUPABASE_URL || !ENV.SUPABASE_ANON_KEY) {
-    console.warn('⚠️ Variables d\'environnement manquantes. Utilisation des valeurs par défaut.')
-    console.warn('💡 Créez un fichier .env basé sur .env.example')
-  }
-}
+// ✅ Les variables sont maintenant vérifiées dans les getters ci-dessus
+// Si elles manquent, une erreur sera lancée immédiatement
 
 // Export
 if (typeof module !== 'undefined' && module.exports) {

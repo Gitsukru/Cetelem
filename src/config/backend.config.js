@@ -17,19 +17,25 @@ const BackendConfig = {
 
   // ☁️ SUPABASE (Actuel - Gratuit)
   get supabase() {
+    if (typeof ENV === 'undefined') {
+      throw new Error('❌ ENV non défini! Vérifiez que env.js est chargé avant backend.config.js');
+    }
     return {
-      url: typeof ENV !== 'undefined' ? ENV.SUPABASE_URL : 'https://sxtcyznkxtlcgkgrdrbi.supabase.co',
-      key: typeof ENV !== 'undefined' ? ENV.SUPABASE_ANON_KEY : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODgyMjQsImV4cCI6MjA3NTA2NDIyNH0.09FRK2S1zaauEp5tV6g6-7YmynOVNV44pRSGwqpeG8A',
+      url: ENV.SUPABASE_URL,  // Lèvera une erreur si manquant
+      key: ENV.SUPABASE_ANON_KEY,  // Lèvera une erreur si manquant
       enabled: true
     }
   },
 
   // 🇨🇭 INFOMANIAK (Futur - Migration)
   get infomaniak() {
+    if (typeof ENV === 'undefined') {
+      throw new Error('❌ ENV non défini! Vérifiez que env.js est chargé avant backend.config.js');
+    }
     return {
-      apiUrl: typeof ENV !== 'undefined' ? ENV.INFOMANIAK_API_URL : '',
-      apiKey: typeof ENV !== 'undefined' ? ENV.INFOMANIAK_API_KEY : '',
-      enabled: false
+      apiUrl: ENV.INFOMANIAK_API_URL || '',
+      apiKey: ENV.INFOMANIAK_API_KEY || '',
+      enabled: false  // Désactivé pour l'instant
     }
   },
 

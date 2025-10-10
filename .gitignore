@@ -16,6 +16,9 @@ node_modules/
 .env
 .env.local
 
+# Fichiers de configuration générés (contiennent des clés API)
+src/config/env.local.js
+
 # Tests
 coverage/
 *.test.js.snap
