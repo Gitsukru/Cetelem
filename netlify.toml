@@ -43,9 +43,9 @@
     Content-Type = "application/manifest+json"
 
 # Redirect all 404s to index.html for SPA behavior
-# (mais pas les fichiers qui existent réellement)
+# Ne pas forcer la redirection si le fichier existe
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  force = false  # Ne pas rediriger si le fichier existe
+  force = false
