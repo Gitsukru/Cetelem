@@ -7,6 +7,31 @@
     text-align: center;
     margin: 10px 0;
     margin-top: -20px;
+    position: relative;
+}
+
+/* Décoration tesbih autour du compteur */
+.counter-display::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    height: 450px;
+    background-image: url('/tesbih.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* S'assurer que le bouton est au-dessus */
+.counter-button {
+    position: relative;
+    z-index: 1;
 }
 
 .counter-number {
