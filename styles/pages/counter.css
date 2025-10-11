@@ -17,20 +17,21 @@
 
 /* Décoration tesbih - Image HTML */
 .tesbih-decoration {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 500px;
-    height: 500px;
-    max-width: 90vw;
-    max-height: 90vw;
-    opacity: 0.6;
-    pointer-events: none;
-    z-index: 0;
-    object-fit: contain;
-    filter: blur(1px) brightness(1.1);
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 500px !important;
+    height: 500px !important;
+    max-width: 90vw !important;
+    max-height: 90vw !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    object-fit: contain !important;
     border: 5px solid red !important;
+    background: yellow !important;
+    display: block !important;
 }
 
 /* S'assurer que le bouton est au-dessus */
