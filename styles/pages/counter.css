@@ -30,7 +30,7 @@
     z-index: 0;
     object-fit: contain;
     filter: blur(1px) brightness(1.1);
-    /* DEBUG: border: 3px solid red; */
+    border: 5px solid red !important;
 }
 
 /* S'assurer que le bouton est au-dessus */
