@@ -15,27 +15,29 @@
     justify-content: center;
 }
 
-/* Décoration tesbih - Image HTML */
+/* Décoration tesbih - Image HTML - VISIBLE AUTOUR DU BOUTON */
 .tesbih-decoration {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 500px;
-    height: 500px;
-    max-width: 90vw;
-    max-height: 90vw;
-    opacity: 0.5;
-    pointer-events: none;
-    z-index: 0;
-    object-fit: contain;
-    filter: blur(1px) brightness(1.1) drop-shadow(0 0 20px rgba(102, 126, 234, 0.3));
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 550px !important;
+    height: 550px !important;
+    max-width: 95vw !important;
+    max-height: 95vw !important;
+    opacity: 0.7 !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    object-fit: contain !important;
+    filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.5)) brightness(1.2) !important;
+    display: block !important;
+    visibility: visible !important;
 }
 
-/* S'assurer que le bouton est au-dessus */
+/* S'assurer que le bouton est au-dessus mais plus petit pour voir le tesbih */
 .counter-button {
-    position: relative;
-    z-index: 1;
+    position: relative !important;
+    z-index: 10 !important;
 }
 
 .counter-number {
