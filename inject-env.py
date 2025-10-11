@@ -7,6 +7,7 @@ Utilisé par netlify-build.sh
 import os
 import sys
 import re
+import json
 
 # Récupérer les variables d'environnement
 supabase_url = os.getenv('VITE_SUPABASE_URL', '')
@@ -15,19 +16,23 @@ infomaniak_url = os.getenv('VITE_INFOMANIAK_API_URL', '')
 infomaniak_key = os.getenv('VITE_INFOMANIAK_API_KEY', '')
 active_provider = os.getenv('VITE_ACTIVE_PROVIDER', 'supabase')
 
+# Créer un objet JSON avec toutes les variables
+env_vars = {
+    'SUPABASE_URL': supabase_url,
+    'SUPABASE_ANON_KEY': supabase_key,
+    'INFOMANIAK_API_URL': infomaniak_url,
+    'INFOMANIAK_API_KEY': infomaniak_key,
+    'ACTIVE_PROVIDER': active_provider
+}
+
 # Lire index.html
 with open('index.html', 'r', encoding='utf-8') as f:
     html = f.read()
 
-# Créer le script inline
+# Créer le script inline avec JSON.stringify pour éviter les problèmes d'échappement
+env_json = json.dumps(env_vars)
 env_script = f'''<script>
-window.__ENV__ = {{
-  SUPABASE_URL: '{supabase_url}',
-  SUPABASE_ANON_KEY: '{supabase_key}',
-  INFOMANIAK_API_URL: '{infomaniak_url}',
-  INFOMANIAK_API_KEY: '{infomaniak_key}',
-  ACTIVE_PROVIDER: '{active_provider}'
-}};
+window.__ENV__ = {env_json};
 console.log('✅ Variables d\\'environnement chargées (Netlify)');
 </script>'''
 
