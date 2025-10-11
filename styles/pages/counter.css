@@ -10,19 +10,14 @@
     position: relative;
 }
 
-/* Décoration tesbih autour du compteur */
-.counter-display::before {
-    content: '';
+/* Décoration tesbih - Image HTML */
+.tesbih-decoration {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 480px;
     height: 480px;
-    background-image: url('/tesbih.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
     opacity: 0.35;
     pointer-events: none;
     z-index: 0;
