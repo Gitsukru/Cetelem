@@ -1,0 +1,530 @@
+/**
+ * GROUP PAGE - Page des groupes collaboratifs
+ */
+
+/* Header groupe */
+.group-header {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.group-header-icon {
+    font-size: 42px;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+.group-header-title {
+    color: #1e293b;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+}
+
+.group-header-subtitle {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+}
+
+/* Historique groupes */
+.group-history {
+    margin-bottom: 20px;
+}
+
+.history-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.history-item:hover {
+    background: #f8fafc;
+    border-color: #cbd5e0;
+}
+
+.history-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.history-item-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.history-item-meta {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.history-item-status {
+    flex-shrink: 0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.history-item-status.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.history-item-status.inactive {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* Sélection mode */
+.mode-selection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.mode-icon {
+    flex-shrink: 0;
+    font-size: 28px;
+    opacity: 0.7;
+}
+
+.mode-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+}
+
+.mode-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.mode-desc {
+    font-size: 12px;
+    font-weight: 400;
+    color: #94a3b8;
+    line-height: 1.3;
+}
+
+/* Group info header (status + code + titre) */
+.group-info-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.info-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 4px 0;
+}
+
+.info-subtitle {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+}
+
+.info-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Code display */
+.code-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.code-value {
+    padding: 8px 12px;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e0;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: 2px;
+    font-family: 'Courier New', monospace;
+}
+
+.code-display-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.info-hint,
+.code-hint {
+    font-size: 10px;
+    color: #94a3b8;
+    margin: 0;
+}
+
+/* Leaderboard */
+.leaderboard-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.leaderboard-table {
+    margin-bottom: 16px;
+}
+
+.leaderboard-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.leaderboard-icon {
+    font-size: 24px;
+    opacity: 0.8;
+}
+
+.leaderboard-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+/* Participant card */
+.participant-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.participant-header:hover {
+    background: #f8fafc;
+}
+
+.expand-toggle {
+    flex-shrink: 0;
+    width: 20px;
+    font-size: 14px;
+    color: #3b82f6;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.expand-toggle.expanded {
+    transform: rotate(0deg);
+}
+
+.participant-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.2;
+    min-width: 100px;
+}
+
+.participant-stats-inline {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-inline {
+    font-size: 13px;
+    color: #475569;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #64748b;
+    margin-right: 4px;
+}
+
+.pts-label {
+    font-size: 10px;
+    font-weight: 500;
+    opacity: 0.8;
+    margin-top: -2px;
+}
+
+.participant-detail-stats {
+    padding: 12px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Group controls */
+.group-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.control-icon {
+    font-size: 16px;
+}
+
+.control-text {
+    font-size: 14px;
+}
+
+/* Group status */
+.group-status {
+    text-align: center;
+    padding: 15px;
+    background: #e6fffa;
+    border-radius: 10px;
+    border: 2px solid #38b2ac;
+}
+
+.group-status h4 {
+    color: #2c7a7b;
+    margin: 0;
+}
+
+/* Connection status */
+.connection-status {
+    text-align: center;
+    padding: 15px;
+    background: #fef5e7;
+    border-radius: 10px;
+    border: 2px solid #f6ad55;
+}
+
+.connection-status p {
+    margin: 0;
+    color: #c05621;
+    font-weight: bold;
+}
+
+.connection-status.connected {
+    background: #f0fff4;
+    border-color: #48bb78;
+}
+
+.connection-status.connected p {
+    color: #2f855a;
+}
+
+/* Group info */
+.group-info h3 {
+    color: #4a5568;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Group code display (legacy) */
+.group-code-display {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.group-code-display label {
+    display: block;
+    font-weight: bold;
+    color: #2d3748;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.group-code {
+    background: #667eea;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 10px 0;
+    display: inline-block;
+    min-width: 150px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Group mode selection */
+.group-mode-selection {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+/* Notes autres participants */
+.other-notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.note-author {
+    color: #667eea;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.note-text {
+    margin: 6px 0 0 0;
+    color: #1e293b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .participant-stats-inline {
+        gap: 8px;
+    }
+
+    .stat-inline {
+        font-size: 11px;
+    }
+
+    .participant-name {
+        min-width: 80px;
+        font-size: 14px;
+    }
+
+    .points-badge {
+        min-width: 50px;
+        font-size: 16px;
+    }
+
+    .group-info-card {
+        min-width: 100%;
+    }
+
+    .mode-selection {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .mode-button {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .mode-icon {
+        font-size: 32px;
+    }
+
+    .mode-title {
+        font-size: 15px;
+    }
+
+    .mode-desc {
+        font-size: 11px;
+    }
+
+    .group-header {
+        padding: 20px 16px;
+        margin-bottom: 20px;
+    }
+
+    .group-header-icon {
+        font-size: 40px;
+    }
+
+    .group-header-title {
+        font-size: 24px;
+    }
+
+    .group-header-subtitle {
+        font-size: 13px;
+    }
+
+    .group-controls {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .leaderboard-icon {
+        font-size: 32px;
+    }
+
+    .leaderboard-title {
+        font-size: 20px;
+    }
+
+    .code-display-box {
+        flex-direction: column;
+    }
+
+    .code-value {
+        padding: 16px 20px;
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .group-mode-selection {
+        flex-direction: column;
+    }
+
+    .group-code {
+        font-size: 20px;
+        padding: 12px 20px;
+    }
+}

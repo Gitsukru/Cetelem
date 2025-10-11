@@ -1,0 +1,229 @@
+/**
+ * MODALS - Alertes, confirmations et modals modernes
+ */
+
+/* Alerte personnalisée */
+.custom-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #e53e3e;
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 10000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    max-width: 90%;
+    border: 3px solid #fff;
+}
+
+.custom-alert.show {
+    opacity: 1;
+}
+
+.custom-alert.warning {
+    background: #ed8936;
+}
+
+.custom-alert.success {
+    background: #48bb78;
+}
+
+.custom-alert.info {
+    background: #4299e1;
+}
+
+/* Confirmation personnalisée */
+.custom-confirm {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    font-size: 16px;
+    text-align: center;
+    z-index: 10000;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    max-width: 90%;
+    border: 3px solid #667eea;
+}
+
+.custom-confirm.show {
+    opacity: 1;
+}
+
+.custom-confirm h3 {
+    color: #4a5568;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.custom-confirm p {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Modal moderne overlay */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal moderne content */
+.custom-modal-content {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.05),
+        0 20px 60px -15px rgba(15, 23, 42, 0.3),
+        0 0 80px rgba(139, 92, 246, 0.1);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modern-modal .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: none;
+}
+
+.modern-modal .modal-header h3 {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.modern-modal .modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.modern-modal .modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.modern-modal .modal-body {
+    padding: 24px;
+    max-height: calc(80vh - 160px);
+    overflow-y: auto;
+}
+
+.modern-modal .modal-footer {
+    padding: 16px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* Save indicator */
+.save-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #48bb78;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.save-indicator.show {
+    opacity: 1;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .custom-alert {
+        font-size: 16px;
+        padding: 18px 24px;
+    }
+
+    .custom-confirm {
+        padding: 20px;
+        max-width: 95%;
+    }
+
+    .custom-modal-content {
+        width: 95%;
+    }
+
+    .modern-modal .modal-header {
+        padding: 16px 20px;
+    }
+
+    .modern-modal .modal-body {
+        padding: 20px;
+    }
+
+    .modern-modal .modal-footer {
+        padding: 14px 20px;
+    }
+}

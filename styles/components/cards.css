@@ -1,0 +1,304 @@
+/**
+ * CARDS - Cartes, sections et conteneurs
+ */
+
+/* Sections principales */
+.counter-section,
+.management-section,
+.stats-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Section groupe */
+.group-section {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #e2e8f0;
+}
+
+/* Carte participant */
+.participant-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.participant-card:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.participant-card.my-card {
+    background: #f1f5f9;
+    border-color: #cbd5e0;
+}
+
+/* Carte formulaire */
+.form-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.form-card-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* Carte info groupe */
+.group-info-card {
+    flex: 1;
+    min-width: 200px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Carte status */
+.status-card {
+    text-align: center;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Carte code */
+.code-card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Badge rank */
+.rank-badge {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.rank-badge.rank-1 {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #744210;
+}
+
+.rank-badge.rank-2 {
+    background: linear-gradient(135deg, #c0c0c0, #e2e8f0);
+    color: #4a5568;
+}
+
+.rank-badge.rank-3 {
+    background: linear-gradient(135deg, #cd7f32, #ed8936);
+    color: white;
+}
+
+/* Badge points */
+.points-badge {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
+    padding: 8px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Badge status */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: #e2e8f0;
+    border-radius: 50%;
+    margin-bottom: 12px;
+}
+
+/* Badge you */
+.you-badge {
+    background: #cbd5e0;
+    color: #475569;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* Section backup */
+.backup-section {
+    background: #e6fffa;
+    border: 2px solid #38b2ac;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.backup-status {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.backup-status span {
+    font-weight: bold;
+    color: #38b2ac;
+    font-size: 16px;
+}
+
+.backup-status small {
+    display: block;
+    color: #4a5568;
+    margin-top: 5px;
+}
+
+.backup-info {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #38b2ac;
+}
+
+.backup-info p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #2d3748;
+}
+
+/* Zone danger */
+.danger-zone {
+    background: #fed7d7;
+    border: 2px solid #fc8181;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.danger-zone h3 {
+    color: #e53e3e;
+    margin-bottom: 15px;
+}
+
+/* Stats summary */
+.stats-summary {
+    background: #f0fff4;
+    border-left: 4px solid #48bb78;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 0 8px 8px 0;
+}
+
+.stats-summary p {
+    margin: 0;
+    color: #2f855a;
+    font-weight: 600;
+}
+
+/* Total aujourd'hui */
+.total-today {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.total-number {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Leaderboard container */
+.leaderboard-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Leaderboard header */
+.leaderboard-header {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Other note item */
+.other-note-item {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+/* Reset option */
+.reset-option {
+    background: #f7fafc;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .status-card {
+        padding: 24px 20px;
+    }
+
+    .status-badge {
+        width: 70px;
+        height: 70px;
+    }
+
+    .code-card {
+        padding: 20px;
+    }
+
+    .form-card {
+        padding: 20px;
+    }
+
+    .leaderboard-header {
+        padding: 16px;
+    }
+
+    .group-info-card {
+        min-width: 100%;
+    }
+}

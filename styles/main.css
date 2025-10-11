@@ -1,0 +1,23 @@
+/**
+ * MAIN CSS - Fichier principal qui importe tous les modules
+ * Version modulaire de styles.css
+ */
+
+/* Base et variables */
+@import './base.css';
+@import './variables.css';
+
+/* Layout général */
+@import './layout.css';
+
+/* Composants réutilisables */
+@import './components/buttons.css';
+@import './components/modals.css';
+@import './components/cards.css';
+@import './components/forms.css';
+
+/* Pages spécifiques */
+@import './pages/counter.css';
+@import './pages/stats.css';
+@import './pages/group.css';
+@import './pages/management.css';

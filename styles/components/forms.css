@@ -1,0 +1,202 @@
+/**
+ * FORMS - Inputs, selects et formulaires
+ */
+
+/* Wrapper select catégorie */
+.category-select-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Select catégorie */
+.category-select {
+    flex: 1;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+}
+
+/* Input catégorie */
+.category-input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+/* Formulaire ajout catégorie */
+.add-category-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Liste catégories */
+.categories-list {
+    list-style: none;
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f7fafc;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+/* Groupe formulaire */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Input wrapper */
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Label input */
+.input-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.required {
+    color: #ef4444;
+    font-size: 16px;
+}
+
+/* Input formulaire */
+.form-input {
+    padding: 16px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #0f172a;
+    background: #f8fafc;
+    transition: all 0.3s;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.form-input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* Input code (uppercase, espacé) */
+.code-input {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
+    font-size: 18px;
+    text-align: center;
+}
+
+/* Input hint */
+.input-hint {
+    font-size: 12px;
+    font-weight: 500;
+    color: #94a3b8;
+    margin-top: -4px;
+}
+
+/* Notes textarea */
+.notes-section {
+    margin-bottom: 16px;
+}
+
+.notes-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.notes-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    transition: all 0.2s;
+    background: white;
+}
+
+.notes-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.notes-textarea[readonly] {
+    background: #f8fafc;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+.notes-textarea::placeholder {
+    color: #94a3b8;
+}
+
+/* Join form */
+.join-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+/* Simple formulaire groupe */
+.group-simple-form {
+    /* Container pour les sections groupe */
+}
+
+/* Sections du formulaire */
+.section {
+    margin-bottom: 20px;
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    .join-form {
+        flex-direction: column;
+    }
+
+    .join-form input {
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 640px) {
+    .form-input {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+}

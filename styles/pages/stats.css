@@ -1,0 +1,139 @@
+/**
+ * STATS PAGE - Page des statistiques
+ */
+
+/* Actions stats */
+.stats-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+/* Container tableau */
+.table-container {
+    overflow-x: auto;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Tableau stats complet */
+.complete-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 14px;
+    min-width: 600px;
+}
+
+.complete-stats-table th {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.complete-stats-table th:first-child {
+    text-align: left;
+    padding-left: 15px;
+}
+
+.complete-stats-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.complete-stats-table td:first-child {
+    text-align: left;
+    padding-left: 15px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.complete-stats-table tbody tr:hover {
+    background: #f7fafc;
+}
+
+/* Ligne totaux */
+.totals-row {
+    background: #edf2f7 !important;
+    border-top: 2px solid #667eea;
+}
+
+.totals-row td {
+    font-weight: bold;
+    color: #2d3748;
+    padding: 15px 10px;
+}
+
+/* Reset options */
+.reset-options {
+    margin-bottom: 30px;
+}
+
+/* Stats breakdown table (dans participant details) */
+.stats-breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.stats-breakdown-table thead th {
+    text-align: left;
+    padding: 8px;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.stats-breakdown-table tbody td {
+    padding: 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.stats-breakdown-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.category-name {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.stat-num {
+    font-weight: 600;
+    color: #475569;
+    text-align: center;
+}
+
+/* Detail stats */
+.detail-loading, .detail-empty, .detail-error {
+    text-align: center;
+    padding: 12px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.detail-error {
+    color: #dc2626;
+}
+
+.detail-stats-table {
+    width: 100%;
+}
+
+.detail-header {
+    font-weight: 600;
+    font-size: 13px;
+    color: #475569;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
