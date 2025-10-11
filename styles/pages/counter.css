@@ -25,10 +25,12 @@
     height: 500px;
     max-width: 90vw;
     max-height: 90vw;
-    opacity: 0.4;
+    opacity: 0.6;
     pointer-events: none;
     z-index: 0;
     object-fit: contain;
+    filter: blur(1px) brightness(1.1);
+    /* DEBUG: border: 3px solid red; */
 }
 
 /* S'assurer que le bouton est au-dessus */
@@ -75,6 +77,15 @@
 
 /* Mobile responsive */
 @media (max-width: 480px) {
+    .counter-display {
+        min-height: 400px;
+    }
+
+    .tesbih-decoration {
+        width: 400px;
+        height: 400px;
+    }
+
     .counter-number {
         font-size: 68px;
     }
