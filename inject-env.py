@@ -32,14 +32,26 @@ with open('index.html', 'r', encoding='utf-8') as f:
 # Créer le script inline avec JSON.stringify pour éviter les problèmes d'échappement
 env_json = json.dumps(env_vars)
 env_script = f'''<script>
+// Injecter les variables d'environnement
 window.__ENV__ = {env_json};
+
+// Créer un alias global ENV pour compatibilité avec backend.config.js
+window.ENV = window.__ENV__;
+
 console.log('✅ Variables d\\'environnement chargées (Netlify)');
 </script>'''
 
-# Remplacer la ligne qui charge env.local.js
+# Remplacer la ligne qui charge env.local.js par le script inline
 html = re.sub(
     r'<script src="src/config/env\.local\.js"></script>',
     env_script,
+    html
+)
+
+# Supprimer aussi env.js qui cause des erreurs import.meta en production
+html = re.sub(
+    r'<script src="src/config/env\.js"></script>\n\s*',
+    '',
     html
 )
 
