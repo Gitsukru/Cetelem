@@ -1,5 +1,6 @@
 [build]
   publish = "."
+  command = "bash netlify-build.sh"
 
 [build.environment]
   NODE_VERSION = "18"
@@ -20,7 +21,15 @@
 [[headers]]
   for = "*.js"
   [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
     Cache-Control = "public, max-age=31536000"
+
+# Exception pour env.local.js (ne pas cacher)
+[[headers]]
+  for = "/src/config/env.local.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "no-cache, no-store, must-revalidate"
 
 [[headers]]
   for = "*.css"
