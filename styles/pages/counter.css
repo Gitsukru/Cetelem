@@ -8,6 +8,11 @@
     margin: 10px 0;
     margin-top: -20px;
     position: relative;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Décoration tesbih - Image HTML */
@@ -16,12 +21,14 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 480px;
-    height: 480px;
-    opacity: 0.35;
+    width: 500px;
+    height: 500px;
+    max-width: 90vw;
+    max-height: 90vw;
+    opacity: 0.4;
     pointer-events: none;
     z-index: 0;
-    filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.3));
+    object-fit: contain;
 }
 
 /* S'assurer que le bouton est au-dessus */
