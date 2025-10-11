@@ -5,26 +5,14 @@
 echo "🔧 Netlify Build Script"
 echo "======================="
 
-# Créer un script inline avec les variables d'environnement
-ENV_SCRIPT="<script>
-window.__ENV__ = {
-  SUPABASE_URL: '${VITE_SUPABASE_URL}',
-  SUPABASE_ANON_KEY: '${VITE_SUPABASE_ANON_KEY}',
-  INFOMANIAK_API_URL: '${VITE_INFOMANIAK_API_URL:-}',
-  INFOMANIAK_API_KEY: '${VITE_INFOMANIAK_API_KEY:-}',
-  ACTIVE_PROVIDER: '${VITE_ACTIVE_PROVIDER:-supabase}'
-};
-console.log('✅ Variables d'\''environnement chargées (Netlify)');
-</script>"
+# Utiliser Python pour injecter les variables (plus robuste que sed)
+python3 inject-env.py
 
-# Remplacer la ligne qui charge env.local.js par le script inline
-sed -i "s|<script src=\"src/config/env.local.js\"></script>|${ENV_SCRIPT}|g" index.html
-
-echo "✅ Variables d'environnement injectées dans index.html"
-echo ""
-echo "Variables configurées:"
-echo "  - SUPABASE_URL: ${VITE_SUPABASE_URL:0:30}..."
-echo "  - SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:0:30}..."
-echo "  - ACTIVE_PROVIDER: ${VITE_ACTIVE_PROVIDER:-supabase}"
-echo ""
-echo "🚀 Build terminé!"
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "🚀 Build terminé!"
+else
+  echo ""
+  echo "❌ Erreur lors de l'injection des variables"
+  exit 1
+fi
