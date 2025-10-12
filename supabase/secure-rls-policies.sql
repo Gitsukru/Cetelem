@@ -26,41 +26,75 @@ ALTER TABLE analytics_summary ENABLE ROW LEVEL SECURITY;
 ALTER TABLE category_notes ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
--- SÉCURITÉ 2: Supprimer les politiques existantes
+-- SÉCURITÉ 2: Supprimer TOUTES les politiques existantes (anciennes + nouvelles)
 -- ============================================================================
 
--- groups
+-- groups - Anciennes politiques
 DROP POLICY IF EXISTS "groups_select_all" ON groups;
 DROP POLICY IF EXISTS "groups_insert_all" ON groups;
 DROP POLICY IF EXISTS "groups_update_all" ON groups;
 DROP POLICY IF EXISTS "groups_delete_all" ON groups;
 
--- participants
+-- groups - Nouvelles politiques (si script exécuté plusieurs fois)
+DROP POLICY IF EXISTS "groups_select_public" ON groups;
+DROP POLICY IF EXISTS "groups_insert_rate_limited" ON groups;
+DROP POLICY IF EXISTS "groups_update_disabled" ON groups;
+DROP POLICY IF EXISTS "groups_delete_disabled" ON groups;
+
+-- participants - Anciennes politiques
 DROP POLICY IF EXISTS "participants_select_all" ON participants;
 DROP POLICY IF EXISTS "participants_insert_all" ON participants;
 DROP POLICY IF EXISTS "participants_update_all" ON participants;
 DROP POLICY IF EXISTS "participants_delete_all" ON participants;
 
--- device_backups
+-- participants - Nouvelles politiques (si script exécuté plusieurs fois)
+DROP POLICY IF EXISTS "participants_select_public" ON participants;
+DROP POLICY IF EXISTS "participants_insert_public" ON participants;
+DROP POLICY IF EXISTS "participants_update_public" ON participants;
+DROP POLICY IF EXISTS "participants_delete_public" ON participants;
+
+-- device_backups - Anciennes politiques
 DROP POLICY IF EXISTS "device_backups_select_all" ON device_backups;
 DROP POLICY IF EXISTS "device_backups_insert_all" ON device_backups;
 DROP POLICY IF EXISTS "device_backups_update_all" ON device_backups;
 DROP POLICY IF EXISTS "device_backups_delete_all" ON device_backups;
 
--- analytics_events
+-- device_backups - Nouvelles politiques (si script exécuté plusieurs fois)
+DROP POLICY IF EXISTS "device_backups_select_by_code" ON device_backups;
+DROP POLICY IF EXISTS "device_backups_insert_rate_limited" ON device_backups;
+DROP POLICY IF EXISTS "device_backups_update_disabled" ON device_backups;
+DROP POLICY IF EXISTS "device_backups_delete_expired" ON device_backups;
+
+-- analytics_events - Anciennes politiques
 DROP POLICY IF EXISTS "analytics_events_insert_all" ON analytics_events;
 DROP POLICY IF EXISTS "analytics_events_select_all" ON analytics_events;
 
--- analytics_summary
+-- analytics_events - Nouvelles politiques (si script exécuté plusieurs fois)
+DROP POLICY IF EXISTS "analytics_events_select_disabled" ON analytics_events;
+DROP POLICY IF EXISTS "analytics_events_select_recent" ON analytics_events;
+DROP POLICY IF EXISTS "analytics_events_insert_rate_limited" ON analytics_events;
+
+-- analytics_summary - Anciennes politiques
 DROP POLICY IF EXISTS "analytics_summary_select_all" ON analytics_summary;
 DROP POLICY IF EXISTS "analytics_summary_insert_all" ON analytics_summary;
 DROP POLICY IF EXISTS "analytics_summary_update_all" ON analytics_summary;
 
--- category_notes
+-- analytics_summary - Nouvelles politiques (si script exécuté plusieurs fois)
+DROP POLICY IF EXISTS "analytics_summary_select_public" ON analytics_summary;
+DROP POLICY IF EXISTS "analytics_summary_insert_disabled" ON analytics_summary;
+DROP POLICY IF EXISTS "analytics_summary_update_disabled" ON analytics_summary;
+
+-- category_notes - Anciennes politiques
 DROP POLICY IF EXISTS "category_notes_select_all" ON category_notes;
 DROP POLICY IF EXISTS "category_notes_insert_all" ON category_notes;
 DROP POLICY IF EXISTS "category_notes_update_all" ON category_notes;
 DROP POLICY IF EXISTS "category_notes_delete_all" ON category_notes;
+
+-- category_notes - Nouvelles politiques (si script exécuté plusieurs fois)
+DROP POLICY IF EXISTS "category_notes_select_public" ON category_notes;
+DROP POLICY IF EXISTS "category_notes_insert_rate_limited" ON category_notes;
+DROP POLICY IF EXISTS "category_notes_update_public" ON category_notes;
+DROP POLICY IF EXISTS "category_notes_delete_public" ON category_notes;
 
 -- ============================================================================
 -- SÉCURITÉ 3: GROUPS - Lecture publique, écriture limitée
