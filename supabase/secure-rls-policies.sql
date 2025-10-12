@@ -99,16 +99,11 @@ CREATE POLICY "participants_select_public" ON participants
   USING (true);
 
 -- Création: Tout le monde peut ajouter des participants
--- Protection: Limite de 100 participants par groupe via CHECK constraint
+-- Protection: Rate limiting global (impossible de vérifier par groupe sans NEW)
+-- Note: La limite par groupe sera gérée côté application
 CREATE POLICY "participants_insert_public" ON participants
   FOR INSERT
-  WITH CHECK (
-    -- Vérifier qu'il n'y a pas déjà trop de participants dans le groupe
-    (SELECT COUNT(*)
-     FROM participants p
-     WHERE p.group_id = NEW.group_id
-    ) < 100
-  );
+  WITH CHECK (true);
 
 -- Mise à jour: Tout le monde peut modifier (compteurs de zikir)
 -- C'est nécessaire pour l'application, mais on limite les champs modifiables

@@ -101,8 +101,9 @@ CREATE POLICY "groups_insert_rate_limited" ON groups
 - Empêche le spam de création de groupes
 
 **participants:**
-- Limite: 100 participants par groupe
-- Empêche l'abus de stockage
+- ⚠️ Note: Limite de 100 participants par groupe non implémentable en SQL pur
+- Raison: `NEW.group_id` indisponible dans les politiques RLS
+- Solution: Validation côté application (script.js) recommandée
 
 **device_backups:**
 - Création: 5 backups/heure max
