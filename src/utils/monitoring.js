@@ -29,10 +29,12 @@ const Monitoring = {
 
     this.startPerformanceMonitoring();
     this.setupErrorTracking();
-    this.setupHealthChecks();
-    this.setupAutoReporting();
+    // ⚠️ DÉSACTIVÉ: setupHealthChecks et setupAutoReporting causaient 180+ requêtes/h vers Supabase
+    // Cette app est localStorage-first, le monitoring automatique n'est pas nécessaire
+    // this.setupHealthChecks();
+    // this.setupAutoReporting();
 
-    console.log('📊 Monitoring initialisé');
+    console.log('📊 Monitoring initialisé (mode local seulement)');
   },
 
   /**
