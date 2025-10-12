@@ -4,6 +4,8 @@
 
 /* Bouton principal (compteur) */
 .counter-button {
+    position: relative;
+    z-index: 10;
     width: 360px;
     height: 360px;
     border-radius: 50%;
