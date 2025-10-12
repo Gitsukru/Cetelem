@@ -20,7 +20,7 @@
     <!-- Analytics: Supabase (100% gratuit, tes données) -->
 
     <!-- CSS Modulaire (v3.5.1) -->
-    <link rel="stylesheet" href="styles/main.css?v=1760224613">
+    <link rel="stylesheet" href="styles/main.css?v=1760224614">
 </head>
 <body>
     <!-- Offline Badge -->
@@ -54,12 +54,24 @@
                 </div>
 
                 <div class="counter-display">
-                    <div class="tesbih-container" style="position: relative; width: 550px; height: 550px; margin: 20px auto; display: flex; align-items: center; justify-content: center;">
-                        <!-- Image tesbih en arrière-plan -->
-                        <img src="tesbih.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.7; pointer-events: none; filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.5)) brightness(1.3);" alt="">
-
-                        <!-- Bouton compteur PAR DESSUS l'image -->
-                        <button class="counter-button" id="countButton" onclick="incrementCounter()" style="position: relative; z-index: 10;">
+                    <!-- DIV TESBIH avec background-image ET bouton à l'intérieur -->
+                    <div class="tesbih-with-button" style="
+                        position: relative;
+                        width: 550px;
+                        height: 550px;
+                        margin: 20px auto;
+                        background-image: url('tesbih.png');
+                        background-size: contain;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        opacity: 0.9;
+                        filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.5)) brightness(1.3);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">
+                        <!-- BOUTON À L'INTÉRIEUR DU DIV TESBIH -->
+                        <button class="counter-button" id="countButton" onclick="incrementCounter()">
                             <span class="counter-number" id="counterDisplay">0</span>
                             <div class="counter-label" id="counterLabel">Zikir</div>
                             <div class="timer-display">
