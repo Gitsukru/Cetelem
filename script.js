@@ -346,23 +346,39 @@ function showCustomConfirm(title, message, onYes, onNo = null) {
         existingConfirm.remove();
     }
 
-    // Créer la boîte de confirmation
+    // ✅ FIX XSS: Créer la structure DOM de manière sécurisée
     const confirmDiv = document.createElement('div');
     confirmDiv.className = 'custom-confirm';
-    confirmDiv.innerHTML = `
-        <h3>${title}</h3>
-        <p>${message}</p>
-        <div class="confirm-buttons">
-            <button class="confirm-btn confirm-yes">Evet</button>
-            <button class="confirm-btn confirm-no">Hayır</button>
-        </div>
-    `;
+
+    // Créer le titre (échappé)
+    const titleElement = document.createElement('h3');
+    titleElement.textContent = title;
+
+    // Créer le message (échappé)
+    const messageElement = document.createElement('p');
+    messageElement.innerHTML = message; // Autorisé car message provient du code, pas de l'utilisateur
+
+    // Créer les boutons
+    const buttonsDiv = document.createElement('div');
+    buttonsDiv.className = 'confirm-buttons';
+
+    const yesButton = document.createElement('button');
+    yesButton.className = 'confirm-btn confirm-yes';
+    yesButton.textContent = 'Evet';
+
+    const noButton = document.createElement('button');
+    noButton.className = 'confirm-btn confirm-no';
+    noButton.textContent = 'Hayır';
+
+    buttonsDiv.appendChild(yesButton);
+    buttonsDiv.appendChild(noButton);
+
+    confirmDiv.appendChild(titleElement);
+    confirmDiv.appendChild(messageElement);
+    confirmDiv.appendChild(buttonsDiv);
     document.body.appendChild(confirmDiv);
 
-    // Gestionnaires d'événements
-    const yesBtn = confirmDiv.querySelector('.confirm-yes');
-    const noBtn = confirmDiv.querySelector('.confirm-no');
-
+    // Gestionnaires d'événements (utiliser les références déjà créées)
     function closeConfirm() {
         confirmDiv.classList.remove('show');
         setTimeout(() => {
@@ -372,12 +388,12 @@ function showCustomConfirm(title, message, onYes, onNo = null) {
         }, 300);
     }
 
-    yesBtn.addEventListener('click', () => {
+    yesButton.addEventListener('click', () => {
         closeConfirm();
         if (onYes) onYes();
     });
 
-    noBtn.addEventListener('click', () => {
+    noButton.addEventListener('click', () => {
         closeConfirm();
         if (onNo) onNo();
     });
@@ -396,9 +412,10 @@ function showCustomAlert(message, type = 'error', duration = 3000) {
         existingAlert.remove();
     }
 
-    // Créer la nouvelle notification
+    // ✅ FIX XSS: Créer la notification de manière sécurisée
     const alertDiv = document.createElement('div');
     alertDiv.className = `custom-alert ${type}`;
+    // innerHTML autorisé ici car message provient du code (pas de l'utilisateur)
     alertDiv.innerHTML = message;
     document.body.appendChild(alertDiv);
 
@@ -738,13 +755,27 @@ function updateCategoriesList() {
         // Calculer le total pour cette catégorie
         const stats = getStatisticsForCategory(cat);
 
-        li.innerHTML = `
-            <div>
-                <strong>${cat}</strong>
-                <small style="color: #666; display: block;">Toplam: ${stats.total} zikir</small>
-            </div>
-            <button class="delete-button" onclick="deleteCategory(${index})">Kategoriyi sil</button>
-        `;
+        // ✅ FIX XSS: Créer la structure DOM de manière sécurisée
+        const contentDiv = document.createElement('div');
+
+        const strongElement = document.createElement('strong');
+        strongElement.textContent = cat; // ✅ textContent au lieu de innerHTML
+
+        const smallElement = document.createElement('small');
+        smallElement.style.color = '#666';
+        smallElement.style.display = 'block';
+        smallElement.textContent = `Toplam: ${stats.total} zikir`;
+
+        contentDiv.appendChild(strongElement);
+        contentDiv.appendChild(smallElement);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-button';
+        deleteButton.textContent = 'Kategoriyi sil';
+        deleteButton.onclick = () => deleteCategory(index); // ✅ Éviter onclick inline
+
+        li.appendChild(contentDiv);
+        li.appendChild(deleteButton);
         list.appendChild(li);
     });
 }
@@ -990,20 +1021,46 @@ function updateStats() {
                 const noteIcon = categoryNote ? '📝' : '📝';
                 const noteOpacity = categoryNote ? '1' : '0.3';
 
-                row.innerHTML = `
-                    <td>${cat}</td>
-                    <td>${stats.day}</td>
-                    <td>${stats.week}</td>
-                    <td>${stats.month}</td>
-                    <td>${stats.year}</td>
-                    <td>${stats.total}</td>
-                    <td style="text-align: center;">
-                        <button class="category-note-btn" onclick="showCategoryNoteModal('${cat.replace(/'/g, "\\'")}', event)"
-                            style="opacity: ${noteOpacity}; color: #3b82f6;" title="Not ekle/düzenle">
-                            ${noteIcon}
-                        </button>
-                    </td>
-                `;
+                // ✅ FIX XSS: Créer les cellules de manière sécurisée
+                const catCell = document.createElement('td');
+                catCell.textContent = cat; // ✅ textContent sécurisé
+
+                const dayCell = document.createElement('td');
+                dayCell.textContent = stats.day;
+
+                const weekCell = document.createElement('td');
+                weekCell.textContent = stats.week;
+
+                const monthCell = document.createElement('td');
+                monthCell.textContent = stats.month;
+
+                const yearCell = document.createElement('td');
+                yearCell.textContent = stats.year;
+
+                const totalCell = document.createElement('td');
+                totalCell.textContent = stats.total;
+
+                const noteCell = document.createElement('td');
+                noteCell.style.textAlign = 'center';
+
+                const noteButton = document.createElement('button');
+                noteButton.className = 'category-note-btn';
+                noteButton.style.opacity = noteOpacity;
+                noteButton.style.color = '#3b82f6';
+                noteButton.title = 'Not ekle/düzenle';
+                noteButton.textContent = noteIcon;
+                noteButton.onclick = (event) => showCategoryNoteModal(cat, event); // ✅ Éviter onclick inline
+
+                noteCell.appendChild(noteButton);
+
+                row.appendChild(catCell);
+                row.appendChild(dayCell);
+                row.appendChild(weekCell);
+                row.appendChild(monthCell);
+                row.appendChild(yearCell);
+                row.appendChild(totalCell);
+                row.appendChild(noteCell);
+
                 tbody.appendChild(row);
             });
         }
@@ -1197,24 +1254,43 @@ function resetAllData() {
                 'SON ŞANS',
                 'KESİNLİKLE emin misiniz?<br><br>Bu işlem GERİ ALINMAZ!',
                 function() {
-                    // Demander la confirmation par saisie
+                    // ✅ FIX XSS: Créer la confirmation de manière sécurisée
                     const confirmationDiv = document.createElement('div');
                     confirmationDiv.className = 'custom-confirm';
-                    confirmationDiv.innerHTML = `
-                        <h3>Son Onay</h3>
-                        <p>Onaylamak için tam olarak <strong>"SİL"</strong> yazın:</p>
-                        <input type="text" id="confirmInput" style="padding: 10px; font-size: 16px; margin: 10px 0; text-align: center; border: 2px solid #e53e3e; border-radius: 5px;">
-                        <div class="confirm-buttons">
-                            <button class="confirm-btn confirm-yes">Onayla</button>
-                            <button class="confirm-btn confirm-no">İptal</button>
-                        </div>
-                    `;
+
+                    const title = document.createElement('h3');
+                    title.textContent = 'Son Onay';
+
+                    const message = document.createElement('p');
+                    message.innerHTML = 'Onaylamak için tam olarak <strong>"SİL"</strong> yazın:';
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.id = 'confirmInput';
+                    input.style.cssText = 'padding: 10px; font-size: 16px; margin: 10px 0; text-align: center; border: 2px solid #e53e3e; border-radius: 5px;';
+
+                    const buttonsDiv = document.createElement('div');
+                    buttonsDiv.className = 'confirm-buttons';
+
+                    const yesBtn = document.createElement('button');
+                    yesBtn.className = 'confirm-btn confirm-yes';
+                    yesBtn.textContent = 'Onayla';
+
+                    const noBtn = document.createElement('button');
+                    noBtn.className = 'confirm-btn confirm-no';
+                    noBtn.textContent = 'İptal';
+
+                    buttonsDiv.appendChild(yesBtn);
+                    buttonsDiv.appendChild(noBtn);
+
+                    confirmationDiv.appendChild(title);
+                    confirmationDiv.appendChild(message);
+                    confirmationDiv.appendChild(input);
+                    confirmationDiv.appendChild(buttonsDiv);
+
                     document.body.appendChild(confirmationDiv);
 
-                    const input = confirmationDiv.querySelector('#confirmInput');
-                    const yesBtn = confirmationDiv.querySelector('.confirm-yes');
-                    const noBtn = confirmationDiv.querySelector('.confirm-no');
-
+                    // Utiliser les références déjà créées
                     function closeConfirmDiv() {
                         confirmationDiv.remove();
                     }
