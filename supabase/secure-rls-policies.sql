@@ -150,10 +150,11 @@ CREATE POLICY "device_backups_delete_expired" ON device_backups
 -- SÉCURITÉ 6: ANALYTICS_EVENTS - Rate limiting strict
 -- ============================================================================
 
--- Lecture: Désactivée pour les utilisateurs (seulement admin via service_role)
-CREATE POLICY "analytics_events_select_disabled" ON analytics_events
+-- Lecture: Limitée aux 24 dernières heures seulement (évite lecture de tout l'historique)
+-- L'app peut vérifier ses propres events récents pour rate limiting côté client
+CREATE POLICY "analytics_events_select_recent" ON analytics_events
   FOR SELECT
-  USING (false);
+  USING (created_at > NOW() - INTERVAL '24 hours');
 
 -- Création: Limitée à 100 events par heure pour éviter le spam
 CREATE POLICY "analytics_events_insert_rate_limited" ON analytics_events
