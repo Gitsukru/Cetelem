@@ -27,14 +27,14 @@ const Monitoring = {
   init() {
     if (!this.config.enabled) return;
 
-    this.startPerformanceMonitoring();
-    this.setupErrorTracking();
-    // ⚠️ DÉSACTIVÉ: setupHealthChecks et setupAutoReporting causaient 180+ requêtes/h vers Supabase
-    // Cette app est localStorage-first, le monitoring automatique n'est pas nécessaire
+    // ⚠️ DÉSACTIVÉ: Performance monitoring cause flush automatique vers Supabase quand queue >= 100
+    // startPerformanceMonitoring() appelait trackMetric() → flush → analytics.track() → 401
+    // this.startPerformanceMonitoring();
+    // this.setupErrorTracking();
     // this.setupHealthChecks();
     // this.setupAutoReporting();
 
-    console.log('📊 Monitoring initialisé (mode local seulement)');
+    console.log('📊 Monitoring désactivé complètement (mode localStorage-first)');
   },
 
   /**
