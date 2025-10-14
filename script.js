@@ -1815,13 +1815,26 @@ function initializeBackend() {
   try {
     const config = BackendConfig.getActiveProvider()
 
+    // Si pas de config valide, désactiver le mode groupe
+    if (!config) {
+      console.warn('⚠️ Backend non configuré - Mode groupe désactivé');
+      console.info('💡 L\'application fonctionne en mode local uniquement');
+      // Désactiver visuellement l'onglet groupe
+      const groupTab = document.querySelector('.tab-button[onclick*="group"]');
+      if (groupTab) {
+        groupTab.style.opacity = '0.5';
+        groupTab.title = 'Configuration backend requise';
+      }
+      return;
+    }
+
     let provider
     if (config.type === 'supabase') {
       provider = new SupabaseProvider(config.url, config.key)
-      console.log('Supabase initialisé')
+      console.log('✅ Supabase initialisé')
     } else if (config.type === 'infomaniak') {
       provider = new InfomaniakProvider(config.apiUrl, config.apiKey)
-      console.log('Infomaniak initialisé')
+      console.log('✅ Infomaniak initialisé')
     }
 
     groupManager.initialize(provider)
