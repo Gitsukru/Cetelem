@@ -62,17 +62,23 @@ const WelcomeModal = {
               </li>
               <li>
                 <strong>2. Farklı Zikirler:</strong>
-                "Yönetim" yada "Sayaç" bölümünden istediğiniz kadar zikir kategorisi ekleyebilirsiniz.
+                "Yönetim" veya "Sayaç" bölümünden istediğiniz kadar zikir kategorisi ekleyebilirsiniz.
                 Her biri ayrı ayrı sayılır ve kaydedilir.
               </li>
               <li>
-                <strong>3. Grup Özelliği:</strong>
+                <strong>3. Kitap Takibi:</strong>
+                "Kitap" sekmesinden okuduğunuz kitapları takip edebilirsiniz. Günlük kaç sayfa okuduğunuzu kaydedin,
+                ilerlemenizi görün ve okuma hedefinize ulaşın.
+              </li>
+              <li>
+                <strong>4. Grup Özelliği:</strong>
                 Arkadaşlarınızla grup kurup birlikte zikir çekebilirsiniz. Sıralamada kim önde görürsünüz.
                 Bu, motivasyonunuzu artırır ve ibadet ederken sosyal bir deneyim yaşarsınız.
               </li>
               <li>
-                <strong>4. İstatistikler:</strong>
-                İlerlemenizi "İstatistikler" sekmesinden takip edin. Bugün, bu hafta, bu ay ne kadar zikir çektiğinizi görün.
+                <strong>5. İstatistikler:</strong>
+                İlerlemenizi "İstatistikler" sekmesinden takip edin. Bugün, bu hafta, bu ay ne kadar zikir çektiğinizi
+                ve kaç sayfa okuduğunuzu görün.
               </li>
             </ul>
           </div>
