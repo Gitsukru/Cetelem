@@ -1,6 +1,6 @@
 # 📿 Çetelem - Application de Compteur de Zikir
 
-[![Version](https://img.shields.io/badge/version-3.4.1-blue.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-3.5.1-blue.svg)](package.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Security](https://img.shields.io/badge/security-7%2F10-yellow.svg)](SECURITY.md)
 
@@ -21,6 +21,14 @@
 - ✅ Backup automatique avec rappel 7 jours
 - ✅ Partage SMS formaté
 - ✅ Notes privées par catégorie (localStorage sécurisé)
+
+### 📚 Suivi de Lecture (Kitap)
+- ✅ Ajout de livres avec nom et nombre de pages total (optionnel)
+- ✅ Suivi quotidien des pages lues avec historique complet
+- ✅ Statistiques détaillées par livre (jour/semaine/mois/année)
+- ✅ Barre de progression visuelle pour chaque livre
+- ✅ Intégration complète dans les statistiques globales
+- ✅ Modification et suppression de livres avec confirmation
 
 ### 👥 Groupes Collaboratifs
 - ✅ Création/join de groupes avec code 6 caractères
@@ -87,11 +95,16 @@ netlify deploy --prod --dir=.
 ```
 Cetelem/
 ├── index.html              # Point d'entrée
-├── styles.css              # Styles (2,452 lignes - TODO: modulariser)
 ├── script.js               # Logique principale (1,903 lignes)
 ├── script_group.js         # Gestion groupes (895 lignes)
+├── script_books.js         # Suivi de lecture (538 lignes)
 ├── sw.js                   # Service Worker (PWA)
 ├── manifest.json           # Manifest PWA
+│
+├── styles/
+│   ├── main.css            # Styles principaux
+│   ├── books.css           # Styles module Kitap
+│   └── welcome-modal.css   # Styles modal de bienvenue
 │
 ├── src/
 │   ├── config/
@@ -114,7 +127,8 @@ Cetelem/
 │       ├── retry.js            # Retry automatique
 │       ├── offline-manager.js  # Gestion mode hors ligne
 │       ├── quota-monitor.js    # Surveillance localStorage
-│       └── device-backup.js    # Backup par code
+│       ├── device-backup.js    # Backup par code
+│       └── welcome-modal.js    # Modal de bienvenue
 │
 ├── tests/
 │   └── utils.test.js       # Tests Jest (TODO: écrire)
@@ -259,12 +273,19 @@ Voir `SECURITY.md` pour détails complets et politiques RLS.
 
 ## 🚀 Roadmap
 
-### v3.5.0 (Court terme)
+### v3.5.1 (Actuel) ✅
+- ✅ Module Kitap (suivi de lecture)
+- ✅ Statistiques multi-périodes pour livres
+- ✅ Intégration İstatistikler
+- ✅ CSS responsive optimisé
+- ✅ Modal de bienvenue avec transparence
+
+### v3.6.0 (Court terme)
 - [ ] Implémenter Vite pour build optimisé
-- [ ] Refactorer CSS en modules
-- [ ] Ajouter tests E2E (Playwright)
+- [ ] Tests E2E (Playwright)
 - [ ] Monitoring Sentry
 - [ ] Documentation JSDoc complète
+- [ ] Graphiques de progression (Chart.js)
 
 ### v4.0.0 (Moyen terme)
 - [ ] Migration IndexedDB (quota > localStorage)
@@ -366,10 +387,13 @@ R: Non, tout est local (localStorage) sauf si vous rejoignez un groupe. Les note
 R: Utilisez "Dışa aktar" (Export) puis "İçe aktar" (Import) sur le nouvel appareil. Ou utilisez le système de code de transfert.
 
 **Q: Puis-je utiliser sans internet ?**
-R: Oui ! Le compteur fonctionne 100% hors ligne. Seuls les groupes nécessitent internet.
+R: Oui ! Le compteur et le suivi de lecture fonctionnent 100% hors ligne. Seuls les groupes nécessitent internet.
 
 **Q: Combien de groupes puis-je créer ?**
 R: Limité à 3 par heure (rate limiting). Contactez-nous si besoin plus.
+
+**Q: Comment fonctionne le suivi de lecture (Kitap) ?**
+R: Ajoutez vos livres dans l'onglet Kitap avec le nom et le nombre total de pages (optionnel). Ensuite, enregistrez quotidiennement les pages lues. Vos statistiques de lecture apparaissent dans l'onglet İstatistikler avec vos zikirler.
 
 ---
 
