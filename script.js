@@ -44,7 +44,7 @@ function updateTimer() {
 function initSound() {
     // Use the real tesbih sound file
     try {
-        tickSound = new Audio('./assets/audio/tesbih_variant_1.mp3');
+        tickSound = new Audio('/assets/audio/tesbih_variant_1.mp3');
         tickSound.volume = 0.7;
         tickSound.preload = 'auto';
 

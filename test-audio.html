@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Audio - Çetelem</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .test-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            background: #f1f5f9;
+            color: #334155;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success { background: #dcfce7; color: #166534; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .info { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <div class="test-section">
+        <h1>🔊 Test Audio - Çetelem</h1>
+        <p class="subtitle">Diagnostic du système audio</p>
+
+        <div>
+            <button onclick="testAudioLoad()">1. Test Chargement Audio</button>
+            <button onclick="testAudioPlay()">2. Test Lecture Audio</button>
+            <button onclick="testAudioPool()">3. Test Pool Audio</button>
+            <button onclick="testIncrementSound()">4. Test Son Increment</button>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        let tickSound = null;
+        let audioPool = [];
+        let poolIndex = 0;
+
+        function log(message, type = 'info') {
+            const status = document.getElementById('status');
+            const timestamp = new Date().toLocaleTimeString('tr-TR');
+            status.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        function clearLog() {
+            document.getElementById('status').innerHTML = '';
+        }
+
+        async function testAudioLoad() {
+            clearLog();
+            log('🔍 Test de chargement du fichier audio...', 'info');
+
+            try {
+                tickSound = new Audio('/assets/audio/tesbih_variant_1.mp3');
+                tickSound.volume = 0.7;
+                tickSound.preload = 'auto';
+
+                log('✅ Objet Audio créé', 'success');
+                log(`📍 Source: ${tickSound.src}`, 'info');
+
+                tickSound.addEventListener('canplaythrough', function() {
+                    log('✅ Audio chargé avec succès (canplaythrough)', 'success');
+                    log(`📊 Durée: ${tickSound.duration.toFixed(2)}s`, 'info');
+                });
+
+                tickSound.addEventListener('error', function(e) {
+                    log(`❌ Erreur de chargement: ${e.message || 'Fichier introuvable'}`, 'error');
+                    log(`📍 URL tentée: ${tickSound.src}`, 'error');
+                });
+
+                tickSound.addEventListener('loadeddata', function() {
+                    log('✅ Métadonnées chargées', 'success');
+                });
+
+            } catch (error) {
+                log(`❌ Exception: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAudioPlay() {
+            clearLog();
+            log('🔊 Test de lecture audio...', 'info');
+
+            if (!tickSound) {
+                log('⚠️ Audio non chargé. Exécutez d\'abord le Test 1.', 'error');
+                return;
+            }
+
+            try {
+                tickSound.currentTime = 0;
+                const playPromise = tickSound.play();
+
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        log('✅ Lecture réussie!', 'success');
+                    }).catch(error => {
+                        log(`❌ Erreur de lecture: ${error.message}`, 'error');
+                        log('💡 Astuce: Certains navigateurs bloquent l\'audio avant interaction utilisateur', 'info');
+                    });
+                }
+            } catch (error) {
+                log(`❌ Exception: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAudioPool() {
+            clearLog();
+            log('🔄 Test du pool audio (latence réduite)...', 'info');
+
+            if (!tickSound) {
+                log('⚠️ Audio non chargé. Exécutez d\'abord le Test 1.', 'error');
+                return;
+            }
+
+            try {
+                audioPool = [];
+                for (let i = 0; i < 5; i++) {
+                    const audio = tickSound.cloneNode();
+                    audio.volume = tickSound.volume;
+                    audioPool.push(audio);
+                }
+                log(`✅ Pool créé: ${audioPool.length} instances`, 'success');
+
+                // Test avec le pool
+                const sound = audioPool[poolIndex];
+                poolIndex = (poolIndex + 1) % audioPool.length;
+
+                const playPromise = sound.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        log('✅ Lecture depuis le pool réussie!', 'success');
+                    }).catch(error => {
+                        log(`❌ Erreur: ${error.message}`, 'error');
+                    });
+                }
+            } catch (error) {
+                log(`❌ Exception: ${error.message}`, 'error');
+            }
+        }
+
+        async function testIncrementSound() {
+            clearLog();
+            log('🎯 Test du son d\'incrémentation (comme dans l\'app)...', 'info');
+
+            if (!tickSound) {
+                log('⚠️ Chargement de l\'audio...', 'info');
+                await testAudioLoad();
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            if (audioPool.length === 0) {
+                log('⚠️ Création du pool audio...', 'info');
+                await testAudioPool();
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            log('▶️ Simulation de 3 clics rapides...', 'info');
+
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    try {
+                        let sound;
+                        if (audioPool.length > 0) {
+                            sound = audioPool[poolIndex];
+                            poolIndex = (poolIndex + 1) % audioPool.length;
+                            if (sound.currentTime > 0) {
+                                sound.currentTime = 0;
+                            }
+                            log(`🔊 Clic ${i + 1} - Pool index ${poolIndex}`, 'info');
+                        } else {
+                            sound = tickSound.cloneNode();
+                            sound.volume = tickSound.volume;
+                            log(`🔊 Clic ${i + 1} - Clone direct`, 'info');
+                        }
+
+                        const playPromise = sound.play();
+                        if (playPromise !== undefined) {
+                            playPromise.then(() => {
+                                log(`✅ Clic ${i + 1} joué`, 'success');
+                            }).catch(e => {
+                                log(`❌ Clic ${i + 1} échoué: ${e.message}`, 'error');
+                            });
+                        }
+                    } catch (error) {
+                        log(`❌ Erreur clic ${i + 1}: ${error.message}`, 'error');
+                    }
+                }, i * 300);
+            }
+        }
+
+        // Auto-test au chargement
+        window.addEventListener('load', function() {
+            log('🚀 Page de test chargée', 'success');
+            log('👆 Cliquez sur les boutons pour tester l\'audio', 'info');
+            log('', 'info');
+        });
+    </script>
+</body>
+</html>
