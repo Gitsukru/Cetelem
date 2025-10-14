@@ -29,75 +29,106 @@
 /* Modal container */
 .welcome-modal {
   background: white;
-  border-radius: 20px;
-  max-width: 700px;
+  border-radius: 24px;
+  max-width: 750px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  transform: scale(0.9);
-  transition: transform 0.3s ease;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  transform: scale(0.95) translateY(20px);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .welcome-modal-overlay.show .welcome-modal {
-  transform: scale(1);
+  transform: scale(1) translateY(0);
 }
 
 /* Header */
 .welcome-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 40px 30px 30px;
+  padding: 48px 40px 40px;
   text-align: center;
-  border-radius: 20px 20px 0 0;
+  border-radius: 24px 24px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .welcome-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
+  font-size: 72px;
+  margin-bottom: 20px;
   animation: float 3s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-12px) scale(1.05);
   }
 }
 
 .welcome-header h2 {
-  margin: 0 0 8px 0;
-  font-size: 28px;
+  margin: 0 0 12px 0;
+  font-size: 32px;
   font-weight: 700;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .welcome-subtitle {
   margin: 0;
-  font-size: 16px;
+  font-size: 17px;
   opacity: 0.95;
   font-weight: 400;
+  position: relative;
+  z-index: 1;
 }
 
 /* Content */
 .welcome-content {
-  padding: 30px;
+  padding: 40px;
   max-height: 60vh;
   overflow-y: auto;
+  background: linear-gradient(to bottom, white 0%, #fafafa 100%);
 }
 
 .welcome-section {
-  margin-bottom: 32px;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border-left: 4px solid #667eea;
+  margin-bottom: 24px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.welcome-section:hover {
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
 }
 
 .welcome-section.highlight {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border-left-color: #0ea5e9;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-color: #a78bfa;
+  box-shadow: 0 2px 8px rgba(167, 139, 250, 0.15);
 }
 
 .welcome-section:last-child {
@@ -105,15 +136,32 @@
 }
 
 .section-icon {
-  font-size: 32px;
-  margin-bottom: 12px;
+  font-size: 40px;
+  margin-bottom: 16px;
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.2));
 }
 
 .welcome-section h3 {
   margin: 0 0 16px 0;
   color: #1e293b;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.welcome-section h3::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
 }
 
 .welcome-section p {
@@ -126,27 +174,35 @@
 .welcome-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 16px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .welcome-list li {
-  padding: 12px 0;
+  padding: 16px;
   color: #475569;
   font-size: 15px;
   line-height: 1.6;
-  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 10px;
+  border-left: 3px solid #667eea;
+  transition: all 0.2s ease;
 }
 
-.welcome-list li:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+.welcome-list li:hover {
+  background: #f1f5f9;
+  transform: translateX(4px);
+  border-left-color: #764ba2;
 }
 
 .welcome-list li strong {
   color: #1e293b;
-  font-weight: 600;
+  font-weight: 700;
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  font-size: 16px;
 }
 
 .welcome-section a {
@@ -163,14 +219,14 @@
 
 /* Footer */
 .welcome-footer {
-  padding: 24px 30px;
-  background: #f8fafc;
+  padding: 32px 40px;
+  background: linear-gradient(to bottom, #fafafa 0%, #f8fafc 100%);
   border-top: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   align-items: center;
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 0 24px 24px;
 }
 
 .welcome-checkbox {
@@ -198,24 +254,45 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  padding: 16px 48px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 18px 48px;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 8px 16px -4px rgba(102, 126, 234, 0.4), 0 0 0 0 rgba(102, 126, 234, 0.3);
   width: 100%;
-  max-width: 300px;
+  max-width: 320px;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.welcome-btn-primary:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .welcome-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 24px -6px rgba(102, 126, 234, 0.5), 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
 .welcome-btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 4px 12px -2px rgba(102, 126, 234, 0.4);
 }
 
 /* Scrollbar styling */
