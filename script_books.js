@@ -50,6 +50,7 @@ const BooksManager = {
     books.push(newBook);
     this.saveBooks(books);
     this.renderBooks();
+    this.updateStatsIfNeeded();
 
     return newBook;
   },
@@ -62,6 +63,7 @@ const BooksManager = {
     const filtered = books.filter(book => book.id !== bookId);
     this.saveBooks(filtered);
     this.renderBooks();
+    this.updateStatsIfNeeded();
   },
 
   /**
@@ -75,6 +77,7 @@ const BooksManager = {
       books[bookIndex] = { ...books[bookIndex], ...updates };
       this.saveBooks(books);
       this.renderBooks();
+      this.updateStatsIfNeeded();
     }
   },
 
@@ -215,6 +218,10 @@ const BooksManager = {
             <div class="book-stat">
               <span class="book-stat-label">Bu Ay</span>
               <span class="book-stat-value">${stats.month}</span>
+            </div>
+            <div class="book-stat">
+              <span class="book-stat-label">Bu Yıl</span>
+              <span class="book-stat-value">${stats.year}</span>
             </div>
           </div>
 

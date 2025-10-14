@@ -124,7 +124,7 @@
 /* Statistiques du livre */
 .book-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-bottom: 16px;
   padding: 12px;
@@ -233,12 +233,17 @@
   }
 
   .book-stats {
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     padding: 8px;
   }
 
+  .book-stat-label {
+    font-size: 11px;
+  }
+
   .book-stat-value {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .book-actions {
