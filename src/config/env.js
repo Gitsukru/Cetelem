@@ -39,7 +39,9 @@ const ENV = {
       return window.__ENV__.SUPABASE_URL;
     }
 
-    throw new Error('❌ SUPABASE_URL manquant! Configurez soit .env (Vite) soit window.__ENV__ (sans Vite)');
+    // Mode 3: Retourner chaîne vide au lieu d'erreur (mode dégradé)
+    console.warn('⚠️ SUPABASE_URL manquant - Mode groupe désactivé');
+    return '';
   },
 
   get SUPABASE_ANON_KEY() {
@@ -52,7 +54,9 @@ const ENV = {
       return window.__ENV__.SUPABASE_ANON_KEY;
     }
 
-    throw new Error('❌ SUPABASE_ANON_KEY manquant! Configurez soit .env (Vite) soit window.__ENV__ (sans Vite)');
+    // Mode 3: Retourner chaîne vide au lieu d'erreur (mode dégradé)
+    console.warn('⚠️ SUPABASE_ANON_KEY manquant - Mode groupe désactivé');
+    return '';
   },
 
   get INFOMANIAK_API_URL() {
