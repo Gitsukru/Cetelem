@@ -35,127 +35,120 @@ const WelcomeModal = {
         </div>
 
         <div class="welcome-content">
-          <!-- Section 1: Privacy First -->
+          <!-- Section 1: Çetelem Nedir? -->
+          <div class="welcome-section highlight">
+            <div class="section-icon">✨</div>
+            <h3>Çetelem Nedir?</h3>
+            <p style="line-height: 1.7;">
+              <strong>Çetelem</strong>, günlük zikirlerinizi kolayca takip etmenizi sağlayan modern bir dijital tesbih uygulamasıdır.
+              İster evde, ister yolda, ister camide olun - telefonunuz her zaman yanınızda olduğu için zikirlerinizi hiç kaçırmazsınız.
+            </p>
+            <p style="line-height: 1.7; margin-top: 12px;">
+              📱 <strong>Basit kullanım:</strong> Ekrana dokunarak sayın, otomatik olarak kaydedilir.<br>
+              📊 <strong>İlerlemenizi görün:</strong> Günlük, haftalık ve aylık istatistikler.<br>
+              👥 <strong>Arkadaşlarınızla hayırda yarışın:</strong> Grup oluşturup motivasyonunuzu artırın.<br>
+              🎯 <strong>Hedeflerinize ulaşın:</strong> Her gün biraz daha maneviyatta ilerleme kaydedin.
+            </p>
+          </div>
+
+          <!-- Section 2: Nasıl Kullanılır? -->
           <div class="welcome-section">
-            <div class="section-icon">🔒</div>
-            <h3>Tamamen Özel ve Güvenli</h3>
+            <div class="section-icon">🎯</div>
+            <h3>Nasıl Kullanılır?</h3>
             <ul class="welcome-list">
               <li>
-                <strong>Kayıt yok, giriş yok:</strong>
-                Hiçbir kişisel bilgi istenmez. E-posta, şifre veya telefon numarası gerekmez.
+                <strong>1. Zikir Sayma:</strong>
+                Ana ekrandaki büyük butona her tıkladığınızda sayaç artar. Ses efektini açıp kapatabilirsiniz.
               </li>
               <li>
-                <strong>Verileriniz cihazınızda:</strong>
-                Tüm zikir sayılarınız telefonunuzda localStorage'da saklanır.
-                Kimse verilerinize erişemez.
+                <strong>2. Farklı Zikirler:</strong>
+                "Yönetim" yada "Sayaç" bölümünden istediğiniz kadar zikir kategorisi ekleyebilirsiniz.
+                Her biri ayrı ayrı sayılır ve kaydedilir.
+              </li>
+              <li>
+                <strong>3. Grup Özelliği:</strong>
+                Arkadaşlarınızla grup kurup birlikte zikir çekebilirsiniz. Sıralamada kim önde görürsünüz.
+                Bu, motivasyonunuzu artırır ve ibadet ederken sosyal bir deneyim yaşarsınız.
+              </li>
+              <li>
+                <strong>4. İstatistikler:</strong>
+                İlerlemenizi "İstatistikler" sekmesinden takip edin. Bugün, bu hafta, bu ay ne kadar zikir çektiğinizi görün.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Section 3: Verileriniz Sizinle Kalır -->
+          <div class="welcome-section">
+            <div class="section-icon">🔒</div>
+            <h3>Verileriniz Sizinle Kalır</h3>
+            <p style="line-height: 1.7;">
+              Çetelem'i kullanmak için <strong>hiçbir kayıt, giriş veya kişisel bilgi gerekmez</strong>.
+              Tüm zikir sayılarınız telefonunuzun hafızasında (tarayıcıda) saklanır.
+            </p>
+            <ul class="welcome-list" style="margin-top: 12px;">
+              <li>
+                <strong>Tamamen özel:</strong>
+                Hangi zikirleri çektiğiniz ve ne kadar sayı yaptığınız sadece kurduğunuz grupta ve sizin bilgisayarınızda kalır.
+              </li>
+              <li>
+                <strong>İnternet gereksiz:</strong>
+                Çevrim dışıyken bile çalışır. Sayılarınız kaybolmaz.
               </li>
               <li>
                 <strong>Siz kontrol edersiniz:</strong>
-                İstediğiniz zaman verilerinizi dışa aktarabilir veya silebilirsiniz.
+                Verilerinizi dışa aktarabilir, cihaz değiştirebilir veya dilediğiniz zaman tamamen silebilirsiniz.
               </li>
             </ul>
           </div>
 
-          <!-- Section 2: How It Works -->
+          <!-- Section 4: Grup Özelliği -->
+          <div class="welcome-section">
+            <div class="section-icon">👥</div>
+            <h3>Grup Özelliği (İsteğe Bağlı)</h3>
+            <p style="line-height: 1.7;">
+              Arkadaşlarınızla birlikte zikir çekmek motivasyonunuzu artırır. Grup özelliğini kullandığınızda:
+            </p>
+            <ul class="welcome-list" style="margin-top: 12px;">
+              <li>
+                Grup sıralamasında adınız ve toplam sayınız görünür
+              </li>
+              <li>
+                İstediğiniz zaman gruptan ayrılabilirsiniz
+              </li>
+            </ul>
+            <p style="line-height: 1.7; margin-top: 12px; font-size: 13px; color: #64748b;">
+              💡 Grup kullanmak tamamen isteğe bağlıdır. Kullanmasanız da uygulama aynı şekilde çalışır.
+            </p>
+          </div>
+
+          <!-- Section 5: Teknik Altyapı -->
           <div class="welcome-section">
             <div class="section-icon">⚙️</div>
-            <h3>Nasıl Çalışır?</h3>
-            <ul class="welcome-list">
-              <li>
-                <strong>Yerel Depolama (localStorage):</strong>
-                Tüm sayılarınız tarayıcınızda saklanır. İnternet olmadan çalışır.
-              </li>
-              <li>
-                <strong>Grup Özelliği (isteğe bağlı):</strong>
-                Bir grup oluşturur veya katılırsanız, SADECE toplam sayınız
-                arkadaşlarınızla paylaşılır. Hangi zikirleri saydığınız gizli kalır.
-              </li>
-              <li>
-                <strong>Yedekleme Kodu:</strong>
-                Cihaz değiştirmek için 6 harfli kod oluşturabilirsiniz.
-                Kod 7 gün geçerlidir, sonra otomatik silinir.
-              </li>
-            </ul>
-          </div>
-
-          <!-- Section 3: Technical Transparency -->
-          <div class="welcome-section">
-            <div class="section-icon">🛠️</div>
-            <h3>Teknik Şeffaflık</h3>
-            <ul class="welcome-list">
-              <li>
-                <strong>Supabase (Backend):</strong>
-                Sadece grup özelliği için kullanılır. Zikir sayılarınız ASLA
-                sunucuya gönderilmez. Sadece grup katılımınız ve toplam sayınız paylaşılır.
-              </li>
-              <li>
-                <strong>Netlify (Hosting):</strong>
-                Uygulama dosyaları Netlify'da barındırılır. Hiçbir kişisel veri
-                toplanmaz veya izlenmez. Sadece standart web trafiği logları (IP, tarih).
-              </li>
-              <li>
-                <strong>GitHub (Açık Kaynak):</strong>
-                Tüm kod açık kaynak ve GitHub'da görülebilir. Gizli bir şey yok!
-                İnceleyebilir, güvenliğini doğrulayabilirsiniz.
-              </li>
-              <li>
-                <strong>Analytics (minimal):</strong>
-                Sadece önemli olaylar kaydedilir (grup oluşturma, veri dışa aktarma).
-                Hangi zikirleri saydığınız ASLA toplanmaz.
-              </li>
-            </ul>
-          </div>
-
-          <!-- Section 4: Your Rights -->
-          <div class="welcome-section">
-            <div class="section-icon">✅</div>
-            <h3>Haklarınız</h3>
-            <ul class="welcome-list">
-              <li>
-                <strong>Tam Kontrol:</strong>
-                Verilerinizi istediğiniz zaman dışa aktarın (JSON dosyası).
-              </li>
-              <li>
-                <strong>Tam Silme:</strong>
-                "Yönetim" sekmesinden tüm verilerinizi kalıcı olarak silebilirsiniz.
-              </li>
-              <li>
-                <strong>Çevrim Dışı Çalışma:</strong>
-                İnternet bağlantısı olmadan tamamen çalışır. Verileriniz her zaman erişilebilir.
-              </li>
-              <li>
-                <strong>Ücretsiz ve Reklamsız:</strong>
-                Tamamen ücretsiz. Hiç reklam yok. Verileriniz satılmaz.
-              </li>
-            </ul>
-          </div>
-
-          <!-- Section 5: Open Source -->
-          <div class="welcome-section highlight">
-            <div class="section-icon">💻</div>
-            <h3>Açık Kaynak ve Şeffaf</h3>
-            <p style="margin-bottom: 12px;">
-              Bu uygulama %100 açık kaynak kodludur. Tüm kodu inceleyebilir,
-              güvenliğini doğrulayabilir ve hatta katkıda bulunabilirsiniz.
+            <h3>Teknik Altyapı</h3>
+            <p style="line-height: 1.7; margin-bottom: 12px;">
+              Uygulama modern web teknolojileri kullanılarak geliştirilmiştir:
             </p>
-            <p style="font-size: 13px; color: #64748b;">
-              📦 GitHub:
-              <a href="https://github.com/Gitsukru/Cetelem" target="_blank" rel="noopener">
-                github.com/Gitsukru/Cetelem
+            <ul class="welcome-list">
+              <li>
+                <strong>Netlify:</strong> Uygulamanın barındırıldığı güvenli platform
+              </li>
+              <li>
+                <strong>Supabase:</strong> Sadece grup özelliği için kullanılan veritabanı servisi
+              </li>
+            </ul>
+          </div>
+
+          <!-- Section 6: Bize Ulaşın -->
+          <div class="welcome-section">
+            <div class="section-icon">📧</div>
+            <h3>Bize Ulaşın</h3>
+            <p style="line-height: 1.7;">
+              Sorularınız, önerileriniz veya geri bildirimleriniz için:
+            </p>
+            <p style="font-size: 14px; margin-top: 8px;">
+              <a href="mailto:suisse1022@gmail.com" style="color: #667eea; font-weight: 500;">
+                📧 suisse1022@gmail.com
               </a>
-            </p>
-          </div>
-
-          <!-- Section 6: Questions -->
-          <div class="welcome-section">
-            <div class="section-icon">❓</div>
-            <h3>Sorularınız mı Var?</h3>
-            <p style="margin-bottom: 12px;">
-              Herhangi bir sorunuz veya endişeniz varsa bizimle iletişime geçin:
-            </p>
-            <p style="font-size: 13px; color: #64748b;">
-              📧 E-posta:
-              <a href="mailto:contact@zikirmatik.app">contact@zikirmatik.app</a>
             </p>
           </div>
         </div>

@@ -1,0 +1,268 @@
+/**
+ * 📚 BOOKS - Styles pour le module de suivi de lecture
+ */
+
+/* Header de la section livres */
+.books-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.books-header h2 {
+  color: #1e293b;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+/* Bouton d'ajout de livre */
+.add-book-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.add-book-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.add-book-btn:active {
+  transform: translateY(0);
+}
+
+/* Liste des livres */
+.books-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Carte de livre */
+.book-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.book-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+}
+
+/* Header de la carte */
+.book-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.book-info {
+  flex: 1;
+}
+
+.book-title {
+  color: #1e293b;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.book-progress {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+}
+
+.book-delete-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  padding: 4px 8px;
+}
+
+.book-delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Barre de progression */
+.book-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.book-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+/* Statistiques du livre */
+.book-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.book-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.book-stat-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.book-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #667eea;
+}
+
+/* Actions */
+.book-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.book-add-pages-btn,
+.book-edit-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.book-add-pages-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.book-add-pages-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.book-edit-btn {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.book-edit-btn:hover {
+  background: #e2e8f0;
+}
+
+/* Message "Pas de livres" */
+.no-books-message {
+  padding: 60px 20px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+/* Modal styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .book-card {
+    padding: 16px;
+  }
+
+  .book-title {
+    font-size: 16px;
+  }
+
+  .book-stats {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .book-stat-value {
+    font-size: 18px;
+  }
+
+  .book-actions {
+    flex-direction: column;
+  }
+
+  .book-add-pages-btn,
+  .book-edit-btn {
+    width: 100%;
+  }
+}
+
+/* Animation d'entrée pour les cartes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.book-card {
+  animation: fadeInUp 0.3s ease;
+}

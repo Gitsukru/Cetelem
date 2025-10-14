@@ -1003,6 +1003,25 @@ function updateStats() {
             totalAll += stats.total;
         });
 
+        // Ajouter les statistiques des livres
+        let booksTotalToday = 0;
+        let booksTotalWeek = 0;
+        let booksTotalMonth = 0;
+        let booksTotalYear = 0;
+        let booksTotalAll = 0;
+
+        if (typeof BooksManager !== 'undefined') {
+            const books = BooksManager.getBooks();
+            books.forEach(book => {
+                const bookStats = BooksManager.getBookStats(book);
+                booksTotalToday += bookStats.today;
+                booksTotalWeek += bookStats.week;
+                booksTotalMonth += bookStats.month;
+                booksTotalYear += bookStats.year;
+                booksTotalAll += bookStats.total;
+            });
+        }
+
         // Mettre à jour le header
         const todayElement = document.getElementById('totalToday');
         if (todayElement) {
@@ -1063,6 +1082,105 @@ function updateStats() {
 
                 tbody.appendChild(row);
             });
+
+            // Ajouter les livres au tableau
+            if (typeof BooksManager !== 'undefined') {
+                const books = BooksManager.getBooks();
+                books.forEach(book => {
+                    const row = document.createElement('tr');
+                    row.style.background = '#f8f9ff'; // Couleur légèrement différente pour les livres
+
+                    const bookStats = BooksManager.getBookStats(book);
+
+                    const bookCell = document.createElement('td');
+                    const bookIcon = document.createElement('span');
+                    bookIcon.textContent = '📚 ';
+                    bookCell.appendChild(bookIcon);
+                    const bookName = document.createTextNode(book.name);
+                    bookCell.appendChild(bookName);
+
+                    const dayCell = document.createElement('td');
+                    dayCell.textContent = bookStats.today + ' sf';
+
+                    const weekCell = document.createElement('td');
+                    weekCell.textContent = bookStats.week + ' sf';
+
+                    const monthCell = document.createElement('td');
+                    monthCell.textContent = bookStats.month + ' sf';
+
+                    const yearCell = document.createElement('td');
+                    yearCell.textContent = bookStats.year + ' sf';
+
+                    const totalCell = document.createElement('td');
+                    totalCell.textContent = bookStats.total + ' sf';
+
+                    const noteCell = document.createElement('td');
+                    noteCell.textContent = bookStats.progress !== null ? bookStats.progress + '%' : '-';
+                    noteCell.style.textAlign = 'center';
+                    noteCell.style.color = '#667eea';
+                    noteCell.style.fontWeight = 'bold';
+
+                    row.appendChild(bookCell);
+                    row.appendChild(dayCell);
+                    row.appendChild(weekCell);
+                    row.appendChild(monthCell);
+                    row.appendChild(yearCell);
+                    row.appendChild(totalCell);
+                    row.appendChild(noteCell);
+
+                    tbody.appendChild(row);
+                });
+
+                // Ajouter une ligne de séparation si il y a des livres
+                if (books.length > 0) {
+                    const separatorRow = document.createElement('tr');
+                    separatorRow.style.borderTop = '2px solid #667eea';
+                    const separatorCell = document.createElement('td');
+                    separatorCell.colSpan = 7;
+                    separatorCell.style.padding = '0';
+                    separatorCell.style.height = '2px';
+                    separatorRow.appendChild(separatorCell);
+                    tbody.appendChild(separatorRow);
+
+                    // Ajouter une ligne de total pour les livres
+                    const booksTotalRow = document.createElement('tr');
+                    booksTotalRow.style.fontWeight = 'bold';
+                    booksTotalRow.style.background = '#f0f4ff';
+
+                    const labelCell = document.createElement('td');
+                    labelCell.textContent = '📚 TOPLAM KİTAPLAR';
+                    labelCell.style.color = '#667eea';
+
+                    const todayCell = document.createElement('td');
+                    todayCell.textContent = booksTotalToday + ' sf';
+
+                    const weekCellTotal = document.createElement('td');
+                    weekCellTotal.textContent = booksTotalWeek + ' sf';
+
+                    const monthCellTotal = document.createElement('td');
+                    monthCellTotal.textContent = booksTotalMonth + ' sf';
+
+                    const yearCellTotal = document.createElement('td');
+                    yearCellTotal.textContent = booksTotalYear + ' sf';
+
+                    const allCellTotal = document.createElement('td');
+                    allCellTotal.textContent = booksTotalAll + ' sf';
+
+                    const emptyCell = document.createElement('td');
+                    emptyCell.textContent = '-';
+                    emptyCell.style.textAlign = 'center';
+
+                    booksTotalRow.appendChild(labelCell);
+                    booksTotalRow.appendChild(todayCell);
+                    booksTotalRow.appendChild(weekCellTotal);
+                    booksTotalRow.appendChild(monthCellTotal);
+                    booksTotalRow.appendChild(yearCellTotal);
+                    booksTotalRow.appendChild(allCellTotal);
+                    booksTotalRow.appendChild(emptyCell);
+
+                    tbody.appendChild(booksTotalRow);
+                }
+            }
         }
 
         // Mettre à jour les totaux
@@ -1113,20 +1231,40 @@ function getCurrentUserStats() {
         totalAll += stats.total;
     });
 
+    // Construire les détails par catégorie
+    const categoriesDetails = categories.reduce((acc, cat) => {
+        const stats = getStatisticsForCategory(cat);
+        acc[cat] = {
+            today: stats.day,
+            week: stats.week,
+            month: stats.month
+        };
+        return acc;
+    }, {});
+
+    // Ajouter les statistiques des livres
+    const booksDetails = {};
+    if (typeof BooksManager !== 'undefined') {
+        const books = BooksManager.getBooks();
+        books.forEach(book => {
+            const bookStats = BooksManager.getBookStats(book);
+            // Ajouter les statistiques de chaque livre (pages lues)
+            booksDetails[book.name] = {
+                today: bookStats.today,
+                week: bookStats.week,
+                month: bookStats.month,
+                total: bookStats.total
+            };
+        });
+    }
+
     return {
         today: totalToday,
         week: totalWeek,
         month: totalMonth,
         total: totalAll,
-        categories: categories.reduce((acc, cat) => {
-            const stats = getStatisticsForCategory(cat);
-            acc[cat] = {
-                today: stats.day,
-                week: stats.week,
-                month: stats.month
-            };
-            return acc;
-        }, {})
+        categories: categoriesDetails,
+        books: booksDetails // Nouveau: inclure les livres
     };
 }
 

@@ -38,6 +38,7 @@
     <!-- CSS Modulaire (v3.5.1) -->
     <link rel="stylesheet" href="styles/main.css?v=1760224619">
     <link rel="stylesheet" href="styles/welcome-modal.css">
+    <link rel="stylesheet" href="styles/books.css">
 </head>
 <body>
     <!-- Offline Badge -->
@@ -54,6 +55,7 @@
 
         <div class="tabs">
             <button class="tab-button active" onclick="showTab('counter', event)">Sayaç</button>
+            <button class="tab-button" onclick="showTab('books', event)">📚 Kitap</button>
             <button class="tab-button" onclick="showTab('group', event)">Grup</button>
             <button class="tab-button" onclick="showTab('competition', event)">Yarışma Düzenle</button>
             <button class="tab-button" onclick="showTab('management', event)">Yönetim</button>
@@ -94,6 +96,35 @@
                     <button class="reset-button" onclick="resetDayCounter()">
                         🔄 Görüntüyü sıfırla (istatistikler korunur)
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kitap Sekmesi -->
+        <div id="books" class="tab-content">
+            <div class="management-section">
+                <div class="books-header">
+                    <h2>📚 Kitap Takibi</h2>
+                    <p style="color: #64748b; margin-top: 8px;">Okuduğunuz kitapları ve günlük sayfa sayınızı takip edin</p>
+                </div>
+
+                <!-- Buton pour ajouter un nouveau livre -->
+                <button class="add-book-btn" onclick="showAddBookModal()">
+                    <span style="font-size: 20px;">+</span>
+                    <span>Yeni Kitap Ekle</span>
+                </button>
+
+                <!-- Liste des livres -->
+                <div id="booksList" class="books-list">
+                    <!-- Les livres seront ajoutés ici dynamiquement -->
+                </div>
+
+                <!-- Message si pas de livres -->
+                <div id="noBooksMessage" class="no-books-message" style="display: none;">
+                    <p style="color: #94a3b8; text-align: center; padding: 40px 20px;">
+                        📖 Henüz kitap eklemediniz<br>
+                        <span style="font-size: 14px;">Yukarıdaki butona tıklayarak başlayın</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -433,5 +464,6 @@
     <!-- App Scripts -->
     <script src="script.js"></script>
     <script src="script_group.js"></script>
+    <script src="script_books.js"></script>
 </body>
 </html>
