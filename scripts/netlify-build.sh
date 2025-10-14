@@ -6,7 +6,7 @@ echo "🔧 Netlify Build Script"
 echo "======================="
 
 # Utiliser Python pour injecter les variables (plus robuste que sed)
-python3 inject-env.py
+python3 scripts/inject-env.py
 
 if [ $? -eq 0 ]; then
   echo ""
