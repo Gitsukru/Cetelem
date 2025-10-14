@@ -102,7 +102,8 @@
 }
 
 /* Modal moderne content */
-.custom-modal-content {
+.custom-modal-content,
+.custom-modal {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border-radius: 16px;
     padding: 0;
@@ -128,24 +129,47 @@
     }
 }
 
-.modern-modal .modal-header {
+.modern-modal .modal-header,
+.modal-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 20px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: none;
+    position: relative;
+    overflow: hidden;
 }
 
-.modern-modal .modal-header h3 {
+/* Effet de brillance sur le header */
+.modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { left: -100%; }
+    50%, 100% { left: 100%; }
+}
+
+.modern-modal .modal-header h3,
+.modal-header h3 {
     color: white;
     font-size: 18px;
     font-weight: 600;
     margin: 0;
     letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.modern-modal .modal-close {
+.modern-modal .modal-close,
+.modal-close {
     background: rgba(255, 255, 255, 0.2);
     color: white;
     border: none;
@@ -160,24 +184,68 @@
     transition: all 0.2s;
 }
 
-.modern-modal .modal-close:hover {
+.modern-modal .modal-close:hover,
+.modal-close:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: rotate(90deg);
 }
 
-.modern-modal .modal-body {
+.modern-modal .modal-body,
+.modal-body {
     padding: 24px;
     max-height: calc(80vh - 160px);
     overflow-y: auto;
+    background: linear-gradient(to bottom, #ffffff 0%, #fafbfc 100%);
 }
 
-.modern-modal .modal-footer {
+.modern-modal .modal-footer,
+.modal-footer {
     padding: 16px 24px;
-    background: #f8fafc;
+    background: linear-gradient(to top, #f1f5f9 0%, #f8fafc 100%);
     border-top: 1px solid #e2e8f0;
     display: flex;
     gap: 12px;
     justify-content: flex-end;
+}
+
+/* Boutons du modal */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
 }
 
 /* Save indicator */
