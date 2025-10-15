@@ -32,11 +32,11 @@ const ENV = {
   get SUPABASE_URL() {
     // Mode 1: Vite (import.meta.env)
     const viteValue = getViteEnv('VITE_SUPABASE_URL');
-    if (viteValue) return viteValue;
+    if (viteValue) return viteValue.trim();
 
     // Mode 2: Injection manuelle (window.__ENV__)
     if (typeof window !== 'undefined' && window.__ENV__?.SUPABASE_URL) {
-      return window.__ENV__.SUPABASE_URL;
+      return window.__ENV__.SUPABASE_URL.trim();
     }
 
     // Mode 3: Retourner chaîne vide au lieu d'erreur (mode dégradé)
@@ -47,11 +47,12 @@ const ENV = {
   get SUPABASE_ANON_KEY() {
     // Mode 1: Vite (import.meta.env)
     const viteValue = getViteEnv('VITE_SUPABASE_ANON_KEY');
-    if (viteValue) return viteValue;
+    if (viteValue) return viteValue.replace(/\s+/g, ''); // Nettoyer tous les espaces
 
     // Mode 2: Injection manuelle (window.__ENV__)
     if (typeof window !== 'undefined' && window.__ENV__?.SUPABASE_ANON_KEY) {
-      return window.__ENV__.SUPABASE_ANON_KEY;
+      // 🔧 FIX: Nettoyer les espaces qui peuvent être injectés par erreur lors du build Netlify
+      return window.__ENV__.SUPABASE_ANON_KEY.replace(/\s+/g, '');
     }
 
     // Mode 3: Retourner chaîne vide au lieu d'erreur (mode dégradé)
