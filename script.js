@@ -845,6 +845,8 @@ function deleteCategory(index) {
 function updateCounterDisplay() {
     const display = document.getElementById('counterDisplay');
     const label = document.getElementById('counterLabel');
+    const goalDisplay = document.getElementById('goalDisplay');
+    const goalValue = document.getElementById('goalValue');
 
     if (!display || !label) return;
 
@@ -853,9 +855,21 @@ function updateCounterDisplay() {
         const visualCount = Math.max(0, stats.day - visualOffset);
         display.textContent = visualCount;
         label.textContent = `${currentCategory} - Bugün`;
+
+        // Afficher l'objectif quotidien si disponible
+        const goals = getCategoryGoals(currentCategory);
+        if (goals.daily > 0 && goalDisplay && goalValue) {
+            goalDisplay.style.display = 'block';
+            goalValue.textContent = `${visualCount} / ${goals.daily}`;
+        } else if (goalDisplay) {
+            goalDisplay.style.display = 'none';
+        }
     } else {
         display.textContent = '0';
         label.textContent = 'Zikir';
+        if (goalDisplay) {
+            goalDisplay.style.display = 'none';
+        }
     }
 }
 
@@ -1114,6 +1128,80 @@ if (typeof window !== 'undefined') {
     loadCategoryGoals();
 }
 
+// ========================================
+// SYSTÈME DE FÉLICITATIONS POUR OBJECTIFS ATTEINTS
+// ========================================
+
+// Stocker quels objectifs ont déjà été atteints aujourd'hui (pour éviter les répétitions)
+let goalsAchievedToday = {};
+
+// Charger les objectifs atteints depuis localStorage
+function loadGoalsAchievedToday() {
+    const saved = localStorage.getItem('goalsAchievedToday');
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            // Vérifier si c'est toujours aujourd'hui
+            const today = new Date().toDateString();
+            if (data.date === today) {
+                goalsAchievedToday = data.goals || {};
+            } else {
+                // Nouveau jour, réinitialiser
+                goalsAchievedToday = {};
+                saveGoalsAchievedToday();
+            }
+        } catch (e) {
+            goalsAchievedToday = {};
+        }
+    }
+}
+
+// Sauvegarder les objectifs atteints
+function saveGoalsAchievedToday() {
+    const today = new Date().toDateString();
+    const data = {
+        date: today,
+        goals: goalsAchievedToday
+    };
+    localStorage.setItem('goalsAchievedToday', JSON.stringify(data));
+}
+
+// Vérifier et féliciter pour les objectifs atteints
+function checkAndCelebrateGoals(category) {
+    const goals = getCategoryGoals(category);
+    const stats = getStatisticsForCategory(category);
+
+    // Initialiser l'objet pour cette catégorie si nécessaire
+    if (!goalsAchievedToday[category]) {
+        goalsAchievedToday[category] = {
+            daily: false,
+            weekly: false,
+            monthly: false
+        };
+    }
+
+    // Vérifier l'objectif quotidien
+    if (goals.daily > 0 && stats.day >= goals.daily && !goalsAchievedToday[category].daily) {
+        goalsAchievedToday[category].daily = true;
+        saveGoalsAchievedToday();
+        showCustomAlert(`🎉 Tebrikler!<br>Günlük hedefinize ulaştınız!<br><strong>${category}: ${goals.daily}</strong>`, 'success', 4000);
+    }
+
+    // Vérifier l'objectif hebdomadaire
+    if (goals.weekly > 0 && stats.week >= goals.weekly && !goalsAchievedToday[category].weekly) {
+        goalsAchievedToday[category].weekly = true;
+        saveGoalsAchievedToday();
+        showCustomAlert(`🌟 Harika!<br>Haftalık hedefinize ulaştınız!<br><strong>${category}: ${goals.weekly}</strong>`, 'success', 4000);
+    }
+
+    // Note: L'objectif mensuel sera ajouté dans une prochaine étape
+}
+
+// Charger les objectifs atteints au démarrage
+if (typeof window !== 'undefined') {
+    loadGoalsAchievedToday();
+}
+
 // Incrémenter le compteur - VERSION SIMPLE ET FIABLE
 function incrementCounter() {
     // ⚡ JOUER LE SON EN PREMIER pour réduire la latence perçue sur mobile
@@ -1139,6 +1227,9 @@ function incrementCounter() {
 
     if (saveCounters()) {
         updateCounterDisplay();
+
+        // Vérifier et célébrer les objectifs atteints
+        checkAndCelebrateGoals(currentCategory);
 
         // ⚡ Utiliser debounce: attend 2s après le dernier clic avant de recalculer
         debouncedUpdateStats()

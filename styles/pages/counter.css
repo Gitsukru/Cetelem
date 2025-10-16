@@ -32,6 +32,31 @@
     font-weight: 500;
 }
 
+/* Goal display */
+.goal-display {
+    margin: 8px 0 4px 0;
+    text-align: center;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    backdrop-filter: blur(4px);
+}
+
+.goal-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.85);
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 500;
+}
+
+.goal-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    display: block;
+}
+
 /* Timer display */
 .timer-display {
     margin: 4px 0 0 0;
