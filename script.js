@@ -40,6 +40,11 @@ function updateTimer() {
     }
 }
 
+function resetTimer() {
+    startTime = Date.now();
+    updateTimer();
+}
+
 // Sound functions
 function initSound() {
     // Use the real tesbih sound file
