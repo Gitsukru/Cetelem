@@ -13,14 +13,9 @@
 
 // Helper pour vérifier import.meta de manière sécurisée
 function getViteEnv(key) {
-  try {
-    // Cette vérification ne fonctionnera que dans un module ES
-    if (typeof import.meta !== 'undefined' && import.meta.env) {
-      return import.meta.env[key];
-    }
-  } catch (e) {
-    // import.meta n'est pas disponible (script classique)
-  }
+  // ⚠️ import.meta ne peut être utilisé que dans un module ES6
+  // En mode script classique (sans type="module"), toujours retourner undefined
+  // Vite injectera les variables via window.__ENV__ à la place
   return undefined;
 }
 
