@@ -184,13 +184,16 @@ const BooksManager = {
 
     container.innerHTML = books.map(book => {
       const stats = this.getBookStats(book);
+      const formatIcon = book.format === 'digital' ? '📱' : book.format === 'print' ? '📖' : '📚';
+      const formatText = book.format === 'digital' ? 'Dijital' : book.format === 'print' ? 'Basılı' : '';
 
       return `
         <div class="book-card" data-book-id="${book.id}">
           <div class="book-header">
             <div class="book-info">
-              <h3 class="book-title">${escapeHtml(book.name)}</h3>
+              <h3 class="book-title">${formatIcon} ${escapeHtml(book.name)}</h3>
               <p class="book-progress">
+                ${formatText ? `<span style="color: #667eea; font-size: 12px; font-weight: 600;">${formatText}</span> • ` : ''}
                 ${stats.total} sayfa okundu
                 ${book.totalPages > 0 ? `/ ${book.totalPages} (${stats.progress}%)` : ''}
               </p>
@@ -262,39 +265,80 @@ const BooksManager = {
  */
 
 /**
- * Afficher le modal d'ajout de livre
+ * Afficher le modal d'ajout de livre (formulaire en étapes)
  */
 function showAddBookModal() {
   const modalHTML = `
     <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
-      <div class="custom-modal">
+      <div class="custom-modal" style="min-height: 300px;">
         <div class="modal-header">
-          <h3>📚 Yeni Kitap Ekle</h3>
+          <h3 id="modal-title">📚 Yeni Kitap Ekle</h3>
           <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
         </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">Kitap İsmi *</label>
-            <input type="text" id="bookNameInput" class="form-input" placeholder="Örn: İhya-u Ulumiddin" required>
+
+        <!-- Indicateur de progression -->
+        <div style="display: flex; gap: 8px; padding: 0 24px 16px; justify-content: center;">
+          <div id="step-indicator-1" class="step-indicator active"></div>
+          <div id="step-indicator-2" class="step-indicator"></div>
+          <div id="step-indicator-3" class="step-indicator"></div>
+          <div id="step-indicator-4" class="step-indicator"></div>
+        </div>
+
+        <div class="modal-body" id="modal-body-content">
+          <!-- Étape 1: Nom du livre -->
+          <div id="step-1" class="modal-step">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Kitap İsmi Nedir?</label>
+              <input type="text" id="bookNameInput" class="form-input" placeholder="Örn: İhya-u Ulumiddin" required autofocus>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Toplam Sayfa (İsteğe Bağlı)</label>
-            <input type="number" id="bookTotalPagesInput" class="form-input" placeholder="0 = bilinmiyor" min="0">
-            <small style="color: #64748b; font-size: 12px;">
-              Toplam sayfa sayısını gir irseniz ilerleme çubuğu görünür
-            </small>
+
+          <!-- Étape 2: Format (digital/papier) -->
+          <div id="step-2" class="modal-step" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 16px;">Kitap Formatı Nedir?</label>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button class="format-choice-btn" onclick="selectBookFormat('digital')" data-format="digital">
+                  <span style="font-size: 24px;">📱</span>
+                  <span style="margin-left: 12px;">Dijital (e-Kitap)</span>
+                </button>
+                <button class="format-choice-btn" onclick="selectBookFormat('print')" data-format="print">
+                  <span style="font-size: 24px;">📖</span>
+                  <span style="margin-left: 12px;">Basılı (Kağıt)</span>
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Bugün Kaç Sayfa Okudunuz?</label>
-            <input type="number" id="bookInitialPagesInput" class="form-input" placeholder="0" min="0" value="0">
+
+          <!-- Étape 3: Total pages -->
+          <div id="step-3" class="modal-step" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Toplam Kaç Sayfa?</label>
+              <input type="number" id="bookTotalPagesInput" class="form-input" placeholder="0 = bilinmiyor" min="0" value="0">
+              <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                İlerleme çubuğunu görmek için toplam sayfa sayısını girin (isteğe bağlı)
+              </small>
+            </div>
+          </div>
+
+          <!-- Étape 4: Pages initiales -->
+          <div id="step-4" class="modal-step" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Bugün Kaç Sayfa Okudunuz?</label>
+              <input type="number" id="bookInitialPagesInput" class="form-input" placeholder="0" min="0" value="0">
+            </div>
           </div>
         </div>
+
         <div class="modal-footer">
+          <button class="btn-secondary" id="btn-back" onclick="previousStepAddBook()" style="display: none;">
+            ← Geri
+          </button>
           <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
             İptal
           </button>
-          <button class="btn-primary" onclick="addBookFromModal()">
-            Kaydet
+          <button class="btn-primary" id="btn-next" onclick="nextStepAddBook()">
+            Devam →
           </button>
         </div>
       </div>
@@ -302,7 +346,144 @@ function showAddBookModal() {
   `;
 
   document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+  // Variables globales pour le formulaire en étapes
+  window.bookFormData = {
+    currentStep: 1,
+    totalSteps: 4,
+    name: '',
+    format: '',
+    totalPages: 0,
+    initialPages: 0
+  };
+
   document.getElementById('bookNameInput').focus();
+}
+
+/**
+ * Passer à l'étape suivante
+ */
+function nextStepAddBook() {
+  const data = window.bookFormData;
+
+  // Validation de l'étape actuelle
+  if (data.currentStep === 1) {
+    const nameInput = document.getElementById('bookNameInput');
+    const name = nameInput.value.trim();
+    if (!name) {
+      alert('Lütfen kitap ismini girin');
+      nameInput.focus();
+      return;
+    }
+    data.name = name;
+  } else if (data.currentStep === 2) {
+    if (!data.format) {
+      alert('Lütfen kitap formatını seçin');
+      return;
+    }
+  } else if (data.currentStep === 3) {
+    const totalPagesInput = document.getElementById('bookTotalPagesInput');
+    data.totalPages = parseInt(totalPagesInput.value) || 0;
+  } else if (data.currentStep === 4) {
+    const initialPagesInput = document.getElementById('bookInitialPagesInput');
+    data.initialPages = parseInt(initialPagesInput.value) || 0;
+
+    // Dernière étape : sauvegarder le livre
+    saveBookFromSteps();
+    return;
+  }
+
+  // Passer à l'étape suivante
+  data.currentStep++;
+  updateBookFormStep();
+}
+
+/**
+ * Revenir à l'étape précédente
+ */
+function previousStepAddBook() {
+  const data = window.bookFormData;
+  if (data.currentStep > 1) {
+    data.currentStep--;
+    updateBookFormStep();
+  }
+}
+
+/**
+ * Sélectionner le format du livre
+ */
+function selectBookFormat(format) {
+  window.bookFormData.format = format;
+
+  // Highlight visuel
+  document.querySelectorAll('.format-choice-btn').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  event.target.closest('.format-choice-btn').classList.add('selected');
+
+  // Passer automatiquement à l'étape suivante après 300ms
+  setTimeout(() => nextStepAddBook(), 300);
+}
+
+/**
+ * Mettre à jour l'affichage selon l'étape
+ */
+function updateBookFormStep() {
+  const data = window.bookFormData;
+
+  // Masquer toutes les étapes
+  for (let i = 1; i <= data.totalSteps; i++) {
+    document.getElementById(`step-${i}`).style.display = 'none';
+    document.getElementById(`step-indicator-${i}`).classList.remove('active');
+  }
+
+  // Afficher l'étape actuelle
+  document.getElementById(`step-${data.currentStep}`).style.display = 'block';
+  document.getElementById(`step-indicator-${data.currentStep}`).classList.add('active');
+
+  // Bouton Retour
+  const btnBack = document.getElementById('btn-back');
+  btnBack.style.display = data.currentStep > 1 ? 'inline-block' : 'none';
+
+  // Texte du bouton Suivant
+  const btnNext = document.getElementById('btn-next');
+  btnNext.textContent = data.currentStep === data.totalSteps ? 'Kaydet' : 'Devam →';
+
+  // Focus sur le champ approprié
+  if (data.currentStep === 1) {
+    document.getElementById('bookNameInput')?.focus();
+  } else if (data.currentStep === 3) {
+    document.getElementById('bookTotalPagesInput')?.focus();
+  } else if (data.currentStep === 4) {
+    document.getElementById('bookInitialPagesInput')?.focus();
+  }
+}
+
+/**
+ * Sauvegarder le livre avec toutes les données
+ */
+function saveBookFromSteps() {
+  const data = window.bookFormData;
+
+  const newBook = BooksManager.addBook(data.name, data.totalPages);
+
+  // Ajouter le format (nouvelle propriété)
+  BooksManager.updateBook(newBook.id, { format: data.format });
+
+  // Ajouter les pages initiales si > 0
+  if (data.initialPages > 0) {
+    BooksManager.addPagesToday(newBook.id, data.initialPages);
+  }
+
+  // Fermer le modal
+  document.querySelector('.custom-modal-overlay').remove();
+
+  // Message de succès avec format
+  const formatText = data.format === 'digital' ? '📱 Dijital' : '📖 Basılı';
+  showNotification(`📚 "${data.name}" eklendi! (${formatText})`, 'success');
+
+  // Nettoyer
+  delete window.bookFormData;
 }
 
 /**
