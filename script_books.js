@@ -313,8 +313,8 @@ function showAddBookModal() {
           <!-- Étape 3: Total pages -->
           <div id="step-3" class="modal-step" style="display: none;">
             <div class="form-group">
-              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Toplam Kaç Sayfa?</label>
-              <input type="number" id="bookTotalPagesInput" class="form-input" placeholder="0 = bilinmiyor" min="0" value="0">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Kitabın toplam kaç sayfa?</label>
+              <input type="number" id="bookTotalPagesInput" class="form-input" placeholder="0 = bilinmiyor" min="0" value="0" onfocus="if(this.value==='0') this.value=''">
               <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
                 İlerleme çubuğunu görmek için toplam sayfa sayısını girin (isteğe bağlı)
               </small>
@@ -325,7 +325,7 @@ function showAddBookModal() {
           <div id="step-4" class="modal-step" style="display: none;">
             <div class="form-group">
               <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Bugün Kaç Sayfa Okudunuz?</label>
-              <input type="number" id="bookInitialPagesInput" class="form-input" placeholder="0" min="0" value="0">
+              <input type="number" id="bookInitialPagesInput" class="form-input" placeholder="0" min="0" value="0" onfocus="if(this.value==='0') this.value=''">
             </div>
           </div>
         </div>
@@ -356,6 +356,15 @@ function showAddBookModal() {
     totalPages: 0,
     initialPages: 0
   };
+
+  // Gestion de la touche Enter pour passer à l'étape suivante
+  const modalOverlay = document.querySelector('.custom-modal-overlay:last-of-type');
+  modalOverlay.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      nextStepAddBook();
+    }
+  });
 
   document.getElementById('bookNameInput').focus();
 }
