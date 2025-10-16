@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Connexion Supabase</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .log {
+            background: #000;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+        }
+        .error { color: #ff4444; }
+        .success { color: #44ff44; }
+        .info { color: #4444ff; }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        button:hover { background: #44ff44; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test de Connexion Supabase</h1>
+    <div id="logs"></div>
+
+    <h2>Actions de Test:</h2>
+    <button onclick="testConnection()">1. Tester Connexion Basique</button>
+    <button onclick="testCreateGroup()">2. Tester Création de Groupe</button>
+    <button onclick="testListGroups()">3. Lister les Groupes</button>
+    <button onclick="clearLogs()">Effacer Logs</button>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        const SUPABASE_URL = 'https://sxtcyznkxtlcgkgrdrbi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODgyMjQsImV4cCI6MjA3NTA2NDIyNH0.09FRK2S1zaauEp5tV6g6-7YmynOVNV44pRSGwqpeG8A';
+
+        let supabase;
+
+        function log(message, type = 'info') {
+            const logsDiv = document.getElementById('logs');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log ${type}`;
+            logEntry.innerHTML = `<strong>[${new Date().toLocaleTimeString()}]</strong> ${message}`;
+            logsDiv.insertBefore(logEntry, logsDiv.firstChild);
+            console.log(message);
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+        }
+
+        async function testConnection() {
+            log('🚀 Initialisation du client Supabase...', 'info');
+
+            try {
+                // Vérifier que la bibliothèque Supabase est chargée
+                if (typeof supabase === 'undefined' || !supabase.createClient) {
+                    log('❌ Bibliothèque Supabase non trouvée!', 'error');
+                    return;
+                }
+
+                log('✅ Bibliothèque Supabase chargée', 'success');
+                log(`📍 URL: ${SUPABASE_URL}`, 'info');
+                log(`🔑 Clé (premiers 20 caractères): ${SUPABASE_ANON_KEY.substring(0, 20)}...`, 'info');
+
+                // Créer le client
+                const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                log('✅ Client Supabase créé', 'success');
+
+                // Test simple: récupérer la liste des tables (devrait échouer mais confirme la connexion)
+                log('🔄 Test de connexion avec une requête simple...', 'info');
+
+                const { data, error } = await client
+                    .from('groups')
+                    .select('count')
+                    .limit(0);
+
+                if (error) {
+                    log(`⚠️  Erreur lors de la requête: ${error.message}`, 'error');
+                    log(`Code d'erreur: ${error.code}`, 'error');
+                    log(`Détails: ${JSON.stringify(error, null, 2)}`, 'error');
+                } else {
+                    log('✅ Connexion réussie! La table "groups" est accessible', 'success');
+                }
+
+                // Sauvegarder le client pour les autres tests
+                window.testSupabaseClient = client;
+
+            } catch (error) {
+                log(`❌ Erreur fatale: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        async function testCreateGroup() {
+            if (!window.testSupabaseClient) {
+                log('❌ Veuillez d\'abord tester la connexion (bouton 1)', 'error');
+                return;
+            }
+
+            log('🚀 Test de création de groupe...', 'info');
+
+            try {
+                const testGroupCode = 'TEST' + Math.random().toString(36).substring(2, 5).toUpperCase();
+                const testGroupName = 'Groupe de Test';
+
+                log(`📝 Code: ${testGroupCode}, Nom: ${testGroupName}`, 'info');
+
+                const { data, error } = await window.testSupabaseClient
+                    .from('groups')
+                    .insert({
+                        code: testGroupCode,
+                        name: testGroupName,
+                        created_at: new Date().toISOString()
+                    })
+                    .select()
+                    .single();
+
+                if (error) {
+                    log(`❌ Erreur création: ${error.message}`, 'error');
+                    log(`Code: ${error.code}, Détails: ${error.details}`, 'error');
+                    log(`Hint: ${error.hint}`, 'info');
+                } else {
+                    log(`✅ Groupe créé avec succès! ID: ${data.id}`, 'success');
+                    log(`Données: ${JSON.stringify(data, null, 2)}`, 'success');
+                }
+
+            } catch (error) {
+                log(`❌ Exception: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        async function testListGroups() {
+            if (!window.testSupabaseClient) {
+                log('❌ Veuillez d\'abord tester la connexion (bouton 1)', 'error');
+                return;
+            }
+
+            log('🚀 Liste des groupes existants...', 'info');
+
+            try {
+                const { data, error, count } = await window.testSupabaseClient
+                    .from('groups')
+                    .select('*', { count: 'exact' })
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+
+                if (error) {
+                    log(`❌ Erreur: ${error.message}`, 'error');
+                } else {
+                    log(`✅ Nombre total de groupes: ${count}`, 'success');
+                    if (data && data.length > 0) {
+                        data.forEach((group, index) => {
+                            log(`${index + 1}. ${group.name} (Code: ${group.code}) - Créé: ${new Date(group.created_at).toLocaleString()}`, 'info');
+                        });
+                    } else {
+                        log('ℹ️  Aucun groupe trouvé', 'info');
+                    }
+                }
+
+            } catch (error) {
+                log(`❌ Exception: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        // Initialiser automatiquement au chargement
+        window.addEventListener('load', () => {
+            log('🎯 Page chargée. Cliquez sur "Tester Connexion Basique" pour commencer', 'info');
+        });
+    </script>
+</body>
+</html>

@@ -7,6 +7,14 @@ class SupabaseProvider extends BackendProvider {
   constructor(supabaseUrl, supabaseKey) {
     super()
 
+    // 🔍 DEBUG: Logger les valeurs reçues
+    console.log('🔍 SupabaseProvider constructor appelé')
+    console.log('📍 URL:', supabaseUrl)
+    console.log('🔑 Key (premiers 50 chars):', supabaseKey?.substring(0, 50))
+    console.log('🔑 Key length:', supabaseKey?.length)
+    console.log('🔑 Key contient des espaces?', supabaseKey?.includes(' '))
+    console.log('🔑 Key type:', typeof supabaseKey)
+
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('URL et clé Supabase requis')
     }
@@ -14,6 +22,8 @@ class SupabaseProvider extends BackendProvider {
     // Initialisation du client Supabase
     this.supabase = supabase.createClient(supabaseUrl, supabaseKey)
     this.subscriptions = new Map()
+
+    console.log('✅ Client Supabase créé')
   }
 
   /**

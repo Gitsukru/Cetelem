@@ -22,6 +22,13 @@ const BackendConfig = {
       return { url: '', key: '', enabled: false };
     }
 
+    // 🔍 DEBUG: Logger ce qui vient de ENV
+    console.log('🔍 BackendConfig.supabase appelé')
+    console.log('📍 ENV.SUPABASE_URL:', ENV.SUPABASE_URL)
+    console.log('🔑 ENV.SUPABASE_ANON_KEY (50 premiers):', ENV.SUPABASE_ANON_KEY?.substring(0, 50))
+    console.log('🔑 Key length:', ENV.SUPABASE_ANON_KEY?.length)
+    console.log('🔑 Key contient des espaces?', ENV.SUPABASE_ANON_KEY?.includes(' '))
+
     const hasValidConfig = ENV.SUPABASE_URL && ENV.SUPABASE_ANON_KEY &&
                           ENV.SUPABASE_URL !== '' && ENV.SUPABASE_ANON_KEY !== '';
 
