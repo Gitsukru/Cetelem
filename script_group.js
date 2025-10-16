@@ -75,10 +75,10 @@ async function doCreateGroup() {
   const groupName = groupValidation.value
   const creatorName = creatorValidation.value
 
-  // ⚡ FIX: Rate limiting (max 3 groupes créés par heure)
+  // ⚡ Rate limiting (max 20 groupes créés par 10 minutes)
   const rateLimitCheck = rateLimiter.check('createGroup', {
-    maxAttempts: 3,
-    windowMs: 60 * 60 * 1000 // 1 heure
+    maxAttempts: 20,
+    windowMs: 10 * 60 * 1000 // 10 minutes
   })
 
   if (!rateLimitCheck.allowed) {
@@ -132,10 +132,10 @@ async function doJoinGroup() {
   const groupCode = codeValidation.value
   const participantName = nameValidation.value
 
-  // ⚡ FIX: Rate limiting (max 10 tentatives de join par heure)
+  // ⚡ Rate limiting (max 30 tentatives de join par 10 minutes)
   const rateLimitCheck = rateLimiter.check('joinGroup', {
-    maxAttempts: 10,
-    windowMs: 60 * 60 * 1000 // 1 heure
+    maxAttempts: 30,
+    windowMs: 10 * 60 * 1000 // 10 minutes
   })
 
   if (!rateLimitCheck.allowed) {
