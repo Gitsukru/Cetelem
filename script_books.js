@@ -282,6 +282,8 @@ function showAddBookModal() {
           <div id="step-indicator-2" class="step-indicator"></div>
           <div id="step-indicator-3" class="step-indicator"></div>
           <div id="step-indicator-4" class="step-indicator"></div>
+          <div id="step-indicator-5" class="step-indicator"></div>
+          <div id="step-indicator-6" class="step-indicator"></div>
         </div>
 
         <div class="modal-body" id="modal-body-content">
@@ -328,6 +330,28 @@ function showAddBookModal() {
               <input type="number" id="bookInitialPagesInput" class="form-input" placeholder="0" min="0" value="0" onfocus="if(this.value==='0') this.value=''">
             </div>
           </div>
+
+          <!-- Étape 5: Objectif quotidien -->
+          <div id="step-5" class="modal-step" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Günlük Okuma Hedefiniz Kaç Sayfadır?</label>
+              <input type="number" id="bookDailyGoalInput" class="form-input" placeholder="Örn: 10" min="0" value="0" onfocus="if(this.value==='0') this.value=''">
+              <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                Her gün bu sayfa sayısına ulaşmayı hedefleyin (isteğe bağlı)
+              </small>
+            </div>
+          </div>
+
+          <!-- Étape 6: Objectif hebdomadaire -->
+          <div id="step-6" class="modal-step" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Haftalık Okuma Hedefiniz Kaç Sayfadır?</label>
+              <input type="number" id="bookWeeklyGoalInput" class="form-input" placeholder="Örn: 70" min="0" value="0" onfocus="if(this.value==='0') this.value=''">
+              <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                Her hafta bu sayfa sayısına ulaşmayı hedefleyin (isteğe bağlı)
+              </small>
+            </div>
+          </div>
         </div>
 
         <div class="modal-footer">
@@ -350,11 +374,13 @@ function showAddBookModal() {
   // Variables globales pour le formulaire en étapes
   window.bookFormData = {
     currentStep: 1,
-    totalSteps: 4,
+    totalSteps: 6,
     name: '',
     format: '',
     totalPages: 0,
-    initialPages: 0
+    initialPages: 0,
+    dailyGoal: 0,
+    weeklyGoal: 0
   };
 
   // Gestion de la touche Enter pour passer à l'étape suivante
@@ -396,6 +422,12 @@ function nextStepAddBook() {
   } else if (data.currentStep === 4) {
     const initialPagesInput = document.getElementById('bookInitialPagesInput');
     data.initialPages = parseInt(initialPagesInput.value) || 0;
+  } else if (data.currentStep === 5) {
+    const dailyGoalInput = document.getElementById('bookDailyGoalInput');
+    data.dailyGoal = parseInt(dailyGoalInput.value) || 0;
+  } else if (data.currentStep === 6) {
+    const weeklyGoalInput = document.getElementById('bookWeeklyGoalInput');
+    data.weeklyGoal = parseInt(weeklyGoalInput.value) || 0;
 
     // Dernière étape : sauvegarder le livre
     saveBookFromSteps();
@@ -465,6 +497,10 @@ function updateBookFormStep() {
     document.getElementById('bookTotalPagesInput')?.focus();
   } else if (data.currentStep === 4) {
     document.getElementById('bookInitialPagesInput')?.focus();
+  } else if (data.currentStep === 5) {
+    document.getElementById('bookDailyGoalInput')?.focus();
+  } else if (data.currentStep === 6) {
+    document.getElementById('bookWeeklyGoalInput')?.focus();
   }
 }
 
@@ -484,12 +520,20 @@ function saveBookFromSteps() {
     BooksManager.addPagesToday(newBook.id, data.initialPages);
   }
 
+  // Sauvegarder les objectifs de lecture
+  if (data.dailyGoal > 0 || data.weeklyGoal > 0) {
+    saveBookGoals(newBook.id, data.dailyGoal, data.weeklyGoal);
+  }
+
   // Fermer le modal
   document.querySelector('.custom-modal-overlay').remove();
 
-  // Message de succès avec format
+  // Message de succès avec format et objectifs
   const formatText = data.format === 'digital' ? '📱 Dijital' : '📖 Basılı';
-  showNotification(`📚 "${data.name}" eklendi! (${formatText})`, 'success');
+  let message = `📚 "${data.name}" eklendi! (${formatText})`;
+  if (data.dailyGoal > 0) message += `<br>Günlük hedef: ${data.dailyGoal} sayfa`;
+  if (data.weeklyGoal > 0) message += `<br>Haftalık hedef: ${data.weeklyGoal} sayfa`;
+  showCustomAlert(message, 'success', 3000);
 
   // Nettoyer
   delete window.bookFormData;
@@ -716,6 +760,53 @@ function showNotification(message, type = 'info') {
 }
 
 /**
+ * ========================================
+ * GESTION DES OBJECTIFS DE LECTURE
+ * ========================================
+ */
+
+// Objet pour stocker les objectifs de lecture par livre
+let bookGoals = {};
+
+/**
+ * Charger les objectifs de lecture depuis localStorage
+ */
+function loadBookGoals() {
+  const saved = localStorage.getItem('bookGoals');
+  if (saved) {
+    try {
+      bookGoals = JSON.parse(saved);
+    } catch (e) {
+      console.error('Erreur chargement objectifs livres:', e);
+      bookGoals = {};
+    }
+  }
+}
+
+/**
+ * Sauvegarder les objectifs de lecture d'un livre
+ * @param {string} bookId - ID du livre
+ * @param {number} dailyGoal - Objectif quotidien en pages
+ * @param {number} weeklyGoal - Objectif hebdomadaire en pages
+ */
+function saveBookGoals(bookId, dailyGoal, weeklyGoal) {
+  bookGoals[bookId] = {
+    daily: dailyGoal || 0,
+    weekly: weeklyGoal || 0
+  };
+  localStorage.setItem('bookGoals', JSON.stringify(bookGoals));
+}
+
+/**
+ * Récupérer les objectifs d'un livre
+ * @param {string} bookId - ID du livre
+ * @returns {Object} { daily: number, weekly: number }
+ */
+function getBookGoals(bookId) {
+  return bookGoals[bookId] || { daily: 0, weekly: 0 };
+}
+
+/**
  * Initialisation au chargement de la page
  */
 if (typeof window !== 'undefined') {
@@ -723,8 +814,12 @@ if (typeof window !== 'undefined') {
 
   // Init après chargement du DOM
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => BooksManager.init());
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBookGoals(); // Charger les objectifs
+      BooksManager.init();
+    });
   } else {
+    loadBookGoals(); // Charger les objectifs
     BooksManager.init();
   }
 }
