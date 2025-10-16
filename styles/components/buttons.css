@@ -40,7 +40,7 @@
     transform: translate(-50%, -50%);
     width: 550px;
     height: 550px;
-    background-image: url('../tesbih.png');
+    background-image: url('/assets/images/tesbih.png');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
