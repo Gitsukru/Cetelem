@@ -1337,19 +1337,51 @@ function updateStats() {
                 const categoryNote = getCategoryNote(cat);
                 const noteIcon = categoryNote ? '📝' : '📝';
                 const noteOpacity = categoryNote ? '1' : '0.3';
+                const goals = getCategoryGoals(cat);
 
                 // ✅ FIX XSS: Créer les cellules de manière sécurisée
                 const catCell = document.createElement('td');
                 catCell.textContent = cat; // ✅ textContent sécurisé
 
+                // Bugün (Today) - Sayı + %
                 const dayCell = document.createElement('td');
                 dayCell.textContent = stats.day;
 
+                const dayPercentCell = document.createElement('td');
+                dayPercentCell.style.textAlign = 'center';
+                dayPercentCell.style.color = '#667eea';
+                dayPercentCell.style.fontWeight = '600';
+                if (goals.daily > 0) {
+                    const percentage = Math.round((stats.day / goals.daily) * 100);
+                    dayPercentCell.textContent = percentage + '%';
+                } else {
+                    dayPercentCell.textContent = '-';
+                }
+
+                // Bu Hafta (This week) - Sayı + %
                 const weekCell = document.createElement('td');
                 weekCell.textContent = stats.week;
 
+                const weekPercentCell = document.createElement('td');
+                weekPercentCell.style.textAlign = 'center';
+                weekPercentCell.style.color = '#667eea';
+                weekPercentCell.style.fontWeight = '600';
+                if (goals.weekly > 0) {
+                    const percentage = Math.round((stats.week / goals.weekly) * 100);
+                    weekPercentCell.textContent = percentage + '%';
+                } else {
+                    weekPercentCell.textContent = '-';
+                }
+
+                // Bu Ay (This month) - Sayı + % (no monthly goal yet, so always show -)
                 const monthCell = document.createElement('td');
                 monthCell.textContent = stats.month;
+
+                const monthPercentCell = document.createElement('td');
+                monthPercentCell.style.textAlign = 'center';
+                monthPercentCell.style.color = '#667eea';
+                monthPercentCell.style.fontWeight = '600';
+                monthPercentCell.textContent = '-';
 
                 const yearCell = document.createElement('td');
                 yearCell.textContent = stats.year;
@@ -1372,8 +1404,11 @@ function updateStats() {
 
                 row.appendChild(catCell);
                 row.appendChild(dayCell);
+                row.appendChild(dayPercentCell);
                 row.appendChild(weekCell);
+                row.appendChild(weekPercentCell);
                 row.appendChild(monthCell);
+                row.appendChild(monthPercentCell);
                 row.appendChild(yearCell);
                 row.appendChild(totalCell);
                 row.appendChild(noteCell);
@@ -1397,14 +1432,35 @@ function updateStats() {
                     const bookName = document.createTextNode(book.name);
                     bookCell.appendChild(bookName);
 
+                    // Bugün (Today) - Sayı + % (percentage based on total book progress)
                     const dayCell = document.createElement('td');
                     dayCell.textContent = bookStats.today + ' sf';
 
+                    const dayPercentCell = document.createElement('td');
+                    dayPercentCell.style.textAlign = 'center';
+                    dayPercentCell.style.color = '#667eea';
+                    dayPercentCell.style.fontWeight = '600';
+                    dayPercentCell.textContent = bookStats.progress !== null ? bookStats.progress + '%' : '-';
+
+                    // Bu Hafta (This week) - Sayı + % (same overall progress)
                     const weekCell = document.createElement('td');
                     weekCell.textContent = bookStats.week + ' sf';
 
+                    const weekPercentCell = document.createElement('td');
+                    weekPercentCell.style.textAlign = 'center';
+                    weekPercentCell.style.color = '#667eea';
+                    weekPercentCell.style.fontWeight = '600';
+                    weekPercentCell.textContent = bookStats.progress !== null ? bookStats.progress + '%' : '-';
+
+                    // Bu Ay (This month) - Sayı + % (same overall progress)
                     const monthCell = document.createElement('td');
                     monthCell.textContent = bookStats.month + ' sf';
+
+                    const monthPercentCell = document.createElement('td');
+                    monthPercentCell.style.textAlign = 'center';
+                    monthPercentCell.style.color = '#667eea';
+                    monthPercentCell.style.fontWeight = '600';
+                    monthPercentCell.textContent = bookStats.progress !== null ? bookStats.progress + '%' : '-';
 
                     const yearCell = document.createElement('td');
                     yearCell.textContent = bookStats.year + ' sf';
@@ -1412,16 +1468,18 @@ function updateStats() {
                     const totalCell = document.createElement('td');
                     totalCell.textContent = bookStats.total + ' sf';
 
+                    // Note cell (now empty for books, no note button)
                     const noteCell = document.createElement('td');
-                    noteCell.textContent = bookStats.progress !== null ? bookStats.progress + '%' : '-';
                     noteCell.style.textAlign = 'center';
-                    noteCell.style.color = '#667eea';
-                    noteCell.style.fontWeight = 'bold';
+                    noteCell.textContent = '-';
 
                     row.appendChild(bookCell);
                     row.appendChild(dayCell);
+                    row.appendChild(dayPercentCell);
                     row.appendChild(weekCell);
+                    row.appendChild(weekPercentCell);
                     row.appendChild(monthCell);
+                    row.appendChild(monthPercentCell);
                     row.appendChild(yearCell);
                     row.appendChild(totalCell);
                     row.appendChild(noteCell);
@@ -1434,7 +1492,7 @@ function updateStats() {
                     const separatorRow = document.createElement('tr');
                     separatorRow.style.borderTop = '2px solid #667eea';
                     const separatorCell = document.createElement('td');
-                    separatorCell.colSpan = 7;
+                    separatorCell.colSpan = 10; // Updated from 7 to 10
                     separatorCell.style.padding = '0';
                     separatorCell.style.height = '2px';
                     separatorRow.appendChild(separatorCell);
@@ -1452,11 +1510,23 @@ function updateStats() {
                     const todayCell = document.createElement('td');
                     todayCell.textContent = booksTotalToday + ' sf';
 
+                    const todayPercentCell = document.createElement('td');
+                    todayPercentCell.textContent = '-';
+                    todayPercentCell.style.textAlign = 'center';
+
                     const weekCellTotal = document.createElement('td');
                     weekCellTotal.textContent = booksTotalWeek + ' sf';
 
+                    const weekPercentCell = document.createElement('td');
+                    weekPercentCell.textContent = '-';
+                    weekPercentCell.style.textAlign = 'center';
+
                     const monthCellTotal = document.createElement('td');
                     monthCellTotal.textContent = booksTotalMonth + ' sf';
+
+                    const monthPercentCell = document.createElement('td');
+                    monthPercentCell.textContent = '-';
+                    monthPercentCell.style.textAlign = 'center';
 
                     const yearCellTotal = document.createElement('td');
                     yearCellTotal.textContent = booksTotalYear + ' sf';
@@ -1470,8 +1540,11 @@ function updateStats() {
 
                     booksTotalRow.appendChild(labelCell);
                     booksTotalRow.appendChild(todayCell);
+                    booksTotalRow.appendChild(todayPercentCell);
                     booksTotalRow.appendChild(weekCellTotal);
+                    booksTotalRow.appendChild(weekPercentCell);
                     booksTotalRow.appendChild(monthCellTotal);
+                    booksTotalRow.appendChild(monthPercentCell);
                     booksTotalRow.appendChild(yearCellTotal);
                     booksTotalRow.appendChild(allCellTotal);
                     booksTotalRow.appendChild(emptyCell);

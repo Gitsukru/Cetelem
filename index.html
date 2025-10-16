@@ -382,13 +382,21 @@
                     <table class="complete-stats-table" id="completeStatsTable">
                         <thead>
                             <tr>
-                                <th>Kategori</th>
-                                <th>Bugün</th>
-                                <th>Bu Hafta</th>
-                                <th>Bu Ay</th>
-                                <th>Bu Yıl</th>
-                                <th>Genel Toplam</th>
-                                <th style="width: 60px;">Not</th>
+                                <th rowspan="2">Kategori</th>
+                                <th colspan="2">Bugün</th>
+                                <th colspan="2">Bu Hafta</th>
+                                <th colspan="2">Bu Ay</th>
+                                <th rowspan="2">Bu Yıl</th>
+                                <th rowspan="2">Genel Toplam</th>
+                                <th rowspan="2" style="width: 60px;">Not</th>
+                            </tr>
+                            <tr>
+                                <th style="font-size: 11px; font-weight: 500;">Sayı</th>
+                                <th style="font-size: 11px; font-weight: 500; width: 50px;">%</th>
+                                <th style="font-size: 11px; font-weight: 500;">Sayı</th>
+                                <th style="font-size: 11px; font-weight: 500; width: 50px;">%</th>
+                                <th style="font-size: 11px; font-weight: 500;">Sayı</th>
+                                <th style="font-size: 11px; font-weight: 500; width: 50px;">%</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -398,10 +406,14 @@
                             <tr class="totals-row">
                                 <td><strong>Toplam zikirler</strong></td>
                                 <td><strong id="totalDay">0</strong></td>
+                                <td></td>
                                 <td><strong id="totalWeek">0</strong></td>
+                                <td></td>
                                 <td><strong id="totalMonth">0</strong></td>
+                                <td></td>
                                 <td><strong id="totalYear">0</strong></td>
                                 <td><strong id="totalAll">0</strong></td>
+                                <td></td>
                             </tr>
                         </tfoot>
                     </table>
