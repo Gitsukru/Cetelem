@@ -859,52 +859,259 @@ function updateCounterDisplay() {
     }
 }
 
-// Afficher modal rapide pour ajouter un zikir
+// Afficher modal rapide pour ajouter un zikir - MULTI-ÉTAPES
 function showQuickAddCategory() {
-    // ⚡ Utiliser ModalUtils pour afficher la modale
-    ModalUtils.showInputModal({
-        title: '✨ Yeni Zikir Ekle',
-        description: 'Yeni bir zikir kategorisi ekleyin ve sayaç otomatik olarak seçilecek',
-        placeholder: 'Örn: Salavat, Tesbih, İstiğfar...',
-        initialValue: '',
-        onSubmit: (value) => {
-            // Valider avec Validators
-            const validation = Validators.validateCategoryName(value);
+    const modalHTML = `
+        <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+            <div class="custom-modal" style="min-height: 280px;">
+                <div class="modal-header">
+                    <h3 id="zikir-modal-title">✨ Yeni Zikir Ekle</h3>
+                    <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
+                </div>
 
-            if (!validation.valid) {
-                showCustomAlert(`❌ ${validation.error}`, 'warning', 2500);
-                return;
-            }
+                <!-- Indicateur de progression -->
+                <div style="display: flex; gap: 8px; padding: 0 24px 16px; justify-content: center;">
+                    <div id="zikir-step-indicator-1" class="step-indicator active"></div>
+                    <div id="zikir-step-indicator-2" class="step-indicator"></div>
+                    <div id="zikir-step-indicator-3" class="step-indicator"></div>
+                </div>
 
-            const newCategory = validation.value;
+                <div class="modal-body" id="zikir-modal-body-content">
+                    <!-- Étape 1: Nom du zikir -->
+                    <div id="zikir-step-1" class="modal-step">
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Zikir Adı Nedir?</label>
+                            <input type="text" id="zikirNameInput" class="form-input" placeholder="Örn: Salavat, Tesbih, İstiğfar..." required autofocus>
+                        </div>
+                    </div>
 
-            if (categories.includes(newCategory)) {
-                showCustomAlert('Bu zikir zaten mevcut!', 'warning', 2500);
-                return;
-            }
+                    <!-- Étape 2: Objectif quotidien -->
+                    <div id="zikir-step-2" class="modal-step" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Günlük Hedef Sayısı</label>
+                            <input type="number" id="zikirDailyGoalInput" class="form-input" placeholder="Örn: 100" min="0" value="0" onfocus="if(this.value==='0') this.value=''">
+                            <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                                Her gün bu sayıya ulaşmayı hedefleyin (isteğe bağlı)
+                            </small>
+                        </div>
+                    </div>
 
-            categories.push(newCategory);
-            saveCategories();
-            initializeCounters();
-            updateCategorySelect();
-            updateCategoriesList();
-            updateStats();
+                    <!-- Étape 3: Objectif hebdomadaire -->
+                    <div id="zikir-step-3" class="modal-step" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Haftalık Hedef Sayısı</label>
+                            <input type="number" id="zikirWeeklyGoalInput" class="form-input" placeholder="Örn: 700" min="0" value="0" onfocus="if(this.value==='0') this.value=''">
+                            <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                                Her hafta bu sayıya ulaşmayı hedefleyin (isteğe bağlı)
+                            </small>
+                        </div>
+                    </div>
+                </div>
 
-            // Sélectionner automatiquement la nouvelle catégorie
-            const select = document.getElementById('categorySelect');
-            if (select) {
-                select.value = newCategory;
-                currentCategory = newCategory;
-                updateCounterDisplay();
-                resetTimer();
-            }
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="zikir-btn-back" onclick="previousStepAddZikir()" style="display: none;">
+                        ← Geri
+                    </button>
+                    <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
+                        İptal
+                    </button>
+                    <button class="btn-primary" id="zikir-btn-next" onclick="nextStepAddZikir()">
+                        Devam →
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
 
-            // Afficher la confirmation
-            showCustomAlert(`Zikir "${newCategory}" eklendi!`, 'success', 2000);
-        },
-        submitText: '✅ Ekle',
-        cancelText: 'İptal'
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Variables globales pour le formulaire en étapes
+    window.zikirFormData = {
+        currentStep: 1,
+        totalSteps: 3,
+        name: '',
+        dailyGoal: 0,
+        weeklyGoal: 0
+    };
+
+    // Gestion de la touche Enter pour passer à l'étape suivante
+    const modalOverlay = document.querySelector('.custom-modal-overlay:last-of-type');
+    modalOverlay.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            nextStepAddZikir();
+        }
     });
+
+    document.getElementById('zikirNameInput').focus();
+}
+
+// Navigation entre les étapes
+function nextStepAddZikir() {
+    const currentStep = window.zikirFormData.currentStep;
+
+    // Validation étape 1: nom du zikir
+    if (currentStep === 1) {
+        const nameInput = document.getElementById('zikirNameInput');
+        const validation = Validators.validateCategoryName(nameInput.value);
+
+        if (!validation.valid) {
+            showCustomAlert(`❌ ${validation.error}`, 'warning', 2500);
+            return;
+        }
+
+        const newCategory = validation.value;
+
+        if (categories.includes(newCategory)) {
+            showCustomAlert('Bu zikir zaten mevcut!', 'warning', 2500);
+            return;
+        }
+
+        window.zikirFormData.name = newCategory;
+    }
+
+    // Validation étape 2: objectif quotidien
+    if (currentStep === 2) {
+        const dailyGoalInput = document.getElementById('zikirDailyGoalInput');
+        const dailyGoal = parseInt(dailyGoalInput.value) || 0;
+        window.zikirFormData.dailyGoal = dailyGoal;
+    }
+
+    // Validation étape 3: objectif hebdomadaire et finalisation
+    if (currentStep === 3) {
+        const weeklyGoalInput = document.getElementById('zikirWeeklyGoalInput');
+        const weeklyGoal = parseInt(weeklyGoalInput.value) || 0;
+        window.zikirFormData.weeklyGoal = weeklyGoal;
+
+        // Finaliser l'ajout du zikir
+        finalizeAddZikir();
+        return;
+    }
+
+    // Passer à l'étape suivante
+    if (currentStep < window.zikirFormData.totalSteps) {
+        // Masquer l'étape actuelle
+        document.getElementById(`zikir-step-${currentStep}`).style.display = 'none';
+        document.getElementById(`zikir-step-indicator-${currentStep}`).classList.remove('active');
+
+        // Afficher l'étape suivante
+        window.zikirFormData.currentStep++;
+        document.getElementById(`zikir-step-${window.zikirFormData.currentStep}`).style.display = 'block';
+        document.getElementById(`zikir-step-indicator-${window.zikirFormData.currentStep}`).classList.add('active');
+
+        // Afficher le bouton Geri
+        document.getElementById('zikir-btn-back').style.display = 'inline-block';
+
+        // Changer le texte du bouton à la dernière étape
+        if (window.zikirFormData.currentStep === window.zikirFormData.totalSteps) {
+            document.getElementById('zikir-btn-next').innerHTML = '✅ Ekle';
+        }
+
+        // Focus sur le prochain input
+        const nextInput = document.querySelector(`#zikir-step-${window.zikirFormData.currentStep} input`);
+        if (nextInput) nextInput.focus();
+    }
+}
+
+function previousStepAddZikir() {
+    const currentStep = window.zikirFormData.currentStep;
+
+    if (currentStep > 1) {
+        // Masquer l'étape actuelle
+        document.getElementById(`zikir-step-${currentStep}`).style.display = 'none';
+        document.getElementById(`zikir-step-indicator-${currentStep}`).classList.remove('active');
+
+        // Afficher l'étape précédente
+        window.zikirFormData.currentStep--;
+        document.getElementById(`zikir-step-${window.zikirFormData.currentStep}`).style.display = 'block';
+        document.getElementById(`zikir-step-indicator-${window.zikirFormData.currentStep}`).classList.add('active');
+
+        // Masquer le bouton Geri à la première étape
+        if (window.zikirFormData.currentStep === 1) {
+            document.getElementById('zikir-btn-back').style.display = 'none';
+        }
+
+        // Remettre le texte du bouton à "Devam"
+        document.getElementById('zikir-btn-next').innerHTML = 'Devam →';
+
+        // Focus sur l'input précédent
+        const prevInput = document.querySelector(`#zikir-step-${window.zikirFormData.currentStep} input`);
+        if (prevInput) prevInput.focus();
+    }
+}
+
+function finalizeAddZikir() {
+    const { name, dailyGoal, weeklyGoal } = window.zikirFormData;
+
+    // Ajouter la catégorie
+    categories.push(name);
+    saveCategories();
+    initializeCounters();
+
+    // Sauvegarder les objectifs
+    if (dailyGoal > 0 || weeklyGoal > 0) {
+        saveCategoryGoals(name, dailyGoal, weeklyGoal);
+    }
+
+    updateCategorySelect();
+    updateCategoriesList();
+    updateStats();
+
+    // Sélectionner automatiquement la nouvelle catégorie
+    const select = document.getElementById('categorySelect');
+    if (select) {
+        select.value = name;
+        currentCategory = name;
+        updateCounterDisplay();
+        resetTimer();
+    }
+
+    // Fermer la modale
+    document.querySelector('.custom-modal-overlay:last-of-type').remove();
+
+    // Afficher la confirmation
+    let message = `Zikir "${name}" eklendi!`;
+    if (dailyGoal > 0) message += `<br>Günlük hedef: ${dailyGoal}`;
+    if (weeklyGoal > 0) message += `<br>Haftalık hedef: ${weeklyGoal}`;
+    showCustomAlert(message, 'success', 3000);
+}
+
+// ========================================
+// GESTION DES OBJECTIFS DE ZIKIR
+// ========================================
+
+// Objet pour stocker les objectifs par catégorie
+let categoryGoals = {};
+
+// Charger les objectifs depuis localStorage
+function loadCategoryGoals() {
+    const saved = localStorage.getItem('categoryGoals');
+    if (saved) {
+        try {
+            categoryGoals = JSON.parse(saved);
+        } catch (e) {
+            categoryGoals = {};
+        }
+    }
+}
+
+// Sauvegarder les objectifs dans localStorage
+function saveCategoryGoals(category, dailyGoal, weeklyGoal) {
+    categoryGoals[category] = {
+        daily: dailyGoal || 0,
+        weekly: weeklyGoal || 0
+    };
+    localStorage.setItem('categoryGoals', JSON.stringify(categoryGoals));
+}
+
+// Obtenir les objectifs d'une catégorie
+function getCategoryGoals(category) {
+    return categoryGoals[category] || { daily: 0, weekly: 0 };
+}
+
+// Charger les objectifs au démarrage
+if (typeof window !== 'undefined') {
+    loadCategoryGoals();
 }
 
 // Incrémenter le compteur - VERSION SIMPLE ET FIABLE
@@ -2118,9 +2325,10 @@ function showCategoryNoteModal(category, event) {
     });
 }
 
-// Charger les notes au démarrage
+// Charger les notes et objectifs au démarrage
 if (typeof window !== 'undefined') {
     loadCategoryNotes();
+    loadCategoryGoals();
 }
 
 // ============================================
