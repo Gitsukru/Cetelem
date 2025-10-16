@@ -23,28 +23,40 @@
     width: 100%;
     border-collapse: collapse;
     background: white;
-    font-size: 14px;
-    min-width: 600px;
+    font-size: 13px;
+    min-width: 800px; /* Augmenté pour accommoder les nouvelles colonnes */
 }
 
 .complete-stats-table th {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    padding: 15px 10px;
+    padding: 12px 8px;
     text-align: center;
-    font-weight: bold;
-    font-size: 13px;
+    font-weight: 600;
+    font-size: 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.complete-stats-table th:last-child {
+    border-right: none;
 }
 
 .complete-stats-table th:first-child {
     text-align: left;
     padding-left: 15px;
+    min-width: 120px;
 }
 
 .complete-stats-table td {
-    padding: 12px 10px;
+    padding: 10px 8px;
     text-align: center;
     border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #f1f5f9;
+    font-size: 13px;
+}
+
+.complete-stats-table td:last-child {
+    border-right: none;
 }
 
 .complete-stats-table td:first-child {
@@ -52,6 +64,7 @@
     padding-left: 15px;
     font-weight: 600;
     color: #4a5568;
+    min-width: 120px;
 }
 
 .complete-stats-table tbody tr:hover {
@@ -136,4 +149,45 @@
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+    .complete-stats-table {
+        font-size: 11px;
+        min-width: 650px;
+    }
+
+    .complete-stats-table th {
+        padding: 10px 6px;
+        font-size: 10px;
+    }
+
+    .complete-stats-table td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+
+    .complete-stats-table th:first-child,
+    .complete-stats-table td:first-child {
+        min-width: 100px;
+        padding-left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .complete-stats-table {
+        min-width: 600px;
+    }
+
+    .complete-stats-table th,
+    .complete-stats-table td {
+        padding: 8px 4px;
+    }
+
+    .complete-stats-table th:first-child,
+    .complete-stats-table td:first-child {
+        min-width: 80px;
+        padding-left: 8px;
+    }
 }
