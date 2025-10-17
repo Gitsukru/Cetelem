@@ -104,22 +104,22 @@
 
 /* Content - Auto-scrolling sections */
 .welcome-content {
-  padding: 50px 40px;
-  background: white;
+  padding: 30px 40px 60px;
+  background: #ff7401;
   position: relative;
   min-height: 380px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
 /* Auto-scrolling sections */
 .welcome-auto-section {
   position: absolute;
-  top: 50%;
+  top: 35%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -35%);
   width: calc(100% - 80px);
   max-width: 550px;
   opacity: 0;
@@ -137,11 +137,11 @@
 @keyframes fadeInScale {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
+    transform: translate(-50%, -35%) scale(0.95);
   }
   100% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -35%) scale(1);
   }
 }
 
@@ -154,33 +154,36 @@
 
 .welcome-auto-section h3 {
   margin: 0 0 20px 0;
-  color: #1e293b;
+  color: white;
   font-size: 28px;
   font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .welcome-auto-section p {
   margin: 0;
-  color: #2d3748;
+  color: white;
   font-size: 17px;
   line-height: 1.8;
   font-weight: 500;
 }
 
 .welcome-auto-section strong {
-  color: #1e293b;
+  color: white;
   font-weight: 700;
 }
 
 .welcome-auto-section a {
-  color: #1e293b;
+  color: white;
   text-decoration: underline;
   font-weight: 700;
   transition: color 0.2s;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .welcome-auto-section a:hover {
-  color: #667eea;
+  color: #1e293b;
+  text-shadow: none;
 }
 
 /* Navigation arrows */

@@ -109,7 +109,7 @@ const WelcomeModal = {
               Sorularınız, önerileriniz veya geri bildirimleriniz için:
             </p>
             <p style="font-size: 16px; margin-top: 12px;">
-              <a href="mailto:suisse1022@gmail.com" style="color: #667eea; font-weight: 600; text-decoration: none;">
+              <a href="mailto:suisse1022@gmail.com">
                 📧 suisse1022@gmail.com
               </a>
             </p>
