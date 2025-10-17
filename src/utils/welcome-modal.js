@@ -172,6 +172,7 @@ const WelcomeModal = {
   startAutoScroll() {
     this.currentSection = 1;
     this.totalSections = 6;
+    this.autoScrollCompleted = false; // Flag pour indiquer si auto-scroll a été complété
     const intervalTime = 6000; // 6 secondes
 
     this.autoScrollInterval = setInterval(() => {
@@ -179,9 +180,10 @@ const WelcomeModal = {
       this.currentSection++;
 
       if (this.currentSection > this.totalSections) {
-        // Arrêter à la dernière slide
+        // Arrêter à la dernière slide et marquer comme complété
         clearInterval(this.autoScrollInterval);
         this.autoScrollInterval = null;
+        this.autoScrollCompleted = true; // Marquer l'auto-scroll comme terminé
         return;
       }
 
@@ -228,6 +230,11 @@ const WelcomeModal = {
       this.autoScrollInterval = null;
     }
 
+    // Ne PAS redémarrer si l'auto-scroll a déjà été complété une fois
+    if (this.autoScrollCompleted) {
+      return;
+    }
+
     // Ne redémarrer que si on n'est pas à la dernière slide
     if (this.currentSection < this.totalSections) {
       const intervalTime = 6000;
@@ -237,6 +244,7 @@ const WelcomeModal = {
         if (this.currentSection > this.totalSections) {
           clearInterval(this.autoScrollInterval);
           this.autoScrollInterval = null;
+          this.autoScrollCompleted = true; // Marquer comme complété
           return;
         }
 
