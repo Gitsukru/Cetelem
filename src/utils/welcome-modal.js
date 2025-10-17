@@ -68,9 +68,9 @@ const WelcomeModal = {
             <div class="section-icon">🎯</div>
             <h3>Nasıl Kullanılır?</h3>
             <p style="line-height: 1.7;">
-              <strong>1. Zikir Sayma:</strong> Ana ekrandaki büyük butona her tıkladığınızda sayaç artar.<br><br>
-              <strong>2. Farklı Zikirler:</strong> "Yönetim" veya "Sayaç" bölümünden istediğiniz kadar kategori ekleyin.<br><br>
-              <strong>3. Kitap Takibi:</strong> "Kitap" sekmesinden okuduğunuz kitapları takip edin.<br><br>
+              <strong>1. Zikir Sayma:</strong> Ana ekrandaki büyük butona her tıkladığınızda sayaç artar.<br>
+              <strong>2. Farklı Zikirler:</strong> "Yönetim" veya "Sayaç" bölümünden istediğiniz kadar kategori ekleyin.<br>
+              <strong>3. Kitap Takibi:</strong> "Kitap" sekmesinden okuduğunuz kitapları takip edin.<br>
               <strong>4. Grup Özelliği:</strong> Arkadaşlarınızla grup kurup motivasyonunuzu artırın.
             </p>
           </div>
