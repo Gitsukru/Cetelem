@@ -35,127 +35,94 @@ const WelcomeModal = {
         </div>
 
         <div class="welcome-content">
-          <!-- Section 1: Çetelem Nedir? -->
-          <div class="welcome-section highlight">
+          <!-- Auto-scrolling text sections -->
+          <div class="welcome-auto-section active" data-section="1">
             <div class="section-icon">✨</div>
             <h3>Çetelem Nedir?</h3>
             <p style="line-height: 1.7;">
               <strong>Çetelem</strong>, günlük zikirlerinizi kolayca takip etmenizi sağlayan modern bir dijital tesbih uygulamasıdır.
-              İster evde, ister yolda, ister camide olun - telefonunuz her zaman yanınızda olduğu için zikirlerinizi hiç kaçırmazsınız.
             </p>
             <p style="line-height: 1.7; margin-top: 12px;">
-              📱 <strong>Basit kullanım:</strong> Ekrana dokunarak sayın, otomatik olarak kaydedilir.<br>
-              📊 <strong>İlerlemenizi görün:</strong> Günlük, haftalık ve aylık istatistikler.<br>
-              👥 <strong>Arkadaşlarınızla hayırda yarışın:</strong> Grup oluşturup motivasyonunuzu artırın.<br>
-              🎯 <strong>Hedeflerinize ulaşın:</strong> Her gün biraz daha maneviyatta ilerleme kaydedin.
+              📱 Basit kullanım - Ekrana dokunarak sayın<br>
+              📊 Günlük, haftalık ve aylık istatistikler<br>
+              👥 Arkadaşlarınızla hayırda yarışın<br>
+              🎯 Hedeflerinize ulaşın
             </p>
           </div>
 
-          <!-- Section 2: Nasıl Kullanılır? -->
-          <div class="welcome-section">
-            <div class="section-icon">🎯</div>
-            <h3>Nasıl Kullanılır?</h3>
-            <ul class="welcome-list">
-              <li>
-                <strong>1. Zikir Sayma:</strong>
-                Ana ekrandaki büyük butona her tıkladığınızda sayaç artar. Ses efektini açıp kapatabilirsiniz.
-              </li>
-              <li>
-                <strong>2. Farklı Zikirler:</strong>
-                "Yönetim" veya "Sayaç" bölümünden istediğiniz kadar zikir kategorisi ekleyebilirsiniz.
-                Her biri ayrı ayrı sayılır ve kaydedilir.
-              </li>
-              <li>
-                <strong>3. Kitap Takibi:</strong>
-                "Kitap" sekmesinden okuduğunuz kitapları takip edebilirsiniz. Günlük kaç sayfa okuduğunuzu kaydedin,
-                ilerlemenizi görün ve okuma hedefinize ulaşın.
-              </li>
-              <li>
-                <strong>4. Grup Özelliği:</strong>
-                Arkadaşlarınızla grup kurup birlikte zikir çekebilirsiniz. Sıralamada kim önde görürsünüz.
-                Bu, motivasyonunuzu artırır ve ibadet ederken sosyal bir deneyim yaşarsınız.
-              </li>
-              <li>
-                <strong>5. İstatistikler:</strong>
-                İlerlemenizi "İstatistikler" sekmesinden takip edin. Bugün, bu hafta, bu ay ne kadar zikir çektiğinizi
-                ve kaç sayfa okuduğunuzu görün.
-              </li>
-            </ul>
-          </div>
-
-          <!-- Section 3: Verileriniz Sizinle Kalır -->
-          <div class="welcome-section">
+          <div class="welcome-auto-section" data-section="2">
             <div class="section-icon">🔒</div>
             <h3>Verileriniz Sizinle Kalır</h3>
             <p style="line-height: 1.7;">
               Çetelem'i kullanmak için <strong>hiçbir kayıt, giriş veya kişisel bilgi gerekmez</strong>.
               Tüm zikir sayılarınız telefonunuzun hafızasında (tarayıcıda) saklanır.
             </p>
-            <ul class="welcome-list" style="margin-top: 12px;">
-              <li>
-                <strong>Tamamen özel:</strong>
-                Hangi zikirleri çektiğiniz ve ne kadar sayı yaptığınız sadece kurduğunuz grupta ve sizin bilgisayarınızda kalır.
-              </li>
-              <li>
-                <strong>İnternet gereksiz:</strong>
-                Çevrim dışıyken bile çalışır. Sayılarınız kaybolmaz.
-              </li>
-              <li>
-                <strong>Siz kontrol edersiniz:</strong>
-                Verilerinizi dışa aktarabilir, cihaz değiştirebilir veya dilediğiniz zaman tamamen silebilirsiniz.
-              </li>
-            </ul>
+            <p style="line-height: 1.7; margin-top: 12px;">
+              🔐 Tamamen özel ve güvenli<br>
+              📶 İnternet gereksiz - çevrim dışı çalışır<br>
+              💾 Verilerinizi dilediğiniz zaman dışa aktarın
+            </p>
           </div>
 
-          <!-- Section 4: Grup Özelliği -->
-          <div class="welcome-section">
+          <div class="welcome-auto-section" data-section="3">
+            <div class="section-icon">🎯</div>
+            <h3>Nasıl Kullanılır?</h3>
+            <p style="line-height: 1.7;">
+              <strong>1. Zikir Sayma:</strong> Ana ekrandaki büyük butona her tıkladığınızda sayaç artar.<br><br>
+              <strong>2. Farklı Zikirler:</strong> "Yönetim" veya "Sayaç" bölümünden istediğiniz kadar kategori ekleyin.<br><br>
+              <strong>3. Kitap Takibi:</strong> "Kitap" sekmesinden okuduğunuz kitapları takip edin.<br><br>
+              <strong>4. Grup Özelliği:</strong> Arkadaşlarınızla grup kurup motivasyonunuzu artırın.
+            </p>
+          </div>
+
+          <div class="welcome-auto-section" data-section="4">
             <div class="section-icon">👥</div>
             <h3>Grup Özelliği (İsteğe Bağlı)</h3>
             <p style="line-height: 1.7;">
               Arkadaşlarınızla birlikte zikir çekmek motivasyonunuzu artırır. Grup özelliğini kullandığınızda:
             </p>
-            <ul class="welcome-list" style="margin-top: 12px;">
-              <li>
-                Grup sıralamasında adınız ve toplam sayınız görünür
-              </li>
-              <li>
-                İstediğiniz zaman gruptan ayrılabilirsiniz
-              </li>
-            </ul>
-            <p style="line-height: 1.7; margin-top: 12px; font-size: 13px; color: #64748b;">
-              💡 Grup kullanmak tamamen isteğe bağlıdır. Kullanmasanız da uygulama aynı şekilde çalışır.
+            <p style="line-height: 1.7; margin-top: 12px;">
+              📊 Grup sıralamasında adınız ve toplam sayınız görünür<br>
+              🚪 İstediğiniz zaman gruptan ayrılabilirsiniz
+            </p>
+            <p style="line-height: 1.7; margin-top: 12px; font-size: 14px; color: #64748b;">
+              💡 Grup kullanmak tamamen isteğe bağlıdır.
             </p>
           </div>
 
-          <!-- Section 5: Teknik Altyapı -->
-          <div class="welcome-section">
+          <div class="welcome-auto-section" data-section="5">
             <div class="section-icon">⚙️</div>
             <h3>Teknik Altyapı</h3>
-            <p style="line-height: 1.7; margin-bottom: 12px;">
+            <p style="line-height: 1.7;">
               Uygulama modern web teknolojileri kullanılarak geliştirilmiştir:
             </p>
-            <ul class="welcome-list">
-              <li>
-                <strong>Netlify:</strong> Uygulamanın barındırıldığı güvenli platform
-              </li>
-              <li>
-                <strong>Supabase:</strong> Sadece grup özelliği için kullanılan veritabanı servisi
-              </li>
-            </ul>
+            <p style="line-height: 1.7; margin-top: 12px;">
+              🌐 <strong>Netlify:</strong> Uygulamanın barındırıldığı güvenli platform<br>
+              🗄️ <strong>Supabase:</strong> Sadece grup özelliği için kullanılan veritabanı servisi
+            </p>
           </div>
 
-          <!-- Section 6: Bize Ulaşın -->
-          <div class="welcome-section">
+          <div class="welcome-auto-section" data-section="6">
             <div class="section-icon">📧</div>
             <h3>Bize Ulaşın</h3>
             <p style="line-height: 1.7;">
               Sorularınız, önerileriniz veya geri bildirimleriniz için:
             </p>
-            <p style="font-size: 14px; margin-top: 8px;">
-              <a href="mailto:suisse1022@gmail.com" style="color: #667eea; font-weight: 500;">
+            <p style="font-size: 16px; margin-top: 12px;">
+              <a href="mailto:suisse1022@gmail.com" style="color: #667eea; font-weight: 600; text-decoration: none;">
                 📧 suisse1022@gmail.com
               </a>
             </p>
+          </div>
+
+          <!-- Progress dots -->
+          <div class="welcome-progress-dots">
+            <span class="dot active" data-dot="1"></span>
+            <span class="dot" data-dot="2"></span>
+            <span class="dot" data-dot="3"></span>
+            <span class="dot" data-dot="4"></span>
+            <span class="dot" data-dot="5"></span>
+            <span class="dot" data-dot="6"></span>
           </div>
         </div>
 
@@ -177,6 +144,56 @@ const WelcomeModal = {
     setTimeout(() => {
       modal.classList.add('show');
     }, 100);
+
+    // Démarrer le défilement automatique
+    this.startAutoScroll();
+  },
+
+  /**
+   * Défilement automatique des sections
+   */
+  startAutoScroll() {
+    let currentSection = 1;
+    const totalSections = 6;
+    const intervalTime = 5000; // 5 secondes
+
+    this.autoScrollInterval = setInterval(() => {
+      // Passer à la section suivante
+      currentSection++;
+
+      if (currentSection > totalSections) {
+        currentSection = 1; // Recommencer au début
+      }
+
+      this.showSection(currentSection);
+    }, intervalTime);
+  },
+
+  /**
+   * Afficher une section spécifique
+   */
+  showSection(sectionNumber) {
+    // Désactiver toutes les sections
+    const sections = document.querySelectorAll('.welcome-auto-section');
+    sections.forEach(section => {
+      section.classList.remove('active');
+    });
+
+    // Activer la section demandée
+    const targetSection = document.querySelector(`.welcome-auto-section[data-section="${sectionNumber}"]`);
+    if (targetSection) {
+      targetSection.classList.add('active');
+    }
+
+    // Mettre à jour les dots
+    const dots = document.querySelectorAll('.welcome-progress-dots .dot');
+    dots.forEach(dot => {
+      dot.classList.remove('active');
+    });
+    const targetDot = document.querySelector(`.welcome-progress-dots .dot[data-dot="${sectionNumber}"]`);
+    if (targetDot) {
+      targetDot.classList.add('active');
+    }
   },
 
   /**
@@ -185,6 +202,12 @@ const WelcomeModal = {
   close() {
     const modal = document.querySelector('.welcome-modal-overlay');
     if (!modal) return;
+
+    // Arrêter le défilement automatique
+    if (this.autoScrollInterval) {
+      clearInterval(this.autoScrollInterval);
+      this.autoScrollInterval = null;
+    }
 
     // Vérifier si "ne plus afficher" est coché
     const dontShowAgain = document.getElementById('dontShowAgain');
