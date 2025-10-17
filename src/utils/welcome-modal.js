@@ -170,7 +170,7 @@ const WelcomeModal = {
   startAutoScroll() {
     this.currentSection = 1;
     this.totalSections = 6;
-    const intervalTime = 5000; // 5 secondes
+    const intervalTime = 6000; // 6 secondes
 
     this.autoScrollInterval = setInterval(() => {
       // Passer à la section suivante
@@ -228,7 +228,7 @@ const WelcomeModal = {
 
     // Ne redémarrer que si on n'est pas à la dernière slide
     if (this.currentSection < this.totalSections) {
-      const intervalTime = 5000;
+      const intervalTime = 6000;
       this.autoScrollInterval = setInterval(() => {
         this.currentSection++;
 
