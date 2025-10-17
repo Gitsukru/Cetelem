@@ -1648,7 +1648,7 @@ function updateStats() {
                     weekPercentCell.textContent = '-';
                 }
 
-                // Bu Ay (This month) - Sayı + % (no monthly goal yet, so always show -)
+                // Bu Ay (This month) - Sayı + % (calculé: hebdo × 4)
                 const monthCell = document.createElement('td');
                 monthCell.textContent = stats.month;
 
@@ -1656,13 +1656,29 @@ function updateStats() {
                 monthPercentCell.style.textAlign = 'center';
                 monthPercentCell.style.color = '#667eea';
                 monthPercentCell.style.fontWeight = '600';
-                monthPercentCell.textContent = '-';
+                if (goals.weekly > 0) {
+                    const monthlyGoal = goals.weekly * 4;
+                    const percentage = Math.round((stats.month / monthlyGoal) * 100);
+                    monthPercentCell.textContent = percentage + '%';
+                } else {
+                    monthPercentCell.textContent = '-';
+                }
 
+                // Bu Yıl (This year) - Sayı + % (calculé: hebdo × 48)
                 const yearCell = document.createElement('td');
                 yearCell.textContent = stats.year;
 
-                const totalCell = document.createElement('td');
-                totalCell.textContent = stats.total;
+                const yearPercentCell = document.createElement('td');
+                yearPercentCell.style.textAlign = 'center';
+                yearPercentCell.style.color = '#667eea';
+                yearPercentCell.style.fontWeight = '600';
+                if (goals.weekly > 0) {
+                    const yearlyGoal = goals.weekly * 48;
+                    const percentage = Math.round((stats.year / yearlyGoal) * 100);
+                    yearPercentCell.textContent = percentage + '%';
+                } else {
+                    yearPercentCell.textContent = '-';
+                }
 
                 const noteCell = document.createElement('td');
                 noteCell.style.textAlign = 'center';
@@ -1685,7 +1701,7 @@ function updateStats() {
                 row.appendChild(monthCell);
                 row.appendChild(monthPercentCell);
                 row.appendChild(yearCell);
-                row.appendChild(totalCell);
+                row.appendChild(yearPercentCell);
                 row.appendChild(noteCell);
 
                 tbody.appendChild(row);
@@ -1740,8 +1756,11 @@ function updateStats() {
                     const yearCell = document.createElement('td');
                     yearCell.textContent = bookStats.year + ' sf';
 
-                    const totalCell = document.createElement('td');
-                    totalCell.textContent = bookStats.total + ' sf';
+                    const yearPercentCell = document.createElement('td');
+                    yearPercentCell.style.textAlign = 'center';
+                    yearPercentCell.style.color = '#667eea';
+                    yearPercentCell.style.fontWeight = '600';
+                    yearPercentCell.textContent = bookStats.progress !== null ? bookStats.progress + '%' : '-';
 
                     // Note cell (now empty for books, no note button)
                     const noteCell = document.createElement('td');
@@ -1756,7 +1775,7 @@ function updateStats() {
                     row.appendChild(monthCell);
                     row.appendChild(monthPercentCell);
                     row.appendChild(yearCell);
-                    row.appendChild(totalCell);
+                    row.appendChild(yearPercentCell);
                     row.appendChild(noteCell);
 
                     tbody.appendChild(row);
@@ -1806,8 +1825,9 @@ function updateStats() {
                     const yearCellTotal = document.createElement('td');
                     yearCellTotal.textContent = booksTotalYear + ' sf';
 
-                    const allCellTotal = document.createElement('td');
-                    allCellTotal.textContent = booksTotalAll + ' sf';
+                    const yearPercentCell = document.createElement('td');
+                    yearPercentCell.textContent = '-';
+                    yearPercentCell.style.textAlign = 'center';
 
                     const emptyCell = document.createElement('td');
                     emptyCell.textContent = '-';
@@ -1821,7 +1841,7 @@ function updateStats() {
                     booksTotalRow.appendChild(monthCellTotal);
                     booksTotalRow.appendChild(monthPercentCell);
                     booksTotalRow.appendChild(yearCellTotal);
-                    booksTotalRow.appendChild(allCellTotal);
+                    booksTotalRow.appendChild(yearPercentCell);
                     booksTotalRow.appendChild(emptyCell);
 
                     tbody.appendChild(booksTotalRow);
@@ -1834,8 +1854,7 @@ function updateStats() {
             'totalDay': totalToday,
             'totalWeek': totalWeek,
             'totalMonth': totalMonth,
-            'totalYear': totalYear,
-            'totalAll': totalAll
+            'totalYear': totalYear
         };
 
         Object.keys(totalElements).forEach(id => {

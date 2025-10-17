@@ -24,17 +24,19 @@
     border-collapse: collapse;
     background: white;
     font-size: 13px;
-    min-width: 800px; /* Augmenté pour accommoder les nouvelles colonnes */
+    min-width: 900px; /* Augmenté pour 10 colonnes */
+    table-layout: auto;
 }
 
 .complete-stats-table th {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    padding: 12px 8px;
+    padding: 12px 10px;
     text-align: center;
     font-weight: 600;
     font-size: 12px;
     border-right: 1px solid rgba(255, 255, 255, 0.2);
+    white-space: nowrap;
 }
 
 .complete-stats-table th:last-child {
@@ -44,15 +46,17 @@
 .complete-stats-table th:first-child {
     text-align: left;
     padding-left: 15px;
-    min-width: 120px;
+    min-width: 140px;
+    width: 15%;
 }
 
 .complete-stats-table td {
-    padding: 10px 8px;
+    padding: 12px 10px;
     text-align: center;
     border-bottom: 1px solid #e2e8f0;
     border-right: 1px solid #f1f5f9;
     font-size: 13px;
+    vertical-align: middle;
 }
 
 .complete-stats-table td:last-child {
@@ -64,7 +68,32 @@
     padding-left: 15px;
     font-weight: 600;
     color: #4a5568;
-    min-width: 120px;
+    min-width: 140px;
+    width: 15%;
+}
+
+/* Colonnes de nombres - largeur fixe */
+.complete-stats-table td:nth-child(2),
+.complete-stats-table td:nth-child(4),
+.complete-stats-table td:nth-child(6),
+.complete-stats-table td:nth-child(8) {
+    width: 10%;
+    min-width: 70px;
+}
+
+/* Colonnes de pourcentages - largeur réduite */
+.complete-stats-table td:nth-child(3),
+.complete-stats-table td:nth-child(5),
+.complete-stats-table td:nth-child(7),
+.complete-stats-table td:nth-child(9) {
+    width: 8%;
+    min-width: 55px;
+}
+
+/* Colonne Note */
+.complete-stats-table td:nth-child(10) {
+    width: 7%;
+    min-width: 60px;
 }
 
 .complete-stats-table tbody tr:hover {
