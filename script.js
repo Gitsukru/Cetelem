@@ -799,35 +799,8 @@ function updateCategoriesList() {
     });
 }
 
-// Ajouter une catégorie
-function addCategory() {
-    const input = document.getElementById('newCategoryInput');
-    if (!input) return;
-
-    // ⚡ FIX: Valider avec Validators
-    const validation = Validators.validateCategoryName(input.value);
-
-    if (!validation.valid) {
-        showCustomAlert(`❌ ${validation.error}`, 'warning', 2500);
-        return;
-    }
-
-    const newCategory = validation.value;
-
-    if (categories.includes(newCategory)) {
-        showCustomAlert('Bu kategori zaten mevcut!', 'warning', 2500);
-        return;
-    }
-
-    categories.push(newCategory);
-    saveCategories();
-    initializeCounters();
-    updateCategorySelect();
-    updateCategoriesList();
-    updateStats();
-    input.value = '';
-    showCustomAlert(`Kategori "${newCategory}" eklendi!`, 'success', 2000);
-}
+// Note: addCategory() supprimée - maintenant on utilise showQuickAddCategory()
+// qui ouvre le modal multi-étapes avec objectifs
 
 // Supprimer une catégorie
 function deleteCategory(index) {
