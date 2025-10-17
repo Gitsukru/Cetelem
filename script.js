@@ -1884,6 +1884,9 @@ function updateStats() {
             summaryElement.textContent = summary;
         }
 
+        // Afficher l'historique
+        displayHistory();
+
     } catch (error) {
         console.error('Erreur statistiques:', error);
     }
@@ -2481,6 +2484,119 @@ window.addEventListener('beforeinstallprompt', function(e) {
         }
     }, 3000);
 });
+
+// ========================================
+// HISTORY DISPLAY
+// ========================================
+
+/**
+ * Affiche l'historique des zikirs et livres terminés
+ */
+function displayHistory() {
+    const historyList = document.getElementById('historyList');
+    const noHistoryMessage = document.getElementById('noHistoryMessage');
+
+    if (!historyList) return;
+
+    // Vider la liste
+    historyList.innerHTML = '';
+
+    // Vérifier s'il y a des éléments
+    if (deletedHistory.length === 0) {
+        historyList.style.display = 'none';
+        if (noHistoryMessage) noHistoryMessage.style.display = 'block';
+        return;
+    }
+
+    historyList.style.display = 'block';
+    if (noHistoryMessage) noHistoryMessage.style.display = 'none';
+
+    // Afficher chaque élément de l'historique
+    deletedHistory.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'history-card';
+
+        // Icône selon le type
+        const icon = item.type === 'zikir' ? '📿' : '📚';
+
+        // Dates formatées
+        const createdDate = new Date(item.createdAt);
+        const completedDate = new Date(item.completedAt);
+        const durationDays = Math.floor((completedDate - createdDate) / (1000 * 60 * 60 * 24));
+
+        // Stats totales
+        const totalCount = item.stats ? (
+            (item.stats.daily?.total || 0) +
+            (item.stats.weekly?.total || 0) +
+            (item.stats.monthly?.total || 0) +
+            (item.stats.yearly?.total || 0)
+        ) : 0;
+
+        card.innerHTML = `
+            <div class="history-card-header">
+                <span class="history-icon">${icon}</span>
+                <span class="history-name">${item.name}</span>
+                <button class="history-delete-btn" onclick="permanentlyDeleteHistory(${index})" title="Kalıcı olarak sil">
+                    🗑️
+                </button>
+            </div>
+            <div class="history-card-body">
+                <div class="history-dates">
+                    <div class="history-date-item">
+                        <span class="history-date-label">Başlangıç:</span>
+                        <span class="history-date-value">${createdDate.toLocaleDateString('tr-TR')}</span>
+                    </div>
+                    <div class="history-date-item">
+                        <span class="history-date-label">Tamamlandı:</span>
+                        <span class="history-date-value">${completedDate.toLocaleDateString('tr-TR')}</span>
+                    </div>
+                    <div class="history-date-item">
+                        <span class="history-date-label">Süre:</span>
+                        <span class="history-date-value">${durationDays} gün</span>
+                    </div>
+                </div>
+                <div class="history-stats">
+                    <div class="history-stat-item">
+                        <span class="history-stat-label">Toplam:</span>
+                        <span class="history-stat-value">${totalCount.toLocaleString('tr-TR')}</span>
+                    </div>
+                    ${item.goals && item.goals.daily ? `
+                    <div class="history-stat-item">
+                        <span class="history-stat-label">Günlük Hedef:</span>
+                        <span class="history-stat-value">${item.goals.daily.toLocaleString('tr-TR')}</span>
+                    </div>
+                    ` : ''}
+                    ${item.goals && item.goals.weekly ? `
+                    <div class="history-stat-item">
+                        <span class="history-stat-label">Haftalık Hedef:</span>
+                        <span class="history-stat-value">${item.goals.weekly.toLocaleString('tr-TR')}</span>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+
+        historyList.appendChild(card);
+    });
+}
+
+/**
+ * Supprime définitivement un élément de l'historique
+ */
+function permanentlyDeleteHistory(index) {
+    const item = deletedHistory[index];
+
+    showCustomConfirm(
+        'Kalıcı Olarak Sil',
+        `"${item.name}" geçmişten kalıcı olarak silinecek.<br><br>Bu işlem geri alınamaz!`,
+        function() {
+            deletedHistory.splice(index, 1);
+            localStorage.setItem('deletedHistory', JSON.stringify(deletedHistory));
+            displayHistory();
+            showCustomAlert('Geçmişten silindi', 'success', 2000);
+        }
+    );
+}
 
 // ========================================
 // BACKEND INITIALIZATION

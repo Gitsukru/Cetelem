@@ -216,3 +216,161 @@
         min-width: 80px;
     }
 }
+
+/* ========================================
+   HISTORY SECTION - Geçmiş
+   ======================================== */
+
+.history-section {
+    margin-top: 40px;
+}
+
+.history-section h2 {
+    font-size: 24px;
+    color: #2d3748;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* History cards */
+.history-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.history-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Header de la carte */
+.history-card-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.history-icon {
+    font-size: 24px;
+}
+
+.history-name {
+    flex: 1;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.history-delete-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s ease;
+}
+
+.history-delete-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Body de la carte */
+.history-card-body {
+    padding: 20px;
+}
+
+/* Dates section */
+.history-dates {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.history-date-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.history-date-label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.history-date-value {
+    font-size: 15px;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+/* Stats section */
+.history-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.history-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.history-stat-label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.history-stat-value {
+    font-size: 18px;
+    color: #667eea;
+    font-weight: 700;
+}
+
+/* No history message */
+.no-history-message {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+    .history-dates,
+    .history-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .history-card-header {
+        padding: 12px 15px;
+    }
+
+    .history-name {
+        font-size: 16px;
+    }
+
+    .history-card-body {
+        padding: 15px;
+    }
+}
