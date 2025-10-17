@@ -774,13 +774,27 @@ function updateCategoriesList() {
         contentDiv.appendChild(strongElement);
         contentDiv.appendChild(smallElement);
 
+        // Container pour les boutons
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.style.display = 'flex';
+        buttonsDiv.style.gap = '8px';
+
+        // Bouton de modification
+        const editButton = document.createElement('button');
+        editButton.className = 'edit-button';
+        editButton.textContent = '✏️ Düzenle';
+        editButton.onclick = () => editCategory(index);
+
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-button';
         deleteButton.textContent = 'Kategoriyi sil';
         deleteButton.onclick = () => deleteCategory(index); // ✅ Éviter onclick inline
 
+        buttonsDiv.appendChild(editButton);
+        buttonsDiv.appendChild(deleteButton);
+
         li.appendChild(contentDiv);
-        li.appendChild(deleteButton);
+        li.appendChild(buttonsDiv);
         list.appendChild(li);
     });
 }
@@ -844,6 +858,114 @@ function deleteCategory(index) {
             showCustomAlert(`Kategori "${categoryName}" silindi!`, 'success', 2000);
         }
     );
+}
+
+// Modifier une catégorie
+function editCategory(index) {
+    const oldCategoryName = categories[index];
+
+    // Créer un modal personnalisé pour la modification
+    const modalHtml = `
+        <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+            <div class="custom-modal-box" style="max-width: 400px;">
+                <div class="custom-modal-header">
+                    <h3 style="margin: 0; font-size: 18px;">✏️ Zikiri Düzenle</h3>
+                </div>
+                <div class="custom-modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Yeni isim:</label>
+                        <input type="text" id="editCategoryInput" class="form-input" value="${oldCategoryName}" maxlength="50">
+                    </div>
+                </div>
+                <div class="custom-modal-footer">
+                    <button class="modal-btn cancel-btn" onclick="this.closest('.custom-modal-overlay').remove()">
+                        İptal
+                    </button>
+                    <button class="modal-btn confirm-btn" onclick="saveEditedCategory(${index})">
+                        Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Focus sur l'input
+    setTimeout(() => {
+        const input = document.getElementById('editCategoryInput');
+        if (input) {
+            input.focus();
+            input.select();
+        }
+    }, 100);
+}
+
+// Sauvegarder la catégorie modifiée
+function saveEditedCategory(index) {
+    const input = document.getElementById('editCategoryInput');
+    if (!input) return;
+
+    const newName = input.value.trim();
+    const oldName = categories[index];
+
+    // Valider le nouveau nom
+    if (!newName) {
+        showCustomAlert('Kategori adı boş olamaz!', 'warning', 2500);
+        return;
+    }
+
+    if (newName === oldName) {
+        // Aucun changement
+        document.querySelector('.custom-modal-overlay').remove();
+        return;
+    }
+
+    if (categories.includes(newName)) {
+        showCustomAlert('Bu kategori adı zaten mevcut!', 'warning', 2500);
+        return;
+    }
+
+    // Mettre à jour la catégorie
+    categories[index] = newName;
+
+    // Transférer les compteurs de l'ancien nom au nouveau
+    if (counters[oldName]) {
+        counters[newName] = counters[oldName];
+        delete counters[oldName];
+    }
+
+    // Mettre à jour les objectifs (goals)
+    const goalsStr = localStorage.getItem('goals');
+    if (goalsStr) {
+        try {
+            const goals = JSON.parse(goalsStr);
+            if (goals[oldName]) {
+                goals[newName] = goals[oldName];
+                delete goals[oldName];
+                localStorage.setItem('goals', JSON.stringify(goals));
+            }
+        } catch (e) {
+            console.error('Erreur mise à jour goals:', e);
+        }
+    }
+
+    // Mettre à jour la catégorie courante si nécessaire
+    if (currentCategory === oldName) {
+        currentCategory = newName;
+    }
+
+    // Sauvegarder et mettre à jour l'interface
+    saveCategories();
+    saveCounters();
+    updateCategorySelect();
+    updateCategoriesList();
+    updateStats();
+
+    // Fermer le modal
+    document.querySelector('.custom-modal-overlay').remove();
+
+    showCustomAlert(`Kategori "${oldName}" → "${newName}" olarak değiştirildi!`, 'success', 2500);
 }
 
 // Mettre à jour l'affichage du compteur
