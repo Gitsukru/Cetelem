@@ -85,9 +85,7 @@ const WelcomeModal = {
             <p style="line-height: 1.7; margin-top: 12px;">
               📊 Grup sıralamasında adınız ve toplam sayınız görünür.<br>
               🚪 İstediğiniz zaman gruptan ayrılabilirsiniz.<br>
-              Aranizda yaris yapabilirsiniz.
-            </p>
-            <p style="line-height: 1.7; margin-top: 12px; font-size: 14px; color: #64748b;">
+              Aranizda yaris yapabilirsiniz.<br>
               💡 Grup kullanmak tamamen isteğe bağlıdır.
             </p>
           </div>
