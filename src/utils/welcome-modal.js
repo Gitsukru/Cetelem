@@ -115,6 +115,16 @@ const WelcomeModal = {
             </p>
           </div>
 
+          <!-- Navigation arrows -->
+          <div class="welcome-nav-arrows">
+            <button class="welcome-nav-arrow" id="prevSlide" onclick="WelcomeModal.prevSlide()" title="Précédent">
+              ◀
+            </button>
+            <button class="welcome-nav-arrow" id="nextSlide" onclick="WelcomeModal.nextSlide()" title="Suivant">
+              ▶
+            </button>
+          </div>
+
           <!-- Progress dots -->
           <div class="welcome-progress-dots">
             <span class="dot active" data-dot="1"></span>
@@ -147,26 +157,107 @@ const WelcomeModal = {
 
     // Démarrer le défilement automatique
     this.startAutoScroll();
+
+    // Initialiser l'état des flèches
+    setTimeout(() => {
+      this.updateArrows();
+    }, 200);
   },
 
   /**
    * Défilement automatique des sections
    */
   startAutoScroll() {
-    let currentSection = 1;
-    const totalSections = 6;
+    this.currentSection = 1;
+    this.totalSections = 6;
     const intervalTime = 5000; // 5 secondes
 
     this.autoScrollInterval = setInterval(() => {
       // Passer à la section suivante
-      currentSection++;
+      this.currentSection++;
 
-      if (currentSection > totalSections) {
-        currentSection = 1; // Recommencer au début
+      if (this.currentSection > this.totalSections) {
+        // Arrêter à la dernière slide
+        clearInterval(this.autoScrollInterval);
+        this.autoScrollInterval = null;
+        return;
       }
 
-      this.showSection(currentSection);
+      this.showSection(this.currentSection);
+      this.updateArrows();
     }, intervalTime);
+  },
+
+  /**
+   * Aller à la slide précédente
+   */
+  prevSlide() {
+    if (this.currentSection > 1) {
+      this.currentSection--;
+      this.showSection(this.currentSection);
+      this.updateArrows();
+
+      // Réinitialiser l'auto-scroll
+      this.resetAutoScroll();
+    }
+  },
+
+  /**
+   * Aller à la slide suivante
+   */
+  nextSlide() {
+    if (this.currentSection < this.totalSections) {
+      this.currentSection++;
+      this.showSection(this.currentSection);
+      this.updateArrows();
+
+      // Réinitialiser l'auto-scroll
+      this.resetAutoScroll();
+    }
+  },
+
+  /**
+   * Réinitialiser le timer auto-scroll après navigation manuelle
+   */
+  resetAutoScroll() {
+    // Arrêter l'ancien interval
+    if (this.autoScrollInterval) {
+      clearInterval(this.autoScrollInterval);
+      this.autoScrollInterval = null;
+    }
+
+    // Ne redémarrer que si on n'est pas à la dernière slide
+    if (this.currentSection < this.totalSections) {
+      const intervalTime = 5000;
+      this.autoScrollInterval = setInterval(() => {
+        this.currentSection++;
+
+        if (this.currentSection > this.totalSections) {
+          clearInterval(this.autoScrollInterval);
+          this.autoScrollInterval = null;
+          return;
+        }
+
+        this.showSection(this.currentSection);
+        this.updateArrows();
+      }, intervalTime);
+    }
+  },
+
+  /**
+   * Mettre à jour l'état des flèches
+   */
+  updateArrows() {
+    const prevBtn = document.getElementById('prevSlide');
+    const nextBtn = document.getElementById('nextSlide');
+
+    if (prevBtn) {
+      prevBtn.disabled = this.currentSection === 1;
+    }
+
+    if (nextBtn) {
+      nextBtn.disabled = this.currentSection === this.totalSections;
+    }
   },
 
   /**
