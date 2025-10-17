@@ -31,7 +31,7 @@ const WelcomeModal = {
         <div class="welcome-header">
           <div class="welcome-icon">🤲</div>
           <h2>Çetelem'e Hoş Geldiniz</h2>
-          <p class="welcome-subtitle">Dijital Tesbih - Gizliliğiniz Önceliğimiz</p>
+          <p class="welcome-subtitle">Dijital Tesbih</p>
         </div>
 
         <div class="welcome-content">
@@ -54,13 +54,14 @@ const WelcomeModal = {
             <div class="section-icon">🔒</div>
             <h3>Verileriniz Sizinle Kalır</h3>
             <p style="line-height: 1.7;">
-              Çetelem'i kullanmak için <strong>hiçbir kayıt, giriş veya kişisel bilgi gerekmez</strong>.
+              Çetelem'i kullanmak için hiçbir kayıt, giriş veya kişisel bilgi gerekmez.
               Tüm zikir sayılarınız telefonunuzun hafızasında (tarayıcıda) saklanır.
             </p>
             <p style="line-height: 1.7; margin-top: 12px;">
               🔐 Tamamen özel ve güvenli<br>
               📶 İnternet gereksiz - çevrim dışı çalışır<br>
-              💾 Verilerinizi dilediğiniz zaman dışa aktarın
+              💾 Verilerinizi dilediğiniz zaman dışa aktarın<br>
+              Dilediğiniz zaman hepsini silebilirsiniz
             </p>
           </div>
 
@@ -68,10 +69,10 @@ const WelcomeModal = {
             <div class="section-icon">🎯</div>
             <h3>Nasıl Kullanılır?</h3>
             <p style="line-height: 1.7;">
-              <strong>1. Zikir Sayma:</strong> Ana ekrandaki büyük butona her tıkladığınızda sayaç artar.<br>
-              <strong>2. Farklı Zikirler:</strong> "Yönetim" veya "Sayaç" bölümünden istediğiniz kadar kategori ekleyin.<br>
-              <strong>3. Kitap Takibi:</strong> "Kitap" sekmesinden okuduğunuz kitapları takip edin.<br>
-              <strong>4. Grup Özelliği:</strong> Arkadaşlarınızla grup kurup motivasyonunuzu artırın.
+              1. Zikir Sayma: Ana ekrandaki büyük butona her tıkladığınızda sayaç artar.<br>
+              2. Farklı Zikirler: "Yönetim" veya "Sayaç" bölümünden istediğiniz kadar kategori ekleyin.<br>
+              3. Kitap Takibi: "Kitap" sekmesinden okuduğunuz kitapları takip edin.<br>
+              4. Grup Özelliği: Arkadaşlarınızla grup kurup motivasyonunuzu artırın.
             </p>
           </div>
 
@@ -82,8 +83,9 @@ const WelcomeModal = {
               Arkadaşlarınızla birlikte zikir çekmek motivasyonunuzu artırır. Grup özelliğini kullandığınızda:
             </p>
             <p style="line-height: 1.7; margin-top: 12px;">
-              📊 Grup sıralamasında adınız ve toplam sayınız görünür<br>
-              🚪 İstediğiniz zaman gruptan ayrılabilirsiniz
+              📊 Grup sıralamasında adınız ve toplam sayınız görünür.<br>
+              🚪 İstediğiniz zaman gruptan ayrılabilirsiniz.<br>
+              Aranizda yaris yapabilirsiniz.
             </p>
             <p style="line-height: 1.7; margin-top: 12px; font-size: 14px; color: #64748b;">
               💡 Grup kullanmak tamamen isteğe bağlıdır.
@@ -97,8 +99,8 @@ const WelcomeModal = {
               Uygulama modern web teknolojileri kullanılarak geliştirilmiştir:
             </p>
             <p style="line-height: 1.7; margin-top: 12px;">
-              🌐 <strong>Netlify:</strong> Uygulamanın barındırıldığı güvenli platform<br>
-              🗄️ <strong>Supabase:</strong> Sadece grup özelliği için kullanılan veritabanı servisi
+              🌐 Netlify: Uygulamanın barındırıldığı güvenli platform<br>
+              🗄️ Supabase: Sadece grup özelliği için kullanılan veritabanı servisi
             </p>
           </div>
 
