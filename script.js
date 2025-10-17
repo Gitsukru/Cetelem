@@ -1303,9 +1303,14 @@ function checkAndCelebrateGoals(category) {
         goalsAchievedToday[category] = {
             daily: false,
             weekly: false,
-            monthly: false
+            monthly: false,
+            yearly: false
         };
     }
+
+    // Calculer les objectifs mensuels et annuels basés sur l'objectif hebdomadaire
+    const monthlyGoal = goals.weekly > 0 ? goals.weekly * 4 : 0;
+    const yearlyGoal = goals.weekly > 0 ? goals.weekly * 48 : 0;
 
     // Vérifier l'objectif quotidien
     if (goals.daily > 0 && stats.day >= goals.daily && !goalsAchievedToday[category].daily) {
@@ -1321,7 +1326,19 @@ function checkAndCelebrateGoals(category) {
         showCustomAlert(`🌟 Harika!<br>Haftalık hedefinize ulaştınız!<br><strong>${category}: ${goals.weekly}</strong>`, 'success', 4000);
     }
 
-    // Note: L'objectif mensuel sera ajouté dans une prochaine étape
+    // Vérifier l'objectif mensuel (calculé automatiquement = hebdomadaire × 4)
+    if (monthlyGoal > 0 && stats.month >= monthlyGoal && !goalsAchievedToday[category].monthly) {
+        goalsAchievedToday[category].monthly = true;
+        saveGoalsAchievedToday();
+        showCustomAlert(`🏆 Muhteşem!<br>Aylık hedefinize ulaştınız!<br><strong>${category}: ${monthlyGoal}</strong>`, 'success', 4000);
+    }
+
+    // Vérifier l'objectif annuel (calculé automatiquement = hebdomadaire × 48)
+    if (yearlyGoal > 0 && stats.year >= yearlyGoal && !goalsAchievedToday[category].yearly) {
+        goalsAchievedToday[category].yearly = true;
+        saveGoalsAchievedToday();
+        showCustomAlert(`🎊 İnanılmaz!<br>Yıllık hedefinize ulaştınız!<br><strong>${category}: ${yearlyGoal}</strong>`, 'success', 5000);
+    }
 }
 
 // Charger les objectifs atteints au démarrage
