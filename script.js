@@ -5,6 +5,10 @@ let currentCategory = '';
 let currentDate = new Date().toDateString();
 let visualOffset = 0; // Décalage visuel pour l'affichage
 
+// Métadonnées et historique
+let categoryMetadata = JSON.parse(localStorage.getItem('categoryMetadata')) || {};
+let deletedHistory = JSON.parse(localStorage.getItem('deletedHistory')) || [];
+
 // Timer variables
 let startTime = Date.now();
 let timerInterval = null;
@@ -802,19 +806,44 @@ function updateCategoriesList() {
 // Note: addCategory() supprimée - maintenant on utilise showQuickAddCategory()
 // qui ouvre le modal multi-étapes avec objectifs
 
-// Supprimer une catégorie
+// Supprimer une catégorie (déplacer vers historique)
 function deleteCategory(index) {
     const categoryName = categories[index];
 
     showCustomConfirm(
-        'Kategoriyi Sil',
-        `"${categoryName}" kategorisini silmek istediğinizden emin misiniz?<br><br>Bu işlem tüm verilerini de silecektir.`,
+        'Zikiri Tamamla',
+        `"${categoryName}" zikrini tamamladınız mı?<br><br>Bu zikir geçmişe taşınacak ve silinmeyecektir.`,
         function() {
-            // Confirmation "Oui"
+            // Récupérer toutes les données avant suppression
+            const metadata = categoryMetadata[categoryName] || {};
+            const goals = getCategoryGoals(categoryName);
+            const stats = getStatisticsForCategory(categoryName);
+
+            // Créer l'entrée d'historique
+            const historyEntry = {
+                name: categoryName,
+                type: 'zikir',
+                createdAt: metadata.createdAt || new Date().toISOString(),
+                completedAt: new Date().toISOString(),
+                stats: stats,
+                goals: goals
+            };
+
+            // Ajouter à l'historique
+            deletedHistory.unshift(historyEntry); // Ajouter au début
+            localStorage.setItem('deletedHistory', JSON.stringify(deletedHistory));
+
+            // Supprimer de la liste active
             categories.splice(index, 1);
             delete counters[categoryName];
+            delete categoryMetadata[categoryName];
+            delete categoryGoals[categoryName];
+
             saveCategories();
             saveCounters();
+            localStorage.setItem('categoryMetadata', JSON.stringify(categoryMetadata));
+            localStorage.setItem('categoryGoals', JSON.stringify(categoryGoals));
+
             updateCategorySelect();
             updateCategoriesList();
             updateStats();
@@ -828,7 +857,7 @@ function deleteCategory(index) {
                 if (counterLabel) counterLabel.textContent = 'Zikir';
             }
 
-            showCustomAlert(`Kategori "${categoryName}" silindi!`, 'success', 2000);
+            showCustomAlert(`"${categoryName}" geçmişe taşındı! 📚`, 'success', 2500);
         }
     );
 }
@@ -1292,6 +1321,13 @@ function finalizeAddZikir() {
     categories.push(name);
     saveCategories();
     initializeCounters();
+
+    // Enregistrer la date de création
+    categoryMetadata[name] = {
+        createdAt: new Date().toISOString(),
+        type: 'zikir'
+    };
+    localStorage.setItem('categoryMetadata', JSON.stringify(categoryMetadata));
 
     // Sauvegarder les objectifs
     if (dailyGoal > 0 || weeklyGoal > 0) {
