@@ -107,7 +107,7 @@
   padding: 40px 30px 70px;
   background: #ff7401;
   position: relative;
-  min-height: 350px;
+  min-height: 450px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -368,7 +368,7 @@
 
   .welcome-content {
     padding: 30px 15px 60px;
-    min-height: 300px;
+    min-height: 380px;
   }
 
   .welcome-auto-section {
