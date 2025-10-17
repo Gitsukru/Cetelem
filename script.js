@@ -860,99 +860,223 @@ function deleteCategory(index) {
     );
 }
 
-// Modifier une catégorie
+// Modifier une catégorie - MULTI-ÉTAPES
 function editCategory(index) {
     const oldCategoryName = categories[index];
+    const currentGoals = getCategoryGoals(oldCategoryName);
 
-    // Créer un modal personnalisé pour la modification
-    const modalHtml = `
+    const modalHTML = `
         <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
-            <div class="custom-modal-box" style="max-width: 400px;">
-                <div class="custom-modal-header">
-                    <h3 style="margin: 0; font-size: 18px;">✏️ Zikiri Düzenle</h3>
+            <div class="custom-modal" style="min-height: 280px;">
+                <div class="modal-header">
+                    <h3 id="edit-zikir-modal-title">✏️ Zikiri Düzenle</h3>
+                    <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
                 </div>
-                <div class="custom-modal-body">
-                    <div class="form-group">
-                        <label class="form-label">Yeni isim:</label>
-                        <input type="text" id="editCategoryInput" class="form-input" value="${oldCategoryName}" maxlength="50">
+
+                <!-- Indicateur de progression -->
+                <div style="display: flex; gap: 8px; padding: 0 24px 16px; justify-content: center;">
+                    <div id="edit-zikir-step-indicator-1" class="step-indicator active"></div>
+                    <div id="edit-zikir-step-indicator-2" class="step-indicator"></div>
+                    <div id="edit-zikir-step-indicator-3" class="step-indicator"></div>
+                </div>
+
+                <div class="modal-body" id="edit-zikir-modal-body-content">
+                    <!-- Étape 1: Nom du zikir -->
+                    <div id="edit-zikir-step-1" class="modal-step">
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Zikir Adı</label>
+                            <input type="text" id="editZikirNameInput" class="form-input" value="${oldCategoryName}" required autofocus>
+                        </div>
+                    </div>
+
+                    <!-- Étape 2: Objectif quotidien -->
+                    <div id="edit-zikir-step-2" class="modal-step" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Günlük Hedef Sayısı</label>
+                            <input type="number" id="editZikirDailyGoalInput" class="form-input" placeholder="Örn: 100" min="0" value="${currentGoals.daily || 0}">
+                            <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                                Her gün bu sayıya ulaşmayı hedefleyin (isteğe bağlı)
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Étape 3: Objectif hebdomadaire -->
+                    <div id="edit-zikir-step-3" class="modal-step" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Haftalık Hedef Sayısı</label>
+                            <input type="number" id="editZikirWeeklyGoalInput" class="form-input" placeholder="Örn: 700" min="0" value="${currentGoals.weekly || 0}">
+                            <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                                Her hafta bu sayıya ulaşmayı hedefleyin (isteğe bağlı)
+                            </small>
+                        </div>
                     </div>
                 </div>
-                <div class="custom-modal-footer">
-                    <button class="modal-btn cancel-btn" onclick="this.closest('.custom-modal-overlay').remove()">
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="edit-zikir-btn-back" onclick="previousStepEditZikir()" style="display: none;">
+                        ← Geri
+                    </button>
+                    <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
                         İptal
                     </button>
-                    <button class="modal-btn confirm-btn" onclick="saveEditedCategory(${index})">
-                        Kaydet
+                    <button class="btn-primary" id="edit-zikir-btn-next" onclick="nextStepEditZikir()">
+                        Devam →
                     </button>
                 </div>
             </div>
         </div>
     `;
 
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-    // Focus sur l'input
-    setTimeout(() => {
-        const input = document.getElementById('editCategoryInput');
-        if (input) {
-            input.focus();
-            input.select();
+    // Variables globales pour le formulaire en étapes
+    window.editZikirFormData = {
+        currentStep: 1,
+        totalSteps: 3,
+        index: index,
+        oldName: oldCategoryName,
+        name: oldCategoryName,
+        dailyGoal: currentGoals.daily || 0,
+        weeklyGoal: currentGoals.weekly || 0
+    };
+
+    // Gestion de la touche Enter
+    const modalOverlay = document.querySelector('.custom-modal-overlay:last-of-type');
+    modalOverlay.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            nextStepEditZikir();
         }
-    }, 100);
+    });
+
+    document.getElementById('editZikirNameInput').focus();
+    document.getElementById('editZikirNameInput').select();
 }
 
-// Sauvegarder la catégorie modifiée
-function saveEditedCategory(index) {
-    const input = document.getElementById('editCategoryInput');
-    if (!input) return;
+// Navigation entre les étapes - EDIT
+function nextStepEditZikir() {
+    const currentStep = window.editZikirFormData.currentStep;
 
-    const newName = input.value.trim();
-    const oldName = categories[index];
+    // Validation étape 1: nom du zikir
+    if (currentStep === 1) {
+        const nameInput = document.getElementById('editZikirNameInput');
+        const newName = nameInput.value.trim();
 
-    // Valider le nouveau nom
-    if (!newName) {
-        showCustomAlert('Kategori adı boş olamaz!', 'warning', 2500);
+        if (!newName) {
+            showCustomAlert('Zikir adı boş olamaz!', 'warning', 2500);
+            return;
+        }
+
+        // Vérifier si le nom existe déjà (sauf si c'est le même)
+        if (newName !== window.editZikirFormData.oldName && categories.includes(newName)) {
+            showCustomAlert('Bu zikir adı zaten mevcut!', 'warning', 2500);
+            return;
+        }
+
+        window.editZikirFormData.name = newName;
+    }
+
+    // Validation étape 2: objectif quotidien
+    if (currentStep === 2) {
+        const dailyGoalInput = document.getElementById('editZikirDailyGoalInput');
+        const dailyGoal = parseInt(dailyGoalInput.value) || 0;
+        window.editZikirFormData.dailyGoal = dailyGoal;
+    }
+
+    // Validation étape 3: objectif hebdomadaire et finalisation
+    if (currentStep === 3) {
+        const weeklyGoalInput = document.getElementById('editZikirWeeklyGoalInput');
+        const weeklyGoal = parseInt(weeklyGoalInput.value) || 0;
+        window.editZikirFormData.weeklyGoal = weeklyGoal;
+
+        // Finaliser la modification
+        finalizeEditZikir();
         return;
     }
 
-    if (newName === oldName) {
-        // Aucun changement
-        document.querySelector('.custom-modal-overlay').remove();
-        return;
-    }
+    // Passer à l'étape suivante
+    if (currentStep < window.editZikirFormData.totalSteps) {
+        // Masquer l'étape actuelle
+        document.getElementById(`edit-zikir-step-${currentStep}`).style.display = 'none';
+        document.getElementById(`edit-zikir-step-indicator-${currentStep}`).classList.remove('active');
 
-    if (categories.includes(newName)) {
-        showCustomAlert('Bu kategori adı zaten mevcut!', 'warning', 2500);
-        return;
+        // Afficher l'étape suivante
+        window.editZikirFormData.currentStep++;
+        const nextStep = window.editZikirFormData.currentStep;
+
+        document.getElementById(`edit-zikir-step-${nextStep}`).style.display = 'block';
+        document.getElementById(`edit-zikir-step-indicator-${nextStep}`).classList.add('active');
+
+        // Mettre à jour les boutons
+        document.getElementById('edit-zikir-btn-back').style.display = 'inline-block';
+
+        if (nextStep === window.editZikirFormData.totalSteps) {
+            document.getElementById('edit-zikir-btn-next').textContent = 'Kaydet ✓';
+        }
+
+        // Focus sur le prochain champ
+        const nextInput = document.querySelector(`#edit-zikir-step-${nextStep} input`);
+        if (nextInput) nextInput.focus();
     }
+}
+
+function previousStepEditZikir() {
+    const currentStep = window.editZikirFormData.currentStep;
+
+    if (currentStep > 1) {
+        // Masquer l'étape actuelle
+        document.getElementById(`edit-zikir-step-${currentStep}`).style.display = 'none';
+        document.getElementById(`edit-zikir-step-indicator-${currentStep}`).classList.remove('active');
+
+        // Afficher l'étape précédente
+        window.editZikirFormData.currentStep--;
+        const prevStep = window.editZikirFormData.currentStep;
+
+        document.getElementById(`edit-zikir-step-${prevStep}`).style.display = 'block';
+        document.getElementById(`edit-zikir-step-indicator-${prevStep}`).classList.add('active');
+
+        // Mettre à jour les boutons
+        if (prevStep === 1) {
+            document.getElementById('edit-zikir-btn-back').style.display = 'none';
+        }
+        document.getElementById('edit-zikir-btn-next').textContent = 'Devam →';
+
+        // Focus sur le champ précédent
+        const prevInput = document.querySelector(`#edit-zikir-step-${prevStep} input`);
+        if (prevInput) prevInput.focus();
+    }
+}
+
+function finalizeEditZikir() {
+    const { index, oldName, name, dailyGoal, weeklyGoal } = window.editZikirFormData;
 
     // Mettre à jour la catégorie
-    categories[index] = newName;
+    categories[index] = name;
 
-    // Transférer les compteurs de l'ancien nom au nouveau
-    if (counters[oldName]) {
-        counters[newName] = counters[oldName];
+    // Transférer les compteurs si le nom a changé
+    if (name !== oldName && counters[oldName]) {
+        counters[name] = counters[oldName];
         delete counters[oldName];
     }
 
-    // Mettre à jour les objectifs (goals)
-    const goalsStr = localStorage.getItem('goals');
-    if (goalsStr) {
-        try {
-            const goals = JSON.parse(goalsStr);
-            if (goals[oldName]) {
-                goals[newName] = goals[oldName];
-                delete goals[oldName];
-                localStorage.setItem('goals', JSON.stringify(goals));
-            }
-        } catch (e) {
-            console.error('Erreur mise à jour goals:', e);
-        }
+    // Mettre à jour les objectifs
+    if (dailyGoal > 0 || weeklyGoal > 0) {
+        saveCategoryGoals(name, dailyGoal, weeklyGoal);
+    } else {
+        // Supprimer les objectifs si tous sont à 0
+        delete categoryGoals[name];
+        localStorage.setItem('categoryGoals', JSON.stringify(categoryGoals));
+    }
+
+    // Si l'ancien nom avait des objectifs, les supprimer
+    if (name !== oldName && categoryGoals[oldName]) {
+        delete categoryGoals[oldName];
+        localStorage.setItem('categoryGoals', JSON.stringify(categoryGoals));
     }
 
     // Mettre à jour la catégorie courante si nécessaire
     if (currentCategory === oldName) {
-        currentCategory = newName;
+        currentCategory = name;
     }
 
     // Sauvegarder et mettre à jour l'interface
@@ -965,7 +1089,14 @@ function saveEditedCategory(index) {
     // Fermer le modal
     document.querySelector('.custom-modal-overlay').remove();
 
-    showCustomAlert(`Kategori "${oldName}" → "${newName}" olarak değiştirildi!`, 'success', 2500);
+    // Message de confirmation
+    let message = `✅ Zikir güncellendi: "${name}"`;
+    if (dailyGoal > 0) message += `<br>Günlük hedef: ${dailyGoal}`;
+    if (weeklyGoal > 0) message += `<br>Haftalık hedef: ${weeklyGoal}`;
+    showCustomAlert(message, 'success', 3000);
+
+    // Nettoyer
+    delete window.editZikirFormData;
 }
 
 // Mettre à jour l'affichage du compteur
