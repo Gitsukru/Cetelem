@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="styles/main.css?v=1760224619">
     <link rel="stylesheet" href="styles/welcome-modal.css">
     <link rel="stylesheet" href="styles/books.css">
+    <link rel="stylesheet" href="styles/pages/tesbihat.css">
 </head>
 <body>
     <!-- Offline Badge -->
@@ -365,11 +366,41 @@
 
         <!-- Tesbihat Sekmesi -->
         <div id="competition" class="tab-content">
-            <div class="management-section">
-                <h2>Tesbihat</h2>
-                <p style="text-align: center; color: #666; padding: 40px 20px;">
-                    Bu özellik yakında eklenecek...
-                </p>
+            <div class="tesbihat-container">
+                <!-- Header avec titre et compteur -->
+                <div class="tesbihat-header">
+                    <h2 class="tesbihat-title" id="tesbihatTitle">SABAH NAMAZI Tesbihati</h2>
+                    <div class="tesbihat-counter" id="tesbihatCounter">1 / 18</div>
+                </div>
+
+                <!-- Toggle langue -->
+                <div class="language-toggle">
+                    <button class="lang-button active" id="langTurkish">Türkçe tesbihat</button>
+                    <button class="lang-button" id="langArabic">Arapça tesbihat</button>
+                </div>
+
+                <!-- Navigation des namaz (avec points) -->
+                <div class="namaz-navigation">
+                    <button class="namaz-nav-btn" id="namazPrevBtn">‹</button>
+                    <div class="namaz-dots" id="namazDots">
+                        <!-- Les points seront ajoutés dynamiquement -->
+                    </div>
+                    <button class="namaz-nav-btn" id="namazNextBtn">›</button>
+                </div>
+
+                <!-- Zone de contenu scrollable -->
+                <div class="tesbihat-slider" id="tesbihatSlider">
+                    <div class="tesbihat-content" id="tesbihatContent">
+                        <!-- Le contenu sera ajouté dynamiquement -->
+                    </div>
+                </div>
+
+                <!-- Navigation sections (flèches gauche/droite) -->
+                <div class="section-navigation">
+                    <button class="section-nav-btn" id="tesbihatPrevBtn">‹</button>
+                    <div class="nav-spacer"></div>
+                    <button class="section-nav-btn" id="tesbihatNextBtn">›</button>
+                </div>
             </div>
         </div>
 
@@ -478,5 +509,9 @@
     <script src="script.js"></script>
     <script src="script_group.js"></script>
     <script src="script_books.js"></script>
+
+    <!-- Tesbihat Scripts -->
+    <script src="data/tesbihat.js"></script>
+    <script src="script_tesbihat.js"></script>
 </body>
 </html>
