@@ -89,13 +89,11 @@ class TesbihatSlider {
   }
 
   /**
-   * Setup navigation (boutons fléchés)
+   * Setup navigation (boutons navbar + sections)
    */
   setupNavigation() {
     const prevBtn = document.getElementById('tesbihatPrevBtn');
     const nextBtn = document.getElementById('tesbihatNextBtn');
-    const namazPrevBtn = document.getElementById('namazPrevBtn');
-    const namazNextBtn = document.getElementById('namazNextBtn');
 
     if (prevBtn) {
       prevBtn.addEventListener('click', () => this.previousSection());
@@ -105,13 +103,15 @@ class TesbihatSlider {
       nextBtn.addEventListener('click', () => this.nextSection());
     }
 
-    if (namazPrevBtn) {
-      namazPrevBtn.addEventListener('click', () => this.previousNamaz());
-    }
-
-    if (namazNextBtn) {
-      namazNextBtn.addEventListener('click', () => this.nextNamaz());
-    }
+    // Setup boutons navbar
+    const namazButtons = document.querySelectorAll('.namaz-btn');
+    namazButtons.forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        this.currentNamazIndex = index;
+        this.currentSectionIndex = 0;
+        this.renderPage();
+      });
+    });
   }
 
   /**
@@ -250,8 +250,8 @@ class TesbihatSlider {
       return;
     }
 
-    // Mettre à jour le header
-    this.updateHeader(namaz);
+    // Mettre à jour le compteur
+    this.updateCounter();
 
     // Mettre à jour le contenu
     this.updateContent(section);
@@ -259,22 +259,15 @@ class TesbihatSlider {
     // Mettre à jour les boutons de navigation
     this.updateNavigationButtons();
 
-    // Mettre à jour les indicateurs
-    this.updateIndicators();
+    // Mettre à jour les boutons navbar
+    this.updateNavbarButtons();
   }
 
   /**
-   * Mettre à jour le header
+   * Mettre à jour le compteur de sections
    */
-  updateHeader(namaz) {
-    const titleEl = document.getElementById('tesbihatTitle');
+  updateCounter() {
     const counterEl = document.getElementById('tesbihatCounter');
-
-    if (titleEl) {
-      titleEl.textContent = namaz.title;
-      titleEl.style.color = namaz.color;
-    }
-
     if (counterEl) {
       const totalSections = this.getTotalSections();
       counterEl.textContent = `${this.currentSectionIndex + 1} / ${totalSections}`;
@@ -354,13 +347,11 @@ class TesbihatSlider {
   }
 
   /**
-   * Mettre à jour les boutons de navigation
+   * Mettre à jour les boutons de navigation sections
    */
   updateNavigationButtons() {
     const prevBtn = document.getElementById('tesbihatPrevBtn');
     const nextBtn = document.getElementById('tesbihatNextBtn');
-    const namazPrevBtn = document.getElementById('namazPrevBtn');
-    const namazNextBtn = document.getElementById('namazNextBtn');
 
     // Section navigation
     const isFirstSection = this.currentSectionIndex === 0 && this.currentNamazIndex === 0;
@@ -369,30 +360,19 @@ class TesbihatSlider {
 
     if (prevBtn) prevBtn.disabled = isFirstSection;
     if (nextBtn) nextBtn.disabled = isLastSection;
-
-    // Namaz navigation
-    if (namazPrevBtn) namazPrevBtn.disabled = this.currentNamazIndex === 0;
-    if (namazNextBtn) namazNextBtn.disabled = this.currentNamazIndex === this.namazOrder.length - 1;
   }
 
   /**
-   * Mettre à jour les indicateurs (points)
+   * Mettre à jour les boutons de la navbar
    */
-  updateIndicators() {
-    const dotsContainer = document.getElementById('namazDots');
-    if (!dotsContainer) return;
-
-    dotsContainer.innerHTML = '';
-
-    this.namazOrder.forEach((namazId, index) => {
-      const dot = document.createElement('div');
-      dot.className = `namaz-dot ${index === this.currentNamazIndex ? 'active' : ''}`;
-      dot.addEventListener('click', () => {
-        this.currentNamazIndex = index;
-        this.currentSectionIndex = 0;
-        this.renderPage();
-      });
-      dotsContainer.appendChild(dot);
+  updateNavbarButtons() {
+    const namazButtons = document.querySelectorAll('.namaz-btn');
+    namazButtons.forEach((btn, index) => {
+      if (index === this.currentNamazIndex) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
     });
   }
 }

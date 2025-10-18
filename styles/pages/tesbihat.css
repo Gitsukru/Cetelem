@@ -1,9 +1,9 @@
 /**
- * TESBIHAT PAGE - Page des tesbihats après namaz
- * Mobile-first, full-screen optimized
+ * TESBIHAT PAGE - Navigation optimisée, pas de scroll
+ * Mobile-first, compact layout
  */
 
-/* Container principal */
+/* Container principal - hauteur fixe */
 .tesbihat-container {
     display: flex;
     flex-direction: column;
@@ -12,232 +12,195 @@
     overflow: hidden;
 }
 
-/* Header avec titre et compteur */
-.tesbihat-header {
-    flex-shrink: 0;
-    text-align: center;
-    padding: 16px 20px 12px;
-    background: linear-gradient(135deg, #007bff, #764ba2);
-    color: white;
-}
-
-.tesbihat-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0 0 8px 0;
-    color: white;
-}
-
-.tesbihat-counter {
-    font-size: 14px;
-    font-weight: 500;
-    opacity: 0.9;
-    color: white;
-}
-
-/* Toggle langue */
-.language-toggle {
+/* Navbar horizontale compacte */
+.namaz-navbar {
     display: flex;
-    justify-content: center;
-    gap: 12px;
-    padding: 12px 20px;
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
-    flex-shrink: 0;
-}
-
-.lang-button {
-    padding: 8px 20px;
-    background: white;
-    border: 2px solid #cbd5e0;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #475569;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.lang-button:hover {
-    border-color: #007bff;
-    color: #007bff;
-}
-
-.lang-button.active {
-    background: #007bff;
-    border-color: #007bff;
-    color: white;
-}
-
-/* Navigation des namaz */
-.namaz-navigation {
-    display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
-    background: white;
-    border-bottom: 1px solid #e2e8f0;
-    flex-shrink: 0;
-}
-
-.namaz-nav-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: #007bff;
-    color: white;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
     align-items: center;
-    justify-content: center;
-}
-
-.namaz-nav-btn:hover:not(:disabled) {
-    background: #0056b3;
-    transform: scale(1.05);
-}
-
-.namaz-nav-btn:disabled {
-    background: #e2e8f0;
-    color: #94a3b8;
-    cursor: not-allowed;
-}
-
-.namaz-dots {
-    display: flex;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #007bff, #764ba2);
+    flex-shrink: 0;
     gap: 8px;
 }
 
-.namaz-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #cbd5e0;
+.namaz-buttons {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.namaz-buttons::-webkit-scrollbar {
+    display: none;
+}
+
+.namaz-btn {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.namaz-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.namaz-btn.active {
+    background: white;
+    color: #007bff;
+    border-color: white;
+}
+
+/* Toggle langue mini */
+.lang-toggle-mini {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.lang-mini {
+    width: 36px;
+    height: 32px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.namaz-dot.active {
-    background: #007bff;
-    transform: scale(1.3);
+.lang-mini:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
-.namaz-dot:hover {
-    background: #007bff;
+.lang-mini.active {
+    background: white;
+    color: #007bff;
+    border-color: white;
 }
 
-/* Zone de contenu scrollable */
+/* Zone de contenu - PAS DE SCROLL, tout visible */
 .tesbihat-slider {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     background: white;
-    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
 }
 
 .tesbihat-content {
-    padding: 20px 20px 40px;
-    animation: slideIn 0.3s ease-out;
+    padding: clamp(8px, 2vh, 16px) clamp(12px, 3vw, 20px);
+    animation: slideIn 0.2s ease-out;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(6px, 1.5vh, 12px);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-/* Titre de section */
+/* Titre de section - compact */
 .section-title {
-    font-size: 18px;
+    font-size: clamp(14px, 3.5vw, 16px);
     font-weight: 700;
-    color: #1e293b;
-    margin: 0 0 20px 0;
+    color: #007bff;
+    margin: 0 0 clamp(6px, 1.5vh, 10px) 0;
     text-align: center;
-    padding-bottom: 12px;
+    padding-bottom: 6px;
     border-bottom: 2px solid #007bff;
+    flex-shrink: 0;
 }
 
-/* Items de tesbihat */
+/* Items de tesbihat - COMPACT */
 .tesbihat-instruction {
-    font-size: 15px;
+    font-size: clamp(12px, 2.8vw, 14px);
     font-weight: 500;
     color: #475569;
-    line-height: 1.6;
-    margin-bottom: 16px;
-    padding: 12px 16px;
+    line-height: 1.4;
+    padding: clamp(6px, 1.5vh, 10px) clamp(8px, 2vw, 12px);
     background: #f8fafc;
-    border-left: 4px solid #007bff;
+    border-left: 3px solid #007bff;
     border-radius: 4px;
 }
 
 .tesbihat-repeat {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 16px;
-    padding: 14px 16px;
+    gap: clamp(8px, 2vw, 12px);
+    padding: clamp(6px, 1.5vh, 10px) clamp(8px, 2vw, 12px);
     background: linear-gradient(135deg, #ebf4ff, #e0f2fe);
-    border-radius: 10px;
+    border-radius: 6px;
     border: 1px solid #bfdbfe;
 }
 
 .repeat-count {
     flex-shrink: 0;
-    font-size: 24px;
+    font-size: clamp(16px, 4vw, 20px);
     font-weight: 700;
     color: #007bff;
     background: white;
-    width: 50px;
-    height: 50px;
+    width: clamp(36px, 8vw, 44px);
+    height: clamp(36px, 8vw, 44px);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.15);
 }
 
 .repeat-text {
     flex: 1;
-    font-size: 16px;
+    font-size: clamp(13px, 3.2vw, 15px);
     font-weight: 600;
     color: #1e293b;
-    line-height: 1.5;
+    line-height: 1.3;
     direction: rtl;
     text-align: right;
 }
 
 .repeat-note {
-    font-size: 13px;
+    font-size: clamp(10px, 2.4vw, 12px);
     color: #64748b;
-    margin-top: 8px;
+    margin-top: 4px;
     font-style: italic;
 }
 
 .tesbihat-prayer {
-    font-size: 16px;
+    font-size: clamp(13px, 3.2vw, 15px);
     font-weight: 500;
     color: #1e293b;
-    line-height: 1.8;
-    margin-bottom: 16px;
-    padding: 16px;
+    line-height: 1.5;
+    padding: clamp(8px, 2vh, 12px) clamp(10px, 2.5vw, 14px);
     background: #fefce8;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid #fde047;
     direction: rtl;
     text-align: right;
 }
 
 .tesbihat-note {
-    font-size: 14px;
+    font-size: clamp(11px, 2.6vw, 13px);
     color: #0369a1;
-    line-height: 1.6;
-    margin-bottom: 16px;
-    padding: 12px 16px;
+    line-height: 1.4;
+    padding: clamp(6px, 1.5vh, 10px) clamp(8px, 2vw, 12px);
     background: #e0f2fe;
-    border-radius: 8px;
-    border-left: 4px solid #0284c7;
+    border-radius: 6px;
+    border-left: 3px solid #0284c7;
 }
 
-/* Tableau (pour Duâ-i İsm-i Âzam) */
+/* Tableau - compact */
 .tesbihat-table {
-    margin-bottom: 20px;
     overflow-x: auto;
 }
 
@@ -245,11 +208,11 @@
     width: 100%;
     border-collapse: collapse;
     background: white;
-    font-size: 14px;
+    font-size: clamp(11px, 2.6vw, 13px);
 }
 
 .tesbihat-table td {
-    padding: 10px 12px;
+    padding: clamp(6px, 1.5vh, 8px) clamp(8px, 2vw, 10px);
     text-align: center;
     border: 1px solid #e2e8f0;
     color: #1e293b;
@@ -261,31 +224,33 @@
     background: #f8fafc;
 }
 
-/* Navigation sections (flèches gauche/droite) */
+/* Navigation sections - compact avec compteur */
 .section-navigation {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px;
+    padding: clamp(8px, 2vh, 12px) clamp(10px, 2.5vw, 16px);
     background: white;
     border-top: 1px solid #e2e8f0;
     flex-shrink: 0;
+    gap: clamp(8px, 2vw, 12px);
 }
 
 .section-nav-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
+    width: clamp(48px, 12vw, 56px);
+    height: clamp(48px, 12vw, 56px);
+    border-radius: 10px;
     background: #007bff;
     color: white;
     border: none;
-    font-size: 24px;
+    font-size: clamp(20px, 5vw, 24px);
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.25);
+    flex-shrink: 0;
 }
 
 .section-nav-btn:hover:not(:disabled) {
@@ -300,15 +265,19 @@
     box-shadow: none;
 }
 
-.nav-spacer {
+.section-counter {
     flex: 1;
+    text-align: center;
+    font-size: clamp(13px, 3.2vw, 15px);
+    font-weight: 700;
+    color: #007bff;
 }
 
-/* Animation slide */
+/* Animation slide - rapide */
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateX(20px);
+        transform: translateX(10px);
     }
     to {
         opacity: 1;
@@ -316,146 +285,26 @@
     }
 }
 
-/* Orientation paysage - Texte plus grand */
+/* Media queries simplifiées - ajustements spécifiques */
+@media (max-width: 480px) {
+    .namaz-btn {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+
+    .lang-mini {
+        width: 32px;
+        height: 28px;
+        font-size: 10px;
+    }
+}
+
 @media (orientation: landscape) {
-    .section-title {
-        font-size: 20px;
+    .namaz-navbar {
+        padding: 6px 10px;
     }
 
-    .tesbihat-instruction {
-        font-size: 17px;
-    }
-
-    .repeat-text {
-        font-size: 18px;
-    }
-
-    .repeat-count {
-        font-size: 26px;
-        width: 55px;
-        height: 55px;
-    }
-
-    .tesbihat-prayer {
-        font-size: 18px;
-    }
-
-    .tesbihat-note {
-        font-size: 16px;
-    }
-
-    .tesbihat-table table {
-        font-size: 16px;
-    }
-
-    .tesbihat-title {
-        font-size: 22px;
-    }
-}
-
-/* Responsive mobile */
-@media (max-width: 640px) {
-    .tesbihat-header {
-        padding: 12px 16px 10px;
-    }
-
-    .tesbihat-title {
-        font-size: 18px;
-    }
-
-    .tesbihat-counter {
-        font-size: 13px;
-    }
-
-    .language-toggle {
-        padding: 10px 16px;
-    }
-
-    .lang-button {
-        padding: 6px 16px;
-        font-size: 13px;
-    }
-
-    .tesbihat-content {
-        padding: 16px 16px 32px;
-    }
-
-    .section-title {
-        font-size: 16px;
-    }
-
-    .tesbihat-instruction {
-        font-size: 14px;
-        padding: 10px 12px;
-    }
-
-    .repeat-count {
-        font-size: 20px;
-        width: 45px;
-        height: 45px;
-    }
-
-    .repeat-text {
-        font-size: 15px;
-    }
-
-    .tesbihat-prayer {
-        font-size: 15px;
-        padding: 12px;
-    }
-
-    .tesbihat-note {
-        font-size: 13px;
-        padding: 10px 12px;
-    }
-
-    .tesbihat-table table {
-        font-size: 13px;
-    }
-
-    .tesbihat-table td {
-        padding: 8px 10px;
-    }
-
-    .section-nav-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-    }
-
-    .namaz-nav-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 16px;
-    }
-
-    .namaz-dot {
-        width: 8px;
-        height: 8px;
-    }
-}
-
-/* Très petits écrans */
-@media (max-width: 380px) {
-    .tesbihat-title {
-        font-size: 16px;
-    }
-
-    .section-title {
-        font-size: 15px;
-    }
-
-    .repeat-text {
-        font-size: 14px;
-    }
-
-    .tesbihat-prayer {
-        font-size: 14px;
-    }
-
-    .section-nav-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 18px;
+    .section-navigation {
+        padding: 6px 12px;
     }
 }

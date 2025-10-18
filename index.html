@@ -367,38 +367,32 @@
         <!-- Tesbihat Sekmesi -->
         <div id="competition" class="tab-content">
             <div class="tesbihat-container">
-                <!-- Header avec titre et compteur -->
-                <div class="tesbihat-header">
-                    <h2 class="tesbihat-title" id="tesbihatTitle">SABAH NAMAZI Tesbihati</h2>
-                    <div class="tesbihat-counter" id="tesbihatCounter">1 / 18</div>
-                </div>
-
-                <!-- Toggle langue -->
-                <div class="language-toggle">
-                    <button class="lang-button active" id="langTurkish">Türkçe tesbihat</button>
-                    <button class="lang-button" id="langArabic">Arapça tesbihat</button>
-                </div>
-
-                <!-- Navigation des namaz (avec points) -->
-                <div class="namaz-navigation">
-                    <button class="namaz-nav-btn" id="namazPrevBtn">‹</button>
-                    <div class="namaz-dots" id="namazDots">
-                        <!-- Les points seront ajoutés dynamiquement -->
+                <!-- Navbar des namaz + langue -->
+                <div class="namaz-navbar">
+                    <div class="namaz-buttons" id="namazButtons">
+                        <button class="namaz-btn active" data-namaz="0">Sabah</button>
+                        <button class="namaz-btn" data-namaz="1">Öğlen</button>
+                        <button class="namaz-btn" data-namaz="2">İkindi</button>
+                        <button class="namaz-btn" data-namaz="3">Akşam</button>
+                        <button class="namaz-btn" data-namaz="4">Yatsı</button>
                     </div>
-                    <button class="namaz-nav-btn" id="namazNextBtn">›</button>
+                    <div class="lang-toggle-mini">
+                        <button class="lang-mini active" id="langTurkish" title="Türkçe">TR</button>
+                        <button class="lang-mini" id="langArabic" title="Arapça">AR</button>
+                    </div>
                 </div>
 
-                <!-- Zone de contenu scrollable -->
+                <!-- Zone de contenu (pas de scroll) -->
                 <div class="tesbihat-slider" id="tesbihatSlider">
                     <div class="tesbihat-content" id="tesbihatContent">
                         <!-- Le contenu sera ajouté dynamiquement -->
                     </div>
                 </div>
 
-                <!-- Navigation sections (flèches gauche/droite) -->
+                <!-- Navigation sections + compteur -->
                 <div class="section-navigation">
                     <button class="section-nav-btn" id="tesbihatPrevBtn">‹</button>
-                    <div class="nav-spacer"></div>
+                    <div class="section-counter" id="tesbihatCounter">1 / 18</div>
                     <button class="section-nav-btn" id="tesbihatNextBtn">›</button>
                 </div>
             </div>
