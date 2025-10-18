@@ -235,19 +235,27 @@ function displayLeaderboard(participants) {
     return
   }
 
-  // Créer un tableau avec fond clair
+  // Trouver les valeurs max pour calculer les pourcentages
+  const maxToday = participants.length > 0 ? participants[0].todayCount : 1
+  const maxWeek = participants.length > 0 ? participants[0].weekCount : 1
+  const maxMonth = participants.length > 0 ? participants[0].monthCount : 1
+
+  // Créer un tableau avec style similaire aux statistiques
   let html = '<div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">'
-  html += '<h3 style="margin-bottom: 16px; color: #4a5568;">Gruplar</h3>'
-  html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden;">'
+  html += '<h3 style="margin-bottom: 16px; color: #4a5568;">Grup Sıralaması</h3>'
+  html += '<table class="group-leaderboard-table">'
   html += '<thead>'
-  html += '<tr style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">'
-  html += '<th style="padding: 12px; text-align: center; width: 60px;">Sıralama</th>'
-  html += '<th style="padding: 12px; text-align: left;">İsim</th>'
-  html += '<th style="padding: 12px; text-align: center;">Bugün</th>'
-  html += '<th style="padding: 12px; text-align: center;">Hafta</th>'
-  html += '<th style="padding: 12px; text-align: center;">Ay</th>'
-  html += '<th style="padding: 12px; text-align: center;">Puan</th>'
-  html += '<th style="padding: 12px; text-align: center; width: 80px;">Detay</th>'
+  html += '<tr>'
+  html += '<th>Sıra</th>'
+  html += '<th>İsim</th>'
+  html += '<th>Bugün</th>'
+  html += '<th>%</th>'
+  html += '<th>Hafta</th>'
+  html += '<th>%</th>'
+  html += '<th>Ay</th>'
+  html += '<th>%</th>'
+  html += '<th>Puan</th>'
+  html += '<th>Detay</th>'
   html += '</tr>'
   html += '</thead>'
   html += '<tbody>'
@@ -256,27 +264,33 @@ function displayLeaderboard(participants) {
     const isMe = groupInfo.participant && participant.id === groupInfo.participant.id
     const position = index + 1
 
-    const rowStyle = isMe
-      ? 'background: #eef2ff; font-weight: 600;'
-      : index % 2 === 0 ? 'background: #f9fafb;' : 'background: white;'
+    // Calculer les pourcentages par rapport au leader
+    const todayPercent = maxToday > 0 ? Math.round((participant.todayCount / maxToday) * 100) : 0
+    const weekPercent = maxWeek > 0 ? Math.round((participant.weekCount / maxWeek) * 100) : 0
+    const monthPercent = maxMonth > 0 ? Math.round((participant.monthCount / maxMonth) * 100) : 0
+
+    const rowClass = isMe ? 'my-row' : ''
 
     html += `
-      <tr onclick="toggleParticipantDetails('${participant.id}')" style="${rowStyle} border-bottom: 1px solid #e5e7eb; cursor: pointer; transition: background 0.2s;" onmouseover="if(!this.style.backgroundColor.includes('eef2ff')) this.style.backgroundColor='#f1f5f9'" onmouseout="this.style.backgroundColor=''">
-        <td style="padding: 12px; text-align: center; font-size: 16px; font-weight: 600; color: #667eea;">${position}</td>
-        <td style="padding: 12px;">
-          ${participant.name}${isMe ? ' <span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px;">Sen</span>' : ''}
+      <tr class="${rowClass}" onclick="toggleParticipantDetails('${participant.id}')">
+        <td class="rank-cell">${position}</td>
+        <td class="name-cell">
+          ${participant.name}${isMe ? ' <span class="me-badge">Sen</span>' : ''}
         </td>
-        <td style="padding: 12px; text-align: center; color: #667eea; font-weight: 600;">${participant.todayCount}</td>
-        <td style="padding: 12px; text-align: center;">${participant.weekCount}</td>
-        <td style="padding: 12px; text-align: center;">${participant.monthCount || 0}</td>
-        <td style="padding: 12px; text-align: center; font-weight: 700; color: #667eea;">${participant.points}</td>
-        <td style="padding: 12px; text-align: center;">
-          <span id="expand-${participant.id}" style="font-size: 14px; color: #667eea; font-weight: bold;">▶</span>
+        <td class="count-cell">${participant.todayCount}</td>
+        <td class="percent-cell">${todayPercent}%</td>
+        <td class="count-cell">${participant.weekCount}</td>
+        <td class="percent-cell">${weekPercent}%</td>
+        <td class="count-cell">${participant.monthCount || 0}</td>
+        <td class="percent-cell">${monthPercent}%</td>
+        <td class="points-cell">${participant.points}</td>
+        <td class="detail-cell">
+          <span id="expand-${participant.id}" class="expand-icon">▶</span>
         </td>
       </tr>
-      <tr id="detail-row-${participant.id}" style="display: none;">
-        <td colspan="7" style="padding: 0; background: #f9fafb;">
-          <div id="detail-${participant.id}" style="padding: 16px;">
+      <tr id="detail-row-${participant.id}" class="detail-row">
+        <td colspan="10">
+          <div id="detail-${participant.id}" class="detail-content">
             <div class="detail-loading">Yükleniyor...</div>
           </div>
         </td>

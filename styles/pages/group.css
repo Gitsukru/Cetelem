@@ -434,8 +434,145 @@
     line-height: 1.5;
 }
 
+/* Group Leaderboard Table - Style similaire aux statistiques */
+.group-leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 13px;
+    table-layout: auto;
+}
+
+.group-leaderboard-table th {
+    background: linear-gradient(135deg, #007bff, #764ba2);
+    color: white;
+    padding: 12px 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    white-space: nowrap;
+}
+
+.group-leaderboard-table th:last-child {
+    border-right: none;
+}
+
+.group-leaderboard-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #f1f5f9;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.group-leaderboard-table td:last-child {
+    border-right: none;
+}
+
+.group-leaderboard-table tbody tr {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.group-leaderboard-table tbody tr:hover {
+    background: #f7fafc !important;
+}
+
+/* Cellules spécifiques */
+.rank-cell {
+    font-size: 16px;
+    font-weight: 600;
+    color: #667eea;
+    width: 60px;
+}
+
+.name-cell {
+    text-align: left !important;
+    font-weight: 600;
+    color: #4a5568;
+    min-width: 120px;
+}
+
+.count-cell {
+    font-weight: 600;
+    color: #1e293b;
+    width: 80px;
+}
+
+.percent-cell {
+    color: #667eea;
+    font-weight: 600;
+    width: 60px;
+}
+
+.points-cell {
+    font-weight: 700;
+    color: #667eea;
+    width: 80px;
+}
+
+.detail-cell {
+    width: 60px;
+}
+
+.expand-icon {
+    font-size: 14px;
+    color: #667eea;
+    font-weight: bold;
+}
+
+.me-badge {
+    background: #667eea;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-left: 8px;
+    font-weight: 600;
+}
+
+.my-row {
+    background: #eef2ff !important;
+    font-weight: 600;
+}
+
+.detail-row {
+    display: none;
+}
+
+.detail-content {
+    padding: 16px;
+    background: #f9fafb;
+}
+
 /* Mobile responsive */
 @media (max-width: 640px) {
+    .group-leaderboard-table {
+        font-size: 11px;
+    }
+
+    .group-leaderboard-table th,
+    .group-leaderboard-table td {
+        padding: 8px 5px;
+        font-size: 11px;
+    }
+
+    .rank-cell {
+        font-size: 14px;
+    }
+
+    .name-cell {
+        min-width: 80px;
+        font-size: 12px;
+    }
+
+    .me-badge {
+        font-size: 9px;
+        padding: 1px 6px;
+    }
+
     .participant-stats-inline {
         gap: 8px;
     }
