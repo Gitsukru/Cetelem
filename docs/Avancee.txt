@@ -1020,3 +1020,7 @@
   - 6 points de progression en bas au centre
   - Auto-scroll de 6 secondes entre chaque slide
   - S'arrête automatiquement à la dernière slide (6/6)
+
+
+
+  

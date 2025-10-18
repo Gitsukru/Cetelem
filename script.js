@@ -7,7 +7,8 @@ let visualOffset = 0; // Décalage visuel pour l'affichage
 
 // Métadonnées et historique
 let categoryMetadata = JSON.parse(localStorage.getItem('categoryMetadata')) || {};
-let deletedHistory = JSON.parse(localStorage.getItem('deletedHistory')) || [];
+// Historique supprimé - fonctionnalité retirée
+// let deletedHistory = JSON.parse(localStorage.getItem('deletedHistory')) || [];
 
 // Timer variables
 let startTime = Date.now();
@@ -806,33 +807,14 @@ function updateCategoriesList() {
 // Note: addCategory() supprimée - maintenant on utilise showQuickAddCategory()
 // qui ouvre le modal multi-étapes avec objectifs
 
-// Supprimer une catégorie (déplacer vers historique)
+// Supprimer une catégorie définitivement
 function deleteCategory(index) {
     const categoryName = categories[index];
 
     showCustomConfirm(
-        'Zikiri Tamamla',
-        `"${categoryName}" zikrini tamamladınız mı?<br><br>Bu zikir geçmişe taşınacak ve silinmeyecektir.`,
+        'Zikiri Sil',
+        `"${categoryName}" zikrini kalıcı olarak silmek istediğinize emin misiniz?<br><br>Bu işlem geri alınamaz!`,
         function() {
-            // Récupérer toutes les données avant suppression
-            const metadata = categoryMetadata[categoryName] || {};
-            const goals = getCategoryGoals(categoryName);
-            const stats = getStatisticsForCategory(categoryName);
-
-            // Créer l'entrée d'historique
-            const historyEntry = {
-                name: categoryName,
-                type: 'zikir',
-                createdAt: metadata.createdAt || new Date().toISOString(),
-                completedAt: new Date().toISOString(),
-                stats: stats,
-                goals: goals
-            };
-
-            // Ajouter à l'historique
-            deletedHistory.unshift(historyEntry); // Ajouter au début
-            localStorage.setItem('deletedHistory', JSON.stringify(deletedHistory));
-
             // Supprimer de la liste active
             categories.splice(index, 1);
             delete counters[categoryName];
@@ -857,7 +839,7 @@ function deleteCategory(index) {
                 if (counterLabel) counterLabel.textContent = 'Zikir';
             }
 
-            showCustomAlert(`"${categoryName}" geçmişe taşındı! 📚`, 'success', 2500);
+            showCustomAlert(`"${categoryName}" silindi!`, 'success', 2500);
         }
     );
 }
@@ -2491,6 +2473,7 @@ window.addEventListener('beforeinstallprompt', function(e) {
 /**
  * Affiche l'historique des zikirs et livres terminés
  */
+// Fonctionnalité d'historique supprimée
 function displayHistory() {
     const historyList = document.getElementById('historyList');
     const noHistoryMessage = document.getElementById('noHistoryMessage');
@@ -2499,102 +2482,12 @@ function displayHistory() {
 
     // Vider la liste
     historyList.innerHTML = '';
+    historyList.style.display = 'none';
 
-    // Vérifier s'il y a des éléments
-    if (deletedHistory.length === 0) {
-        historyList.style.display = 'none';
-        if (noHistoryMessage) noHistoryMessage.style.display = 'block';
-        return;
+    if (noHistoryMessage) {
+        noHistoryMessage.style.display = 'block';
+        noHistoryMessage.textContent = 'Geçmiş özelliği kaldırıldı.';
     }
-
-    historyList.style.display = 'block';
-    if (noHistoryMessage) noHistoryMessage.style.display = 'none';
-
-    // Afficher chaque élément de l'historique
-    deletedHistory.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'history-card';
-
-        // Icône selon le type
-        const icon = item.type === 'zikir' ? '📿' : '📚';
-
-        // Dates formatées
-        const createdDate = new Date(item.createdAt);
-        const completedDate = new Date(item.completedAt);
-        const durationDays = Math.floor((completedDate - createdDate) / (1000 * 60 * 60 * 24));
-
-        // Stats totales
-        const totalCount = item.stats ? (
-            (item.stats.daily?.total || 0) +
-            (item.stats.weekly?.total || 0) +
-            (item.stats.monthly?.total || 0) +
-            (item.stats.yearly?.total || 0)
-        ) : 0;
-
-        card.innerHTML = `
-            <div class="history-card-header">
-                <span class="history-icon">${icon}</span>
-                <span class="history-name">${item.name}</span>
-                <button class="history-delete-btn" onclick="permanentlyDeleteHistory(${index})" title="Kalıcı olarak sil">
-                    🗑️
-                </button>
-            </div>
-            <div class="history-card-body">
-                <div class="history-dates">
-                    <div class="history-date-item">
-                        <span class="history-date-label">Başlangıç:</span>
-                        <span class="history-date-value">${createdDate.toLocaleDateString('tr-TR')}</span>
-                    </div>
-                    <div class="history-date-item">
-                        <span class="history-date-label">Tamamlandı:</span>
-                        <span class="history-date-value">${completedDate.toLocaleDateString('tr-TR')}</span>
-                    </div>
-                    <div class="history-date-item">
-                        <span class="history-date-label">Süre:</span>
-                        <span class="history-date-value">${durationDays} gün</span>
-                    </div>
-                </div>
-                <div class="history-stats">
-                    <div class="history-stat-item">
-                        <span class="history-stat-label">Toplam:</span>
-                        <span class="history-stat-value">${totalCount.toLocaleString('tr-TR')}</span>
-                    </div>
-                    ${item.goals && item.goals.daily ? `
-                    <div class="history-stat-item">
-                        <span class="history-stat-label">Günlük Hedef:</span>
-                        <span class="history-stat-value">${item.goals.daily.toLocaleString('tr-TR')}</span>
-                    </div>
-                    ` : ''}
-                    ${item.goals && item.goals.weekly ? `
-                    <div class="history-stat-item">
-                        <span class="history-stat-label">Haftalık Hedef:</span>
-                        <span class="history-stat-value">${item.goals.weekly.toLocaleString('tr-TR')}</span>
-                    </div>
-                    ` : ''}
-                </div>
-            </div>
-        `;
-
-        historyList.appendChild(card);
-    });
-}
-
-/**
- * Supprime définitivement un élément de l'historique
- */
-function permanentlyDeleteHistory(index) {
-    const item = deletedHistory[index];
-
-    showCustomConfirm(
-        'Kalıcı Olarak Sil',
-        `"${item.name}" geçmişten kalıcı olarak silinecek.<br><br>Bu işlem geri alınamaz!`,
-        function() {
-            deletedHistory.splice(index, 1);
-            localStorage.setItem('deletedHistory', JSON.stringify(deletedHistory));
-            displayHistory();
-            showCustomAlert('Geçmişten silindi', 'success', 2000);
-        }
-    );
 }
 
 // ========================================
