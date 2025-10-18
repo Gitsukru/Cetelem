@@ -1698,6 +1698,65 @@ function updateStats() {
                 tbody.appendChild(row);
             });
 
+            // Ajouter la ligne de total pour les zikirler juste après les catégories
+            if (categories.length > 0) {
+                const zikirTotalRow = document.createElement('tr');
+                zikirTotalRow.className = 'totals-row';
+
+                const labelCell = document.createElement('td');
+                const labelStrong = document.createElement('strong');
+                labelStrong.textContent = 'TOPLAM ZİKİRLER';
+                labelCell.appendChild(labelStrong);
+
+                const todayCell = document.createElement('td');
+                const todayStrong = document.createElement('strong');
+                todayStrong.textContent = totalToday;
+                todayCell.appendChild(todayStrong);
+
+                const todayPercentCell = document.createElement('td');
+                todayPercentCell.textContent = '';
+
+                const weekCell = document.createElement('td');
+                const weekStrong = document.createElement('strong');
+                weekStrong.textContent = totalWeek;
+                weekCell.appendChild(weekStrong);
+
+                const weekPercentCell = document.createElement('td');
+                weekPercentCell.textContent = '';
+
+                const monthCell = document.createElement('td');
+                const monthStrong = document.createElement('strong');
+                monthStrong.textContent = totalMonth;
+                monthCell.appendChild(monthStrong);
+
+                const monthPercentCell = document.createElement('td');
+                monthPercentCell.textContent = '';
+
+                const yearCell = document.createElement('td');
+                const yearStrong = document.createElement('strong');
+                yearStrong.textContent = totalYear;
+                yearCell.appendChild(yearStrong);
+
+                const yearPercentCell = document.createElement('td');
+                yearPercentCell.textContent = '';
+
+                const emptyCell = document.createElement('td');
+                emptyCell.textContent = '';
+
+                zikirTotalRow.appendChild(labelCell);
+                zikirTotalRow.appendChild(todayCell);
+                zikirTotalRow.appendChild(todayPercentCell);
+                zikirTotalRow.appendChild(weekCell);
+                zikirTotalRow.appendChild(weekPercentCell);
+                zikirTotalRow.appendChild(monthCell);
+                zikirTotalRow.appendChild(monthPercentCell);
+                zikirTotalRow.appendChild(yearCell);
+                zikirTotalRow.appendChild(yearPercentCell);
+                zikirTotalRow.appendChild(emptyCell);
+
+                tbody.appendChild(zikirTotalRow);
+            }
+
             // Ajouter les livres au tableau
             if (typeof BooksManager !== 'undefined') {
                 const books = BooksManager.getBooks();
