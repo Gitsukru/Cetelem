@@ -713,29 +713,91 @@ function showEditBookModal(bookId) {
 
   if (!book) return;
 
+  const goals = getBookGoals(bookId);
+
   const modalHTML = `
     <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
-      <div class="custom-modal">
+      <div class="custom-modal" style="min-height: 300px;">
         <div class="modal-header">
-          <h3>✏️ Kitabı Düzenle</h3>
+          <h3 id="modal-title">✏️ Kitabı Düzenle</h3>
           <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
         </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">Kitap İsmi</label>
-            <input type="text" id="editBookNameInput" class="form-input" value="${escapeHtml(book.name)}" required>
+
+        <!-- Indicateur de progression -->
+        <div style="display: flex; gap: 8px; padding: 0 24px 16px; justify-content: center;">
+          <div id="edit-step-indicator-1" class="step-indicator active"></div>
+          <div id="edit-step-indicator-2" class="step-indicator"></div>
+          <div id="edit-step-indicator-3" class="step-indicator"></div>
+          <div id="edit-step-indicator-4" class="step-indicator"></div>
+          <div id="edit-step-indicator-5" class="step-indicator"></div>
+        </div>
+
+        <div class="modal-body" id="modal-body-content">
+          <!-- Étape 1: Nom du livre -->
+          <div id="edit-step-1" class="modal-step">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Kitap İsmi</label>
+              <input type="text" id="editBookNameInput" class="form-input" value="${escapeHtml(book.name)}" required autofocus>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Toplam Sayfa</label>
-            <input type="number" id="editBookTotalPagesInput" class="form-input" value="${book.totalPages}" min="0">
+
+          <!-- Étape 2: Format (digital/papier) -->
+          <div id="edit-step-2" class="modal-step" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 16px;">Kitap Formatı</label>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button class="format-choice-btn ${book.format === 'digital' ? 'selected' : ''}" onclick="selectEditBookFormat('digital')" data-format="digital">
+                  <span style="font-size: 24px;">📱</span>
+                  <span style="margin-left: 12px;">Dijital (e-Kitap)</span>
+                </button>
+                <button class="format-choice-btn ${book.format === 'print' ? 'selected' : ''}" onclick="selectEditBookFormat('print')" data-format="print">
+                  <span style="font-size: 24px;">📖</span>
+                  <span style="margin-left: 12px;">Basılı (Kağıt)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Étape 3: Total pages -->
+          <div id="edit-step-3" class="modal-step" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Toplam Sayfa Sayısı</label>
+              <input type="number" id="editBookTotalPagesInput" class="form-input" placeholder="0 = bilinmiyor" min="0" value="${book.totalPages}" onfocus="if(this.value==='0') this.value=''">
+              <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                İlerleme çubuğunu görmek için toplam sayfa sayısını girin (isteğe bağlı)
+              </small>
+            </div>
+          </div>
+
+          <!-- Étape 4: Objectif quotidien -->
+          <div id="edit-step-4" class="modal-step" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Günlük Okuma Hedefiniz</label>
+              <input type="number" id="editBookDailyGoalInput" class="form-input" placeholder="Örn: 10" min="0" value="${goals.daily || 0}" onfocus="if(this.value==='0') this.value=''">
+              <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                Her gün bu sayfa sayısına ulaşmayı hedefleyin (isteğe bağlı)
+              </small>
+            </div>
+          </div>
+
+          <!-- Étape 5: Objectif hebdomadaire -->
+          <div id="edit-step-5" class="modal-step" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Haftalık Okuma Hedefiniz</label>
+              <input type="number" id="editBookWeeklyGoalInput" class="form-input" placeholder="Örn: 70" min="0" value="${goals.weekly || 0}" onfocus="if(this.value==='0') this.value=''">
+              <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                Her hafta bu sayfa sayısına ulaşmayı hedefleyin (isteğe bağlı)
+              </small>
+            </div>
           </div>
         </div>
+
         <div class="modal-footer">
-          <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
-            İptal
+          <button class="btn-secondary" id="edit-book-btn-back" onclick="previousStepEditBook()" style="display: none;">
+            ← Geri
           </button>
-          <button class="btn-primary" onclick="updateBookFromModal('${bookId}')">
-            Kaydet
+          <button class="btn-primary" id="edit-book-btn-next" onclick="nextStepEditBook()">
+            İleri →
           </button>
         </div>
       </div>
@@ -743,34 +805,190 @@ function showEditBookModal(bookId) {
   `;
 
   document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+  // Initialiser les données du formulaire
+  window.editBookFormData = {
+    currentStep: 1,
+    totalSteps: 5,
+    bookId: bookId,
+    name: book.name,
+    format: book.format || 'digital',
+    totalPages: book.totalPages || 0,
+    dailyGoal: goals.daily || 0,
+    weeklyGoal: goals.weekly || 0
+  };
+
+  // Gestion de la touche Enter
+  const modalOverlay = document.querySelector('.custom-modal-overlay:last-of-type');
+  modalOverlay.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+      e.preventDefault();
+      nextStepEditBook();
+    }
+  });
+
   document.getElementById('editBookNameInput').focus();
 }
 
 /**
- * Mettre à jour un livre depuis le modal
+ * Sélectionner le format du livre (édition)
  */
-function updateBookFromModal(bookId) {
-  const nameInput = document.getElementById('editBookNameInput');
-  const totalPagesInput = document.getElementById('editBookTotalPagesInput');
+function selectEditBookFormat(format) {
+  window.editBookFormData.format = format;
 
-  const name = nameInput.value.trim();
-  const totalPages = parseInt(totalPagesInput.value) || 0;
+  // Mettre à jour le style des boutons
+  document.querySelectorAll('.format-choice-btn').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  event.target.closest('.format-choice-btn').classList.add('selected');
 
-  if (!name) {
-    alert('Lütfen kitap ismini girin');
-    nameInput.focus();
+  // Passer à l'étape suivante automatiquement
+  setTimeout(() => nextStepEditBook(), 300);
+}
+
+/**
+ * Passer à l'étape suivante (édition)
+ */
+function nextStepEditBook() {
+  const data = window.editBookFormData;
+  const currentStep = data.currentStep;
+
+  // Validation étape 1: nom du livre
+  if (currentStep === 1) {
+    const nameInput = document.getElementById('editBookNameInput');
+    const name = nameInput.value.trim();
+
+    if (!name) {
+      showCustomAlert('Lütfen kitap ismini girin', 'warning', 2000);
+      nameInput.focus();
+      return;
+    }
+
+    data.name = name;
+  }
+
+  // Validation étape 3: total pages
+  if (currentStep === 3) {
+    const totalPagesInput = document.getElementById('editBookTotalPagesInput');
+    data.totalPages = parseInt(totalPagesInput.value) || 0;
+  }
+
+  // Validation étape 4: objectif quotidien
+  if (currentStep === 4) {
+    const dailyGoalInput = document.getElementById('editBookDailyGoalInput');
+    data.dailyGoal = parseInt(dailyGoalInput.value) || 0;
+  }
+
+  // Validation étape 5: objectif hebdomadaire et finalisation
+  if (currentStep === 5) {
+    const weeklyGoalInput = document.getElementById('editBookWeeklyGoalInput');
+    data.weeklyGoal = parseInt(weeklyGoalInput.value) || 0;
+
+    // Dernière étape : sauvegarder le livre
+    finalizeEditBook();
     return;
   }
 
-  BooksManager.updateBook(bookId, {
-    name: name,
-    totalPages: totalPages
+  // Passer à l'étape suivante
+  data.currentStep++;
+
+  // Masquer l'étape actuelle
+  document.getElementById(`edit-step-${currentStep}`).style.display = 'none';
+  document.getElementById(`edit-step-indicator-${currentStep}`).classList.remove('active');
+
+  // Afficher l'étape suivante
+  document.getElementById(`edit-step-${data.currentStep}`).style.display = 'block';
+  document.getElementById(`edit-step-indicator-${data.currentStep}`).classList.add('active');
+
+  // Mettre à jour les boutons
+  document.getElementById('edit-book-btn-back').style.display = 'block';
+  if (data.currentStep === data.totalSteps) {
+    document.getElementById('edit-book-btn-next').textContent = '✓ Kaydet';
+  }
+
+  // Focus sur le champ approprié
+  focusEditBookField();
+}
+
+/**
+ * Revenir à l'étape précédente (édition)
+ */
+function previousStepEditBook() {
+  const data = window.editBookFormData;
+  const currentStep = data.currentStep;
+
+  if (currentStep === 1) return;
+
+  // Masquer l'étape actuelle
+  document.getElementById(`edit-step-${currentStep}`).style.display = 'none';
+  document.getElementById(`edit-step-indicator-${currentStep}`).classList.remove('active');
+
+  // Revenir à l'étape précédente
+  data.currentStep--;
+
+  // Afficher l'étape précédente
+  document.getElementById(`edit-step-${data.currentStep}`).style.display = 'block';
+  document.getElementById(`edit-step-indicator-${data.currentStep}`).classList.add('active');
+
+  // Mettre à jour les boutons
+  if (data.currentStep === 1) {
+    document.getElementById('edit-book-btn-back').style.display = 'none';
+  }
+  document.getElementById('edit-book-btn-next').textContent = 'İleri →';
+
+  // Focus sur le champ approprié
+  focusEditBookField();
+}
+
+/**
+ * Focus sur le bon champ selon l'étape (édition)
+ */
+function focusEditBookField() {
+  const step = window.editBookFormData.currentStep;
+
+  if (step === 1) {
+    document.getElementById('editBookNameInput')?.focus();
+  } else if (step === 3) {
+    document.getElementById('editBookTotalPagesInput')?.focus();
+  } else if (step === 4) {
+    document.getElementById('editBookDailyGoalInput')?.focus();
+  } else if (step === 5) {
+    document.getElementById('editBookWeeklyGoalInput')?.focus();
+  }
+}
+
+/**
+ * Finaliser l'édition du livre
+ */
+function finalizeEditBook() {
+  const data = window.editBookFormData;
+
+  // Mettre à jour le livre
+  BooksManager.updateBook(data.bookId, {
+    name: data.name,
+    format: data.format,
+    totalPages: data.totalPages
   });
+
+  // Sauvegarder les objectifs
+  if (data.dailyGoal > 0 || data.weeklyGoal > 0) {
+    saveBookGoals(data.bookId, data.dailyGoal, data.weeklyGoal);
+  }
 
   // Fermer le modal
   document.querySelector('.custom-modal-overlay').remove();
 
-  showNotification('✅ Kitap güncellendi!', 'success');
+  // Message de confirmation
+  let message = `✅ "${data.name}" güncellendi!`;
+  const formatText = data.format === 'digital' ? '📱 Dijital' : '📖 Basılı';
+  message += `<br>${formatText}`;
+  if (data.dailyGoal > 0) message += `<br>Günlük hedef: ${data.dailyGoal} sayfa`;
+  if (data.weeklyGoal > 0) message += `<br>Haftalık hedef: ${data.weeklyGoal} sayfa`;
+
+  showCustomAlert(message, 'success', 3000);
+
+  // Nettoyer
+  delete window.editBookFormData;
 }
 
 /**
