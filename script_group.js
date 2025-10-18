@@ -241,7 +241,7 @@ function displayLeaderboard(participants) {
   html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden;">'
   html += '<thead>'
   html += '<tr style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">'
-  html += '<th style="padding: 12px; text-align: center; width: 60px;">Sıra</th>'
+  html += '<th style="padding: 12px; text-align: center; width: 60px;">Sıralama</th>'
   html += '<th style="padding: 12px; text-align: left;">İsim</th>'
   html += '<th style="padding: 12px; text-align: center;">Bugün</th>'
   html += '<th style="padding: 12px; text-align: center;">Hafta</th>'
@@ -255,12 +255,6 @@ function displayLeaderboard(participants) {
   participants.forEach((participant, index) => {
     const isMe = groupInfo.participant && participant.id === groupInfo.participant.id
     const position = index + 1
-    let medal = ''
-
-    if (position === 1) medal = '🥇'
-    else if (position === 2) medal = '🥈'
-    else if (position === 3) medal = '🥉'
-    else medal = `#${position}`
 
     const rowStyle = isMe
       ? 'background: #eef2ff; font-weight: 600;'
@@ -268,7 +262,7 @@ function displayLeaderboard(participants) {
 
     html += `
       <tr style="${rowStyle} border-bottom: 1px solid #e5e7eb;">
-        <td style="padding: 12px; text-align: center; font-size: 18px;">${medal}</td>
+        <td style="padding: 12px; text-align: center; font-size: 16px; font-weight: 600; color: #667eea;">${position}</td>
         <td style="padding: 12px;">
           ${participant.name}${isMe ? ' <span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px;">Sen</span>' : ''}
         </td>
