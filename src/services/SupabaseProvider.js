@@ -156,15 +156,16 @@ class SupabaseProvider extends BackendProvider {
       updated_at: new Date().toISOString()
     }
 
-    // Ajouter les statistiques détaillées par catégorie dans metadata
-    if (score.categories) {
+    // Ajouter les statistiques détaillées par catégorie ET livres dans metadata
+    if (score.categories || score.books) {
       updateData.metadata = {
-        categories: score.categories,
+        categories: score.categories || {},
+        books: score.books || {},
         lastUpdated: new Date().toISOString()
       }
-      logger.log('📊 Envoi des statistiques détaillées:', score.categories)
+      logger.log('📊 Envoi des statistiques détaillées:', { categories: score.categories, books: score.books })
     } else {
-      logger.warn('⚠️ Aucune catégorie dans score:', score)
+      logger.warn('⚠️ Aucune catégorie ni livre dans score:', score)
     }
 
     logger.log('📤 Données envoyées à Supabase:', updateData)

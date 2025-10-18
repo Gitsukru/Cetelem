@@ -1992,6 +1992,12 @@ function getCurrentUserStats() {
                 month: bookStats.month,
                 total: bookStats.total
             };
+
+            // ⚡ IMPORTANT: Ajouter les pages lues aux totaux pour le classement groupe
+            totalToday += bookStats.today || 0;
+            totalWeek += bookStats.week || 0;
+            totalMonth += bookStats.month || 0;
+            totalAll += bookStats.total || 0;
         });
     }
 

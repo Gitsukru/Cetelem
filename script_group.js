@@ -335,42 +335,74 @@ async function loadParticipantDetailedStats(participantId, container) {
       .single()
 
     // Les statistiques détaillées sont stockées dans metadata JSON
-    const detailedStats = participant?.metadata?.categories || null
+    const detailedStats = participant?.metadata?.categories || {}
+    const booksStats = participant?.metadata?.books || {}
 
-    if (!detailedStats || Object.keys(detailedStats).length === 0) {
+    if (Object.keys(detailedStats).length === 0 && Object.keys(booksStats).length === 0) {
       container.innerHTML = '<div class="detail-empty">Henüz detaylı istatistik paylaşılmadı</div>'
       return
     }
 
-    // Créer un tableau des catégories
-    let html = '<div class="detail-stats-table">'
-    html += '<div class="detail-header">Detaylı İstatistikler</div>'
-    html += '<table class="stats-breakdown-table">'
-    html += '<thead><tr><th>Kategori</th><th>Bugün</th><th>Hafta</th><th>Ay</th><th style="width: 50px;">Not</th></tr></thead>'
-    html += '<tbody>'
-
     const groupInfo = groupManager.getCurrentGroup()
     const groupId = groupInfo?.group?.id
 
-    for (const [category, stats] of Object.entries(detailedStats)) {
-      html += `
-        <tr>
-          <td class="category-name">${category}</td>
-          <td class="stat-num">${stats.today || 0}</td>
-          <td class="stat-num">${stats.week || 0}</td>
-          <td class="stat-num">${stats.month || 0}</td>
-          <td style="text-align: center;">
-            <button class="note-btn"
-              onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}', event)"
-              title="Not ekle/görüntüle">
-              Not
-            </button>
-          </td>
-        </tr>
-      `
+    let html = '<div class="detail-stats-table">'
+
+    // Section Zikirler
+    if (Object.keys(detailedStats).length > 0) {
+      html += '<div class="detail-header">📿 Zikirler</div>'
+      html += '<table class="stats-breakdown-table">'
+      html += '<thead><tr><th>Kategori</th><th>Bugün</th><th>Hafta</th><th>Ay</th><th style="width: 50px;">Not</th></tr></thead>'
+      html += '<tbody>'
+
+      for (const [category, stats] of Object.entries(detailedStats)) {
+        html += `
+          <tr>
+            <td class="category-name">${category}</td>
+            <td class="stat-num">${stats.today || 0}</td>
+            <td class="stat-num">${stats.week || 0}</td>
+            <td class="stat-num">${stats.month || 0}</td>
+            <td style="text-align: center;">
+              <button class="note-btn"
+                onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}', event)"
+                title="Not ekle/görüntüle">
+                Not
+              </button>
+            </td>
+          </tr>
+        `
+      }
+      html += '</tbody></table>'
     }
 
-    html += '</tbody></table></div>'
+    // Section Livres
+    if (Object.keys(booksStats).length > 0) {
+      html += '<div class="detail-header" style="margin-top: 16px;">📚 Kitaplar</div>'
+      html += '<table class="stats-breakdown-table">'
+      html += '<thead><tr><th>Kitap</th><th>Bugün</th><th>Hafta</th><th>Ay</th><th style="width: 50px;">Not</th></tr></thead>'
+      html += '<tbody>'
+
+      for (const [bookName, stats] of Object.entries(booksStats)) {
+        html += `
+          <tr>
+            <td class="category-name">${bookName}</td>
+            <td class="stat-num">${stats.today || 0}</td>
+            <td class="stat-num">${stats.week || 0}</td>
+            <td class="stat-num">${stats.month || 0}</td>
+            <td style="text-align: center;">
+              <button class="note-btn"
+                onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '📚 ${bookName.replace(/'/g, "\\'")}', event)"
+                title="Not ekle/görüntüle">
+                Not
+              </button>
+            </td>
+          </tr>
+        `
+      }
+      html += '</tbody></table>'
+    }
+
+    html += '</div>'
     container.innerHTML = html
 
   } catch (error) {
