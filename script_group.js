@@ -235,67 +235,92 @@ function displayLeaderboard(participants) {
     return
   }
 
-  let html = '<div class="leaderboard-list">'
+  // Créer un tableau avec fond clair
+  let html = '<div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">'
+  html += '<h3 style="margin-bottom: 16px; color: #4a5568;">Gruplar</h3>'
+  html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden;">'
+  html += '<thead>'
+  html += '<tr style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">'
+  html += '<th style="padding: 12px; text-align: center; width: 60px;">Sıra</th>'
+  html += '<th style="padding: 12px; text-align: left;">İsim</th>'
+  html += '<th style="padding: 12px; text-align: center;">Bugün</th>'
+  html += '<th style="padding: 12px; text-align: center;">Hafta</th>'
+  html += '<th style="padding: 12px; text-align: center;">Ay</th>'
+  html += '<th style="padding: 12px; text-align: center;">Puan</th>'
+  html += '<th style="padding: 12px; text-align: center; width: 80px;">Detay</th>'
+  html += '</tr>'
+  html += '</thead>'
+  html += '<tbody>'
 
   participants.forEach((participant, index) => {
     const isMe = groupInfo.participant && participant.id === groupInfo.participant.id
     const position = index + 1
     let medal = ''
 
-    if (position === 1) medal = '#1'
-    else if (position === 2) medal = '#2'
-    else if (position === 3) medal = '#3'
+    if (position === 1) medal = '🥇'
+    else if (position === 2) medal = '🥈'
+    else if (position === 3) medal = '🥉'
     else medal = `#${position}`
 
-    html += `
-      <div class="participant-card ${isMe ? 'my-card' : ''}">
-        <!-- Header horizontal avec toggle -->
-        <div class="participant-header">
-          <span class="expand-toggle" id="expand-${participant.id}" onclick="toggleParticipantDetails('${participant.id}')">▶</span>
-          <div class="rank-badge rank-${position <= 3 ? position : 'other'}">${medal}</div>
-          <div class="participant-name" onclick="toggleParticipantDetails('${participant.id}')">
-            ${participant.name}${isMe ? ' <span class="you-badge">Sen</span>' : ''}
-          </div>
-          <div class="participant-stats-inline" onclick="toggleParticipantDetails('${participant.id}')">
-            <span class="stat-inline"><span class="stat-label">Bugün:</span> ${participant.todayCount}</span>
-            <span class="stat-inline"><span class="stat-label">Hafta:</span> ${participant.weekCount}</span>
-            <span class="stat-inline"><span class="stat-label">Ay:</span> ${participant.monthCount || 0}</span>
-          </div>
-          <div class="points-badge" onclick="toggleParticipantDetails('${participant.id}')">${participant.points}<span class="pts-label">pts</span></div>
-        </div>
+    const rowStyle = isMe
+      ? 'background: #eef2ff; font-weight: 600;'
+      : index % 2 === 0 ? 'background: #f9fafb;' : 'background: white;'
 
-        <!-- Détails dépliables -->
-        <div class="participant-detail-stats" id="detail-${participant.id}" style="display: none;">
-          <div class="detail-loading">Yükleniyor...</div>
-        </div>
-      </div>
+    html += `
+      <tr style="${rowStyle} border-bottom: 1px solid #e5e7eb;">
+        <td style="padding: 12px; text-align: center; font-size: 18px;">${medal}</td>
+        <td style="padding: 12px;">
+          ${participant.name}${isMe ? ' <span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px;">Sen</span>' : ''}
+        </td>
+        <td style="padding: 12px; text-align: center; color: #667eea; font-weight: 600;">${participant.todayCount}</td>
+        <td style="padding: 12px; text-align: center;">${participant.weekCount}</td>
+        <td style="padding: 12px; text-align: center;">${participant.monthCount || 0}</td>
+        <td style="padding: 12px; text-align: center; font-weight: 700; color: #667eea;">${participant.points}</td>
+        <td style="padding: 12px; text-align: center;">
+          <button onclick="toggleParticipantDetails('${participant.id}')"
+                  style="background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+            <span id="expand-${participant.id}">▼</span>
+          </button>
+        </td>
+      </tr>
+      <tr id="detail-row-${participant.id}" style="display: none;">
+        <td colspan="7" style="padding: 0; background: #f9fafb;">
+          <div id="detail-${participant.id}" style="padding: 16px;">
+            <div class="detail-loading">Yükleniyor...</div>
+          </div>
+        </td>
+      </tr>
     `
   })
 
+  html += '</tbody>'
+  html += '</table>'
   html += '</div>'
+
   container.innerHTML = html
 }
 
 // Toggle detailed stats for a participant
 async function toggleParticipantDetails(participantId) {
+  const detailRow = document.getElementById(`detail-row-${participantId}`)
   const detailDiv = document.getElementById(`detail-${participantId}`)
   const expandIcon = document.getElementById(`expand-${participantId}`)
 
-  if (!detailDiv) return
+  if (!detailRow || !detailDiv) return
 
-  if (detailDiv.style.display === 'none') {
+  if (detailRow.style.display === 'none') {
     // Ouvrir et charger les détails
-    detailDiv.style.display = 'block'
-    expandIcon.textContent = '▼'
-    expandIcon.classList.add('expanded')
+    detailRow.style.display = 'table-row'
+    expandIcon.textContent = '▲'
 
-    // Charger les statistiques détaillées
-    await loadParticipantDetailedStats(participantId, detailDiv)
+    // Charger les statistiques détaillées si pas encore chargées
+    if (detailDiv.querySelector('.detail-loading')) {
+      await loadParticipantDetailedStats(participantId, detailDiv)
+    }
   } else {
     // Fermer
-    detailDiv.style.display = 'none'
-    expandIcon.textContent = '▶'
-    expandIcon.classList.remove('expanded')
+    detailRow.style.display = 'none'
+    expandIcon.textContent = '▼'
   }
 }
 
