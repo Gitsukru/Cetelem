@@ -1798,44 +1798,47 @@ function updateStats() {
 
                     // Ajouter une ligne de total pour les livres
                     const booksTotalRow = document.createElement('tr');
-                    booksTotalRow.style.fontWeight = 'bold';
-                    booksTotalRow.style.background = '#f0f4ff';
+                    booksTotalRow.className = 'totals-row';
 
                     const labelCell = document.createElement('td');
-                    labelCell.textContent = '📚 TOPLAM KİTAPLAR';
-                    labelCell.style.color = '#667eea';
+                    const labelStrong = document.createElement('strong');
+                    labelStrong.textContent = 'TOPLAM KİTAPLAR';
+                    labelCell.appendChild(labelStrong);
 
                     const todayCell = document.createElement('td');
-                    todayCell.textContent = booksTotalToday + ' sf';
+                    const todayStrong = document.createElement('strong');
+                    todayStrong.textContent = booksTotalToday + ' sf';
+                    todayCell.appendChild(todayStrong);
 
                     const todayPercentCell = document.createElement('td');
-                    todayPercentCell.textContent = '-';
-                    todayPercentCell.style.textAlign = 'center';
+                    todayPercentCell.textContent = '';
 
                     const weekCellTotal = document.createElement('td');
-                    weekCellTotal.textContent = booksTotalWeek + ' sf';
+                    const weekStrong = document.createElement('strong');
+                    weekStrong.textContent = booksTotalWeek + ' sf';
+                    weekCellTotal.appendChild(weekStrong);
 
                     const weekPercentCell = document.createElement('td');
-                    weekPercentCell.textContent = '-';
-                    weekPercentCell.style.textAlign = 'center';
+                    weekPercentCell.textContent = '';
 
                     const monthCellTotal = document.createElement('td');
-                    monthCellTotal.textContent = booksTotalMonth + ' sf';
+                    const monthStrong = document.createElement('strong');
+                    monthStrong.textContent = booksTotalMonth + ' sf';
+                    monthCellTotal.appendChild(monthStrong);
 
                     const monthPercentCell = document.createElement('td');
-                    monthPercentCell.textContent = '-';
-                    monthPercentCell.style.textAlign = 'center';
+                    monthPercentCell.textContent = '';
 
                     const yearCellTotal = document.createElement('td');
-                    yearCellTotal.textContent = booksTotalYear + ' sf';
+                    const yearStrong = document.createElement('strong');
+                    yearStrong.textContent = booksTotalYear + ' sf';
+                    yearCellTotal.appendChild(yearStrong);
 
                     const yearPercentCell = document.createElement('td');
-                    yearPercentCell.textContent = '-';
-                    yearPercentCell.style.textAlign = 'center';
+                    yearPercentCell.textContent = '';
 
                     const emptyCell = document.createElement('td');
-                    emptyCell.textContent = '-';
-                    emptyCell.style.textAlign = 'center';
+                    emptyCell.textContent = '';
 
                     booksTotalRow.appendChild(labelCell);
                     booksTotalRow.appendChild(todayCell);
