@@ -877,7 +877,7 @@ function editCategory(index) {
                     <div id="edit-zikir-step-2" class="modal-step" style="display: none;">
                         <div class="form-group">
                             <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Günlük Hedef Sayısı</label>
-                            <input type="number" id="editZikirDailyGoalInput" class="form-input" placeholder="Örn: 100" min="0" value="${currentGoals.daily || 0}">
+                            <input type="number" id="editZikirDailyGoalInput" class="form-input" placeholder="Örn: 100" min="0" value="${currentGoals.daily || 0}" onfocus="if(this.value==='0') this.value=''">
                             <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
                                 Her gün bu sayıya ulaşmayı hedefleyin (isteğe bağlı)
                             </small>
@@ -888,7 +888,7 @@ function editCategory(index) {
                     <div id="edit-zikir-step-3" class="modal-step" style="display: none;">
                         <div class="form-group">
                             <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Haftalık Hedef Sayısı</label>
-                            <input type="number" id="editZikirWeeklyGoalInput" class="form-input" placeholder="Örn: 700" min="0" value="${currentGoals.weekly || 0}">
+                            <input type="number" id="editZikirWeeklyGoalInput" class="form-input" placeholder="Örn: 700" min="0" value="${currentGoals.weekly || 0}" onfocus="if(this.value==='0') this.value=''">
                             <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
                                 Her hafta bu sayıya ulaşmayı hedefleyin (isteğe bağlı)
                             </small>
