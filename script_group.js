@@ -279,7 +279,7 @@ function displayLeaderboard(participants) {
         <td style="padding: 12px; text-align: center;">
           <button onclick="toggleParticipantDetails('${participant.id}')"
                   style="background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
-            <span id="expand-${participant.id}">▼</span>
+            <span id="expand-${participant.id}">▶</span>
           </button>
         </td>
       </tr>
@@ -311,7 +311,7 @@ async function toggleParticipantDetails(participantId) {
   if (detailRow.style.display === 'none') {
     // Ouvrir et charger les détails
     detailRow.style.display = 'table-row'
-    expandIcon.textContent = '▲'
+    expandIcon.textContent = '▼'
 
     // Charger les statistiques détaillées si pas encore chargées
     if (detailDiv.querySelector('.detail-loading')) {
@@ -320,7 +320,7 @@ async function toggleParticipantDetails(participantId) {
   } else {
     // Fermer
     detailRow.style.display = 'none'
-    expandIcon.textContent = '▼'
+    expandIcon.textContent = '▶'
   }
 }
 
