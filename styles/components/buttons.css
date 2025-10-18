@@ -96,13 +96,17 @@
 
 /* Boutons standards */
 .add-button {
-    background: #48bb78;
+    background: #667eea;
     color: white;
     border: none;
     padding: 12px 20px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+}
+
+.add-button:hover {
+    background: #5568d3;
 }
 
 .delete-button {
@@ -135,8 +139,12 @@
 .reset-buttons .reset-button {
     flex: 1;
     min-width: 120px;
-    background: #ed8936;
+    background: #667eea;
     margin: 0;
+}
+
+.reset-buttons .reset-button:hover {
+    background: #5568d3;
 }
 
 .reset-buttons .danger {
@@ -166,19 +174,27 @@
 }
 
 .share-button {
-    background: #4299e1;
+    background: #667eea;
     color: white;
 }
 
+.share-button:hover {
+    background: #5568d3;
+}
+
 .refresh-button {
-    background: #48bb78;
+    background: #667eea;
     color: white;
+}
+
+.refresh-button:hover {
+    background: #5568d3;
 }
 
 /* Boutons de backup */
 .backup-button {
     flex: 1;
-    background: #38b2ac;
+    background: #667eea;
     color: white;
     border: none;
     padding: 12px 20px;
@@ -186,6 +202,10 @@
     font-weight: bold;
     cursor: pointer;
     min-width: 150px;
+}
+
+.backup-button:hover {
+    background: #5568d3;
 }
 
 /* Boutons de groupe */
@@ -370,11 +390,11 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: #475569;
+    background: #667eea;
 }
 
 .form-submit-btn:hover {
-    background: #334155;
+    background: #5568d3;
 }
 
 .form-submit-btn:active {

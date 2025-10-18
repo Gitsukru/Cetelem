@@ -27,13 +27,17 @@
 }
 
 .add-button {
-    background: #48bb78;
+    background: #667eea;
     color: white;
     border: none;
     padding: 12px 20px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+}
+
+.add-button:hover {
+    background: #5568d3;
 }
 
 /* Liste des catégories */
@@ -62,7 +66,7 @@
 }
 
 .edit-button {
-    background: #4299e1;
+    background: #667eea;
     color: white;
     border: none;
     padding: 6px 12px;
@@ -73,7 +77,7 @@
 }
 
 .edit-button:hover {
-    background: #3182ce;
+    background: #5568d3;
 }
 
 .delete-button:hover {
@@ -140,8 +144,12 @@
 .reset-buttons .reset-button {
     flex: 1;
     min-width: 120px;
-    background: #ed8936;
+    background: #667eea;
     margin: 0;
+}
+
+.reset-buttons .reset-button:hover {
+    background: #5568d3;
 }
 
 .reset-buttons .danger {

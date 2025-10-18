@@ -180,12 +180,12 @@
 }
 
 .book-edit-btn {
-  background: #f1f5f9;
-  color: #475569;
+  background: #667eea;
+  color: white;
 }
 
 .book-edit-btn:hover {
-  background: #e2e8f0;
+  background: #5568d3;
 }
 
 /* Message "Pas de livres" */
