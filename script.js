@@ -2391,8 +2391,7 @@ const debouncedAutoSave = debounce(autoSave, 5000)       // 5s après changement
 setInterval(updateSaveStatus, 60000);
 
 // Service Worker pour PWA
-// ⚡ TEMPORAIREMENT DÉSACTIVÉ pour debug Chrome/Safari
-if (false && 'serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('./sw.js')
             .then(function(registration) {

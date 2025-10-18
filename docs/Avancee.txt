@@ -943,3 +943,80 @@
 
   ---
   Rapport généré le 2025-10-16 par Claude Code
+
+
+   ---
+  HEADER (Violet) 🤲
+  Çetelem'e Hoş Geldiniz
+
+  Dijital Tesbih 
+
+  ---
+  SLIDE 1/6 ✨
+  Çetelem Nedir?
+
+  Çetelem, günlük zikirlerinizi kolayca takip etmenizi sağlayan modern bir dijital tesbih uygulamasıdır.
+
+  📱 Basit kullanım - Ekrana dokunarak sayın
+  📊 Günlük, haftalık ve aylık istatistikler
+  👥 Arkadaşlarınızla hayırda yarışın
+  🎯 Hedeflerinize ulaşın
+
+  ---
+  SLIDE 2/6 🔒
+  Verileriniz Sizinle Kalır
+
+  Çetelem'i kullanmak için hiçbir kayıt, giriş veya kişisel bilgi gerekmez. Tüm zikir sayılarınız telefonunuzun hafızasında (tarayıcıda) saklanır.
+
+  🔐 Tamamen özel ve güvenli
+  📶 İnternet gereksiz - çevrim dışı çalışır
+  💾 Verilerinizi dilediğiniz zaman dışa aktarın
+     Dilediğiniz zaman hepsini silebilirsiniz
+  ---
+  SLIDE 3/6 🎯
+  Nasıl Kullanılır?
+
+  1. Zikir Sayma: Ana ekrandaki büyük butona her tıkladığınızda sayaç artar.
+  2. Farklı Zikirler: "Yönetim" veya "Sayaç" bölümünden istediğiniz kadar kategori ekleyin.
+  3. Kitap Takibi: "Kitap" sekmesinden okuduğunuz kitapları takip edin.
+  4. Grup Özelliği: Arkadaşlarınızla grup kurup motivasyonunuzu artırın.
+
+  ---
+  SLIDE 4/6 👥
+  Grup Özelliği (İsteğe Bağlı)
+
+  Arkadaşlarınızla birlikte zikir çekmek motivasyonunuzu artırır. Grup özelliğini kullandığınızda:
+
+  📊 Grup sıralamasında adınız ve toplam sayınız görünür.
+  🚪 İstediğiniz zaman gruptan ayrılabilirsiniz.
+     Aranizda yaris yapabilirsiniz.
+  💡 Grup kullanmak tamamen isteğe bağlıdır.
+
+  ---
+  SLIDE 5/6 ⚙️
+  Teknik Altyapı
+
+  Uygulama modern web teknolojileri kullanılarak geliştirilmiştir:
+
+  🌐 Netlify: Uygulamanın barındırıldığı güvenli platform
+  🗄️ Supabase: Sadece grup özelliği için kullanılan veritabanı servisi
+
+  ---
+  SLIDE 6/6 📧
+  Bize Ulaşın
+
+  Sorularınız, önerileriniz veya geri bildirimleriniz için:
+
+  📧 suisse1022@gmail.com
+
+  ---
+  FOOTER (Gris foncé)
+  ☐ Bu mesajı bir daha gösterme
+  [✨ Başlayalım]
+
+  ---
+  Navigation :
+  - Flèches ◀ ▶ en bas pour naviguer manuellement
+  - 6 points de progression en bas au centre
+  - Auto-scroll de 6 secondes entre chaque slide
+  - S'arrête automatiquement à la dernière slide (6/6)
