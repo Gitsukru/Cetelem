@@ -12,51 +12,49 @@
     overflow: hidden;
 }
 
-/* Navbar horizontale compacte */
+/* Navbar mini - seulement langue */
 .namaz-navbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 8px 12px;
     background: linear-gradient(135deg, #007bff, #764ba2);
     flex-shrink: 0;
-    gap: 8px;
 }
 
-.namaz-buttons {
+/* Boutons namaz dans le contenu - centrés */
+.namaz-buttons-inline {
     display: flex;
+    justify-content: center;
     gap: 6px;
-    flex: 1;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-
-.namaz-buttons::-webkit-scrollbar {
-    display: none;
+    flex-wrap: wrap;
+    margin-bottom: clamp(10px, 2vh, 16px);
+    padding: 0 clamp(8px, 2vw, 12px);
 }
 
 .namaz-btn {
-    padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px;
-    font-size: 12px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 8px;
+    font-size: clamp(12px, 2.8vw, 14px);
     font-weight: 600;
     color: white;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
 }
 
 .namaz-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
 
 .namaz-btn.active {
-    background: white;
-    color: #007bff;
-    border-color: white;
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    transform: scale(1.05);
 }
 
 /* Toggle langue mini */

@@ -253,14 +253,11 @@ class TesbihatSlider {
     // Mettre à jour le compteur
     this.updateCounter();
 
-    // Mettre à jour le contenu
+    // Mettre à jour le contenu (inclut les boutons namaz)
     this.updateContent(section);
 
     // Mettre à jour les boutons de navigation
     this.updateNavigationButtons();
-
-    // Mettre à jour les boutons navbar
-    this.updateNavbarButtons();
   }
 
   /**
@@ -281,18 +278,32 @@ class TesbihatSlider {
     const container = document.getElementById('tesbihatContent');
     if (!container) return;
 
-    let html = `<h3 class="section-title">${section.title}</h3>`;
+    // Boutons namaz
+    let html = '<div class="namaz-buttons-inline" id="namazButtons">';
+    this.namazOrder.forEach((namazId, index) => {
+      const namazData = TESBIHAT_DATA[this.currentLang][namazId];
+      const activeClass = index === this.currentNamazIndex ? 'active' : '';
+      html += `<button class="namaz-btn ${activeClass}" data-namaz="${index}">${namazData.title.split(' ')[0]}</button>`;
+    });
+    html += '</div>';
 
+    // Titre de section
+    html += `<h3 class="section-title">${section.title}</h3>`;
+
+    // Items de la section
     section.items.forEach(item => {
       html += this.renderItem(item);
     });
 
     container.innerHTML = html;
 
+    // Re-setup les événements sur les boutons namaz
+    this.setupNavigation();
+
     // Animation d'entrée
     container.style.animation = 'none';
     setTimeout(() => {
-      container.style.animation = 'slideIn 0.3s ease-out';
+      container.style.animation = 'slideIn 0.2s ease-out';
     }, 10);
   }
 
@@ -360,20 +371,6 @@ class TesbihatSlider {
 
     if (prevBtn) prevBtn.disabled = isFirstSection;
     if (nextBtn) nextBtn.disabled = isLastSection;
-  }
-
-  /**
-   * Mettre à jour les boutons de la navbar
-   */
-  updateNavbarButtons() {
-    const namazButtons = document.querySelectorAll('.namaz-btn');
-    namazButtons.forEach((btn, index) => {
-      if (index === this.currentNamazIndex) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
   }
 }
 
