@@ -44,7 +44,7 @@
 }
 
 .complete-stats-table th:first-child {
-    text-align: left;
+    text-align: center;
     min-width: 140px;
     width: 15%;
 }
@@ -63,7 +63,7 @@
 }
 
 .complete-stats-table td:first-child {
-    text-align: left;
+    text-align: center;
     font-weight: 600;
     color: #4a5568;
     min-width: 140px;
