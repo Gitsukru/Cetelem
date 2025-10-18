@@ -177,6 +177,7 @@ const BooksManager = {
     if (books.length === 0) {
       container.innerHTML = '';
       if (noBookMsg) noBookMsg.style.display = 'block';
+      this.updateBooksManagementList();
       return;
     }
 
@@ -239,6 +240,9 @@ const BooksManager = {
         </div>
       `;
     }).join('');
+
+    // Mettre à jour aussi la liste de gestion dans l'onglet Yönetim
+    this.updateBooksManagementList();
   },
 
   /**
@@ -252,10 +256,70 @@ const BooksManager = {
   },
 
   /**
+   * Mettre à jour la liste des livres dans l'onglet Yönetim
+   */
+  updateBooksManagementList() {
+    const list = document.getElementById('booksManagementList');
+    if (!list) return;
+
+    const books = this.getBooks();
+    list.innerHTML = '';
+
+    books.forEach((book) => {
+      const li = document.createElement('li');
+      li.className = 'category-item';
+
+      const stats = this.getBookStats(book);
+
+      // Créer la structure DOM de manière sécurisée
+      const contentDiv = document.createElement('div');
+
+      const strongElement = document.createElement('strong');
+      strongElement.textContent = `📚 ${book.name}`;
+
+      const smallElement = document.createElement('small');
+      smallElement.style.color = '#666';
+      smallElement.style.display = 'block';
+      smallElement.textContent = `${stats.total} sayfa okundu`;
+      if (book.totalPages > 0) {
+        smallElement.textContent += ` / ${book.totalPages} (${stats.progress}%)`;
+      }
+
+      contentDiv.appendChild(strongElement);
+      contentDiv.appendChild(smallElement);
+
+      // Container pour les boutons
+      const buttonsDiv = document.createElement('div');
+      buttonsDiv.style.display = 'flex';
+      buttonsDiv.style.gap = '8px';
+
+      // Bouton de modification
+      const editButton = document.createElement('button');
+      editButton.className = 'edit-button';
+      editButton.textContent = '✏️ Düzenle';
+      editButton.onclick = () => showEditBookModal(book.id);
+
+      // Bouton de suppression
+      const deleteButton = document.createElement('button');
+      deleteButton.className = 'delete-button';
+      deleteButton.textContent = 'Kitabı sil';
+      deleteButton.onclick = () => deleteBookConfirm(book.id);
+
+      buttonsDiv.appendChild(editButton);
+      buttonsDiv.appendChild(deleteButton);
+
+      li.appendChild(contentDiv);
+      li.appendChild(buttonsDiv);
+      list.appendChild(li);
+    });
+  },
+
+  /**
    * Initialiser le module
    */
   init() {
     this.renderBooks();
+    this.updateBooksManagementList();
     console.log('📚 BooksManager initialisé');
   }
 };
