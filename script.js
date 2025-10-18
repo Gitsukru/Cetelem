@@ -1753,10 +1753,23 @@ function updateStats() {
                     yearPercentCell.style.fontWeight = '600';
                     yearPercentCell.textContent = bookStats.progress !== null ? bookStats.progress + '%' : '-';
 
-                    // Note cell (now empty for books, no note button)
+                    // Note cell avec bouton pour les livres
+                    const bookNote = getBookNote(book.id);
+                    const bookNoteIcon = bookNote ? '📝' : '📝';
+                    const bookNoteOpacity = bookNote ? '1' : '0.3';
+
                     const noteCell = document.createElement('td');
                     noteCell.style.textAlign = 'center';
-                    noteCell.textContent = '-';
+
+                    const noteButton = document.createElement('button');
+                    noteButton.className = 'category-note-btn';
+                    noteButton.style.opacity = bookNoteOpacity;
+                    noteButton.style.color = '#3b82f6';
+                    noteButton.title = 'Not ekle/düzenle';
+                    noteButton.textContent = bookNoteIcon;
+                    noteButton.onclick = (event) => showBookNoteModal(book, event);
+
+                    noteCell.appendChild(noteButton);
 
                     row.appendChild(bookCell);
                     row.appendChild(dayCell);
@@ -2800,10 +2813,67 @@ function showCategoryNoteModal(category, event) {
     });
 }
 
+// ============================================
+// SYSTÈME DE NOTES POUR LIVRES
+// ============================================
+
+let bookNotes = {};
+
+// Charger les notes des livres depuis localStorage
+function loadBookNotes() {
+    const saved = localStorage.getItem('bookNotes');
+    if (saved) {
+        try {
+            bookNotes = JSON.parse(saved);
+        } catch (e) {
+            bookNotes = {};
+        }
+    }
+}
+
+// Sauvegarder les notes des livres dans localStorage
+function saveBookNotes() {
+    localStorage.setItem('bookNotes', JSON.stringify(bookNotes));
+}
+
+// Obtenir la note d'un livre
+function getBookNote(bookId) {
+    return bookNotes[bookId] || '';
+}
+
+// Modal pour éditer une note de livre
+function showBookNoteModal(book, event) {
+    if (event) event.stopPropagation();
+
+    const currentNote = getBookNote(book.id);
+
+    // Utiliser ModalUtils pour afficher la modale de note
+    ModalUtils.showNoteModal({
+        title: `Not - ${book.name}`,
+        description: 'Bu kitap için notunuzu yazın (hedef, motivasyon, hatırlatma vs.)',
+        placeholder: 'Örnek: İlim için, kendimi geliştirmek için...',
+        initialValue: currentNote,
+        onSave: (note) => {
+            // Sauvegarder la note
+            if (note) {
+                bookNotes[book.id] = note;
+            } else {
+                delete bookNotes[book.id];
+            }
+
+            saveBookNotes();
+            updateStats(); // Rafraîchir pour mettre à jour l'icône
+
+            showCustomAlert('Not kaydedildi!', 'success', 2000);
+        }
+    });
+}
+
 // Charger les notes et objectifs au démarrage
 if (typeof window !== 'undefined') {
     loadCategoryNotes();
     loadCategoryGoals();
+    loadBookNotes();
 }
 
 // ============================================
