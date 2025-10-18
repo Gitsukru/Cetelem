@@ -337,16 +337,18 @@
     align-items: center;
     gap: 14px;
     padding: 16px 18px;
-    background: white;
-    border: 2px solid #e2e8f0;
+    background: #667eea;
+    border: 2px solid #667eea;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
+    width: 65%;
+    color: white;
 }
 
 .mode-button:hover {
-    border-color: #cbd5e0;
-    background: #f8fafc;
+    border-color: #5568d3;
+    background: #5568d3;
 }
 
 .mode-button:active {
