@@ -261,7 +261,7 @@ function displayLeaderboard(participants) {
       : index % 2 === 0 ? 'background: #f9fafb;' : 'background: white;'
 
     html += `
-      <tr style="${rowStyle} border-bottom: 1px solid #e5e7eb;">
+      <tr onclick="toggleParticipantDetails('${participant.id}')" style="${rowStyle} border-bottom: 1px solid #e5e7eb; cursor: pointer; transition: background 0.2s;" onmouseover="if(!this.style.backgroundColor.includes('eef2ff')) this.style.backgroundColor='#f1f5f9'" onmouseout="this.style.backgroundColor=''">
         <td style="padding: 12px; text-align: center; font-size: 16px; font-weight: 600; color: #667eea;">${position}</td>
         <td style="padding: 12px;">
           ${participant.name}${isMe ? ' <span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px;">Sen</span>' : ''}
@@ -271,10 +271,7 @@ function displayLeaderboard(participants) {
         <td style="padding: 12px; text-align: center;">${participant.monthCount || 0}</td>
         <td style="padding: 12px; text-align: center; font-weight: 700; color: #667eea;">${participant.points}</td>
         <td style="padding: 12px; text-align: center;">
-          <button onclick="toggleParticipantDetails('${participant.id}')"
-                  style="background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
-            <span id="expand-${participant.id}">▶</span>
-          </button>
+          <span id="expand-${participant.id}" style="font-size: 14px; color: #667eea; font-weight: bold;">▶</span>
         </td>
       </tr>
       <tr id="detail-row-${participant.id}" style="display: none;">
