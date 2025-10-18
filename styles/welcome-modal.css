@@ -46,7 +46,7 @@
 
 /* Header */
 .welcome-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
   color: white;
   padding: 17px 30px 14px;
   text-align: center;
@@ -203,7 +203,7 @@
 }
 
 .welcome-nav-arrow {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 50%;
@@ -259,7 +259,7 @@
 }
 
 .welcome-progress-dots .dot.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
   width: 28px;
   border-radius: 5px;
 }
@@ -290,7 +290,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: #007bff;
 }
 
 .welcome-checkbox:hover {
@@ -298,7 +298,7 @@
 }
 
 .welcome-btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
   color: white;
   border: none;
   padding: 12px 36px;

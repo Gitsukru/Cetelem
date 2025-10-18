@@ -10,7 +10,7 @@
     height: 360px;
     border-radius: 50%;
     border: none;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #007bff, #764ba2);
     color: white;
     font-size: 48px;
     font-weight: bold;
@@ -77,7 +77,7 @@
     height: 50px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.95);
-    border: 2px solid #667eea;
+    border: 2px solid #007bff;
     font-size: 24px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -96,7 +96,7 @@
 
 /* Boutons standards */
 .add-button {
-    background: #667eea;
+    background: #007bff;
     color: white;
     border: none;
     padding: 12px 20px;
@@ -106,7 +106,7 @@
 }
 
 .add-button:hover {
-    background: #5568d3;
+    background: #0056b3;
 }
 
 .delete-button {
@@ -139,12 +139,12 @@
 .reset-buttons .reset-button {
     flex: 1;
     min-width: 120px;
-    background: #667eea;
+    background: #007bff;
     margin: 0;
 }
 
 .reset-buttons .reset-button:hover {
-    background: #5568d3;
+    background: #0056b3;
 }
 
 .reset-buttons .danger {
@@ -174,27 +174,27 @@
 }
 
 .share-button {
-    background: #667eea;
+    background: #007bff;
     color: white;
 }
 
 .share-button:hover {
-    background: #5568d3;
+    background: #0056b3;
 }
 
 .refresh-button {
-    background: #667eea;
+    background: #007bff;
     color: white;
 }
 
 .refresh-button:hover {
-    background: #5568d3;
+    background: #0056b3;
 }
 
 /* Boutons de backup */
 .backup-button {
     flex: 1;
-    background: #667eea;
+    background: #007bff;
     color: white;
     border: none;
     padding: 12px 20px;
@@ -205,13 +205,13 @@
 }
 
 .backup-button:hover {
-    background: #5568d3;
+    background: #0056b3;
 }
 
 /* Boutons de groupe */
 .group-button {
     flex: 1;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #007bff, #764ba2);
     color: white;
     border: none;
     padding: 15px 20px;
@@ -264,7 +264,7 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
     color: white;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
@@ -357,8 +357,8 @@
     align-items: center;
     gap: 14px;
     padding: 16px 18px;
-    background: #667eea;
-    border: 2px solid #667eea;
+    background: #007bff;
+    border: 2px solid #007bff;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
@@ -367,8 +367,8 @@
 }
 
 .mode-button:hover {
-    border-color: #5568d3;
-    background: #5568d3;
+    border-color: #0056b3;
+    background: #0056b3;
 }
 
 .mode-button:active {
@@ -390,11 +390,11 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: #667eea;
+    background: #007bff;
 }
 
 .form-submit-btn:hover {
-    background: #5568d3;
+    background: #0056b3;
 }
 
 .form-submit-btn:active {
@@ -403,7 +403,7 @@
 
 /* Bouton note */
 .note-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
     color: white;
     border: none;
     font-size: 12px;
@@ -460,7 +460,7 @@
     background: transparent;
     border: none;
     font-size: 12px;
-    color: #667eea;
+    color: #007bff;
     font-weight: 500;
     cursor: pointer;
     padding: 4px 8px;

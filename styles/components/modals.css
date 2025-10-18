@@ -55,7 +55,7 @@
     opacity: 0;
     transition: opacity 0.3s ease;
     max-width: 90%;
-    border: 3px solid #667eea;
+    border: 3px solid #007bff;
 }
 
 .custom-confirm.show {
@@ -131,7 +131,7 @@
 
 .modern-modal .modal-header,
 .modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
     padding: 20px 24px;
     display: flex;
     justify-content: space-between;
@@ -210,7 +210,7 @@
 
 /* Boutons du modal */
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
     color: white;
     border: none;
     padding: 12px 24px;

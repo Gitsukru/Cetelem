@@ -18,7 +18,7 @@
 .add-book-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -60,7 +60,7 @@
 }
 
 .book-card:hover {
-  border-color: #667eea;
+  border-color: #007bff;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
 }
 
@@ -116,7 +116,7 @@
 
 .book-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, #007bff 0%, #764ba2 100%);
   transition: width 0.5s ease;
   border-radius: 4px;
 }
@@ -148,7 +148,7 @@
 .book-stat-value {
   font-size: 20px;
   font-weight: 700;
-  color: #667eea;
+  color: #007bff;
 }
 
 /* Actions */
@@ -170,7 +170,7 @@
 }
 
 .book-add-pages-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #007bff 0%, #764ba2 100%);
   color: white;
 }
 
@@ -180,12 +180,12 @@
 }
 
 .book-edit-btn {
-  background: #667eea;
+  background: #007bff;
   color: white;
 }
 
 .book-edit-btn:hover {
-  background: #5568d3;
+  background: #0056b3;
 }
 
 /* Message "Pas de livres" */
@@ -219,7 +219,7 @@
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #007bff;
 }
 
 /* Responsive */
@@ -282,7 +282,7 @@
 }
 
 .step-indicator.active {
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, #007bff 0%, #764ba2 100%);
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
@@ -304,16 +304,16 @@
 }
 
 .format-choice-btn:hover {
-  border-color: #667eea;
+  border-color: #007bff;
   background: #f8fafc;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
 }
 
 .format-choice-btn.selected {
-  border-color: #667eea;
+  border-color: #007bff;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-  color: #667eea;
+  color: #007bff;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
