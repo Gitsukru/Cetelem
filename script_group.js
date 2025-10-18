@@ -455,7 +455,7 @@ async function displayGroupHistory() {
     return
   }
 
-  let html = '<div class="history-title">Önceki Gruplar</div><div class="history-list">'
+  let html = '<div class="history-title">Gruplar</div><div class="history-list">'
 
   for (const item of history) {
     // Vérifier si le groupe existe toujours
