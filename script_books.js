@@ -96,6 +96,14 @@ const BooksManager = {
       this.saveBooks(books);
       this.renderBooks();
       this.updateStatsIfNeeded();
+
+      // Mettre à jour le groupe si actif
+      if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+        const stats = getCurrentUserStats();
+        groupManager.updateMyScore(stats).catch(err => {
+          console.error('Erreur mise à jour groupe après ajout pages:', err);
+        });
+      }
     }
   },
 
