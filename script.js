@@ -688,6 +688,9 @@ function showTab(tabName, event) {
         event.currentTarget.classList.add('active');
     }
 
+    // Sauvegarder l'onglet actuel pour restauration après actualisation
+    localStorage.setItem('lastActiveTab', tabName);
+
     setTimeout(() => {
         if (tabName === 'stats') {
             updateStats();
@@ -2406,6 +2409,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (categorySelect) {
         categorySelect.addEventListener('change', function() {
             currentCategory = this.value;
+            // Sauvegarder la catégorie sélectionnée pour restauration après actualisation
+            localStorage.setItem('lastSelectedCategory', this.value);
             updateCounterDisplay();
             updateStats();
         });
@@ -2418,6 +2423,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 addCategory();
             }
         });
+    }
+
+    // Restaurer l'onglet actif après actualisation
+    const lastActiveTab = localStorage.getItem('lastActiveTab');
+    if (lastActiveTab) {
+        // Trouver le bouton correspondant et simuler un clic
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(btn => {
+            if (btn.getAttribute('onclick')?.includes(`'${lastActiveTab}'`)) {
+                btn.click();
+            }
+        });
+    }
+
+    // Restaurer la catégorie sélectionnée dans le compteur
+    const lastSelectedCategory = localStorage.getItem('lastSelectedCategory');
+    if (lastSelectedCategory && categorySelect) {
+        categorySelect.value = lastSelectedCategory;
+        currentCategory = lastSelectedCategory;
+        updateCounterDisplay();
     }
 
     setTimeout(() => {
