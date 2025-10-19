@@ -1375,9 +1375,37 @@ function getCategoryGoals(category) {
     return categoryGoals[category] || { daily: 0, weekly: 0 };
 }
 
+// Initialiser les objectifs par défaut pour les 3 zikirler principaux
+function initializeDefaultGoals() {
+    const defaultGoals = [
+        { name: 'Subhan Allah', daily: 165, weekly: 1155 },
+        { name: 'Elhamdulillah', daily: 165, weekly: 1155 },
+        { name: 'Allahu Ekber', daily: 165, weekly: 1155 }
+    ];
+
+    let needsSave = false;
+    defaultGoals.forEach(goal => {
+        // Si cette catégorie n'a pas encore d'objectifs définis
+        if (!categoryGoals[goal.name]) {
+            categoryGoals[goal.name] = {
+                daily: goal.daily,
+                weekly: goal.weekly
+            };
+            needsSave = true;
+        }
+    });
+
+    // Sauvegarder si des modifications ont été faites
+    if (needsSave) {
+        localStorage.setItem('categoryGoals', JSON.stringify(categoryGoals));
+        console.log('Objectifs par défaut initialisés pour les 3 zikirler');
+    }
+}
+
 // Charger les objectifs au démarrage
 if (typeof window !== 'undefined') {
     loadCategoryGoals();
+    initializeDefaultGoals();
 }
 
 // ========================================
