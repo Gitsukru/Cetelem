@@ -27,7 +27,7 @@
 .namaz-buttons-inline {
     display: flex;
     justify-content: center;
-    gap: 6px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
