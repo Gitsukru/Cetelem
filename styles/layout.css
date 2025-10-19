@@ -141,17 +141,14 @@
     }
 }
 
-/* Footer */
+/* Footer - scroll naturel avec la page */
 .app-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: relative;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-top: 1px solid #e2e8f0;
     padding: 12px 20px;
-    z-index: 100;
+    margin-top: 20px;
 }
 
 .footer-content {
