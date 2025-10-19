@@ -177,7 +177,7 @@ class TesbihatSlider {
   }
 
   /**
-   * Section précédente
+   * Section précédente (reste dans le namaz sélectionné)
    */
   previousSection() {
     const namaz = this.getCurrentNamaz();
@@ -186,17 +186,12 @@ class TesbihatSlider {
     if (this.currentSectionIndex > 0) {
       this.currentSectionIndex--;
       this.renderPage();
-    } else if (this.currentNamazIndex > 0) {
-      // Aller au namaz précédent, dernière section
-      this.currentNamazIndex--;
-      const prevNamaz = this.getCurrentNamaz();
-      this.currentSectionIndex = prevNamaz.sections.length - 1;
-      this.renderPage();
     }
+    // Ne change plus de namaz - reste dans le namaz sélectionné
   }
 
   /**
-   * Section suivante
+   * Section suivante (reste dans le namaz sélectionné)
    */
   nextSection() {
     const namaz = this.getCurrentNamaz();
@@ -205,12 +200,8 @@ class TesbihatSlider {
     if (this.currentSectionIndex < namaz.sections.length - 1) {
       this.currentSectionIndex++;
       this.renderPage();
-    } else if (this.currentNamazIndex < this.namazOrder.length - 1) {
-      // Aller au namaz suivant, première section
-      this.currentNamazIndex++;
-      this.currentSectionIndex = 0;
-      this.renderPage();
     }
+    // Ne change plus de namaz - reste dans le namaz sélectionné
   }
 
   /**
@@ -371,16 +362,15 @@ class TesbihatSlider {
   }
 
   /**
-   * Mettre à jour les boutons de navigation sections
+   * Mettre à jour les boutons de navigation sections (uniquement dans le namaz sélectionné)
    */
   updateNavigationButtons() {
     const prevBtn = document.getElementById('tesbihatPrevBtn');
     const nextBtn = document.getElementById('tesbihatNextBtn');
 
-    // Section navigation
-    const isFirstSection = this.currentSectionIndex === 0 && this.currentNamazIndex === 0;
-    const isLastSection = this.currentSectionIndex === this.getTotalSections() - 1 &&
-                          this.currentNamazIndex === this.namazOrder.length - 1;
+    // Navigation uniquement dans le namaz actuel (ne change plus de namaz)
+    const isFirstSection = this.currentSectionIndex === 0;
+    const isLastSection = this.currentSectionIndex === this.getTotalSections() - 1;
 
     if (prevBtn) prevBtn.disabled = isFirstSection;
     if (nextBtn) nextBtn.disabled = isLastSection;
