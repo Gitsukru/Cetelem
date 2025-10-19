@@ -12,12 +12,12 @@
     overflow: hidden;
 }
 
-/* Conteneur wrapper pour boutons namaz + langue */
+/* Conteneur wrapper pour boutons namaz + langue - TOUT CENTRÉ */
 .namaz-lang-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+    flex-wrap: wrap;
     margin-bottom: clamp(10px, 2vh, 16px);
     padding: clamp(8px, 2vh, 12px) clamp(8px, 2vw, 12px);
     gap: clamp(8px, 2vw, 12px);
@@ -33,7 +33,7 @@
 
 .namaz-btn {
     padding: 8px 14px;
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    background: #f38200;
     border: none;
     border-radius: 8px;
     font-size: clamp(12px, 2.8vw, 14px);
@@ -42,52 +42,52 @@
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+    box-shadow: 0 2px 6px rgba(243, 130, 0, 0.3);
 }
 
 .namaz-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 10px rgba(243, 130, 0, 0.4);
 }
 
 .namaz-btn.active {
-    background: linear-gradient(135deg, #764ba2, #667eea);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    background: #d67200;
+    box-shadow: 0 4px 12px rgba(214, 114, 0, 0.5);
     transform: scale(1.05);
 }
 
-/* Toggle langue inline - à droite, plus petits */
+/* Toggle langue inline - centrés, plus petits */
 .lang-toggle-inline {
     display: flex;
     gap: 4px;
     flex-shrink: 0;
-    margin-left: auto;
 }
 
 .lang-inline {
     width: clamp(28px, 7vw, 32px);
     height: clamp(26px, 6.5vw, 30px);
     padding: 0;
-    background: rgba(0, 123, 255, 0.1);
-    border: 1px solid rgba(0, 123, 255, 0.3);
+    background: #f38200;
+    border: 1px solid #f38200;
     border-radius: 6px;
     font-size: clamp(9px, 2.2vw, 10px);
     font-weight: 700;
-    color: #007bff;
+    color: white;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .lang-inline:hover {
-    background: rgba(0, 123, 255, 0.2);
-    border-color: #007bff;
+    background: #d67200;
+    border-color: #d67200;
 }
 
 .lang-inline.active {
-    background: #007bff;
+    background: #d67200;
     color: white;
-    border-color: #007bff;
-    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+    border-color: #d67200;
+    box-shadow: 0 2px 6px rgba(214, 114, 0, 0.4);
+    transform: scale(1.05);
 }
 
 /* Zone de contenu - PAS DE SCROLL, tout visible */
