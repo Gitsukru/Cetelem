@@ -3,12 +3,11 @@
  * Mobile-first, compact layout
  */
 
-/* Container principal - hauteur naturelle, scroll normal */
+/* Container principal - prend TOUT l'espace disponible du .container parent */
 .tesbihat-container {
     display: flex;
     flex-direction: column;
-    min-height: 300px;
-    /* Pas de hauteur fixe - tout scroll naturellement */
+    height: 100%; /* Important: prend 100% du .container (qui est flex: 1) */
 }
 
 /* Conteneur wrapper pour boutons namaz + langue - TOUT CENTRÉ, COMPACT */
@@ -93,12 +92,12 @@
     transform: scale(1.05);
 }
 
-/* Zone de contenu - hauteur calculée pour éviter scroll */
+/* Zone de contenu - prend l'espace restant après navigation */
 .tesbihat-slider {
     background: white;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 280px); /* Ajusté pour header + tabs + navbar + navigation + footer */
+    flex: 1; /* Prend tout l'espace disponible */
     overflow: hidden;
 }
 
@@ -239,8 +238,9 @@
     background: #f8fafc;
 }
 
-/* Navigation sections - flux normal, scroll naturel */
+/* Navigation sections - fixe en bas, ne se comprime pas */
 .section-navigation {
+    flex-shrink: 0; /* Important: ne se comprime pas */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -301,10 +301,6 @@
 
 /* Media queries simplifiées - ajustements spécifiques */
 @media (max-width: 480px) {
-    .tesbihat-slider {
-        height: calc(100vh - 250px); /* Mobile: moins d'espace pour header/tabs */
-    }
-
     .namaz-btn {
         font-size: 10px;
         padding: 4px 8px;
@@ -322,17 +318,7 @@
     }
 }
 
-@media (min-width: 768px) {
-    .tesbihat-slider {
-        height: calc(100vh - 300px); /* Desktop: plus d'espace pour UI */
-    }
-}
-
 @media (orientation: landscape) {
-    .tesbihat-slider {
-        height: calc(100vh - 200px); /* Landscape: maximiser hauteur */
-    }
-
     .namaz-lang-wrapper {
         padding: 4px 10px;
     }
