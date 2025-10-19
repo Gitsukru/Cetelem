@@ -49,21 +49,24 @@
         <span class="offline-text">Hors ligne - Synchronisation en attente</span>
     </div>
 
+    <!-- Header EN DEHORS du container -->
+    <div class="header">
+        <h1>Çetelem</h1>
+        <p>Günlük zikir ve dualarınızı takip edin</p>
+    </div>
+
+    <!-- Tabs EN DEHORS du container -->
+    <div class="tabs">
+        <button class="tab-button active" onclick="showTab('counter', event)">Sayaç</button>
+        <button class="tab-button" onclick="showTab('books', event)">📚 Kitap</button>
+        <button class="tab-button" onclick="showTab('group', event)">Grup</button>
+        <button class="tab-button" onclick="showTab('competition', event)">Tesbihat</button>
+        <button class="tab-button" onclick="showTab('management', event)">Yönetim</button>
+        <button class="tab-button" onclick="showTab('stats', event)">İstatistikler</button>
+    </div>
+
+    <!-- Container = CONTENU UNIQUEMENT -->
     <div class="container">
-        <div class="header">
-            <h1>Çetelem</h1>
-            <p>Günlük zikir ve dualarınızı takip edin</p>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-button active" onclick="showTab('counter', event)">Sayaç</button>
-            <button class="tab-button" onclick="showTab('books', event)">📚 Kitap</button>
-            <button class="tab-button" onclick="showTab('group', event)">Grup</button>
-            <button class="tab-button" onclick="showTab('competition', event)">Tesbihat</button>
-            <button class="tab-button" onclick="showTab('management', event)">Yönetim</button>
-            <button class="tab-button" onclick="showTab('stats', event)">İstatistikler</button>
-        </div>
-
         <!-- Sayaç Sekmesi -->
         <div id="counter" class="tab-content active">
             <div class="counter-section">

@@ -1,23 +1,37 @@
 /**
  * LAYOUT - Structure générale, header, footer, tabs
+ * Structure flexbox: body = 100vh exact, pas de scroll de page
  */
 
-/* Container principal */
-.container {
-    max-width: 100%;
-    padding: 10px;
-    min-height: 100vh;
+/* Body - Flexbox vertical, 100vh exact */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden; /* Pas de scroll sur la page */
+    display: flex;
+    flex-direction: column;
 }
 
-/* Header */
+/* Header - Fixe en haut */
 .header {
+    flex-shrink: 0; /* Ne se comprime pas */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 20px;
+    border-radius: 0 0 15px 15px;
+    padding: 15px 20px;
     text-align: center;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Container principal - Prend le reste de l'espace */
+.container {
+    flex: 1; /* Prend tout l'espace disponible */
+    overflow-y: auto; /* Scroll ICI uniquement si contenu dépasse */
+    overflow-x: hidden;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .header h1 {
@@ -31,22 +45,19 @@
     margin: 0;
 }
 
-/* Tabs - Fixed sticky navbar */
+/* Tabs - Fixe sous le header */
 .tabs {
-    position: sticky;
-    top: 0;
+    flex-shrink: 0; /* Ne se comprime pas */
     z-index: 900;
     display: flex;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
     padding: 5px;
-    margin-bottom: 20px;
     overflow-x: auto;
     white-space: nowrap;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .tabs::-webkit-scrollbar {
@@ -141,14 +152,13 @@
     }
 }
 
-/* Footer - scroll naturel avec la page */
+/* Footer - Fixe en bas */
 .app-footer {
-    position: relative;
+    flex-shrink: 0; /* Ne se comprime pas */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-top: 1px solid #e2e8f0;
-    padding: 12px 20px;
-    margin-top: 20px;
+    padding: 10px 15px;
 }
 
 .footer-content {
@@ -200,8 +210,20 @@
 
 /* Mobile responsive */
 @media (max-width: 480px) {
+    .header {
+        padding: 10px 15px;
+    }
+
+    .header h1 {
+        font-size: 20px;
+    }
+
     .container {
-        padding: 5px;
+        padding: 8px;
+    }
+
+    .app-footer {
+        padding: 8px 12px;
     }
 }
 
