@@ -278,13 +278,26 @@ class TesbihatSlider {
     const container = document.getElementById('tesbihatContent');
     if (!container) return;
 
-    // Boutons namaz
-    let html = '<div class="namaz-buttons-inline" id="namazButtons">';
+    // Conteneur pour boutons namaz + langue
+    let html = '<div class="namaz-lang-wrapper">';
+
+    // Boutons namaz (centrés)
+    html += '<div class="namaz-buttons-inline" id="namazButtons">';
     this.namazOrder.forEach((namazId, index) => {
       const namazData = TESBIHAT_DATA[this.currentLang][namazId];
       const activeClass = index === this.currentNamazIndex ? 'active' : '';
       html += `<button class="namaz-btn ${activeClass}" data-namaz="${index}">${namazData.title.split(' ')[0]}</button>`;
     });
+    html += '</div>';
+
+    // Boutons de langue (à droite, plus petits)
+    html += '<div class="lang-toggle-inline">';
+    const trActive = this.currentLang === 'turkish' ? 'active' : '';
+    const arActive = this.currentLang === 'arabic' ? 'active' : '';
+    html += `<button class="lang-inline ${trActive}" id="langTurkish" title="Türkçe">TR</button>`;
+    html += `<button class="lang-inline ${arActive}" id="langArabic" title="Arapça">AR</button>`;
+    html += '</div>';
+
     html += '</div>';
 
     // Titre de section
