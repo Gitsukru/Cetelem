@@ -288,7 +288,7 @@ function displayLeaderboard(participants) {
           <span id="expand-${participant.id}" class="expand-icon">▶</span>
         </td>
       </tr>
-      <tr id="detail-row-${participant.id}" class="detail-row">
+      <tr id="detail-row-${participant.id}" class="detail-row" style="display: none;">
         <td colspan="10">
           <div id="detail-${participant.id}" class="detail-content">
             <div class="detail-loading">Yükleniyor...</div>
@@ -357,16 +357,29 @@ async function loadParticipantDetailedStats(participantId, container) {
     if (Object.keys(detailedStats).length > 0) {
       html += '<div class="detail-header">📿 Zikirler</div>'
       html += '<table class="stats-breakdown-table">'
-      html += '<thead><tr><th>Kategori</th><th>Bugün</th><th>Hafta</th><th>Ay</th><th style="width: 50px;">Not</th></tr></thead>'
+      html += '<thead><tr><th>Kategori</th><th>Bugün</th><th>%</th><th>Hafta</th><th>%</th><th>Ay</th><th>%</th><th style="width: 50px;">Not</th></tr></thead>'
       html += '<tbody>'
 
       for (const [category, stats] of Object.entries(detailedStats)) {
+        // Récupérer les objectifs pour cette catégorie
+        const goals = getCategoryGoals(category)
+
+        // Calculer les pourcentages par rapport aux objectifs
+        const todayPercent = goals.daily > 0 ? Math.round((stats.today || 0) / goals.daily * 100) : 0
+        const weekPercent = goals.weekly > 0 ? Math.round((stats.week || 0) / goals.weekly * 100) : 0
+        // Pour le mois, utiliser objectif mensuel (weekly * 4.3) approximatif
+        const monthlyGoal = Math.round(goals.weekly * 4.3)
+        const monthPercent = monthlyGoal > 0 ? Math.round((stats.month || 0) / monthlyGoal * 100) : 0
+
         html += `
           <tr>
             <td class="category-name">${category}</td>
             <td class="stat-num">${stats.today || 0}</td>
+            <td class="percent-cell">${todayPercent}%</td>
             <td class="stat-num">${stats.week || 0}</td>
+            <td class="percent-cell">${weekPercent}%</td>
             <td class="stat-num">${stats.month || 0}</td>
+            <td class="percent-cell">${monthPercent}%</td>
             <td style="text-align: center;">
               <button class="note-btn"
                 onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}', event)"
@@ -384,16 +397,29 @@ async function loadParticipantDetailedStats(participantId, container) {
     if (Object.keys(booksStats).length > 0) {
       html += '<div class="detail-header" style="margin-top: 16px;">📚 Kitaplar</div>'
       html += '<table class="stats-breakdown-table">'
-      html += '<thead><tr><th>Kitap</th><th>Bugün</th><th>Hafta</th><th>Ay</th><th style="width: 50px;">Not</th></tr></thead>'
+      html += '<thead><tr><th>Kitap</th><th>Bugün</th><th>%</th><th>Hafta</th><th>%</th><th>Ay</th><th>%</th><th style="width: 50px;">Not</th></tr></thead>'
       html += '<tbody>'
 
       for (const [bookName, stats] of Object.entries(booksStats)) {
+        // Pour les livres, pas d'objectifs définis, donc pourcentages à 0 ou par rapport à un objectif arbitraire
+        // On pourrait définir un objectif par défaut (ex: 10 pages/jour, 70 pages/semaine)
+        const dailyBookGoal = 10
+        const weeklyBookGoal = 70
+        const monthlyBookGoal = Math.round(weeklyBookGoal * 4.3)
+
+        const todayPercent = dailyBookGoal > 0 ? Math.round((stats.today || 0) / dailyBookGoal * 100) : 0
+        const weekPercent = weeklyBookGoal > 0 ? Math.round((stats.week || 0) / weeklyBookGoal * 100) : 0
+        const monthPercent = monthlyBookGoal > 0 ? Math.round((stats.month || 0) / monthlyBookGoal * 100) : 0
+
         html += `
           <tr>
             <td class="category-name">${bookName}</td>
             <td class="stat-num">${stats.today || 0}</td>
+            <td class="percent-cell">${todayPercent}%</td>
             <td class="stat-num">${stats.week || 0}</td>
+            <td class="percent-cell">${weekPercent}%</td>
             <td class="stat-num">${stats.month || 0}</td>
+            <td class="percent-cell">${monthPercent}%</td>
             <td style="text-align: center;">
               <button class="note-btn"
                 onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '📚 ${bookName.replace(/'/g, "\\'")}', event)"
