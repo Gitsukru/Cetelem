@@ -34,7 +34,7 @@
 .namaz-btn {
     padding: 8px 14px;
     background: #f38200;
-    border: none;
+    border: 2px solid transparent;
     border-radius: 8px;
     font-size: clamp(12px, 2.8vw, 14px);
     font-weight: 600;
@@ -51,9 +51,12 @@
 }
 
 .namaz-btn.active {
-    background: #d67200;
-    box-shadow: 0 4px 12px rgba(214, 114, 0, 0.5);
-    transform: scale(1.05);
+    background: white;
+    color: #f38200;
+    border: 3px solid #f38200;
+    box-shadow: 0 4px 16px rgba(243, 130, 0, 0.6);
+    transform: scale(1.15);
+    font-weight: 700;
 }
 
 /* Toggle langue inline - centrés, plus petits */
