@@ -13,6 +13,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    touch-action: manipulation;
 }
 
 /* Décoration tesbih supprimée - maintenant intégrée dans .counter-button::before */
@@ -23,6 +24,7 @@
     color: white;
     display: block;
     line-height: 1;
+    pointer-events: none; /* Empêche l'interaction directe sur le texte */
 }
 
 .counter-label {
@@ -30,6 +32,7 @@
     color: rgba(255, 255, 255, 0.9);
     margin: 0;
     font-weight: 500;
+    pointer-events: none; /* Empêche l'interaction directe sur le texte */
 }
 
 /* Goal display */

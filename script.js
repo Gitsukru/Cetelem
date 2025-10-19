@@ -2432,6 +2432,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enable audio on first interaction for mobile
     enableAudioOnInteraction();
 
+    // Empêcher le zoom au double-tap sur le bouton du compteur (mobile)
+    const countButton = document.getElementById('countButton');
+    if (countButton) {
+        let lastTouchEnd = 0;
+        countButton.addEventListener('touchend', function(e) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault(); // Empêche le double-tap zoom
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+    }
+
     // Initialize backend (Supabase)
     initializeBackend();
 
