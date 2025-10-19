@@ -27,32 +27,9 @@ class TesbihatSlider {
       return;
     }
 
-    this.setupLanguageToggle();
-    this.setupNavigation();
+    this.setupNavigation(); // Boutons prev/next - UNE SEULE FOIS
     this.setupSwipe();
     this.renderPage();
-  }
-
-  /**
-   * Setup toggle de langue
-   */
-  setupLanguageToggle() {
-    const turkishBtn = document.getElementById('langTurkish');
-    const arabicBtn = document.getElementById('langArabic');
-
-    if (turkishBtn) {
-      turkishBtn.addEventListener('click', () => {
-        this.switchLanguage('turkish');
-      });
-    }
-
-    if (arabicBtn) {
-      arabicBtn.addEventListener('click', () => {
-        this.switchLanguage('arabic');
-      });
-    }
-
-    this.updateLanguageButtons();
   }
 
   /**
@@ -66,8 +43,7 @@ class TesbihatSlider {
 
     this.currentLang = lang;
     this.currentSectionIndex = 0; // Reset à la première section
-    this.updateLanguageButtons();
-    this.renderPage();
+    this.renderPage(); // renderPage appellera setupNamazButtons qui mettra à jour les boutons langue
   }
 
   /**
@@ -89,7 +65,7 @@ class TesbihatSlider {
   }
 
   /**
-   * Setup navigation (boutons navbar + sections)
+   * Setup navigation (boutons prev/next sections) - appelé UNE SEULE FOIS
    */
   setupNavigation() {
     const prevBtn = document.getElementById('tesbihatPrevBtn');
@@ -102,7 +78,12 @@ class TesbihatSlider {
     if (nextBtn) {
       nextBtn.addEventListener('click', () => this.nextSection());
     }
+  }
 
+  /**
+   * Setup boutons namaz et langue - appelé à chaque render
+   */
+  setupNamazButtons() {
     // Setup boutons navbar
     const namazButtons = document.querySelectorAll('.namaz-btn');
     namazButtons.forEach((btn, index) => {
@@ -112,6 +93,24 @@ class TesbihatSlider {
         this.renderPage();
       });
     });
+
+    // Setup boutons langue
+    const turkishBtn = document.getElementById('langTurkish');
+    const arabicBtn = document.getElementById('langArabic');
+
+    if (turkishBtn) {
+      turkishBtn.addEventListener('click', () => {
+        this.switchLanguage('turkish');
+      });
+    }
+
+    if (arabicBtn) {
+      arabicBtn.addEventListener('click', () => {
+        this.switchLanguage('arabic');
+      });
+    }
+
+    this.updateLanguageButtons();
   }
 
   /**
@@ -301,8 +300,8 @@ class TesbihatSlider {
 
     container.innerHTML = html;
 
-    // Re-setup les événements sur les boutons namaz
-    this.setupNavigation();
+    // Re-setup les événements sur les boutons namaz et langue
+    this.setupNamazButtons();
 
     // Animation d'entrée
     container.style.animation = 'none';
