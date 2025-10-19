@@ -40,7 +40,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'İstiâze Duâları (1/2)',
+          title: 'İstiâze Duâları (1/5)',
           items: [
             { type: 'instruction', text: 'Eller avuç içi yere bakar şekilde kaldırılır.' },
             { type: 'repeat', count: 7, text: 'Allahumme ecirnâ mine\'n-nâr.', note: 'Bu satır 3, 5 veya 7 defa' },
@@ -54,17 +54,27 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'İstiâze Duâları (2/2)',
+          title: 'İstiâze Duâları (2/5)',
           items: [
             { type: 'prayer', text: 'Allahumme ecirnâ min şerri\'n-nisâ.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min belâi\'n-nisâ.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min fitneti\'n-nisâ.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min azâbi\'l-kabr.' },
-            { type: 'prayer', text: 'Allahumme ecirnâ min azâbi yevmi\'l-kıyâmeh.' },
+            { type: 'prayer', text: 'Allahumme ecirnâ min azâbi yevmi\'l-kıyâmeh.' }
+          ]
+        },
+        {
+          title: 'İstiâze Duâları (3/5)',
+          items: [
             { type: 'prayer', text: 'Allahumme ecirnâ min azâbi Cehennem.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min azâbi kahrik.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min nâri kahrik.' },
-            { type: 'prayer', text: 'Allahumme ecirnâ min azâbi\'l-kabri ve\'n-nîrân.' },
+            { type: 'prayer', text: 'Allahumme ecirnâ min azâbi\'l-kabri ve\'n-nîrân.' }
+          ]
+        },
+        {
+          title: 'İstiâze Duâları (4/5)',
+          items: [
             { type: 'prayer', text: 'Allahumme ecirnâ mine\'r-riyâi ve\'s-sum\'ati ve\'l-ucubi ve\'l-fahr.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min tecâvuzi\'l-mulhidîn.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min şerri\'l-munâfıkîn.' },
@@ -72,7 +82,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Duâ Devamı',
+          title: 'İstiâze Duâları (5/5)',
           items: [
             { type: 'prayer', text: 'Allahumme ecirnâ ve ecir vâlideynâ ve talebete Resâili\'n-Nûri\'s-sâdıkîne fi hidmeti\'l-Kur\'âni ve\'l-îmân. Ve ahbâbene\'l-mu\'minîne\'l-muhlisîne ve akribâenâ ve ecdâdenâ mine\'n-nâr.' },
             { type: 'instruction', text: 'Avuç içi yukarı çevrilerek devam edilir.' },
@@ -132,26 +142,46 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Duâ-i Tercümân (1/3)',
+          title: 'Duâ-i Tercümân (1/7)',
           items: [
             { type: 'instruction', text: 'DUÂ-İ TERCÜMÂN-I İSM-İ ÂZAM okunur:' },
             { type: 'prayer', text: 'Bismillâhirrahmânirrahîm' },
             { type: 'prayer', text: 'Subhâneke yâ Allah teâleyte yâ Rahmân ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Rahîm teâleyte yâ Kerîm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
+            { type: 'prayer', text: 'Subhâneke yâ Rahîm teâleyte yâ Kerîm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
+          ]
+        },
+        {
+          title: 'Duâ-i Tercümân (2/7)',
+          items: [
             { type: 'prayer', text: 'Subhâneke yâ Hamîd teâleyte yâ Hakîm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Mecîd teâleyte yâ Melîk ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Kuddûs teâleyte yâ Selâm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
+            { type: 'prayer', text: 'Subhâneke yâ Kuddûs teâleyte yâ Selâm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
+          ]
+        },
+        {
+          title: 'Duâ-i Tercümân (3/7)',
+          items: [
             { type: 'prayer', text: 'Subhâneke yâ Mu\'min teâleyte yâ Muheymin ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Azîz teâleyte yâ Cebbâr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Mutekebbîr teâleyte yâ Hâlık ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
+            { type: 'prayer', text: 'Subhâneke yâ Mutekebbîr teâleyte yâ Hâlık ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
+          ]
+        },
+        {
+          title: 'Duâ-i Tercümân (4/7)',
+          items: [
             { type: 'prayer', text: 'Subhâneke yâ Evvel teâleyte yâ Âhir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Zâhir teâleyte yâ Bâtın ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
+            { type: 'prayer', text: 'Subhâneke yâ Zâhir teâleyte yâ Bâtın ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
+          ]
+        },
+        {
+          title: 'Duâ-i Tercümân (5/7)',
+          items: [
             { type: 'prayer', text: 'Subhâneke yâ Bâri teâleyte yâ Musavvir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Tevvâb teâleyte yâ Vehhâb ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
           ]
         },
         {
-          title: 'Duâ-i Tercümân (2/3)',
+          title: 'Duâ-i Tercümân (6/7)',
           items: [
             { type: 'prayer', text: 'Subhâneke yâ Bâis teâleyte yâ Vâris ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Kadîm teâleyte yâ Mukîm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -169,7 +199,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Duâ-i Tercümân (3/3)',
+          title: 'Duâ-i Tercümân (7/7)',
           items: [
             { type: 'prayer', text: 'Subhâneke yâ Semi\' teâleyte yâ Kefîl ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Karîb teâleyte yâ Basîr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -207,7 +237,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Esmâ-ul Husnâ',
+          title: 'Esmâ-ul Husnâ (1/3)',
           items: [
             { type: 'instruction', text: 'ESMÂ-UL HUSNÂ okunarak namaz bitirilir:' },
             { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, Huvellahullezî lâ ilâhe illâ hû;' },
@@ -215,13 +245,23 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Es-Selâmu, El-Mu\'minü, El-Muheyminü, El-Azîzü, El-Cebbâru, El-Mütekebbîru, Celle Celâluhu' },
             { type: 'prayer', text: 'El-Hâliku, El-Bâri\'u, El-Musavviru, El-Ğaffâru, El-Kahhâru, El-Vehhâbu, Celle Celâluhu' },
             { type: 'prayer', text: 'Er-Rezzâku, El-Fettahu, El-Alîmu, El-Kâbizu, El-Bâsidu, El-Hâfidu, Celle Celâluhu' },
-            { type: 'prayer', text: 'Er-Râfi\'u, El-Mu\'izzü, El-Müzillü, Es-Semi\'ü, El-Basîru, El-Hakemu, Celle Celâluhu' },
+            { type: 'prayer', text: 'Er-Râfi\'u, El-Mu\'izzü, El-Müzillü, Es-Semi\'ü, El-Basîru, El-Hakemu, Celle Celâluhu' }
+          ]
+        },
+        {
+          title: 'Esmâ-ul Husnâ (2/3)',
+          items: [
             { type: 'prayer', text: 'El-Adlü, El-Latîfu, El-Habîru, El-Halîmu, El-Azîmu, El-ğafûru, Celle Celâluhu' },
             { type: 'prayer', text: 'Eş-Şekûru, El-Alîyyu, El-Kebîru, El-Hafîzu, El-Mukîtu, El-Hasîbu, Celle Celâluhu' },
             { type: 'prayer', text: 'El-Celîlu, El-Kerîmu, Er-Rakîbu, El-Mucîbu, El vâsi\'u, El-Hakîmu, Celle Celâluhu' },
             { type: 'prayer', text: 'El-Vedûdü, El-Mecîdü, El-Bâ\'isü, Eş-Şehîdü, El-Hakku, El-Vekîlu, Celle Celâluhu' },
             { type: 'prayer', text: 'El-Kaviyyu, El-Metînu, El-Veliyyu, El-Hamîdu, El-Muhsî, El-Mubdiu, Celle Celâluhu' },
-            { type: 'prayer', text: 'El-Mu\'idü, El-Muhyî, El-Mumîtu, El-Hayyu, El-Kayyumu, El-Vâcidu, Celle Celâluhu' },
+            { type: 'prayer', text: 'El-Mu\'idü, El-Muhyî, El-Mumîtu, El-Hayyu, El-Kayyumu, El-Vâcidu, Celle Celâluhu' }
+          ]
+        },
+        {
+          title: 'Esmâ-ul Husnâ (3/3)',
+          items: [
             { type: 'prayer', text: 'El-Mâcidu, El-Vâhidu, El-Ehadü, Es-Samedü, El-Kâdirü, El-Muktediru, Celle Celâluhu' },
             { type: 'prayer', text: 'El-Mukaddimu, El-Muehhiru, El-Evvelu, El-Ahiru, Ez-zâhiru, El-Bâtinu, Celle Celâluhu' },
             { type: 'prayer', text: 'El-Vâli, El-Muteâli, El-Berru, Et-Tevvabu, El-muntekımu, El-A\'fuvvu, Celle Celâluhu' },
