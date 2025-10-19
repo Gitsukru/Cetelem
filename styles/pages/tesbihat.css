@@ -115,13 +115,20 @@
 .tesbihat-content {
     padding: clamp(6px, 1vh, 10px) clamp(10px, 2vw, 16px);
     animation: slideIn 0.2s ease-out;
-    display: flex;
-    flex-direction: column;
-    gap: clamp(4px, 1vh, 8px);
     overflow-y: auto;
     overflow-x: hidden;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     -webkit-overflow-scrolling: touch;
+}
+
+/* Espacement entre éléments tesbihat */
+.tesbihat-content > * {
+    margin-bottom: clamp(4px, 1vh, 8px);
+}
+
+.tesbihat-content > *:last-child {
+    margin-bottom: 0;
 }
 
 /* Titre de section - ultra compact (-10%) */
