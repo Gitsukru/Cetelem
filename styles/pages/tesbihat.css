@@ -118,25 +118,25 @@
     display: none; /* Chrome/Safari */
 }
 
-/* Titre de section - ULTRA compact */
+/* Titre de section - lisible */
 .section-title {
-    font-size: clamp(12px, 3vw, 13px);
+    font-size: clamp(14px, 3.5vw, 16px);
     font-weight: 700;
     color: #007bff;
-    margin: 0 0 clamp(2px, 0.5vh, 4px) 0;
+    margin: 0 0 clamp(4px, 0.8vh, 6px) 0;
     text-align: center;
-    padding-bottom: 2px;
+    padding-bottom: 3px;
     border-bottom: 2px solid #007bff;
     flex-shrink: 0;
 }
 
-/* Items de tesbihat - ULTRA COMPACT */
+/* Items de tesbihat - taille lisible */
 .tesbihat-instruction {
-    font-size: clamp(10px, 2.3vw, 12px);
+    font-size: clamp(12px, 2.8vw, 14px);
     font-weight: 500;
     color: #475569;
-    line-height: 1.2;
-    padding: clamp(2px, 0.6vh, 4px) clamp(4px, 1.1vw, 7px);
+    line-height: 1.4;
+    padding: clamp(4px, 0.8vh, 6px) clamp(6px, 1.4vw, 8px);
     background: #f8fafc;
     border-left: 2px solid #007bff;
     border-radius: 3px;
@@ -169,27 +169,27 @@
 
 .repeat-text {
     flex: 1;
-    font-size: clamp(11px, 2.8vw, 13px);
+    font-size: clamp(14px, 3.2vw, 16px);
     font-weight: 600;
     color: #1e293b;
-    line-height: 1.2;
+    line-height: 1.4;
     direction: rtl;
     text-align: right;
 }
 
 .repeat-note {
-    font-size: clamp(9px, 2.2vw, 11px);
+    font-size: clamp(11px, 2.6vw, 13px);
     color: #64748b;
     margin-top: 2px;
     font-style: italic;
 }
 
 .tesbihat-prayer {
-    font-size: clamp(11px, 2.8vw, 13px);
+    font-size: clamp(14px, 3.2vw, 16px);
     font-weight: 500;
     color: #1e293b;
-    line-height: 1.2;
-    padding: clamp(3px, 0.7vh, 5px) clamp(6px, 1.6vw, 10px);
+    line-height: 1.5;
+    padding: clamp(5px, 1vh, 7px) clamp(8px, 1.8vw, 12px);
     background: #fefce8;
     border-radius: 4px;
     border: 1px solid #fde047;
@@ -198,16 +198,16 @@
 }
 
 .tesbihat-note {
-    font-size: clamp(10px, 2.4vw, 12px);
+    font-size: clamp(12px, 2.8vw, 14px);
     color: #0369a1;
-    line-height: 1.2;
-    padding: clamp(3px, 0.7vh, 5px) clamp(5px, 1.3vw, 8px);
+    line-height: 1.4;
+    padding: clamp(5px, 1vh, 7px) clamp(7px, 1.6vw, 10px);
     background: #e0f2fe;
     border-radius: 4px;
     border-left: 2px solid #0284c7;
 }
 
-/* Tableau - ULTRA compact */
+/* Tableau - taille lisible */
 .tesbihat-table {
     overflow-x: auto;
     scrollbar-width: none;
@@ -221,17 +221,17 @@
     width: 100%;
     border-collapse: collapse;
     background: white;
-    font-size: clamp(9px, 2.2vw, 11px);
+    font-size: clamp(12px, 2.8vw, 14px);
 }
 
 .tesbihat-table td {
-    padding: clamp(4px, 1vh, 6px) clamp(6px, 1.5vw, 8px);
+    padding: clamp(6px, 1.2vh, 8px) clamp(8px, 1.8vw, 10px);
     text-align: center;
     border: 1px solid #e2e8f0;
     color: #1e293b;
     font-weight: 500;
     direction: rtl;
-    line-height: 1.2;
+    line-height: 1.4;
 }
 
 .tesbihat-table tr:nth-child(even) {
@@ -302,19 +302,19 @@
 /* Media queries simplifiées - ajustements spécifiques */
 @media (max-width: 480px) {
     .namaz-btn {
-        font-size: 10px;
-        padding: 4px 8px;
+        font-size: 11px;
+        padding: 5px 10px;
     }
 
     .lang-inline {
-        width: 24px;
-        height: 22px;
-        font-size: 8px;
+        width: 26px;
+        height: 24px;
+        font-size: 9px;
     }
 
     .tesbihat-prayer,
     .repeat-text {
-        font-size: 10px;
+        font-size: 13px;
     }
 }
 
