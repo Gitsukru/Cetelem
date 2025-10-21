@@ -676,6 +676,9 @@ function showTab(tabName, event) {
     document.querySelectorAll('.tab-button').forEach(btn => {
         btn.classList.remove('active');
     });
+    document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
 
     // Activate the target tab content
     const targetTab = document.getElementById(tabName);
@@ -683,9 +686,30 @@ function showTab(tabName, event) {
         targetTab.classList.add('active');
     }
 
-    // Activate the clicked button
+    // Activate the clicked button (desktop et mobile)
     if (event && event.currentTarget) {
         event.currentTarget.classList.add('active');
+    }
+    // Synchroniser le bouton correspondant dans le menu mobile
+    document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+        const btnOnclick = btn.getAttribute('onclick');
+        if (btnOnclick && btnOnclick.includes(`'${tabName}'`)) {
+            btn.classList.add('active');
+        }
+    });
+    // Synchroniser le bouton correspondant dans le menu desktop
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        const btnOnclick = btn.getAttribute('onclick');
+        if (btnOnclick && btnOnclick.includes(`'${tabName}'`)) {
+            btn.classList.add('active');
+        }
+    });
+
+    // Masquer header/footer si Tesbihat est actif
+    if (tabName === 'competition') {
+        document.body.classList.add('tesbihat-active');
+    } else {
+        document.body.classList.remove('tesbihat-active');
     }
 
     // Sauvegarder l'onglet actuel pour restauration après actualisation
@@ -724,6 +748,14 @@ function showTab(tabName, event) {
             }
         }
     }, 100);
+}
+
+// Toggle menu mobile hamburger
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu) {
+        mobileMenu.classList.toggle('open');
+    }
 }
 
 // Mettre à jour les sélecteurs

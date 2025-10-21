@@ -49,14 +49,37 @@
         <span class="offline-text">Hors ligne - Synchronisation en attente</span>
     </div>
 
+    <!-- Bouton hamburger (visible uniquement sur mobile) -->
+    <button class="hamburger-menu" id="hamburgerBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Menu latéral mobile -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <h3>Menu</h3>
+            <button class="close-menu" onclick="toggleMobileMenu()">✕</button>
+        </div>
+        <div class="mobile-menu-items">
+            <button class="mobile-tab-btn active" onclick="showTab('counter', event); toggleMobileMenu();">Sayaç</button>
+            <button class="mobile-tab-btn" onclick="showTab('books', event); toggleMobileMenu();">📚 Kitap</button>
+            <button class="mobile-tab-btn" onclick="showTab('group', event); toggleMobileMenu();">Grup</button>
+            <button class="mobile-tab-btn" onclick="showTab('competition', event); toggleMobileMenu();">Tesbihat</button>
+            <button class="mobile-tab-btn" onclick="showTab('management', event); toggleMobileMenu();">Yönetim</button>
+            <button class="mobile-tab-btn" onclick="showTab('stats', event); toggleMobileMenu();">İstatistikler</button>
+        </div>
+    </div>
+
     <!-- Header EN DEHORS du container -->
-    <div class="header">
+    <div class="header" id="appHeader">
         <h1>Çetelem</h1>
         <p>Günlük zikir ve dualarınızı takip edin</p>
     </div>
 
-    <!-- Tabs EN DEHORS du container -->
-    <div class="tabs">
+    <!-- Tabs EN DEHORS du container (masqués sur mobile) -->
+    <div class="tabs" id="desktopTabs">
         <button class="tab-button active" onclick="showTab('counter', event)">Sayaç</button>
         <button class="tab-button" onclick="showTab('books', event)">📚 Kitap</button>
         <button class="tab-button" onclick="showTab('group', event)">Grup</button>
