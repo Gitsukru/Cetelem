@@ -179,6 +179,8 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Subhâneke yâ Hayy teâleyte yâ Kayyûm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Adl teâleyte yâ Hakem ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Ferd teâleyte yâ Kuddûs ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
+            { type: 'prayer', text: 'Subhâneke yâ Ğâniyyu teâleyte yâ Muğnî ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
+            { type: 'prayer', text: 'Subhâneke yâ Mâniu teâleyte yâ Dârru ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Celle celâluhu ve âmme nevâvuhû velâ ilâhe ğâyruh.' }
           ]
         },
