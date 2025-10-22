@@ -19,12 +19,7 @@ const TESBIHAT_DATA = {
           items: [
             { type: 'instruction', text: 'Sabahın farzı kılınıp selâm verildikten sonra:' },
             { type: 'repeat', count: 5, text: 'Esteğfirullah' },
-            { type: 'prayer', text: 'Allahumme entesselâmu ve minkesselâm, tebârekte yâ zelcelâli velikram' }
-          ]
-        },
-        {
-          title: 'Salâten Tüncînâ Duâsı',
-          items: [
+            { type: 'prayer', text: 'Allahumme entesselâmu ve minkesselâm, tebârekte yâ zelcelâli velikram' },
             { type: 'prayer', text: 'Allahumme salli alâ Seyyidinâ Muhammedin ve alâ âli seyyidinâ Muhammed. Salâten tuncina biha min cemîil ahvâli vel âfât, ve takdilena biha cemîel hâcat, ve tutahhirunâ biha min cemîis seyyiât, ve terfeuna biha indeke âledderecât, ve tubelliğuna biha aksel ğâyat, min cemiil hayrat fil hayati ve bâdel memat, birahmetika yâ erhamerrahimin, bi hurmeti Habibike yâ erhamerrahimin, bi hurmeti cemiil enbiya-i vel evliya-i pîri pîran, pîri âzam ya Erhamerrahimin âmin, ve selâmun âlel murselin velhamdulillahi rabbil âlemin' },
             { type: 'instruction', text: 'Eller yüze sürülüp indirilir.' }
           ]
@@ -53,14 +48,14 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Allahumme ecirnâ min şurûri\'n-nufûsi\'l-emmârâti\'l-firavniyyeh.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min şerri\'n-nisâ.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min belâi\'n-nisâ.' },
-            { type: 'prayer', text: 'Allahumme ecirnâ min fitneti\'n-nisâ.' },
-            { type: 'prayer', text: 'Allahumme ecirnâ min azâbi\'l-kabr.' },
-            { type: 'prayer', text: 'Allahumme ecirnâ min azâbi yevmi\'l-kıyâmeh.' }
+            { type: 'prayer', text: 'Allahumme ecirnâ min fitneti\'n-nisâ.' }
           ]
         },
         {
           title: 'İstiâze Duâları (2/3)',
           items: [
+            { type: 'prayer', text: 'Allahumme ecirnâ min azâbi\'l-kabr.' },
+            { type: 'prayer', text: 'Allahumme ecirnâ min azâbi yevmi\'l-kıyâmeh.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min azâbi Cehennem.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min azâbi kahrik.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min nâri kahrik.' },
@@ -78,12 +73,7 @@ const TESBIHAT_DATA = {
             { type: 'instruction', text: 'Avuç içi yukarı çevrilerek devam edilir.' },
             { type: 'prayer', text: 'Biafvike yâ Mucîr, bifadlike yâ Ğaffâr. Bi rahmetike yâ erhemerrahimin.' },
             { type: 'prayer', text: 'Allahumme edhilne\'l-Cennete meâl ebrâr.' },
-            { type: 'prayer', text: 'Allahumme\'d-hilne\'l-Cennete meâl ebrâr.' }
-          ]
-        },
-        {
-          title: 'Cennet Duâsı',
-          items: [
+            { type: 'prayer', text: 'Allahumme\'d-hilne\'l-Cennete meâl ebrâr.' },
             { type: 'prayer', text: 'Allahumme edhilnâ ve edhil üstâzenâ ve meşâyîhine (radıyallâhu anhüm) ve vâlideynâ ve talebete Resâili\'n-Nûri\'s-sadıkîne ve ihvânena ve ehavâtenâ ve akribâenâ ve ecdâdenâ ve ahbâbene\'l-mu\'minîne\'l-muhlisîne fî hidmeti\'l-îmâni ve\'l-Kur\'ân. El-Cennete meal ebrâr, bişefâat-i Nebiyyi-ke\'l-Muhtâr ve âlihi\'l-ethâr ve eshâbihi\'l-ehyâr ve sellim mâdâme\'l-leylu ve\'n-nehâr. Âmin, ve selamun alel murselin velhamdu lillâhi Rabbi\'l-Âlemîn.' },
             { type: 'instruction', text: 'Eller yüze sürülür.' }
           ]
