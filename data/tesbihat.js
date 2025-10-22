@@ -134,13 +134,13 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Subhâneke yâ Mu\'min teâleyte yâ Muheymin ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Azîz teâleyte yâ Cebbâr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Mutekebbîr teâleyte yâ Hâlık ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Evvel teâleyte yâ Âhir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Zâhir teâleyte yâ Bâtın ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
+            { type: 'prayer', text: 'Subhâneke yâ Evvel teâleyte yâ Âhir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
           ]
         },
         {
           title: 'Duâ-i Tercümân (2/4)',
           items: [
+            { type: 'prayer', text: 'Subhâneke yâ Zâhir teâleyte yâ Bâtın ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Bâri teâleyte yâ Musavvir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Tevvâb teâleyte yâ Vehhâb ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Bâis teâleyte yâ Vâris ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -149,13 +149,13 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Subhâneke yâ Nûr teâleyte yâ Settâr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Celîl teâleyte yâ Cemîl ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Kâhir teâleyte yâ Kâdir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Melîk teâleyte yâ Muktedir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Alîm teâleyte yâ Allâm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
+            { type: 'prayer', text: 'Subhâneke yâ Melîk teâleyte yâ Muktedir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
           ]
         },
         {
           title: 'Duâ-i Tercümân (3/4)',
           items: [
+            { type: 'prayer', text: 'Subhâneke yâ Alîm teâleyte yâ Allâm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Azîm teâleyte yâ Ğafûr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Halîm teâleyte yâ Vedûd ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Şehîd teâleyte yâ Şâhid ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -164,13 +164,13 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Subhâneke yâ Semi\' teâleyte yâ Kefîl ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Karîb teâleyte yâ Basîr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Hak teâleyte yâ Mubîn ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Raûf teâleyte yâ Rahîm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Tâhir teâleyte yâ Mutahhir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
+            { type: 'prayer', text: 'Subhâneke yâ Raûf teâleyte yâ Rahîm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
           ]
         },
         {
           title: 'Duâ-i Tercümân (4/4)',
           items: [
+            { type: 'prayer', text: 'Subhâneke yâ Tâhir teâleyte yâ Mutahhir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Mucemmil teâleyte yâ Mufaddıl ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Muzhir teâleyte yâ Mun\'im ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Deyyân teâleyte yâ Sultân ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -179,8 +179,6 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Subhâneke yâ Hayy teâleyte yâ Kayyûm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Adl teâleyte yâ Hakem ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Ferd teâleyte yâ Kuddûs ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Ğâniyyu teâleyte yâ Muğnî ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Mâniu teâleyte yâ Dârru ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Celle celâluhu ve âmme nevâvuhû velâ ilâhe ğâyruh.' }
           ]
         },
