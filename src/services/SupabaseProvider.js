@@ -105,7 +105,7 @@ class SupabaseProvider extends BackendProvider {
         .select('name')
         .eq('group_id', group.id)
         .eq('name', participantName)
-        .single()
+        .maybeSingle()
 
       if (existing) {
         throw new Error('Ce nom est déjà utilisé dans ce groupe')
