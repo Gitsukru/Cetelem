@@ -547,6 +547,23 @@
     background: #f9fafb;
 }
 
+/* Effet zebra pour les détails des participants - couleurs alternées */
+.detail-row:nth-child(4n+2) .detail-content {
+    background: #e3f2fd; /* Bleu clair */
+}
+
+.detail-row:nth-child(4n+4) .detail-content {
+    background: #f3e5f5; /* Violet clair */
+}
+
+.detail-row:nth-child(4n+6) .detail-content {
+    background: #e8f5e9; /* Vert clair */
+}
+
+.detail-row:nth-child(4n+8) .detail-content {
+    background: #fff3e0; /* Orange clair */
+}
+
 /* Mobile responsive */
 @media (max-width: 640px) {
     .group-leaderboard-table {
