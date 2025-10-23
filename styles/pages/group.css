@@ -476,6 +476,23 @@
     transition: background 0.2s;
 }
 
+/* Effet zebra pour les lignes de participants - couleurs alternées */
+.group-leaderboard-table tbody tr:nth-child(8n+1):not(.detail-row):not(.my-row) {
+    background: #e3f2fd; /* Bleu clair */
+}
+
+.group-leaderboard-table tbody tr:nth-child(8n+3):not(.detail-row):not(.my-row) {
+    background: #f3e5f5; /* Violet clair */
+}
+
+.group-leaderboard-table tbody tr:nth-child(8n+5):not(.detail-row):not(.my-row) {
+    background: #e8f5e9; /* Vert clair */
+}
+
+.group-leaderboard-table tbody tr:nth-child(8n+7):not(.detail-row):not(.my-row) {
+    background: #fff3e0; /* Orange clair */
+}
+
 .group-leaderboard-table tbody tr:hover {
     background: #f7fafc !important;
 }

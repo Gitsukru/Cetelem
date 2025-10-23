@@ -347,11 +347,6 @@ body {
     display: block;
 }
 
-/* Masquer uniquement footer quand Tesbihat est actif (header reste visible) */
-body.tesbihat-active .app-footer {
-    display: none;
-}
-
 /* Mobile responsive */
 @media (max-width: 768px) {
     /* Afficher hamburger, masquer tabs classiques sur mobile */
@@ -383,6 +378,11 @@ body.tesbihat-active .app-footer {
 
     .app-footer {
         padding: 8px 12px;
+    }
+
+    /* Masquer footer uniquement sur mobile quand Tesbihat est actif */
+    body.tesbihat-active .app-footer {
+        display: none;
     }
 }
 
