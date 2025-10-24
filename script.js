@@ -2028,29 +2028,39 @@ function getCurrentUserStats() {
         totalAll += stats.total;
     });
 
-    // Construire les détails par catégorie
+    // Construire les détails par catégorie avec objectifs
     const categoriesDetails = categories.reduce((acc, cat) => {
         const stats = getStatisticsForCategory(cat);
+        const goals = getCategoryGoals(cat); // Récupérer les objectifs de cette catégorie
         acc[cat] = {
             today: stats.day,
             week: stats.week,
-            month: stats.month
+            month: stats.month,
+            goals: {
+                daily: goals.daily || 0,
+                weekly: goals.weekly || 0
+            }
         };
         return acc;
     }, {});
 
-    // Ajouter les statistiques des livres
+    // Ajouter les statistiques des livres avec objectifs
     const booksDetails = {};
-    if (typeof BooksManager !== 'undefined') {
+    if (typeof BooksManager !== 'undefined' && typeof getBookGoals === 'function') {
         const books = BooksManager.getBooks();
         books.forEach(book => {
             const bookStats = BooksManager.getBookStats(book);
+            const bookGoalsData = getBookGoals(book.id); // Récupérer les objectifs du livre
             // Ajouter les statistiques de chaque livre (pages lues)
             booksDetails[book.name] = {
                 today: bookStats.today,
                 week: bookStats.week,
                 month: bookStats.month,
-                total: bookStats.total
+                total: bookStats.total,
+                goals: {
+                    daily: bookGoalsData.daily || 0,
+                    weekly: bookGoalsData.weekly || 0
+                }
             };
 
             // ⚡ IMPORTANT: Ajouter les pages lues aux totaux pour le classement groupe

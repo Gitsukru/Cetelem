@@ -361,10 +361,10 @@ async function loadParticipantDetailedStats(participantId, container) {
       html += '<tbody>'
 
       for (const [category, stats] of Object.entries(detailedStats)) {
-        // Récupérer les objectifs pour cette catégorie
-        const goals = getCategoryGoals(category)
+        // Récupérer les objectifs DU PARTICIPANT depuis Supabase (pas localStorage)
+        const goals = stats.goals || { daily: 0, weekly: 0 }
 
-        // Calculer les pourcentages par rapport aux objectifs
+        // Calculer les pourcentages par rapport aux objectifs DU PARTICIPANT
         const todayPercent = goals.daily > 0 ? Math.round((stats.today || 0) / goals.daily * 100) : 0
         const weekPercent = goals.weekly > 0 ? Math.round((stats.week || 0) / goals.weekly * 100) : 0
         // Pour le mois, utiliser objectif mensuel (weekly * 4.3) approximatif
@@ -401,14 +401,12 @@ async function loadParticipantDetailedStats(participantId, container) {
       html += '<tbody>'
 
       for (const [bookName, stats] of Object.entries(booksStats)) {
-        // Pour les livres, pas d'objectifs définis, donc pourcentages à 0 ou par rapport à un objectif arbitraire
-        // On pourrait définir un objectif par défaut (ex: 10 pages/jour, 70 pages/semaine)
-        const dailyBookGoal = 10
-        const weeklyBookGoal = 70
-        const monthlyBookGoal = Math.round(weeklyBookGoal * 4.3)
+        // Récupérer les objectifs DU PARTICIPANT pour ce livre depuis Supabase
+        const goals = stats.goals || { daily: 0, weekly: 0 }
+        const monthlyBookGoal = Math.round(goals.weekly * 4.3)
 
-        const todayPercent = dailyBookGoal > 0 ? Math.round((stats.today || 0) / dailyBookGoal * 100) : 0
-        const weekPercent = weeklyBookGoal > 0 ? Math.round((stats.week || 0) / weeklyBookGoal * 100) : 0
+        const todayPercent = goals.daily > 0 ? Math.round((stats.today || 0) / goals.daily * 100) : 0
+        const weekPercent = goals.weekly > 0 ? Math.round((stats.week || 0) / goals.weekly * 100) : 0
         const monthPercent = monthlyBookGoal > 0 ? Math.round((stats.month || 0) / monthlyBookGoal * 100) : 0
 
         html += `
