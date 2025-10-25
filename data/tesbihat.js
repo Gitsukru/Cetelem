@@ -296,7 +296,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Duâ-i İsm-i Âzam (1/3)',
+          title: 'Duâ-i İsm-i Âzam (1/6)',
           items: [
             { type: 'instruction', text: 'DUÂ-İ İSM-İ ÂZAM okunur:' },
             { type: 'prayer', text: 'Bismillâhirrahmânirrahîm' },
@@ -306,45 +306,60 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Yâ Habîb yâ Allah' },
             { type: 'prayer', text: 'Yâ Raûf yâ Allah' },
             { type: 'prayer', text: 'Yâ Atûf yâ Allah' },
-            { type: 'prayer', text: 'Yâ Ma\'ruf yâ Allah' },
+            { type: 'prayer', text: 'Yâ Ma\'ruf yâ Allah' }
+          ]
+        },
+        {
+          title: 'Duâ-i İsm-i Âzam (2/6)',
+          items: [
             { type: 'prayer', text: 'Yâ Latîf yâ Allah' },
             { type: 'prayer', text: 'Yâ Azîm yâ Allah' },
             { type: 'prayer', text: 'Yâ Hannân yâ Allah' },
             { type: 'prayer', text: 'Yâ Mennân yâ Allah' },
-            { type: 'prayer', text: 'Yâ Deyyân yâ Allah' }
+            { type: 'prayer', text: 'Yâ Deyyân yâ Allah' },
+            { type: 'prayer', text: 'Yâ Sübhan yâ Allah' },
+            { type: 'prayer', text: 'Yâ Emân yâ Allah' }
           ]
         },
         {
-          title: 'Duâ-i İsm-i Âzam (2/3)',
+          title: 'Duâ-i İsm-i Âzam (3/6)',
           items: [
-            { type: 'prayer', text: 'Yâ Sübhan yâ Allah' },
-            { type: 'prayer', text: 'Yâ Emân yâ Allah' },
             { type: 'prayer', text: 'Yâ Bürhân yâ Allah' },
             { type: 'prayer', text: 'Yâ Sultân yâ Allah' },
             { type: 'prayer', text: 'Yâ Müsteân yâ Allah' },
             { type: 'prayer', text: 'Yâ Muhsin yâ Allah' },
             { type: 'prayer', text: 'Yâ Müteâl yâ Allah' },
             { type: 'prayer', text: 'Yâ Rahmân yâ Allah' },
-            { type: 'prayer', text: 'Yâ Rahîm yâ Allah' },
+            { type: 'prayer', text: 'Yâ Rahîm yâ Allah' }
+          ]
+        },
+        {
+          title: 'Duâ-i İsm-i Âzam (4/6)',
+          items: [
             { type: 'prayer', text: 'Yâ Kerîm yâ Allah' },
             { type: 'prayer', text: 'Yâ Mecîd yâ Allah' },
             { type: 'prayer', text: 'Yâ Ferd yâ Allah' },
             { type: 'prayer', text: 'Yâ Vitr yâ Allah' },
             { type: 'prayer', text: 'Yâ Ehad yâ Allah' },
-            { type: 'prayer', text: 'Yâ Samed yâ Allah' }
+            { type: 'prayer', text: 'Yâ Samed yâ Allah' },
+            { type: 'prayer', text: 'Yâ Mahmûd yâ Allah' }
           ]
         },
         {
-          title: 'Duâ-i İsm-i Âzam (3/3)',
+          title: 'Duâ-i İsm-i Âzam (5/6)',
           items: [
-            { type: 'prayer', text: 'Yâ Mahmûd yâ Allah' },
             { type: 'prayer', text: 'Yâ Sâdıka\'l-Va\'di yâ Allah' },
             { type: 'prayer', text: 'Yâ Aliyy yâ Allah' },
             { type: 'prayer', text: 'Yâ Ganiyy yâ Allah' },
             { type: 'prayer', text: 'Yâ Şâfî yâ Allah' },
             { type: 'prayer', text: 'Yâ Kâfî yâ Allah' },
             { type: 'prayer', text: 'Yâ Muâfî yâ Allah' },
-            { type: 'prayer', text: 'Yâ Bâkî yâ Allah' },
+            { type: 'prayer', text: 'Yâ Bâkî yâ Allah' }
+          ]
+        },
+        {
+          title: 'Duâ-i İsm-i Âzam (6/6)',
+          items: [
             { type: 'prayer', text: 'Yâ Hâdî yâ Allah' },
             { type: 'prayer', text: 'Yâ Kàdir yâ Allah' },
             { type: 'prayer', text: 'Yâ Sâtir yâ Allah' },
