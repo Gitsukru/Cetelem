@@ -505,7 +505,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Duâ-i Tercümân (6/6)',
+          title: 'Duâ-i Tercümân (6/7)',
           items: [
             { type: 'prayer', text: 'Subhâneke yâ Semi\' teâleyte yâ Kefîl ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Karîb teâleyte yâ Basîr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -513,7 +513,12 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Subhâneke yâ Raûf teâleyte yâ Rahîm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Tâhir teâleyte yâ Mutahhir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Mucemmil teâleyte yâ Mufaddıl ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
-            { type: 'prayer', text: 'Subhâneke yâ Muzhir teâleyte yâ Mun\'im ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
+            { type: 'prayer', text: 'Subhâneke yâ Muzhir teâleyte yâ Mun\'im ecirnâ mine\'n-nâr biafvike yâ Rahmân.' }
+          ]
+        },
+        {
+          title: 'Duâ-i Tercümân (7/7)',
+          items: [
             { type: 'prayer', text: 'Subhâneke yâ Deyyân teâleyte yâ Sultân ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Hannân teâleyte yâ Mennân ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Ehad teâleyte yâ Samed ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
