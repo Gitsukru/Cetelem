@@ -202,10 +202,24 @@
     font-weight: 500;
     color: #1e293b;
     line-height: 1.6;
-    padding: clamp(3px, 0.6vh, 5px) clamp(6px, 1.4vw, 10px);
+    padding: clamp(5px, 1vh, 7px) clamp(8px, 1.8vw, 12px);
     background: #f0fdf4;
-    border-radius: 3px;
-    border-left: 2px solid #22c55e;
+    border-radius: 4px;
+    border: 1px solid #d1fae5;
+    direction: ltr;
+    text-align: left;
+    display: inline;
+}
+
+.tesbihat-verses-container {
+    font-size: clamp(12px, 2.8vw, 14px);
+    font-weight: 500;
+    color: #1e293b;
+    line-height: 1.8;
+    padding: clamp(6px, 1.2vh, 8px) clamp(10px, 2vw, 14px);
+    background: #f0fdf4;
+    border-radius: 4px;
+    border: 1px solid #d1fae5;
     direction: ltr;
     text-align: left;
 }
@@ -214,10 +228,8 @@
     font-size: clamp(8px, 2vw, 9px);
     font-weight: 700;
     color: #22c55e;
-    margin-right: 6px;
-    display: inline-block;
-    min-width: 18px;
-    vertical-align: baseline;
+    margin-right: 4px;
+    margin-left: 6px;
 }
 
 .tesbihat-note {

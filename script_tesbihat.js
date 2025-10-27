@@ -332,6 +332,12 @@ class TesbihatSlider {
       case 'verse':
         return `<div class="tesbihat-verse"><span class="verse-number">${item.number}.</span> ${item.text}</div>`;
 
+      case 'verses':
+        const versesText = item.verses.map(v =>
+          `<span class="verse-number">${v.number}.</span> ${v.text}`
+        ).join(' ');
+        return `<div class="tesbihat-verses-container">${versesText}</div>`;
+
       case 'note':
         return `<div class="tesbihat-note">ℹ️ ${item.text}</div>`;
 
