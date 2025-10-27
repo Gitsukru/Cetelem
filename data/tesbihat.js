@@ -610,7 +610,12 @@ const TESBIHAT_DATA = {
                 { number: 17, text: 'İnne yevmelfasli kane miykaten.' },
                 { number: 18, text: 'Yevme yunfehu fiyssuri fete\'tune efvacen.' },
                 { number: 19, text: 'Ve futihatissemau fekanet ebvaben.' },
-                { number: 20, text: 'Ve suyyiretilcibalu fekanet seraben.' },
+                { number: 20, text: 'Ve suyyiretilcibalu fekanet seraben.' }
+              ]
+            },
+            {
+              type: 'verses',
+              verses: [
                 { number: 21, text: 'İnne cehenneme kanet mirsaden' },
                 { number: 22, text: 'Littağıyne meaben.' },
                 { number: 23, text: 'Labisiyne fiyha ahkaben.' },

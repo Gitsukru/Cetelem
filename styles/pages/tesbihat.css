@@ -212,10 +212,10 @@
 }
 
 .tesbihat-verses-container {
-    font-size: clamp(12px, 2.8vw, 14px);
+    font-size: clamp(15px, 3.2vw, 16px);
     font-weight: 500;
-    color: #1e293b;
-    line-height: 1.8;
+    color: #475569;
+    line-height: 1.4;
     padding: clamp(6px, 1.2vh, 8px) clamp(10px, 2vw, 14px);
     background: #f0fdf4;
     border-radius: 4px;
@@ -225,7 +225,7 @@
 }
 
 .verse-number {
-    font-size: clamp(8px, 2vw, 9px);
+    font-size: 12px;
     font-weight: 700;
     color: #22c55e;
     margin-right: 4px;
