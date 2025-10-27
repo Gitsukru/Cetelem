@@ -585,7 +585,7 @@ const TESBIHAT_DATA = {
         },
         SON_DUA_SABAH_IKINDI_SECTION,
         {
-          title: 'Nebe Sûresi (78)',
+          title: 'Nebe Sûresi (78) - 1/2',
           items: [
             { type: 'instruction', text: 'Nebe Suresi okunarak namaz bitirilir:' },
             {
@@ -612,7 +612,12 @@ const TESBIHAT_DATA = {
                 { number: 19, text: 'Ve futihatissemau fekanet ebvaben.' },
                 { number: 20, text: 'Ve suyyiretilcibalu fekanet seraben.' }
               ]
-            },
+            }
+          ]
+        },
+        {
+          title: 'Nebe Sûresi (78) - 2/2',
+          items: [
             {
               type: 'verses',
               verses: [
