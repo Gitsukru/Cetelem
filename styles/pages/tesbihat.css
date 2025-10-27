@@ -197,6 +197,29 @@
     text-align: left;
 }
 
+.tesbihat-verse {
+    font-size: clamp(12px, 2.8vw, 14px);
+    font-weight: 500;
+    color: #1e293b;
+    line-height: 1.6;
+    padding: clamp(3px, 0.6vh, 5px) clamp(6px, 1.4vw, 10px);
+    background: #f0fdf4;
+    border-radius: 3px;
+    border-left: 2px solid #22c55e;
+    direction: ltr;
+    text-align: left;
+}
+
+.verse-number {
+    font-size: clamp(8px, 2vw, 9px);
+    font-weight: 700;
+    color: #22c55e;
+    margin-right: 6px;
+    display: inline-block;
+    min-width: 18px;
+    vertical-align: baseline;
+}
+
 .tesbihat-note {
     font-size: clamp(12px, 2.8vw, 14px);
     color: #0369a1;

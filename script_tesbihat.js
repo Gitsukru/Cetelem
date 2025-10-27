@@ -329,6 +329,9 @@ class TesbihatSlider {
       case 'prayer':
         return `<div class="tesbihat-prayer">${item.text}</div>`;
 
+      case 'verse':
+        return `<div class="tesbihat-verse"><span class="verse-number">${item.number}.</span> ${item.text}</div>`;
+
       case 'note':
         return `<div class="tesbihat-note">ℹ️ ${item.text}</div>`;
 
