@@ -10,6 +10,13 @@
     height: 100%; /* Important: prend 100% du .container (qui est flex: 1) */
 }
 
+/* Espacement haut sur écrans larges uniquement */
+@media (min-width: 768px) {
+    .tesbihat-container {
+        margin-top: 10px;
+    }
+}
+
 /* Conteneur wrapper pour boutons namaz + langue - TOUT CENTRÉ, COMPACT */
 .namaz-lang-wrapper {
     display: flex;
