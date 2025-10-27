@@ -38,7 +38,13 @@ const COMMON_INSTRUCTIONS = {
   tesbihatSalatOkunur: { type: 'instruction', text: 'Tesbihâttaki sâlât ü selâmlar okunur:' },
   duaEdilir: { type: 'instruction', text: 'Duâ edilir.' },
   duadanSonra: { type: 'instruction', text: 'Duâdan sonraki tesbihâta devam edilir:' },
-  ellerYuzeSurulur: { type: 'instruction', text: 'Eller yüze sürülüp indirilir.' }
+  ellerYuzeSurulur: { type: 'instruction', text: 'Eller yüze sürülüp indirilir.' },
+  avucIciYukariCevrilir: { type: 'instruction', text: 'Avuç içi yukarı çevrilerek devam edilir.' },
+  ellerYuzeSurulur2: { type: 'instruction', text: 'Eller yüze sürülür.' },
+  duaTercumanOkunur: { type: 'instruction', text: 'DUÂ-İ TERCÜMÂN-I İSM-İ ÂZAM okunur:' },
+  avuclarYukariKaldirilir: { type: 'instruction', text: 'Avuçlar yukarı gelecek şekilde eller kaldırılır:' },
+  avucIcleriAsagiyaCevrilir: { type: 'instruction', text: 'Avuç içleri aşağıya çevrilir.' },
+  avuclarTekrarYukariCevrilir: { type: 'instruction', text: 'Avuçlar tekrar yukarı çevrilir.' }
 };
 
 // ============================================
@@ -142,6 +148,33 @@ const HASIR_SURESI_SECTION = {
   ]
 };
 
+// Tesbihata Devam - Utilisée dans: İKİNDİ, AKŞAM, YATSI
+const TESBIHATA_DEVAM_SECTION = {
+  title: 'Tesbihata Devam',
+  items: [
+    COMMON_PRAYERS.subhanallahiVelhamdulillahi,
+    COMMON_INSTRUCTIONS.ayetulKursiOkunur,
+    COMMON_PRAYERS.ayetulKursi,
+    COMMON_PRAYERS.subhanellah33x,
+    COMMON_PRAYERS.elhamdulillah33x,
+    COMMON_PRAYERS.allahuekber33x
+  ]
+};
+
+// Son Duâ (SABAH/İKİNDİ) - Utilisée dans: SABAH, İKİNDİ
+const SON_DUA_SABAH_IKINDI_SECTION = {
+  title: 'Son Duâ',
+  items: [
+    COMMON_INSTRUCTIONS.avuclarYukariKaldirilir,
+    { type: 'prayer', text: 'Subhâneke âhiyyen şerâhiyyen teâleyte lâ ilâhe illâ ente ecirnâ ve ecir üstâzenâ ve meşâyîhena (radıyallâhu anhüm) ve vâlideynâ ve ihvânenâ ve ehavâtenâ ve talebete Resâili\'n-Nûri ve rufekâenâ ve akrebâena ahbâbene\'l-mu\'mînine\'l-muhlisîne mine\'n-nâr.' },
+    COMMON_INSTRUCTIONS.avucIcleriAsagiyaCevrilir,
+    { type: 'prayer', text: 'Ve min kulli nâri vahfeznâ min şerri\'n-nefsi ve\'ş-şeytân ve min şerri\'l-cinni ve\'l-insân ve min şerri\'l-bid\'ati ve\'d-dalâlâti ve\'l-ilhâdi ve\'t-tuğyân.' },
+    COMMON_INSTRUCTIONS.avuclarTekrarYukariCevrilir,
+    { type: 'prayer', text: 'Biafvike yâ Mucîr, bifadlike yâ Gaffâr, birahmetike yâ Erhame\'r-râhimîn.' },
+    { type: 'prayer', text: 'Allahumme edhılne\'l-Cennete meâal ebrâr, bişefâati nebiyyike\'l-muhtâr ve âlihi-l ethâr, ve eshâbihi-l ahyâr, ve sellim mâdâme-l leylu vennehâr, Âmin, ve selâmun ale-l murselîn, ve-l hamdu lillâhi Rabbi\'l-Âlemîn.' }
+  ]
+};
+
 const TESBIHAT_DATA = {
   // =============================================
   // VERSION TURQUE
@@ -208,12 +241,12 @@ const TESBIHAT_DATA = {
           title: 'İstiâze Duâları (3/3)',
           items: [
             { type: 'prayer', text: 'Allahumme ecirnâ ve ecir vâlideynâ ve talebete Resâili\'n-Nûri\'s-sâdıkîne fi hidmeti\'l-Kur\'âni ve\'l-îmân. Ve ahbâbene\'l-mu\'minîne\'l-muhlisîne ve akribâenâ ve ecdâdenâ mine\'n-nâr.' },
-            { type: 'instruction', text: 'Avuç içi yukarı çevrilerek devam edilir.' },
+            COMMON_INSTRUCTIONS.avucIciYukariCevrilir,
             { type: 'prayer', text: 'Biafvike yâ Mucîr, bifadlike yâ Ğaffâr. Bi rahmetike yâ erhemerrahimin.' },
             { type: 'prayer', text: 'Allahumme edhilne\'l-Cennete meâl ebrâr.' },
             { type: 'prayer', text: 'Allahumme\'d-hilne\'l-Cennete meâl ebrâr.' },
             { type: 'prayer', text: 'Allahumme edhilnâ ve edhil üstâzenâ ve meşâyîhine (radıyallâhu anhüm) ve vâlideynâ ve talebete Resâili\'n-Nûri\'s-sadıkîne ve ihvânena ve ehavâtenâ ve akribâenâ ve ecdâdenâ ve ahbâbene\'l-mu\'minîne\'l-muhlisîne fî hidmeti\'l-îmâni ve\'l-Kur\'ân. El-Cennete meal ebrâr, bişefâat-i Nebiyyi-ke\'l-Muhtâr ve âlihi\'l-ethâr ve eshâbihi\'l-ehyâr ve sellim mâdâme\'l-leylu ve\'n-nehâr. Âmin, ve selamun alel murselin velhamdu lillâhi Rabbi\'l-Âlemîn.' },
-            { type: 'instruction', text: 'Eller yüze sürülür.' }
+            COMMON_INSTRUCTIONS.ellerYuzeSurulur2
           ]
         },
         {
@@ -262,7 +295,7 @@ const TESBIHAT_DATA = {
         {
           title: 'Duâ-i Tercümân (1/4)',
           items: [
-            { type: 'instruction', text: 'DUÂ-İ TERCÜMÂN-I İSM-İ ÂZAM okunur:' },
+            COMMON_INSTRUCTIONS.duaTercumanOkunur,
             { type: 'prayer', text: 'Bismillâhirrahmânirrahîm' },
             { type: 'prayer', text: 'Subhâneke yâ Allah teâleyte yâ Rahmân ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Rahîm teâleyte yâ Kerîm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -320,18 +353,7 @@ const TESBIHAT_DATA = {
             COMMON_PRAYERS.celleCelaluhu
           ]
         },
-        {
-          title: 'Son Duâ ve Haşir',
-          items: [
-            { type: 'instruction', text: 'Avuçlar yukarı gelecek şekilde eller kaldırılır:' },
-            { type: 'prayer', text: 'Subhâneke âhiyyen şerâhiyyen teâleyte lâ ilâhe illâ ente ecirnâ ve ecir üstâzenâ ve meşâyîhena (radıyallâhu anhüm) ve vâlideynâ ve ihvânenâ ve ehavâtenâ ve talebete Resâili\'n-Nûri ve rufekâenâ ve akrebâena ahbâbene\'l-mu\'mînine\'l-muhlisîne mine\'n-nâr.' },
-            { type: 'instruction', text: 'Avuç içleri aşağıya çevrilir.' },
-            { type: 'prayer', text: 'Ve min kulli nâri vahfeznâ min şerri\'n-nefsi ve\'ş-şeytân ve min şerri\'l-cinni ve\'l-insân ve min şerri\'l-bid\'ati ve\'d-dalâlâti ve\'l-ilhâdi ve\'t-tuğyân.' },
-            { type: 'instruction', text: 'Avuçlar tekrar yukarı çevrilir.' },
-            { type: 'prayer', text: 'Biafvike yâ Mucîr, bifadlike yâ Gaffâr, birahmetike yâ Erhame\'r-râhimîn.' },
-            { type: 'prayer', text: 'Allahumme edhılne\'l-Cennete meâal ebrâr, bişefâati nebiyyike\'l-muhtâr ve âlihi-l ethâr, ve eshâbihi-l ahyâr, ve sellim mâdâme-l leylu vennehâr, Âmin, ve selâmun ale-l murselîn, ve-l hamdu lillâhi Rabbi\'l-Âlemîn.' }
-          ]
-        },
+        { ...SON_DUA_SABAH_IKINDI_SECTION, title: 'Son Duâ ve Haşir' },
         HASIR_SURESI_SECTION,
         {
           title: 'Esmâ-ul Husnâ (1/2)',
@@ -376,12 +398,7 @@ const TESBIHAT_DATA = {
           items: [
             { type: 'instruction', text: 'Öğlenin farzı kılınıp selâm verildikten sonra:' },
             COMMON_PRAYERS.estegfirullah5x,
-            COMMON_PRAYERS.allahummeEntesselam
-          ]
-        },
-        {
-          title: 'Salâten Tüncînâ Duâsı',
-          items: [
+            COMMON_PRAYERS.allahummeEntesselam,
             COMMON_PRAYERS.salatenTuncina,
             COMMON_INSTRUCTIONS.ellerYuzeSurulur,
             { type: 'instruction', text: 'Öğlenin son sünneti kılındıktan sonra tesbih yapılır.' }
@@ -453,27 +470,12 @@ const TESBIHAT_DATA = {
           items: [
             { type: 'instruction', text: 'İkindinin farzını kılınıp selâm verildikten sonra:' },
             COMMON_PRAYERS.estegfirullah5x,
-            COMMON_PRAYERS.allahummeEntesselam
-          ]
-        },
-        {
-          title: 'Salâten Tüncînâ Duâsı',
-          items: [
+            COMMON_PRAYERS.allahummeEntesselam,
             COMMON_PRAYERS.salatenTuncina,
             COMMON_INSTRUCTIONS.ellerYuzeSurulur
           ]
         },
-        {
-          title: 'Tesbihata Devam',
-          items: [
-            COMMON_PRAYERS.subhanallahiVelhamdulillahi,
-            COMMON_INSTRUCTIONS.ayetulKursiOkunur,
-            COMMON_PRAYERS.ayetulKursi,
-            COMMON_PRAYERS.subhanellah33x,
-            COMMON_PRAYERS.elhamdulillah33x,
-            COMMON_PRAYERS.allahuekber33x
-          ]
-        },
+        TESBIHATA_DEVAM_SECTION,
         {
           title: 'Tevhid ve Duâ',
           items: [
@@ -508,7 +510,7 @@ const TESBIHAT_DATA = {
         {
           title: 'Duâ-i Tercümân (1/7)',
           items: [
-            { type: 'instruction', text: 'DUÂ-İ TERCÜMÂN-I İSM-İ ÂZAM okunur:' },
+            COMMON_INSTRUCTIONS.duaTercumanOkunur,
             { type: 'prayer', text: 'Bismillâhirrahmânirrahîm' },
             { type: 'prayer', text: 'Subhâneke yâ Allah teâleyte yâ Rahmân ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Rahîm teâleyte yâ Kerîm ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -581,18 +583,7 @@ const TESBIHAT_DATA = {
             COMMON_PRAYERS.celleCelaluhu
           ]
         },
-        {
-          title: 'Son Duâ',
-          items: [
-            { type: 'instruction', text: 'Avuçlar yukarı gelecek şekilde eller kaldırılır:' },
-            { type: 'prayer', text: 'Subhâneke âhiyyen şerâhiyyen teâleyte lâ ilâhe illâ ente ecirnâ ve ecir üstâzenâ ve meşâyîhena (radıyallâhu anhüm) ve vâlideynâ ve ihvânenâ ve ehavâtenâ ve talebete Resâili\'n-Nûri ve rufekâenâ ve akrebâena ahbâbene\'l-mu\'mînine\'l-muhlisîne mine\'n-nâr.' },
-            { type: 'instruction', text: 'Avuç içleri aşağıya çevrilir.' },
-            { type: 'prayer', text: 'Ve min kulli nâri vahfeznâ min şerri\'n-nefsi ve\'ş-şeytân ve min şerri\'l-cinni ve\'l-insân ve min şerri\'l-bid\'ati ve\'d-dalâlâti ve\'l-ilhâdi ve\'t-tuğyân.' },
-            { type: 'instruction', text: 'Avuçlar tekrar yukarı çevrilir.' },
-            { type: 'prayer', text: 'Biafvike yâ Mucîr, bifadlike yâ Gaffâr, birahmetike yâ Erhame\'r-râhimîn.' },
-            { type: 'prayer', text: 'Allahumme edhılne\'l-Cennete meâal ebrâr, bişefâati nebiyyike\'l-muhtâr ve âlihi-l ethâr, ve eshâbihi-l ahyâr, ve sellim mâdâme-l leylu vennehâr, Âmin, ve selâmun ale-l murselîn, ve-l hamdu lillâhi Rabbi\'l-Âlemîn.' }
-          ]
-        },
+        SON_DUA_SABAH_IKINDI_SECTION,
         {
           title: 'Nebe Sûresi',
           items: [
@@ -612,12 +603,7 @@ const TESBIHAT_DATA = {
           items: [
             { type: 'instruction', text: 'Akşamın farzı kılınıp selâm verildikten sonra:' },
             COMMON_PRAYERS.estegfirullah5x,
-            COMMON_PRAYERS.allahummeEntesselam
-          ]
-        },
-        {
-          title: 'Salâten Tüncînâ Duâsı',
-          items: [
+            COMMON_PRAYERS.allahummeEntesselam,
             COMMON_PRAYERS.salatenTuncina,
             COMMON_INSTRUCTIONS.ellerYuzeSurulur,
             { type: 'instruction', text: 'Sünneti kıldıktan sonra,' }
@@ -668,7 +654,7 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Allahumme ecirnâ min şerri\'l-munâfıkîn.' },
             { type: 'prayer', text: 'Allahumme ecirnâ min fitneti\'l-fâsıkîn.' },
             { type: 'prayer', text: 'Allahumme ecirnâ ve ecir vâlideynâ ve talebete Resâili\'n-Nûri\'s-sâdıkîne fi hidmeti\'l-Kur\'âni ve\'l-îmân. Ve ahbâbene\'l-mu\'minîne\'l-muhlisîne ve akribâenâ ve ecdâdenâ mine\'n-nâr.' },
-            { type: 'instruction', text: 'Avuç içi yukarı çevrilerek devam edilir.' },
+            COMMON_INSTRUCTIONS.avucIciYukariCevrilir,
             { type: 'prayer', text: 'Biafvike yâ Mucîr, bifadlike yâ Ğaffâr. Bi rahmetike yâ erhemerrahimin.' },
             { type: 'prayer', text: 'Allahumme edhilne\'l-Cennete meâl ebrâr.' },
             { type: 'prayer', text: 'Allahumme\'d-hilne\'l-Cennete meâl ebrâr.' }
@@ -678,20 +664,10 @@ const TESBIHAT_DATA = {
           title: 'Cennet Duâsı',
           items: [
             { type: 'prayer', text: 'Allahumme edhilnâ ve edhil üstâzenâ ve meşâyîhine (radıyallâhu anhüm) ve vâlideynâ ve talebete Resâili\'n-Nûri\'s-sadıkîne ve ihvânena ve ehavâtenâ ve akribâenâ ve ecdâdenâ ve ahbâbene\'l-mu\'minîne\'l-muhlisîne fî hidmeti\'l-îmâni ve\'l-Kur\'ân. El-Cennete meal ebrâr, bişefâat-i Nebiyyi-ke\'l-Muhtâr ve âlihi\'l-ethâr ve eshâbihi\'l-ehyâr ve sellim mâdâme\'l-leylu ve\'n-nehâr. Âmin, ve selamun alel murselin velhamdu lillâhi Rabbi\'l-Âlemîn.' },
-            { type: 'instruction', text: 'Eller yüze sürülür.' }
+            COMMON_INSTRUCTIONS.ellerYuzeSurulur2
           ]
         },
-        {
-          title: 'Tesbihata Devam',
-          items: [
-            COMMON_PRAYERS.subhanallahiVelhamdulillahi,
-            COMMON_INSTRUCTIONS.ayetulKursiOkunur,
-            COMMON_PRAYERS.ayetulKursi,
-            COMMON_PRAYERS.subhanellah33x,
-            COMMON_PRAYERS.elhamdulillah33x,
-            COMMON_PRAYERS.allahuekber33x
-          ]
-        },
+        TESBIHATA_DEVAM_SECTION,
         {
           title: 'Tevhid ve Tesbih',
           items: [
@@ -747,28 +723,13 @@ const TESBIHAT_DATA = {
           items: [
             { type: 'instruction', text: 'Yatsının farzı kılınıp selâm verildikten sonra:' },
             COMMON_PRAYERS.estegfirullah5x,
-            COMMON_PRAYERS.allahummeEntesselam
-          ]
-        },
-        {
-          title: 'Salâten Tüncînâ Duâsı',
-          items: [
+            COMMON_PRAYERS.allahummeEntesselam,
             COMMON_PRAYERS.salatenTuncina,
             COMMON_INSTRUCTIONS.ellerYuzeSurulur,
             { type: 'instruction', text: 'Vitir namazını kılındıktan sonra,' }
           ]
         },
-        {
-          title: 'Tesbihata Devam',
-          items: [
-            COMMON_PRAYERS.subhanallahiVelhamdulillahi,
-            COMMON_INSTRUCTIONS.ayetulKursiOkunur,
-            COMMON_PRAYERS.ayetulKursi,
-            COMMON_PRAYERS.subhanellah33x,
-            COMMON_PRAYERS.elhamdulillah33x,
-            COMMON_PRAYERS.allahuekber33x
-          ]
-        },
+        TESBIHATA_DEVAM_SECTION,
         {
           title: 'Tevhid ve Duâ',
           items: [
@@ -821,3 +782,5 @@ const TESBIHAT_DATA = {
     // Sera ajouté quand l'utilisateur fournira les textes arabes
   }
 };
+
+export { TESBIHAT_DATA };
