@@ -42,9 +42,10 @@ const COMMON_INSTRUCTIONS = {
 };
 
 // ============================================
-// SECTIONS COMMUNES - Duâ-i İsm-i Âzam (6 sections)
-// Utilisées dans: ÖĞLE, AKŞAM, YATSI
+// SECTIONS COMMUNES
 // ============================================
+
+// Duâ-i İsm-i Âzam (6 sections) - Utilisées dans: ÖĞLE, AKŞAM, YATSI
 const DUA_ISMI_AZAM_SECTIONS = [
   {
     title: 'Duâ-i İsm-i Âzam (1/6)',
@@ -122,6 +123,24 @@ const DUA_ISMI_AZAM_SECTIONS = [
     ]
   }
 ];
+
+// Son Duâ - Utilisée dans: ÖĞLE, AKŞAM, YATSI
+const SON_DUA_SECTION = {
+  title: 'Son Duâ',
+  items: [
+    { type: 'instruction', text: 'Avuçlar yukarı gelecek şekilde eller açılır:' },
+    { type: 'prayer', text: 'Yâ Rabbe\'s-semâvâti Ve\'l-ardı, yâ ze\'l-Celâli ve\'l-İkrâm. Nes\'eluke bihakkı hâzihi\'l-esmâi kullehâ entusalli-ye alâ seyyidinâ Muhammedin ve alâ âli Muhammed, verham Muhammeden kemâ salleyte ve sellemte ve bârekte ve rahimte ve terehamte alâ İbrâhîme ve alâ âli İbrâhîme fi\'l âlemîn, Rabbenâ inneke hamîdüm mecîd, birahmetike yâ erhamerrâhimîn, ve\'l-hamdülillâhi Rabb\'l-alemîn.' }
+  ]
+};
+
+// Haşir Sûresi (20-24) - Utilisée dans: SABAH, AKŞAM
+const HASIR_SURESI_SECTION = {
+  title: 'Haşir Sûresi (20-24)',
+  items: [
+    { type: 'instruction', text: 'Haşir Sûresi\'nin 20-24. Âyetleri (Lâ Yestevî) okunur:' },
+    { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, Lâ yestevî eshâbu\'n-nâri ve eshâbu\'l-Cenneh. Eshâbu\'l-Cenneti humu\'l-fâizûn. Lev enzelnâ hâze\'l-Kur\'âne alâ cebelilleraeytehû hâşian muteseddian min haşyetillah. Ve tilke\'l-emsâlu nadribuhâ linnâsi leallehum yetefekkerûn. Huvallâhullezi lâ ilâhe illâ hû. Âlimu\'l-ğaybi veş-şehâdeh. Huver-rahmânur-rahîm. Huvallâhullezî lâ ilâhe illâ hû. El-melikul-kuddûsus-selâmul-mu\'minul-muheyminul-azîzul-cebbârul-mutekebbir. Subhânellâhi ammâ yuşrikûn. Huvallâhul-hâlikul-bâriul-musavviru lehul-esmâ-ul husnâ. Yusebbihu lehü mâ fis-semâvâti vel-ard. Ve hüvel-\'azîzul-hakîm.' }
+  ]
+};
 
 const TESBIHAT_DATA = {
   // =============================================
@@ -201,8 +220,8 @@ const TESBIHAT_DATA = {
           title: 'Âyetü\'l-Kürsî ve Tesbih',
           items: [
             COMMON_PRAYERS.subhanallahiVelhamdulillahi,
-            { type: 'instruction', text: 'ÂYETÜ\'L-KÜRSÎ okunur:' },
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, Allahu lâ ilâhe illâ huve\'l-hayyul kayyûm. Lâ te\'huzuhû sinetun velâ nevm. Lehu mâ fissemâvâti vemâ fi\'l-ard. Menzellezî yeşfeu indehû illâ biiznih. Ya\'lemu mâ beyne eydîhim vemâ halfehum velâ yuhîtûne bişey\'in min ilmihî illâ bimâ şâe, vesia kursiyyuhu\'s-semâvâti ve\'l-ard. Velâ yeuduhû hıfzuhumâ vehuve\'l-âliyyu\'l-azîm' },
+            COMMON_INSTRUCTIONS.ayetulKursiOkunur,
+            COMMON_PRAYERS.ayetulKursi,
             COMMON_PRAYERS.subhanellah33x,
             COMMON_PRAYERS.elhamdulillah33x,
             COMMON_PRAYERS.allahuekber33x
@@ -211,12 +230,12 @@ const TESBIHAT_DATA = {
         {
           title: 'Tevhid ve Duâ Devamı',
           items: [
-            { type: 'prayer', text: 'Lâ ilâhe illallahu vahdehû lâ şerike leh. Lehul mulku ve lehul hamdu yuhyî ve yumît. Vehuve hayyullezî lâyemut, biyedihil hayr ve huve alâ kulli şey\'in kadîr ve ileyhi\'l-mesîr' },
+            COMMON_PRAYERS.laIlaheIllallahVahdehLong,
             COMMON_INSTRUCTIONS.duaEdilir,
             COMMON_INSTRUCTIONS.duadanSonra,
             COMMON_PRAYERS.faglemEnnehu,
             COMMON_PRAYERS.laIlaheIllallah33x,
-            { type: 'repeat', count: 1, text: 'Muhammedu\'r-resûlullahi sallallâhu teâlâ aleyhi vesellem.' },
+            COMMON_PRAYERS.muhammedurResulullah,
             { type: 'repeat', count: 10, text: 'Lâilâhe illallahu elmeliku\'l-hakku\'l-mubîn, Muhammedu\'r-resûlullahi sâdıku\'l-va\'dil emîn.' }
           ]
         },
@@ -224,7 +243,7 @@ const TESBIHAT_DATA = {
           title: 'Sâlât ü Selâm (1/2)',
           items: [
             COMMON_INSTRUCTIONS.tesbihatSalatOkunur,
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, İnnellahe ve melâiketehû yusellûne ale\'n-nebiy. Yâ eyyuhellezîne âmenû sallû aleyhi ve sellimû teslîmâ. Lebbeyk.' },
+            COMMON_PRAYERS.innellaheMelaike,
             COMMON_PRAYERS.allahumeSalliKesira1,
             COMMON_PRAYERS.allahumeSalliKesira2,
             COMMON_PRAYERS.allahumeSalliKesira3
@@ -233,11 +252,11 @@ const TESBIHAT_DATA = {
         {
           title: 'Sâlât ü Selâm (2/2)',
           items: [
-            { type: 'prayer', text: 'Salli vesellim yâ Rabbi alâ habîbike Muhammedin ve alâ cemîi\'l-enbiyâi ve\'l evliya-i ve\'l murselîn ve alâ âli kullin ve sahbi kullin ecmaîn. Âmin ve\'l-hamdulillâhi Rabbi\'l-âlemin.' },
+            COMMON_PRAYERS.salliVesellimYaRabbi,
             COMMON_PRAYERS.elfuElfiResulallah,
             COMMON_PRAYERS.elfuElfiHabiballah,
             COMMON_PRAYERS.elfuElfiEmine,
-            { type: 'prayer', text: 'Allahumme salli ve sellim ve bârik alâ seyyidinâ Muhammedin ve alâ âlihî ve ashâbihî biadedi evrakı\'l-eşcâr ve emvâci\'l-bihâr ve katarâti\'l-emtâr, vağfirlenâ verhamnâ veltufbinâ vebi üstâdinâ ve meşâyîhina (radıyallâhu anhüm) ve vâlideynâ ve ihvânena vebi talebeti Resâili\'n-Nûri\'s-sadıkîne yâ ilâhenâ bikulli salâtin minhâ şehadeten.. eşhedu en lâ ilâhe illallah ve eşhedu enne Muhammeden Resûlullahi Sallallahu Aleyhi Tealâ Vesellem.' }
+            COMMON_PRAYERS.allahumeSalliLongFinal
           ]
         },
         {
@@ -313,13 +332,7 @@ const TESBIHAT_DATA = {
             { type: 'prayer', text: 'Allahumme edhılne\'l-Cennete meâal ebrâr, bişefâati nebiyyike\'l-muhtâr ve âlihi-l ethâr, ve eshâbihi-l ahyâr, ve sellim mâdâme-l leylu vennehâr, Âmin, ve selâmun ale-l murselîn, ve-l hamdu lillâhi Rabbi\'l-Âlemîn.' }
           ]
         },
-        {
-          title: 'Haşir Sûresi (20-24)',
-          items: [
-            { type: 'instruction', text: 'Haşir Sûresi\'nin 20-24. Âyetleri (Lâ Yestevî) okunur:' },
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, Lâ yestevî eshâbu\'n-nâri ve eshâbu\'l-Cenneh. Eshâbu\'l-Cenneti humu\'l-fâizûn. Lev enzelnâ hâze\'l-Kur\'âne alâ cebelilleraeytehû hâşian muteseddian min haşyetillah. Ve tilke\'l-emsâlu nadribuhâ linnâsi leallehum yetefekkerûn. Huvallâhullezi lâ ilâhe illâ hû. Âlimu\'l-ğaybi veş-şehâdeh. Huver-rahmânur-rahîm. Huvallâhullezî lâ ilâhe illâ hû. El-melikul-kuddûsus-selâmul-mu\'minul-muheyminul-azîzul-cebbârul-mutekebbir. Subhânellâhi ammâ yuşrikûn. Huvallâhul-hâlikul-bâriul-musavviru lehul-esmâ-ul husnâ. Yusebbihu lehü mâ fis-semâvâti vel-ard. Ve hüvel-\'azîzul-hakîm.' }
-          ]
-        },
+        HASIR_SURESI_SECTION,
         {
           title: 'Esmâ-ul Husnâ (1/2)',
           items: [
@@ -378,8 +391,8 @@ const TESBIHAT_DATA = {
           title: 'Âyetü\'l-Kürsî ve Tesbih',
           items: [
             COMMON_PRAYERS.subhanallahiVelhamdulillahi,
-            { type: 'instruction', text: 'ÂYETÜ\'L-KÜRSÎ okunur:' },
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, Allahu lâ ilâhe illâ huve\'l-hayyul kayyûm. Lâ te\'huzuhû sinetun velâ nevm. Lehu mâ fissemâvâti vemâ fi\'l-ard. Menzellezî yeşfeu indehû illâ biiznih. Ya\'lemu mâ beyne eydîhim vemâ halfehum velâ yuhîtûne bişey\'in min ilmihî illâ bimâ şâe, vesia kursiyyuhu\'s-semâvâti ve\'l-ard. Velâ yeuduhû hıfzuhumâ vehuve\'l-âliyyu\'l-azîm' },
+            COMMON_INSTRUCTIONS.ayetulKursiOkunur,
+            COMMON_PRAYERS.ayetulKursi,
             COMMON_PRAYERS.subhanellah33x,
             COMMON_PRAYERS.elhamdulillah33x,
             COMMON_PRAYERS.allahuekber33x,
@@ -395,34 +408,28 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Sâlât ü Selâm',
+          title: 'Sâlât ü Selâm (1/2)',
           items: [
             COMMON_INSTRUCTIONS.tesbihatSalatOkunur,
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, İnnellahe ve melâiketehû yusellûne ale\'n-nebiy. Yâ eyyuhellezîne âmenû sallû aleyhi ve sellimû teslîmâ. Lebbeyk.' },
+            COMMON_PRAYERS.innellaheMelaike,
             COMMON_PRAYERS.allahumeSalliKesira1,
             COMMON_PRAYERS.allahumeSalliKesira2,
             COMMON_PRAYERS.allahumeSalliKesira3,
-            { type: 'prayer', text: 'Salli vesellim yâ Rabbi alâ habîbike Muhammedin ve alâ cemîi\'l-enbiyâi ve\'l evliya-i ve\'l murselîn ve alâ âli kullin ve sahbi kullin ecmaîn. Âmin ve\'l-hamdulillâhi Rabbi\'l-âlemin.' }
+            COMMON_PRAYERS.salliVesellimYaRabbi
           ]
         },
         {
-          title: 'Salâvat Devamı',
+          title: 'Sâlât ü Selâm (2/2)',
           items: [
             COMMON_PRAYERS.elfuElfiResulallah,
             COMMON_PRAYERS.elfuElfiHabiballah,
             COMMON_PRAYERS.elfuElfiEmine,
-            { type: 'prayer', text: 'Allahumme salli ve sellim ve bârik alâ seyyidinâ Muhammedin ve alâ âlihî ve ashâbihî biadedi evrakı\'l-eşcâr ve emvâci\'l-bihâr ve katarâti\'l-emtâr, vağfirlenâ verhamnâ veltufbinâ vebi üstâdinâ ve meşâyîhina (radıyallâhu anhüm) ve vâlideynâ ve ihvânena vebi talebeti Resâili\'n-Nûri\'s-sadıkîne yâ ilâhenâ bikulli salâtin minhâ şehadeten.. eşhedu en lâ ilâhe illallah ve eşhedu enne Muhammeden Resûlullahi Sallallahu Aleyhi Tealâ Vesellem.' }
+            COMMON_PRAYERS.allahumeSalliLongFinal
           ]
         },
         // === 6 sections de Duâ-i İsm-i Âzam (réutilisées depuis DUA_ISMI_AZAM_SECTIONS) ===
         ...DUA_ISMI_AZAM_SECTIONS,
-        {
-          title: 'Son Duâ',
-          items: [
-            { type: 'instruction', text: 'Avuçlar yukarı gelecek şekilde eller açılır:' },
-            { type: 'prayer', text: 'Yâ Rabbe\'s-semâvâti Ve\'l-ardı, yâ ze\'l-Celâli ve\'l-İkrâm. Nes\'eluke bihakkı hâzihi\'l-esmâi kullehâ entusalli-ye alâ seyyidinâ Muhammedin ve alâ âli Muhammed, verham Muhammeden kemâ salleyte ve sellemte ve bârekte ve rahimte ve terehamte alâ İbrâhîme ve alâ âli İbrâhîme fi\'l âlemîn, Rabbenâ inneke hamîdüm mecîd, birahmetike yâ erhamerrâhimîn, ve\'l-hamdülillâhi Rabb\'l-alemîn.' }
-          ]
-        },
+        SON_DUA_SECTION,
         {
           title: 'Fetih Sûresi (27-29)',
           items: [
@@ -460,8 +467,8 @@ const TESBIHAT_DATA = {
           title: 'Tesbihata Devam',
           items: [
             COMMON_PRAYERS.subhanallahiVelhamdulillahi,
-            { type: 'instruction', text: 'ÂYETÜ\'L-KÜRSÎ okunur:' },
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, Allahu lâ ilâhe illâ huve\'l-hayyul kayyûm. Lâ te\'huzuhû sinetun velâ nevm. Lehu mâ fissemâvâti vemâ fi\'l-ard. Menzellezî yeşfeu indehû illâ biiznih. Ya\'lemu mâ beyne eydîhim vemâ halfehum velâ yuhîtûne bişey\'in min ilmihî illâ bimâ şâe, vesia kursiyyuhu\'s-semâvâti ve\'l-ard. Velâ yeuduhû hıfzuhumâ vehuve\'l-âliyyu\'l-azîm' },
+            COMMON_INSTRUCTIONS.ayetulKursiOkunur,
+            COMMON_PRAYERS.ayetulKursi,
             COMMON_PRAYERS.subhanellah33x,
             COMMON_PRAYERS.elhamdulillah33x,
             COMMON_PRAYERS.allahuekber33x
@@ -470,7 +477,7 @@ const TESBIHAT_DATA = {
         {
           title: 'Tevhid ve Duâ',
           items: [
-            { type: 'prayer', text: 'Lâ ilâhe illallahu vahdehû lâ şerike leh. Lehul mulku ve lehul hamdu yuhyî ve yumît. Vehuve hayyullezî lâyemut, biyedihil hayr ve huve alâ kulli şey\'in kadîr ve ileyhi\'l-mesîr' },
+            COMMON_PRAYERS.laIlaheIllallahVahdehLong,
             COMMON_INSTRUCTIONS.duaEdilir,
             COMMON_INSTRUCTIONS.duadanSonra,
             COMMON_PRAYERS.faglemEnnehu,
@@ -482,11 +489,11 @@ const TESBIHAT_DATA = {
           title: 'Sâlât ü Selâm (1/2)',
           items: [
             COMMON_INSTRUCTIONS.tesbihatSalatOkunur,
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, İnnellahe ve melâiketehû yusellûne ale\'n-nebiy. Yâ eyyuhellezîne âmenû sallû aleyhi ve sellimû teslîmâ. Lebbeyk.' },
+            COMMON_PRAYERS.innellaheMelaike,
             COMMON_PRAYERS.allahumeSalliKesira1,
             COMMON_PRAYERS.allahumeSalliKesira2,
             COMMON_PRAYERS.allahumeSalliKesira3,
-            { type: 'prayer', text: 'Salli vesellim yâ Rabbi alâ habîbike Muhammedin ve alâ cemîi\'l-enbiyâi ve\'l evliya-i ve\'l murselîn ve alâ âli kullin ve sahbi kullin ecmaîn. Âmin ve\'l-hamdulillâhi Rabbi\'l-âlemin.' }
+            COMMON_PRAYERS.salliVesellimYaRabbi
           ]
         },
         {
@@ -495,11 +502,11 @@ const TESBIHAT_DATA = {
             COMMON_PRAYERS.elfuElfiResulallah,
             COMMON_PRAYERS.elfuElfiHabiballah,
             COMMON_PRAYERS.elfuElfiEmine,
-            { type: 'prayer', text: 'Allahumme salli ve sellim ve bârik alâ seyyidinâ Muhammedin ve alâ âlihî ve ashâbihî biadedi evrakı\'l-eşcâr ve emvâci\'l-bihâr ve katarâti\'l-emtâr, vağfirlenâ verhamnâ veltufbinâ vebi üstâdinâ ve meşâyîhina (radıyallâhu anhüm) ve vâlideynâ ve ihvânena vebi talebeti Resâili\'n-Nûri\'s-sadıkîne yâ ilâhenâ bikulli salâtin minhâ şehadeten.. eşhedu en lâ ilâhe illallah ve eşhedu enne Muhammeden Resûlullahi Sallallahu Aleyhi Tealâ Vesellem.' }
+            COMMON_PRAYERS.allahumeSalliLongFinal
           ]
         },
         {
-          title: 'Duâ-i Tercümân (1/6)',
+          title: 'Duâ-i Tercümân (1/7)',
           items: [
             { type: 'instruction', text: 'DUÂ-İ TERCÜMÂN-I İSM-İ ÂZAM okunur:' },
             { type: 'prayer', text: 'Bismillâhirrahmânirrahîm' },
@@ -511,7 +518,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Duâ-i Tercümân (2/6)',
+          title: 'Duâ-i Tercümân (2/7)',
           items: [
             { type: 'prayer', text: 'Subhâneke yâ Mu\'min teâleyte yâ Muheymin ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Azîz teâleyte yâ Cebbâr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -521,7 +528,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Duâ-i Tercümân (3/6)',
+          title: 'Duâ-i Tercümân (3/7)',
           items: [
             { type: 'prayer', text: 'Subhâneke yâ Bâri teâleyte yâ Musavvir ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Tevvâb teâleyte yâ Vehhâb ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -531,7 +538,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Duâ-i Tercümân (4/6)',
+          title: 'Duâ-i Tercümân (4/7)',
           items: [
             { type: 'prayer', text: 'Subhâneke yâ Nûr teâleyte yâ Settâr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Celîl teâleyte yâ Cemîl ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -541,7 +548,7 @@ const TESBIHAT_DATA = {
           ]
         },
         {
-          title: 'Duâ-i Tercümân (5/6)',
+          title: 'Duâ-i Tercümân (5/7)',
           items: [
             { type: 'prayer', text: 'Subhâneke yâ Azîm teâleyte yâ Ğafûr ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
             { type: 'prayer', text: 'Subhâneke yâ Halîm teâleyte yâ Vedûd ecirnâ mine\'n-nâr biafvike yâ Rahmân.' },
@@ -678,8 +685,8 @@ const TESBIHAT_DATA = {
           title: 'Tesbihata Devam',
           items: [
             COMMON_PRAYERS.subhanallahiVelhamdulillahi,
-            { type: 'instruction', text: 'ÂYETÜ\'L-KÜRSÎ okunur' },
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, Allahu lâ ilâhe illâ huve\'l-hayyul kayyûm. Lâ te\'huzuhû sinetun velâ nevm. Lehu mâ fissemâvâti vemâ fi\'l-ard. Menzellezî yeşfeu indehû illâ biiznih. Ya\'lemu mâ beyne eydîhim vemâ halfehum velâ yuhîtûne bişey\'in min ilmihî illâ bimâ şâe, vesia kursiyyuhu\'s-semâvâti ve\'l-ard. Velâ yeuduhû hıfzuhumâ vehuve\'l-âliyyu\'l-azîm' },
+            COMMON_INSTRUCTIONS.ayetulKursiOkunur,
+            COMMON_PRAYERS.ayetulKursi,
             COMMON_PRAYERS.subhanellah33x,
             COMMON_PRAYERS.elhamdulillah33x,
             COMMON_PRAYERS.allahuekber33x
@@ -688,12 +695,12 @@ const TESBIHAT_DATA = {
         {
           title: 'Tevhid ve Tesbih',
           items: [
-            { type: 'prayer', text: 'Lâ ilâhe illallahu vahdehû lâ şerike leh. Lehul mulku ve lehul hamdu yuhyî ve yumît. Vehuve hayyullezî lâyemut, biyedihil hayr ve huve alâ kulli şey\'in kadîr ve ileyhi\'l-mesîr' },
+            COMMON_PRAYERS.laIlaheIllallahVahdehLong,
             COMMON_INSTRUCTIONS.duaEdilir,
             COMMON_INSTRUCTIONS.duadanSonra,
             COMMON_PRAYERS.faglemEnnehu,
             COMMON_PRAYERS.laIlaheIllallah33x,
-            { type: 'repeat', count: 1, text: 'Muhammedu\'r-resûlullahi sallallâhu teâlâ aleyhi vesellem.' },
+            COMMON_PRAYERS.muhammedurResulullah,
             { type: 'repeat', count: 33, text: 'Lâ İlâhe illa ente subhaneke inni küntü minezzalimin.' }
           ]
         },
@@ -701,11 +708,11 @@ const TESBIHAT_DATA = {
           title: 'Sâlât ü Selâm (1/2)',
           items: [
             COMMON_INSTRUCTIONS.tesbihatSalatOkunur,
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, İnnellahe ve melâiketehû yusellûne ale\'n-nebiy. Yâ eyyuhellezîne âmenû sallû aleyhi ve sellimû teslîmâ. Lebbeyk.' },
+            COMMON_PRAYERS.innellaheMelaike,
             COMMON_PRAYERS.allahumeSalliKesira1,
             COMMON_PRAYERS.allahumeSalliKesira2,
             COMMON_PRAYERS.allahumeSalliKesira3,
-            { type: 'prayer', text: 'Salli vesellim yâ Rabbi alâ habîbike Muhammedin ve alâ cemîi\'l-enbiyâi ve\'l evliya-i ve\'l murselîn ve alâ âli kullin ve sahbi kullin ecmaîn. Âmin ve\'l-hamdulillâhi Rabbi\'l-âlemin.' }
+            COMMON_PRAYERS.salliVesellimYaRabbi
           ]
         },
         {
@@ -714,18 +721,12 @@ const TESBIHAT_DATA = {
             COMMON_PRAYERS.elfuElfiResulallah,
             COMMON_PRAYERS.elfuElfiHabiballah,
             COMMON_PRAYERS.elfuElfiEmine,
-            { type: 'prayer', text: 'Allahumme salli ve sellim ve bârik alâ seyyidinâ Muhammedin ve alâ âlihî ve ashâbihî biadedi evrakı\'l-eşcâr ve emvâci\'l-bihâr ve katarâti\'l-emtâr, vağfirlenâ verhamnâ veltufbinâ vebi üstâdinâ ve meşâyîhina (radıyallâhu anhüm) ve vâlideynâ ve ihvânena vebi talebeti Resâili\'n-Nûri\'s-sadıkîne yâ ilâhenâ bikulli salâtin minhâ şehadeten.. eşhedu en lâ ilâhe illallah ve eşhedu enne Muhammeden Resûlullahi Sallallahu Aleyhi Tealâ Vesellem.' }
+            COMMON_PRAYERS.allahumeSalliLongFinal
           ]
         },
         // === 6 sections de Duâ-i İsm-i Âzam (réutilisées depuis DUA_ISMI_AZAM_SECTIONS) ===
         ...DUA_ISMI_AZAM_SECTIONS,
-        {
-          title: 'Son Duâ',
-          items: [
-            { type: 'instruction', text: 'Avuçlar yukarı gelecek şekilde eller açılır:' },
-            { type: 'prayer', text: 'Yâ Rabbe\'s-semâvâti Ve\'l-ardı, yâ ze\'l-Celâli ve\'l-İkrâm. Nes\'eluke bihakkı hâzihi\'l-esmâi kullehâ entusalli-ye alâ seyyidinâ Muhammedin ve alâ âli Muhammed, verham Muhammeden kemâ salleyte ve sellemte ve bârekte ve rahimte ve terehamte alâ İbrâhîme ve alâ âli İbrâhîme fi\'l âlemîn, Rabbenâ inneke hamîdüm mecîd, birahmetike yâ erhamerrâhimîn, ve\'l-hamdülillâhi Rabb\'l-alemîn.' }
-          ]
-        },
+        SON_DUA_SECTION,
         {
           title: 'Haşir Sûresi (20-24)',
           items: [
@@ -761,8 +762,8 @@ const TESBIHAT_DATA = {
           title: 'Tesbihata Devam',
           items: [
             COMMON_PRAYERS.subhanallahiVelhamdulillahi,
-            { type: 'instruction', text: 'ÂYETÜ\'L-KÜRSÎ okunur:' },
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, Allahu lâ ilâhe illâ huve\'l-hayyul kayyûm. Lâ te\'huzuhû sinetun velâ nevm. Lehu mâ fissemâvâti vemâ fi\'l-ard. Menzellezî yeşfeu indehû illâ biiznih. Ya\'lemu mâ beyne eydîhim vemâ halfehum velâ yuhîtûne bişey\'in min ilmihî illâ bimâ şâe, vesia kursiyyuhu\'s-semâvâti ve\'l-ard. Velâ yeuduhû hıfzuhumâ vehuve\'l-âliyyu\'l-azîm' },
+            COMMON_INSTRUCTIONS.ayetulKursiOkunur,
+            COMMON_PRAYERS.ayetulKursi,
             COMMON_PRAYERS.subhanellah33x,
             COMMON_PRAYERS.elhamdulillah33x,
             COMMON_PRAYERS.allahuekber33x
@@ -771,7 +772,7 @@ const TESBIHAT_DATA = {
         {
           title: 'Tevhid ve Duâ',
           items: [
-            { type: 'prayer', text: 'Lâ ilâhe illallahu vahdehû lâ şerike leh. Lehul mulku ve lehul hamdu yuhyî ve yumît. Vehuve hayyullezî lâyemut, biyedihil hayr ve huve alâ kulli şey\'in kadîr ve ileyhi\'l-mesîr' },
+            COMMON_PRAYERS.laIlaheIllallahVahdehLong,
             COMMON_INSTRUCTIONS.duaEdilir,
             COMMON_INSTRUCTIONS.duadanSonra,
             COMMON_PRAYERS.faglemEnnehu,
@@ -783,11 +784,11 @@ const TESBIHAT_DATA = {
           title: 'Sâlât ü Selâm (1/2)',
           items: [
             COMMON_INSTRUCTIONS.tesbihatSalatOkunur,
-            { type: 'prayer', text: 'Bismillâhirrahmânirrahîm, İnnellahe ve melâiketehû yusellûne ale\'n-nebiy. Yâ eyyuhellezîne âmenû sallû aleyhi ve sellimû teslîmâ. Lebbeyk.' },
+            COMMON_PRAYERS.innellaheMelaike,
             COMMON_PRAYERS.allahumeSalliKesira1,
             COMMON_PRAYERS.allahumeSalliKesira2,
             COMMON_PRAYERS.allahumeSalliKesira3,
-            { type: 'prayer', text: 'Salli vesellim yâ Rabbi alâ habîbike Muhammedin ve alâ cemîi\'l-enbiyâi ve\'l evliya-i ve\'l murselîn ve alâ âli kullin ve sahbi kullin ecmaîn. Âmin ve\'l-hamdulillâhi Rabbi\'l-âlemin.' }
+            COMMON_PRAYERS.salliVesellimYaRabbi
           ]
         },
         {
@@ -796,18 +797,12 @@ const TESBIHAT_DATA = {
             COMMON_PRAYERS.elfuElfiResulallah,
             COMMON_PRAYERS.elfuElfiHabiballah,
             COMMON_PRAYERS.elfuElfiEmine,
-            { type: 'prayer', text: 'Allahumme salli ve sellim ve bârik alâ seyyidinâ Muhammedin ve alâ âlihî ve ashâbihî biadedi evrakı\'l-eşcâr ve emvâci\'l-bihâr ve katarâti\'l-emtâr, vağfirlenâ verhamnâ veltufbinâ vebi üstâdinâ ve meşâyîhina (radıyallâhu anhüm) ve vâlideynâ ve ihvânena vebi talebeti Resâili\'n-Nûri\'s-sadıkîne yâ ilâhenâ bikulli salâtin minhâ şehadeten.. eşhedu en lâ ilâhe illallah ve eşhedu enne Muhammeden Resûlullahi Sallallahu Aleyhi Tealâ Vesellem.' }
+            COMMON_PRAYERS.allahumeSalliLongFinal
           ]
         },
         // === 6 sections de Duâ-i İsm-i Âzam (réutilisées depuis DUA_ISMI_AZAM_SECTIONS) ===
         ...DUA_ISMI_AZAM_SECTIONS,
-        {
-          title: 'Son Duâ',
-          items: [
-            { type: 'instruction', text: 'Avuçlar yukarı gelecek şekilde eller açılır:' },
-            { type: 'prayer', text: 'Yâ Rabbe\'s-semâvâti Ve\'l-ardı, yâ ze\'l-Celâli ve\'l-İkrâm. Nes\'eluke bihakkı hâzihi\'l-esmâi kullehâ entusalli-ye alâ seyyidinâ Muhammedin ve alâ âli Muhammed, verham Muhammeden kemâ salleyte ve sellemte ve bârekte ve rahimte ve terehamte alâ İbrâhîme ve alâ âli İbrâhîme fi\'l âlemîn, Rabbenâ inneke hamîdüm mecîd, birahmetike yâ erhamerrâhimîn, ve\'l-hamdülillâhi Rabb\'l-alemîn.' }
-          ]
-        },
+        SON_DUA_SECTION,
         {
           title: 'Bakara Sûresi (285-286)',
           items: [
