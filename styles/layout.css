@@ -7,7 +7,8 @@
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    height: 100vh; /* Fallback pour anciens navigateurs */
+    height: 100dvh; /* Dynamic viewport height - s'adapte aux barres mobiles */
     overflow: hidden; /* Pas de scroll sur la page */
     display: flex;
     flex-direction: column;
@@ -250,7 +251,8 @@ body {
     top: 0;
     right: -280px; /* Caché par défaut */
     width: 280px;
-    height: 100vh;
+    height: 100vh; /* Fallback */
+    height: 100dvh; /* S'adapte aux barres mobiles */
     background: white;
     box-shadow: -4px 0 16px rgba(0, 0, 0, 0.2);
     z-index: 1000;
@@ -338,7 +340,8 @@ body {
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100vh; /* Fallback */
+    height: 100dvh; /* S'adapte aux barres mobiles */
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
 }
