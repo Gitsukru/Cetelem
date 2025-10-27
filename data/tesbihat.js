@@ -782,5 +782,3 @@ const TESBIHAT_DATA = {
     // Sera ajouté quand l'utilisateur fournira les textes arabes
   }
 };
-
-export { TESBIHAT_DATA };
