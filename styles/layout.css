@@ -3,22 +3,23 @@
  * Structure flexbox: body = 100vh exact, pas de scroll de page
  */
 
-/* Body - Flexbox vertical, scroll naturel pour cacher barres Chrome */
+/* Body - Scroll naturel pour cacher barres Chrome */
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh; /* Hauteur minimale = viewport */
-    min-height: 100dvh;
-    /* ⚡ MOBILE FIX: Le BODY scrolle (pas .container) pour cacher barres Chrome */
-    overflow-y: auto; /* Le scroll se passe ICI au niveau du document */
+    /* ⚡ MOBILE FIX: Hauteur > viewport pour forcer un scroll minimal */
+    min-height: 100.5vh; /* Légèrement plus que viewport pour créer scroll */
+    min-height: 100.5dvh;
+    overflow-y: scroll; /* Force TOUJOURS la scrollbar (scroll du document) */
     overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
+    /* Pas de flexbox sur body pour permettre scroll naturel */
 }
 
-/* Header - Fixe en haut */
+/* Header - Sticky en haut (suit le scroll) */
 .header {
-    flex-shrink: 0; /* Ne se comprime pas */
+    position: sticky;
+    top: 0;
+    z-index: 100;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 0 0 15px 15px;
@@ -27,14 +28,12 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Container principal - Prend le reste de l'espace */
+/* Container principal */
 .container {
-    flex: 1; /* Prend tout l'espace disponible */
-    /* ⚡ MOBILE FIX: PAS de scroll ici, le body scrolle à la place */
-    overflow: visible; /* Laisse le contenu déborder pour que body scrolle */
+    /* ⚡ MOBILE FIX: Pas de flex, juste un block normal qui scrolle avec le body */
     padding: 10px;
-    display: flex;
-    flex-direction: column;
+    /* Hauteur min pour garantir scroll */
+    min-height: 60vh;
 }
 
 .header h1 {
@@ -48,10 +47,11 @@ body {
     margin: 0;
 }
 
-/* Tabs - Fixe sous le header */
+/* Tabs - Sticky sous le header */
 .tabs {
-    flex-shrink: 0; /* Ne se comprime pas */
-    z-index: 900;
+    position: sticky;
+    top: 0; /* Colle juste après le header sticky */
+    z-index: 90;
     display: flex;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -155,9 +155,8 @@ body {
     }
 }
 
-/* Footer - Fixe en bas */
+/* Footer - En bas du contenu */
 .app-footer {
-    flex-shrink: 0; /* Ne se comprime pas */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-top: 1px solid #e2e8f0;
