@@ -8,11 +8,13 @@ body {
     margin: 0;
     padding: 0;
     /* ⚡ MOBILE FIX: Hauteur > viewport pour forcer un scroll minimal */
-    min-height: 100.5vh; /* Légèrement plus que viewport pour créer scroll */
-    min-height: 100.5dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
     overflow-y: scroll; /* Force TOUJOURS la scrollbar (scroll du document) */
     overflow-x: hidden;
-    /* Pas de flexbox sur body pour permettre scroll naturel */
+    /* Flexbox pour garder footer en bas */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Header - Sticky en haut (suit le scroll) */
@@ -30,10 +32,10 @@ body {
 
 /* Container principal */
 .container {
-    /* ⚡ MOBILE FIX: Pas de flex, juste un block normal qui scrolle avec le body */
+    /* ⚡ MOBILE FIX: Flex pour pousser footer en bas + permettre scroll du body */
+    flex: 1; /* Prend tout l'espace disponible pour pousser footer en bas */
     padding: 10px;
-    /* Hauteur min pour garantir scroll */
-    min-height: 60vh;
+    /* Pas de overflow ici - le body scrolle */
 }
 
 .header h1 {
@@ -155,8 +157,9 @@ body {
     }
 }
 
-/* Footer - En bas du contenu */
+/* Footer - Toujours en bas grâce au flex: 1 du container */
 .app-footer {
+    flex-shrink: 0; /* Ne se comprime pas */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-top: 1px solid #e2e8f0;
