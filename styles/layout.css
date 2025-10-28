@@ -3,16 +3,14 @@
  * Structure flexbox: body = 100vh exact, pas de scroll de page
  */
 
-/* Body - Flexbox vertical, 100vh exact */
+/* Body - Flexbox vertical, scroll naturel pour cacher barres Chrome */
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh; /* Fallback pour anciens navigateurs */
-    min-height: 100dvh; /* Dynamic viewport height - s'adapte aux barres mobiles */
-    /* ⚡ MOBILE FIX: Permettre scroll minimal pour cacher barres Chrome */
-    height: calc(100vh + 1px); /* +1px permet scroll pour déclencher hide des barres */
-    height: calc(100dvh + 1px);
-    overflow-y: auto; /* Permettre scroll pour mobile */
+    min-height: 100vh; /* Hauteur minimale = viewport */
+    min-height: 100dvh;
+    /* ⚡ MOBILE FIX: Le BODY scrolle (pas .container) pour cacher barres Chrome */
+    overflow-y: auto; /* Le scroll se passe ICI au niveau du document */
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
@@ -32,8 +30,8 @@ body {
 /* Container principal - Prend le reste de l'espace */
 .container {
     flex: 1; /* Prend tout l'espace disponible */
-    overflow-y: auto; /* Scroll ICI uniquement si contenu dépasse */
-    overflow-x: hidden;
+    /* ⚡ MOBILE FIX: PAS de scroll ici, le body scrolle à la place */
+    overflow: visible; /* Laisse le contenu déborder pour que body scrolle */
     padding: 10px;
     display: flex;
     flex-direction: column;

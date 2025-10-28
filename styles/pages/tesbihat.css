@@ -116,16 +116,12 @@
     display: flex;
     flex-direction: column;
     gap: clamp(3px, 0.7vh, 6px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
+    /* ⚡ MOBILE FIX: PAS de scroll ici, le body scrolle pour cacher barres Chrome */
+    overflow: visible;
     flex: 1;
 }
 
-.tesbihat-content::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
-}
+/* Scrollbar styles retirés car le body scrolle maintenant, pas .tesbihat-content */
 
 /* Titre de section - 15px minimum */
 .section-title {

@@ -3132,51 +3132,5 @@ function markBackupDone() {
 // MOBILE FIX - CACHER BARRES CHROME
 // ============================================
 
-/**
- * Force le scroll pour déclencher la disparition des barres Chrome mobile
- * Les barres d'adresse et de navigation Chrome ne se cachent que lors d'un scroll
- */
-function hideChromeMobileBars() {
-    // Vérifier si on est sur mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (!isMobile) return;
-
-    // Force un micro-scroll pour déclencher le hide des barres
-    const forceScroll = () => {
-        // Scroll de 1px puis retour à 0 après un délai
-        window.scrollTo(0, 1);
-
-        // Petit délai pour laisser Chrome détecter le scroll
-        setTimeout(() => {
-            window.scrollTo(0, 0);
-        }, 100);
-    };
-
-    // Au chargement de la page
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(forceScroll, 300);
-        });
-    } else {
-        setTimeout(forceScroll, 300);
-    }
-
-    // Au premier touch sur l'écran
-    let hasTriggered = false;
-    const triggerOnFirstTouch = () => {
-        if (hasTriggered) return;
-        hasTriggered = true;
-
-        setTimeout(() => {
-            window.scrollTo(0, 1);
-            setTimeout(() => window.scrollTo(0, 0), 50);
-        }, 100);
-    };
-
-    document.addEventListener('touchstart', triggerOnFirstTouch, { once: true, passive: true });
-    document.addEventListener('click', triggerOnFirstTouch, { once: true, passive: true });
-}
-
-// Initialiser le fix au chargement
-hideChromeMobileBars();
+// Script de scroll forcé retiré - plus nécessaire car le body scrolle naturellement.
+// Les barres Chrome se cachent automatiquement lors du scroll du document.
