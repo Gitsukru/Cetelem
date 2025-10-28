@@ -7,9 +7,13 @@
 body {
     margin: 0;
     padding: 0;
-    height: 100vh; /* Fallback pour anciens navigateurs */
-    height: 100dvh; /* Dynamic viewport height - s'adapte aux barres mobiles */
-    overflow: hidden; /* Pas de scroll sur la page */
+    min-height: 100vh; /* Fallback pour anciens navigateurs */
+    min-height: 100dvh; /* Dynamic viewport height - s'adapte aux barres mobiles */
+    /* ⚡ MOBILE FIX: Permettre scroll minimal pour cacher barres Chrome */
+    height: calc(100vh + 1px); /* +1px permet scroll pour déclencher hide des barres */
+    height: calc(100dvh + 1px);
+    overflow-y: auto; /* Permettre scroll pour mobile */
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
 }
