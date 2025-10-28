@@ -29,26 +29,33 @@
     flex-shrink: 0;
 }
 
-/* Boutons namaz dans le contenu - centrés */
+/* Boutons namaz dans le contenu - centrés, une seule ligne */
 .namaz-buttons-inline {
     display: flex;
     justify-content: center;
-    gap: 16px;
-    flex-wrap: wrap;
+    gap: clamp(4px, 1.2vw, 8px); /* Gap réduit pour petit écran */
+    flex-wrap: nowrap; /* Force sur UNE seule ligne */
+    overflow-x: auto; /* Scroll horizontal si vraiment trop petit */
+    scrollbar-width: none; /* Cache la scrollbar */
+}
+
+.namaz-buttons-inline::-webkit-scrollbar {
+    display: none; /* Cache scrollbar sur Chrome */
 }
 
 .namaz-btn {
-    padding: 8px 14px;
+    padding: clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px); /* Padding réduit */
     background: #f38200;
     border: 2px solid transparent;
-    border-radius: 8px;
-    font-size: clamp(12px, 2.8vw, 14px);
+    border-radius: 6px;
+    font-size: clamp(10px, 2.3vw, 13px); /* Taille réduite */
     font-weight: 600;
     color: white;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
     box-shadow: 0 2px 6px rgba(243, 130, 0, 0.3);
+    flex-shrink: 0; /* Ne se rétrécit pas */
 }
 
 .namaz-btn:hover {
@@ -59,9 +66,9 @@
 .namaz-btn.active {
     background: white;
     color: #f38200;
-    border: 3px solid #f38200;
+    border: 2px solid #f38200; /* Réduit de 3px à 2px */
     box-shadow: 0 4px 16px rgba(243, 130, 0, 0.6);
-    transform: scale(1.15);
+    transform: scale(1.08); /* Réduit de 1.15 à 1.08 pour moins d'espace */
     font-weight: 700;
 }
 
