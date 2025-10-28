@@ -753,8 +753,14 @@ function showTab(tabName, event) {
 // Toggle menu mobile hamburger
 function toggleMobileMenu() {
     const mobileMenu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('mobileMenuOverlay');
+
     if (mobileMenu) {
         mobileMenu.classList.toggle('open');
+    }
+
+    if (overlay) {
+        overlay.classList.toggle('show');
     }
 }
 
@@ -2474,17 +2480,41 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enable audio on first interaction for mobile
     enableAudioOnInteraction();
 
-    // Empêcher le zoom au double-tap sur le bouton du compteur (mobile)
+    // ⚡ OPTIMISATION MOBILE : Réactivité ultra-rapide du bouton compteur
     const countButton = document.getElementById('countButton');
     if (countButton) {
-        let lastTouchEnd = 0;
-        countButton.addEventListener('touchend', function(e) {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault(); // Empêche le double-tap zoom
-            }
-            lastTouchEnd = now;
+        let touchHandled = false;
+
+        // Touch start pour réactivité instantanée sur mobile (pas de délai 300ms)
+        countButton.addEventListener('touchstart', function(e) {
+            // Toujours empêcher le comportement par défaut (zoom, scroll, etc.)
+            e.preventDefault();
+
+            touchHandled = true;
+            incrementCounter();
         }, { passive: false });
+
+        // Empêcher complètement le zoom au double-tap et multi-tap rapide
+        countButton.addEventListener('touchend', function(e) {
+            e.preventDefault(); // Bloque systématiquement le zoom sur touchend
+
+            // Reset le flag après un délai court
+            setTimeout(() => {
+                touchHandled = false;
+            }, 100);
+        }, { passive: false });
+
+        // Empêcher aussi touchmove pour éviter scroll accidentel sur le bouton
+        countButton.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // Click pour desktop (ne sera pas déclenché sur mobile grâce au flag)
+        countButton.addEventListener('click', function() {
+            if (!touchHandled) {
+                incrementCounter();
+            }
+        });
     }
 
     // Initialize backend (Supabase)
