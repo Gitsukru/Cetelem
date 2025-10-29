@@ -3132,5 +3132,54 @@ function markBackupDone() {
 // MOBILE FIX - CACHER BARRES CHROME
 // ============================================
 
-// Script de scroll forcé retiré - plus nécessaire car le body scrolle naturellement.
-// Les barres Chrome se cachent automatiquement lors du scroll du document.
+/**
+ * Force le comportement de scroll et tente de cacher les barres Chrome mobile
+ * Chrome 141+ a changé le comportement - cette fonction essaie plusieurs approches
+ */
+function forceHideChromeBarsMobile() {
+    // Détection mobile
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!isMobile) return;
+
+    // Approche 1: Scroll initial au chargement
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            // Petit scroll pour déclencher le comportement de Chrome
+            window.scrollTo(0, 1);
+            setTimeout(() => window.scrollTo(0, 0), 100);
+        }, 500);
+    });
+
+    // Approche 2: Forcer le reflow pour que Chrome recalcule
+    let lastScroll = 0;
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+        lastScroll = window.scrollY;
+
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                // Force Chrome à recalculer les positions (peut aider)
+                if (lastScroll > 5) {
+                    document.body.style.transform = 'translateZ(0)';
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    // Approche 3: Meta tag viewport dynamique (certains cas edge)
+    const viewport = document.querySelector('meta[name=viewport]');
+    if (viewport && window.innerHeight < window.outerHeight) {
+        // Si les barres sont présentes au chargement
+        console.log('Chrome bars detected - attempting to hide');
+    }
+}
+
+// Initialiser au chargement
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', forceHideChromeBarsMobile);
+} else {
+    forceHideChromeBarsMobile();
+}
