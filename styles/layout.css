@@ -215,13 +215,13 @@ body {
 
 /* ===== MENU HAMBURGER MOBILE ===== */
 
-/* Bouton hamburger - visible uniquement sur mobile */
+/* Bouton hamburger - visible uniquement sur mobile, TOUJOURS fixe en haut */
 .hamburger-menu {
     display: none; /* Masqué par défaut (desktop) */
-    position: fixed;
+    position: fixed; /* Reste TOUJOURS en haut même au scroll */
     top: 15px;
     right: 15px;
-    z-index: 1001;
+    z-index: 2000; /* Au-dessus de TOUT (header sticky = 100, menu = 1000) */
     width: 40px;
     height: 40px;
     background: white;
