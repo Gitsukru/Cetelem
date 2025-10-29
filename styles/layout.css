@@ -3,24 +3,21 @@
  * Structure flexbox: body = 100vh exact, pas de scroll de page
  */
 
-/* Body - Flexbox vertical avec scroll naturel */
+/* Body - Flexbox vertical, HAUTEUR FIXE (pas de scroll ici !) */
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
-    min-height: 100dvh;
-    overflow-y: auto;
-    overflow-x: hidden;
+    height: 100vh; /* Hauteur FIXE = clé pour cacher barres Chrome */
+    height: 100dvh;
+    overflow: hidden; /* Pas de scroll sur body ! Container scrolle */
     /* Flexbox pour garder footer en bas */
     display: flex;
     flex-direction: column;
 }
 
-/* Header - Sticky en haut (suit le scroll) */
+/* Header - Pas de position (scroll avec le contenu du container) */
 .header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    flex-shrink: 0;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 0 0 15px 15px;
@@ -29,11 +26,14 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Container principal */
+/* Container principal - C'EST LUI QUI SCROLLE (pas le body) */
 .container {
-    flex: 1; /* Prend tout l'espace disponible pour pousser footer en bas */
+    flex: 1; /* Prend tout l'espace disponible */
     padding: 10px;
-    /* Pas de overflow ici - le body scrolle */
+    overflow-y: auto; /* LE SCROLL SE PASSE ICI (container, pas body) */
+    overflow-x: hidden;
+    /* Cette approche cache les barres Chrome au scroll du container */
+    -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
 }
 
 .header h1 {
@@ -47,11 +47,9 @@ body {
     margin: 0;
 }
 
-/* Tabs - Sticky sous le header */
+/* Tabs - Pas de position (scroll avec le contenu) */
 .tabs {
-    position: sticky;
-    top: 0; /* Colle juste après le header sticky */
-    z-index: 90;
+    flex-shrink: 0;
     display: flex;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
