@@ -24,7 +24,6 @@ name: Auto Deploy avec Version Git
             COMMIT_HASH=$(git rev-parse --short HEAD)
             COMMIT_DATE=$(git log -1 --format=%cd 
   --date=format:'%Y-%m-%d')
-
             cat > version.js << 'EOF'
             const APP_VERSION = {
                 number: 'HASH_PLACEHOLDER',
@@ -34,18 +33,16 @@ name: Auto Deploy avec Version Git
             if (typeof window !== 'undefined') {
                 window.APP_VERSION = APP_VERSION;
             }
-            if (typeof self !== 'undefined' && typeof window
+            if (typeof self !== 'undefined' && typeof window 
   === 'undefined') {
                 self.APP_VERSION = APP_VERSION;
             }
             EOF
-
-            sed -i "s/HASH_PLACEHOLDER/$COMMIT_HASH/g"
+            sed -i "s/HASH_PLACEHOLDER/$COMMIT_HASH/g" 
   version.js
-            sed -i "s/DATE_PLACEHOLDER/$COMMIT_DATE/g"
+            sed -i "s/DATE_PLACEHOLDER/$COMMIT_DATE/g" 
   version.js
-
-            echo "Version générée: $COMMIT_HASH"
+            echo "Version: $COMMIT_HASH"
             cat version.js
 
         - name: Déployer sur GitHub Pages
