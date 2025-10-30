@@ -1,0 +1,80 @@
+name: Auto Deploy avec Version Git
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Nécessaire pour obtenir l'historique Git
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Générer version.js automatiquement
+        run: |
+          # Récupérer le hash court du commit
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          # Récupérer la date du commit
+          COMMIT_DATE=$(git log -1 --format=%cd --date=format:'%Y-%m-%d')
+          # Récupérer le message du dernier commit
+          COMMIT_MSG=$(git log -1 --pretty=%B | head -n 1)
+
+          # Générer version.js
+          cat > version.js << 'EOF'
+          /**
+           * VERSION CENTRALE DE L'APPLICATION
+           * ⚠️ FICHIER AUTO-GÉNÉRÉ PAR GITHUB ACTIONS
+           * Ne pas modifier manuellement - version basée sur le commit Git
+           */
+
+          const APP_VERSION = {
+              number: '$COMMIT_HASH',
+              date: '$COMMIT_DATE',
+              changelog: [
+                  '$COMMIT_MSG',
+                  'Version automatique basée sur commit Git',
+                  'Mise à jour automatique activée'
+              ]
+          };
+
+          // Exposition globale
+          if (typeof window !== 'undefined') {
+              window.APP_VERSION = APP_VERSION;
+          }
+
+          // Export pour Service Worker
+          if (typeof self !== 'undefined' && typeof window === 'undefined') {
+              self.APP_VERSION = APP_VERSION;
+          }
+          EOF
+
+          # Remplacer les variables
+          sed -i "s/\$COMMIT_HASH/$COMMIT_HASH/g" version.js
+          sed -i "s/\$COMMIT_DATE/$COMMIT_DATE/g" version.js
+          sed -i "s/\$COMMIT_MSG/$COMMIT_MSG/g" version.js
+
+          echo "✅ version.js généré avec hash: $COMMIT_HASH"
+          cat version.js
+
+      - name: Déployer sur GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          exclude_assets: '.github,node_modules,.git'
