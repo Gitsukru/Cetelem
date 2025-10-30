@@ -48,7 +48,7 @@ name: Auto Deploy avec Version Git
             }
             EOF
 
-            echo "✅ version.js généré"
+            echo "✅ version.js généré avec hash: $COMMIT_HASH"
             cat version.js
 
         - name: Déployer sur GitHub Pages
