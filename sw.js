@@ -1,8 +1,12 @@
-const CACHE_NAME = 'cetelem-v3.5.1';
+// Import version centralisée
+importScripts('./version.js');
+
+const CACHE_NAME = `cetelem-v${self.APP_VERSION.number}`;
 const urlsToCache = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './version.js'
 ];
 
 // Installation du service worker

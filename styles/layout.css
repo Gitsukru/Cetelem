@@ -153,6 +153,76 @@ body {
     }
 }
 
+/* Update Banner - Bannière de mise à jour */
+.update-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    z-index: 9998; /* Juste en dessous offline badge */
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    animation: slideDown 0.3s ease;
+}
+
+.update-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px 20px;
+    flex-wrap: wrap;
+}
+
+.update-icon {
+    font-size: 20px;
+}
+
+.update-text {
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+}
+
+.update-btn {
+    background: white;
+    color: #007bff;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.update-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.update-close {
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.update-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
 /* Footer - Toujours en bas grâce au flex: 1 du container */
 .app-footer {
     flex-shrink: 0; /* Ne se comprime pas */

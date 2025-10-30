@@ -49,6 +49,16 @@
         <span class="offline-text">Hors ligne - Synchronisation en attente</span>
     </div>
 
+    <!-- Update Banner - Bannière de mise à jour persistante -->
+    <div id="updateBanner" class="update-banner" style="display: none;">
+        <div class="update-banner-content">
+            <span class="update-icon">🆕</span>
+            <span class="update-text">Nouvelle version disponible !</span>
+            <button class="update-btn" onclick="applyUpdateNow()">Mettre à jour</button>
+            <button class="update-close" onclick="hideUpdateBanner()">✕</button>
+        </div>
+    </div>
+
     <!-- Bouton hamburger (visible uniquement sur mobile) -->
     <button class="hamburger-menu" id="hamburgerBtn" onclick="toggleMobileMenu()">
         <span></span>
@@ -512,6 +522,9 @@
     <script src="src/services/SupabaseProvider.js"></script>
     <script src="src/services/InfomaniakProvider.js"></script>
     <script src="src/services/GroupManager.js"></script>
+
+    <!-- Version centrale (chargée en premier) -->
+    <script src="version.js"></script>
 
     <!-- App Scripts -->
     <script src="script.js"></script>

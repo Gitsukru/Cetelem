@@ -2293,7 +2293,7 @@ function exportData() {
             categories: categories,
             counters: counters,
             exportDate: new Date().toISOString(),
-            version: '1.0'
+            version: window.APP_VERSION ? window.APP_VERSION.number : '3.5.1' // Version centralisée
         };
 
         const dataStr = JSON.stringify(exportData, null, 2);
@@ -2591,6 +2591,73 @@ const debouncedAutoSave = debounce(autoSave, 5000)       // 5s après changement
 // Garder juste un interval pour le status (peu coûteux)
 setInterval(updateSaveStatus, 60000);
 
+// ============================================
+// SYSTÈME DE MISE À JOUR AMÉLIORÉ
+// ============================================
+
+// Variables globales pour tracking des mises à jour
+let pendingServiceWorker = null;
+let updateRefusedCount = parseInt(localStorage.getItem('updateRefusedCount') || '0');
+
+/**
+ * Afficher la bannière de mise à jour disponible
+ */
+function showUpdateBanner() {
+    const banner = document.getElementById('updateBanner');
+    if (banner) {
+        banner.style.display = 'block';
+    }
+}
+
+/**
+ * Cacher la bannière de mise à jour
+ */
+function hideUpdateBanner() {
+    const banner = document.getElementById('updateBanner');
+    if (banner) {
+        banner.style.display = 'none';
+    }
+    // Incrémenter le compteur de refus
+    updateRefusedCount++;
+    localStorage.setItem('updateRefusedCount', updateRefusedCount.toString());
+
+    // Afficher message
+    showCustomAlert(`Mise à jour reportée (${updateRefusedCount}/3)<br>Sera forcée après 3 reports`, 'info', 2500);
+}
+
+/**
+ * Appliquer la mise à jour maintenant
+ */
+function applyUpdateNow() {
+    if (pendingServiceWorker) {
+        // Sauvegarder avant mise à jour
+        showCustomAlert('💾 Sauvegarde en cours...', 'info', 1000);
+
+        try {
+            autoSave();
+            console.log('✅ Données sauvegardées avant mise à jour');
+
+            // Reset compteur de refus
+            localStorage.setItem('updateRefusedCount', '0');
+
+            // Confirmation
+            showCustomAlert('✅ Sauvegardé! Mise à jour...', 'success', 800);
+
+            setTimeout(() => {
+                pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+                window.location.reload();
+            }, 1200);
+        } catch (error) {
+            console.error('⚠️ Erreur sauvegarde:', error);
+            showCustomAlert('⚠️ Erreur sauvegarde, MAJ quand même...', 'warning', 1000);
+            setTimeout(() => {
+                pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+                window.location.reload();
+            }, 1200);
+        }
+    }
+}
+
 // Service Worker pour PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
@@ -2603,7 +2670,28 @@ if ('serviceWorker' in navigator) {
                     const newWorker = registration.installing;
                     newWorker.addEventListener('statechange', function() {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // Nouvelle version disponible
+                            // Stocker le service worker en attente
+                            pendingServiceWorker = newWorker;
+
+                            // Vérifier le nombre de refus
+                            const refusedCount = parseInt(localStorage.getItem('updateRefusedCount') || '0');
+
+                            // Si 3ème refus ou plus → FORCER la mise à jour
+                            if (refusedCount >= 3) {
+                                showCustomConfirm(
+                                    '⚠️ Güncelleme Zorunlu',
+                                    '3 kez ertelendi. Güncelleme şimdi yapılmalıdır!<br><br>' +
+                                    '✅ Verileriniz otomatik kaydedilecek<br>' +
+                                    '🔄 Uygulama yenilenecek',
+                                    function() {
+                                        applyUpdateNow();
+                                    },
+                                    null // Pas de bouton "Non"
+                                );
+                                return;
+                            }
+
+                            // Sinon, afficher le popup normal
                             showCustomConfirm(
                                 '🆕 Yeni Sürüm Mevcut',
                                 'Yeni bir sürüm bulundu!<br><br>' +
@@ -2611,32 +2699,13 @@ if ('serviceWorker' in navigator) {
                                 '🔄 Uygulama yeniden yüklenecek<br><br>' +
                                 'Şimdi güncellemek ister misiniz?',
                                 function() {
-                                    // ⚡ FIX: Sauvegarder AVANT le rechargement
-                                    console.log('🔄 Mise à jour PWA - Sauvegarde automatique...');
-
-                                    // Afficher un indicateur de sauvegarde
-                                    showCustomAlert('💾 Veriler kaydediliyor...', 'info', 1000);
-
-                                    try {
-                                        autoSave(); // Sauvegarde synchrone des compteurs et catégories
-                                        console.log('✅ Données sauvegardées avant mise à jour');
-
-                                        // Confirmation visuelle
-                                        showCustomAlert('✅ Kaydedildi! Güncelleniyor...', 'success', 800);
-                                    } catch (error) {
-                                        console.error('⚠️ Erreur sauvegarde avant MAJ:', error);
-                                        showCustomAlert('⚠️ Kaydetme hatası, yine de güncelleniyor...', 'warning', 1000);
-                                    }
-
-                                    // Délai pour afficher les messages et s'assurer de la sauvegarde
-                                    setTimeout(() => {
-                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                        window.location.reload();
-                                    }, 1200);
+                                    // Utilisateur accepte
+                                    applyUpdateNow();
                                 },
                                 function() {
-                                    // L'utilisateur refuse la mise à jour
-                                    showCustomAlert('Güncelleme iptal edildi<br>Sonra tekrar sorulacak', 'info', 2000);
+                                    // Utilisateur refuse → afficher bannière persistante
+                                    hideUpdateBanner(); // Incrémente le compteur
+                                    showUpdateBanner(); // Affiche la bannière
                                 }
                             );
                         }
