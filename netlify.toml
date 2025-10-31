@@ -1,6 +1,6 @@
 [build]
   # Commande à exécuter avant déploiement (génère version.js)
-  command = "node generate-version.js"
+  command = "node generate-version.cjs"
   # Dossier à publier (racine du projet)
   publish = "."
 

@@ -1,17 +1,14 @@
 /**
  * VERSION CENTRALE DE L'APPLICATION
- * Modifiez uniquement ICI pour changer la version partout
+ * Générée automatiquement par Netlify à chaque déploiement
  */
 
 const APP_VERSION = {
-    number: '3.5.1',
-    date: '2025-01-30',
+    number: '0ba1ffc',
+    date: '2025-10-31',
     changelog: [
-        'Amélioration réactivité bouton compteur mobile',
-        'Barre navigation Tesbihat fixée en bas',
-        'Menu hamburger fermable en cliquant dehors',
-        'Boutons Namaz optimisés pour petits écrans',
-        'Système de mise à jour amélioré'
+        'test: Tester système mise à jour automatique Netlify',
+        'Déploiement automatique Netlify'
     ]
 };
 
