@@ -3199,8 +3199,13 @@ function markBackupDone() {
 // VÉRIFICATION AUTOMATIQUE DES MISES À JOUR
 // ============================================
 
-// Vérifier les mises à jour en interrogeant version.js toutes les 60 secondes
-// Cela fonctionne INDÉPENDAMMENT du Service Worker
+// Variables globales pour le throttling
+let lastUpdateCheck = 0;
+let updatePromptShown = false;
+const UPDATE_CHECK_COOLDOWN = 5 * 60 * 1000; // 5 minutes minimum entre les vérifications
+
+// Vérifier les mises à jour en interrogeant version.js
+// Avec throttling pour éviter les vérifications trop fréquentes
 function checkForAppUpdates() {
     // Attendre que window.APP_VERSION soit chargé
     if (!window.APP_VERSION || !window.APP_VERSION.number) {
@@ -3208,6 +3213,14 @@ function checkForAppUpdates() {
         return;
     }
 
+    // THROTTLING : Ne pas vérifier si dernière vérification < 5 minutes
+    const now = Date.now();
+    if (now - lastUpdateCheck < UPDATE_CHECK_COOLDOWN) {
+        console.log('⏸️ Vérification ignorée (cooldown actif)');
+        return;
+    }
+
+    lastUpdateCheck = now;
     const currentVersion = window.APP_VERSION.number;
 
     // Ajouter un timestamp pour éviter le cache
@@ -3220,8 +3233,9 @@ function checkForAppUpdates() {
                 const latestVersion = match[1];
                 console.log(`🔍 Version actuelle: ${currentVersion}, Version disponible: ${latestVersion}`);
 
-                if (latestVersion !== currentVersion) {
+                if (latestVersion !== currentVersion && !updatePromptShown) {
                     console.log('🆕 Nouvelle version détectée !');
+                    updatePromptShown = true; // Empêcher l'affichage multiple
                     showUpdatePrompt(latestVersion);
                 }
             }
@@ -3268,6 +3282,7 @@ function showUpdatePrompt(newVersion) {
         },
         function() {
             // Utilisateur refuse
+            updatePromptShown = false; // Réinitialiser pour pouvoir réafficher plus tard
             const count = parseInt(localStorage.getItem('updateRefusedCount') || '0') + 1;
             localStorage.setItem('updateRefusedCount', count.toString());
             showCustomAlert(`Mise à jour reportée (${count}/3)`, 'info', 2000);
