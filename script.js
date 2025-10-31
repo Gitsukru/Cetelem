@@ -3290,27 +3290,13 @@ function showUpdatePrompt(newVersion) {
     );
 }
 
-// Vérification au chargement et au retour de focus (0 consommation batterie)
+// Vérification UNIQUEMENT au chargement de l'app (0 consommation batterie)
 window.addEventListener('load', function() {
     // Première vérification après 10 secondes (laisser l'app se charger)
     setTimeout(function() {
         console.log('🔍 Vérification initiale des mises à jour');
         checkForAppUpdates();
     }, 10000);
-});
-
-// Vérifier quand l'utilisateur revient sur l'onglet
-document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) {
-        console.log('🔍 Utilisateur de retour - Vérification des mises à jour');
-        checkForAppUpdates();
-    }
-});
-
-// Vérifier quand la fenêtre reprend le focus
-window.addEventListener('focus', function() {
-    console.log('🔍 Fenêtre en focus - Vérification des mises à jour');
-    checkForAppUpdates();
 });
 
 // ============================================
