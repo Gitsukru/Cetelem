@@ -1,5 +1,5 @@
 // Version fixe pour éviter les erreurs d'import
-const CACHE_VERSION = '2025-10-31-fix';
+const CACHE_VERSION = '2025-10-31-fix2-network-first';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
@@ -74,7 +74,23 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Stratégie "Cache First" pour les autres ressources (CSS, JS, images)
+  // Stratégie "Network First" pour script.js (toujours la dernière version)
+  if (event.request.url.includes('script.js')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Toujours retourner la version réseau pour script.js
+          return response;
+        })
+        .catch(() => {
+          // En cas d'échec réseau, utiliser le cache comme fallback
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Stratégie "Cache First" pour les autres ressources (CSS, images)
   event.respondWith(
     caches.match(event.request)
       .then(response => {
