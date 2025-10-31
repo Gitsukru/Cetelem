@@ -71,8 +71,8 @@
 /* Bouton toggle son */
 .sound-toggle {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 15%;
+    right: 15%;
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -92,14 +92,6 @@
 
 .sound-toggle.muted {
     opacity: 0.5;
-}
-
-/* Position écran large */
-@media (min-width: 768px) {
-    .sound-toggle {
-        bottom: 15%;
-        right: 15%;
-    }
 }
 
 /* Boutons standards */
