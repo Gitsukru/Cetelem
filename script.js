@@ -80,7 +80,7 @@ function initSound() {
     // Update button state
     const soundBtn = document.getElementById('soundToggle');
     if (soundBtn) {
-        soundBtn.textContent = soundEnabled ? 'SES' : 'SESsiz';
+        soundBtn.textContent = soundEnabled ? '🔊' : '🔇';
         soundBtn.classList.toggle('muted', !soundEnabled);
     }
 }
@@ -317,7 +317,7 @@ function toggleSound() {
 
     const soundBtn = document.getElementById('soundToggle');
     if (soundBtn) {
-        soundBtn.textContent = soundEnabled ? 'SES' : 'SESsiz';
+        soundBtn.textContent = soundEnabled ? '🔊' : '🔇';
         soundBtn.classList.toggle('muted', !soundEnabled);
     }
 

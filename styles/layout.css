@@ -20,8 +20,10 @@ body {
     flex-shrink: 0;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 0 0 15px 15px;
+    border-radius: 15px 15px 15px 15px;
     padding: 15px 20px;
+    margin-bottom: 1%;
+    margin-top: 1%;
     text-align: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
