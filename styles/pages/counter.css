@@ -104,11 +104,11 @@
    TESBIH CONTAINER & BACKGROUND
    ============================================ */
 
-/* Container tesbih - Défaut (mobile/small) */
+/* Container tesbih - Défaut (mobile/small) - AGRANDI */
 .tesbih-container {
     position: relative;
-    width: min(650px, 90vw);
-    height: min(650px, 90vw);
+    width: min(750px, 95vw);
+    height: min(750px, 95vw);
     max-width: 100%;
     margin: 20px auto;
     display: flex;
@@ -116,7 +116,7 @@
     justify-content: center;
 }
 
-/* Image tesbih background - Défaut (mobile/small) - Agrandi et centré */
+/* Image tesbih background - Défaut (mobile/small) - AGRANDI et centré sur bouton */
 .tesbih-bg {
     position: absolute;
     top: 0;
@@ -124,8 +124,8 @@
     width: 100%;
     height: 100%;
     background-image: url('/assets/images/tesbih.png?v=2025101202');
-    background-size: contain;
-    background-position: center center; /* Mieux centré */
+    background-size: 115%; /* Agrandi pour mieux remplir sur mobile */
+    background-position: center center; /* Centré sur le bouton */
     background-repeat: no-repeat;
     opacity: 0.77;
     filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.4)) brightness(1.2);
@@ -133,7 +133,16 @@
     z-index: 0;
 }
 
-/* Écran large (≥768px) */
+/* Bouton compteur - Mobile AGRANDI */
+.counter-button {
+    position: relative;
+    z-index: 1;
+    /* Mobile : 60% du container, max 400px */
+    width: clamp(min(60vw, 320px), 60%, 400px) !important;
+    height: clamp(min(60vw, 320px), 60%, 400px) !important;
+}
+
+/* Écran large (≥768px) - Taille normale */
 @media (min-width: 768px) {
     .tesbih-container {
         width: min(700px, 90vw);
@@ -141,6 +150,13 @@
     }
 
     .tesbih-bg {
+        background-size: contain; /* Taille normale sur desktop */
         background-position: calc(50% - 4mm) calc(50% + 2mm);
+    }
+
+    .counter-button {
+        /* Desktop : Taille normale 360px */
+        width: clamp(min(50vw, 280px), 55%, min(360px, 400px)) !important;
+        height: clamp(min(50vw, 280px), 55%, min(360px, 400px)) !important;
     }
 }
