@@ -1,12 +1,10 @@
-// Import version centralisée
-importScripts('./version.js');
-
-const CACHE_NAME = `cetelem-v${self.APP_VERSION.number}`;
+// Version fixe pour éviter les erreurs d'import
+const CACHE_VERSION = '2025-10-31-fix';
+const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
   './index.html',
-  './manifest.json',
-  './version.js'
+  './manifest.json'
 ];
 
 // Installation du service worker

@@ -2666,52 +2666,20 @@ if ('serviceWorker' in navigator) {
             .then(function(registration) {
                 console.log('Service Worker başarıyla kaydedildi:', registration.scope);
 
-                // Vérifier les mises à jour
+                // Vérifier les mises à jour - DÉSACTIVÉ TEMPORAIREMENT
+                // TODO: Réactiver avec système robuste
+                /*
                 registration.addEventListener('updatefound', function() {
                     const newWorker = registration.installing;
                     newWorker.addEventListener('statechange', function() {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // Stocker le service worker en attente
+                            console.log('🆕 Nouvelle version SW détectée (popup désactivé)');
                             pendingServiceWorker = newWorker;
-
-                            // Vérifier le nombre de refus
-                            const refusedCount = parseInt(localStorage.getItem('updateRefusedCount') || '0');
-
-                            // Si 3ème refus ou plus → FORCER la mise à jour
-                            if (refusedCount >= 3) {
-                                showCustomConfirm(
-                                    '⚠️ Güncelleme Zorunlu',
-                                    '3 kez ertelendi. Güncelleme şimdi yapılmalıdır!<br><br>' +
-                                    '✅ Verileriniz otomatik kaydedilecek<br>' +
-                                    '🔄 Uygulama yenilenecek',
-                                    function() {
-                                        applyUpdateNow();
-                                    },
-                                    null // Pas de bouton "Non"
-                                );
-                                return;
-                            }
-
-                            // Sinon, afficher le popup normal
-                            showCustomConfirm(
-                                '🆕 Yeni Sürüm Mevcut',
-                                'Yeni bir sürüm bulundu!<br><br>' +
-                                '✅ Verileriniz <strong>otomatik olarak kaydedilecek</strong><br>' +
-                                '🔄 Uygulama yeniden yüklenecek<br><br>' +
-                                'Şimdi güncellemek ister misiniz?',
-                                function() {
-                                    // Utilisateur accepte
-                                    applyUpdateNow();
-                                },
-                                function() {
-                                    // Utilisateur refuse → afficher bannière persistante
-                                    hideUpdateBanner(); // Incrémente le compteur
-                                    showUpdateBanner(); // Affiche la bannière
-                                }
-                            );
+                            // Pas de popup pour l'instant
                         }
                     });
                 });
+                */
             })
             .catch(function(error) {
                 console.log('Service Worker hatası:', error);
