@@ -1,0 +1,54 @@
+name: Auto Deploy avec Version Git
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generer version
+        run: |
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          COMMIT_DATE=$(date '+%Y-%m-%d')
+          cat > version.js << 'ENDOFFILE'
+          const APP_VERSION = {
+              number: 'HASHPLACEHOLDER',
+              date: 'DATEPLACEHOLDER',
+              changelog: ['Mise a jour automatique']
+          };
+          if (typeof window !== 'undefined') {
+              window.APP_VERSION = APP_VERSION;
+          }
+          if (typeof self !== 'undefined' && typeof window === 'undefined') {
+              self.APP_VERSION = APP_VERSION;
+          }
+          ENDOFFILE
+          sed -i "s/HASHPLACEHOLDER/$COMMIT_HASH/g" version.js
+          sed -i "s/DATEPLACEHOLDER/$COMMIT_DATE/g" version.js
+          echo "Version: $COMMIT_HASH"
+          cat version.js
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
