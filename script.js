@@ -2718,16 +2718,6 @@ if ('serviceWorker' in navigator) {
             });
     });
 
-    // Vérification automatique des mises à jour toutes les 60 secondes
-    setInterval(function() {
-        navigator.serviceWorker.getRegistration().then(function(registration) {
-            if (registration) {
-                console.log('🔍 Vérification des mises à jour...');
-                registration.update();
-            }
-        });
-    }, 60000); // 60 secondes
-
     // Écouter les changements de Service Worker
     navigator.serviceWorker.addEventListener('controllerchange', function() {
         window.location.reload();
@@ -3285,16 +3275,27 @@ function showUpdatePrompt(newVersion) {
     );
 }
 
-// Démarrer la vérification automatique après le chargement de la page
+// Vérification au chargement et au retour de focus (0 consommation batterie)
 window.addEventListener('load', function() {
     // Première vérification après 10 secondes (laisser l'app se charger)
     setTimeout(function() {
-        console.log('🔍 Démarrage des vérifications automatiques de mise à jour');
+        console.log('🔍 Vérification initiale des mises à jour');
         checkForAppUpdates();
-
-        // Puis vérifier toutes les 60 secondes
-        setInterval(checkForAppUpdates, 60000);
     }, 10000);
+});
+
+// Vérifier quand l'utilisateur revient sur l'onglet
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        console.log('🔍 Utilisateur de retour - Vérification des mises à jour');
+        checkForAppUpdates();
+    }
+});
+
+// Vérifier quand la fenêtre reprend le focus
+window.addEventListener('focus', function() {
+    console.log('🔍 Fenêtre en focus - Vérification des mises à jour');
+    checkForAppUpdates();
 });
 
 // ============================================
