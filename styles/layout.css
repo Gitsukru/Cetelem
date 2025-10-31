@@ -53,6 +53,8 @@ body {
 .tabs {
     flex-shrink: 0;
     display: flex;
+    justify-content: center; /* Centrer les onglets */
+    gap: 8px; /* Espacement entre les onglets */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     padding: 5px;
