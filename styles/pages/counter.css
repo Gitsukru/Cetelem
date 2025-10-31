@@ -99,3 +99,48 @@
         font-size: 13px;
     }
 }
+
+/* ============================================
+   TESBIH CONTAINER & BACKGROUND
+   ============================================ */
+
+/* Container tesbih - Défaut (mobile/small) */
+.tesbih-container {
+    position: relative;
+    width: min(650px, 90vw);
+    height: min(650px, 90vw);
+    max-width: 100%;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Image tesbih background - Défaut (mobile/small) - Agrandi et centré */
+.tesbih-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../assets/images/tesbih.png?v=2025101202');
+    background-size: contain;
+    background-position: center center; /* Mieux centré */
+    background-repeat: no-repeat;
+    opacity: 0.77;
+    filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.4)) brightness(1.2);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Écran large (≥768px) */
+@media (min-width: 768px) {
+    .tesbih-container {
+        width: min(700px, 90vw);
+        height: min(700px, 90vw);
+    }
+
+    .tesbih-bg {
+        background-position: calc(50% - 4mm) calc(50% + 2mm);
+    }
+}
