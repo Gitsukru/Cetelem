@@ -3172,90 +3172,18 @@ let lastUpdateCheck = 0;
 let updatePromptShown = false;
 const UPDATE_CHECK_COOLDOWN = 5 * 60 * 1000; // 5 minutes minimum entre les vérifications
 
-// Vérifier les mises à jour en interrogeant version.js
-// Avec throttling pour éviter les vérifications trop fréquentes
+// Vérifier les mises à jour - DÉSACTIVÉE
 function checkForAppUpdates() {
-    // Attendre que window.APP_VERSION soit chargé
-    if (!window.APP_VERSION || !window.APP_VERSION.number) {
-        console.log('⏳ APP_VERSION pas encore chargé, vérification reportée');
-        return;
-    }
-
-    // THROTTLING : Ne pas vérifier si dernière vérification < 5 minutes
-    const now = Date.now();
-    if (now - lastUpdateCheck < UPDATE_CHECK_COOLDOWN) {
-        console.log('⏸️ Vérification ignorée (cooldown actif)');
-        return;
-    }
-
-    lastUpdateCheck = now;
-    const currentVersion = window.APP_VERSION.number;
-
-    // Ajouter un timestamp pour éviter le cache
-    fetch('./version.js?t=' + Date.now(), { cache: 'no-cache' })
-        .then(response => response.text())
-        .then(text => {
-            // Extraire le numéro de version du fichier
-            const match = text.match(/number:\s*'([^']+)'/);
-            if (match && match[1]) {
-                const latestVersion = match[1];
-                console.log(`🔍 Version actuelle: ${currentVersion}, Version disponible: ${latestVersion}`);
-
-                if (latestVersion !== currentVersion && !updatePromptShown) {
-                    console.log('🆕 Nouvelle version détectée !');
-                    updatePromptShown = true; // Empêcher l'affichage multiple
-                    showUpdatePrompt(latestVersion);
-                }
-            }
-        })
-        .catch(error => {
-            console.log('Erreur vérification version:', error);
-        });
+    // Fonction désactivée pour éviter les popups en boucle
+    console.log('⏸️ Vérification mises à jour désactivée');
+    return;
 }
 
-// Afficher le prompt de mise à jour
+// Afficher le prompt de mise à jour - DÉSACTIVÉE
 function showUpdatePrompt(newVersion) {
-    // Vérifier le nombre de refus
-    const refusedCount = parseInt(localStorage.getItem('updateRefusedCount') || '0');
-
-    // Si 3ème refus ou plus → FORCER la mise à jour
-    if (refusedCount >= 3) {
-        showCustomConfirm(
-            '⚠️ Güncelleme Zorunlu',
-            `3 kez ertelendi. Güncelleme şimdi yapılmalıdır!<br><br>` +
-            `Yeni sürüm: <strong>${newVersion}</strong><br><br>` +
-            `✅ Verileriniz otomatik kaydedilecek<br>` +
-            `🔄 Uygulama yenilenecek`,
-            function() {
-                localStorage.setItem('updateRefusedCount', '0');
-                window.location.reload(true);
-            },
-            null // Pas de bouton "Non"
-        );
-        return;
-    }
-
-    // Sinon, afficher le popup normal
-    showCustomConfirm(
-        '🆕 Yeni Sürüm Mevcut',
-        `Yeni bir sürüm bulundu!<br><br>` +
-        `Mevcut: <strong>${window.APP_VERSION.number}</strong> → Yeni: <strong>${newVersion}</strong><br><br>` +
-        `✅ Verileriniz <strong>otomatik olarak kaydedilecek</strong><br>` +
-        `🔄 Uygulama yeniden yüklenecek<br><br>` +
-        `Şimdi güncellemek ister misiniz?`,
-        function() {
-            // Utilisateur accepte
-            localStorage.setItem('updateRefusedCount', '0');
-            window.location.reload(true);
-        },
-        function() {
-            // Utilisateur refuse
-            updatePromptShown = false; // Réinitialiser pour pouvoir réafficher plus tard
-            const count = parseInt(localStorage.getItem('updateRefusedCount') || '0') + 1;
-            localStorage.setItem('updateRefusedCount', count.toString());
-            showCustomAlert(`Mise à jour reportée (${count}/3)`, 'info', 2000);
-        }
-    );
+    // Fonction désactivée pour éviter les popups en boucle
+    console.log('⏸️ Popup mise à jour désactivé');
+    return;
 }
 
 // Vérification DÉSACTIVÉE TEMPORAIREMENT (à cause de bug sur mobile)
