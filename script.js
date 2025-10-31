@@ -2799,13 +2799,10 @@ function initializeBackend() {
 
     // Si pas de config valide, désactiver le mode groupe
     if (!config) {
-      console.warn('⚠️ Backend non configuré - Mode groupe désactivé');
-      console.info('💡 L\'application fonctionne en mode local uniquement');
-      // Désactiver visuellement l'onglet groupe
+      // Désactiver complètement l'onglet groupe
       const groupTab = document.querySelector('.tab-button[onclick*="group"]');
       if (groupTab) {
-        groupTab.style.opacity = '0.5';
-        groupTab.title = 'Configuration backend requise';
+        groupTab.style.display = 'none'; // Cacher complètement
       }
       return;
     }

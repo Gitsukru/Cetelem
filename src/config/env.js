@@ -35,7 +35,7 @@ const ENV = {
     }
 
     // Mode 3: Retourner chaîne vide au lieu d'erreur (mode dégradé)
-    console.warn('⚠️ SUPABASE_URL manquant - Mode groupe désactivé');
+    // Supprimé le warning répété - un seul message suffit dans backend.config.js
     return '';
   },
 
@@ -51,7 +51,7 @@ const ENV = {
     }
 
     // Mode 3: Retourner chaîne vide au lieu d'erreur (mode dégradé)
-    console.warn('⚠️ SUPABASE_ANON_KEY manquant - Mode groupe désactivé');
+    // Supprimé le warning répété - un seul message suffit dans backend.config.js
     return '';
   },
 

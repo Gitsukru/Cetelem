@@ -22,18 +22,12 @@ const BackendConfig = {
       return { url: '', key: '', enabled: false };
     }
 
-    // 🔍 DEBUG: Logger ce qui vient de ENV
-    console.log('🔍 BackendConfig.supabase appelé')
-    console.log('📍 ENV.SUPABASE_URL:', ENV.SUPABASE_URL)
-    console.log('🔑 ENV.SUPABASE_ANON_KEY (50 premiers):', ENV.SUPABASE_ANON_KEY?.substring(0, 50))
-    console.log('🔑 Key length:', ENV.SUPABASE_ANON_KEY?.length)
-    console.log('🔑 Key contient des espaces?', ENV.SUPABASE_ANON_KEY?.includes(' '))
-
     const hasValidConfig = ENV.SUPABASE_URL && ENV.SUPABASE_ANON_KEY &&
                           ENV.SUPABASE_URL !== '' && ENV.SUPABASE_ANON_KEY !== '';
 
+    // Un seul message si pas configuré
     if (!hasValidConfig) {
-      console.warn('⚠️ Clés Supabase non configurées. Le mode groupe ne sera pas disponible.');
+      console.info('💡 Mode local uniquement - Fonctionnalité groupe désactivée');
     }
 
     return {
@@ -64,11 +58,7 @@ const BackendConfig = {
       const config = this[this.ACTIVE_PROVIDER]
 
       if (!config || !config.enabled) {
-        console.warn(`⚠️ Provider ${this.ACTIVE_PROVIDER} non configuré ou désactivé`);
-        console.info('💡 Pour activer le mode groupe:');
-        console.info('   1. Configurez les variables d\'environnement sur Netlify');
-        console.info('   2. Ajoutez VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY');
-        console.info('   3. Redéployez l\'application');
+        // Message déjà affiché dans le getter supabase
         return null;
       }
 
