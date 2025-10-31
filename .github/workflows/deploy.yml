@@ -1,16 +1,16 @@
 name: Auto Deploy avec Version Git
 
-  on:
+on:
     push:
       branches:
         - main
 
-  permissions:
+permissions:
     contents: write
     pages: write
     id-token: write
 
-  jobs:
+jobs:
     deploy:
       runs-on: ubuntu-latest
       steps:
@@ -22,14 +22,14 @@ name: Auto Deploy avec Version Git
         - name: Générer version.js
           run: |
             COMMIT_HASH=$(git rev-parse --short HEAD)
-            COMMIT_DATE=$(git log -1 --format=%cd 
-  --date=format:'%Y-%m-%d')
+            COMMIT_DATE=$(git log -1 --format=%cd
+            --date=format:'%Y-%m-%d')
             cat > version.js << 'EOF'
             const APP_VERSION = {
-                number: 'HASH_PLACEHOLDER',
-                date: 'DATE_PLACEHOLDER',
-                changelog: ['Mise à jour automatique']
-            };
+          number: 'HASH_PLACEHOLDER',
+          date: 'DATE_PLACEHOLDER',
+          changelog: ['Mise à jour automatique']
+          };
             if (typeof window !== 'undefined') {
                 window.APP_VERSION = APP_VERSION;
             }
