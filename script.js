@@ -2718,6 +2718,16 @@ if ('serviceWorker' in navigator) {
             });
     });
 
+    // Vérification automatique des mises à jour toutes les 60 secondes
+    setInterval(function() {
+        navigator.serviceWorker.getRegistration().then(function(registration) {
+            if (registration) {
+                console.log('🔍 Vérification des mises à jour...');
+                registration.update();
+            }
+        });
+    }, 60000); // 60 secondes
+
     // Écouter les changements de Service Worker
     navigator.serviceWorker.addEventListener('controllerchange', function() {
         window.location.reload();
