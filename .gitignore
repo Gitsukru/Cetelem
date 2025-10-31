@@ -19,6 +19,9 @@ node_modules/
 # Fichiers de configuration générés (contiennent des clés API)
 src/config/env.local.js
 
+# Version générée automatiquement par Netlify
+version.js
+
 # Tests
 coverage/
 *.test.js.snap
