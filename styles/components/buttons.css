@@ -94,6 +94,14 @@
     opacity: 0.5;
 }
 
+/* Position écran large */
+@media (min-width: 768px) {
+    .sound-toggle {
+        bottom: 15%;
+        right: 15%;
+    }
+}
+
 /* Boutons standards */
 .add-button {
     background: #007bff;
