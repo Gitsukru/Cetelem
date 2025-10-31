@@ -1,4 +1,5 @@
 // Variables globales - SYSTÈME SIMPLIFIÉ
+// Test système de mise à jour automatique
 let categories = JSON.parse(localStorage.getItem('categories')) || ['Subhan Allah', 'Elhamdulillah', 'Allahu Ekber'];
 let counters = JSON.parse(localStorage.getItem('counters')) || {};
 let currentCategory = '';
