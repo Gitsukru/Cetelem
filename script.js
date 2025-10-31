@@ -2755,12 +2755,13 @@ function initializeBackend() {
   try {
     const config = BackendConfig.getActiveProvider()
 
-    // Si pas de config valide, désactiver le mode groupe
+    // Si pas de config valide, afficher un avertissement mais garder l'onglet visible
     if (!config) {
-      // Désactiver complètement l'onglet groupe
+      console.info('💡 Configuration Supabase requise pour le mode groupe');
       const groupTab = document.querySelector('.tab-button[onclick*="group"]');
       if (groupTab) {
-        groupTab.style.display = 'none'; // Cacher complètement
+        groupTab.style.opacity = '0.6';
+        groupTab.title = 'Configuration Supabase requise (variables d\'environnement Netlify)';
       }
       return;
     }
