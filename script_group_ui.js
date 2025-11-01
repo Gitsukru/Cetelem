@@ -153,6 +153,12 @@ function hideGroupTabs() {
     noGroupHeader.style.display = 'block';
   }
 
+  // Masquer les formulaires si affichés
+  const createSection = document.getElementById('createSection');
+  const joinSection = document.getElementById('joinSection');
+  if (createSection) createSection.style.display = 'none';
+  if (joinSection) joinSection.style.display = 'none';
+
   // Masquer les sub-tabs
   const groupTabs = document.getElementById('groupTabs');
   if (groupTabs) {

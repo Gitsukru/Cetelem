@@ -177,45 +177,49 @@ async function doJoinGroup() {
   }
 }
 
-// Show group interface
+// Show group interface (LEGACY - adapté pour nouveau système)
 function showGroupInterface(code) {
-  document.getElementById('createSection').style.display = 'none'
-  document.getElementById('joinSection').style.display = 'none'
-  document.getElementById('groupStatus').style.display = 'block'
-  document.getElementById('leaderboard').style.display = 'block'
+  // ✅ Nouveau système : les sub-tabs gèrent l'affichage
+  // On met juste à jour les infos qui existent encore
 
   const groupInfo = groupManager.getCurrentGroup()
 
-  if (groupInfo.isCreator) {
-    document.getElementById('statusTitle').textContent = 'Grup Yöneticisi'
-    document.getElementById('statusMessage').textContent = `${groupInfo.group.name} grubunu yönetiyorsunuz`
-  } else {
-    document.getElementById('statusTitle').textContent = 'Grup Üyesi'
-    document.getElementById('statusMessage').textContent = `${groupInfo.group.name} grubundasınız`
+  const statusTitleEl = document.getElementById('statusTitle')
+  const statusMessageEl = document.getElementById('statusMessage')
+
+  if (statusTitleEl && statusMessageEl) {
+    if (groupInfo.isCreator) {
+      statusTitleEl.textContent = 'Grup Yöneticisi'
+      statusMessageEl.textContent = `${groupInfo.group.name} grubunu yönetiyorsunuz`
+    } else {
+      statusTitleEl.textContent = 'Grup Üyesi'
+      statusMessageEl.textContent = `${groupInfo.group.name} grubundasınız`
+    }
   }
 
-  // Afficher le code pour tout le monde (créateur et membres)
+  // Afficher le code (existe dans tab Settings)
   const codeShareEl = document.getElementById('codeShare')
-  if (codeShareEl) codeShareEl.style.display = 'flex'
+  if (codeShareEl && groupInfo.isCreator) {
+    codeShareEl.style.display = 'block'
+  }
 
   const displayCodeEl = document.getElementById('displayCode')
   if (displayCodeEl) displayCodeEl.textContent = code
 }
 
-// Show status message
+// Show status message (LEGACY - adapté pour nouveau système)
 function showStatus(title, message) {
-  document.getElementById('createSection').style.display = 'none'
-  document.getElementById('joinSection').style.display = 'none'
-  document.getElementById('groupStatus').style.display = 'block'
-  document.getElementById('leaderboard').style.display = 'none'
-  document.getElementById('statusTitle').textContent = title
-  document.getElementById('statusMessage').textContent = message
-  document.getElementById('codeShare').style.display = 'none'
+  // ✅ Mettre à jour seulement les textes (pas les displays)
+  const statusTitleEl = document.getElementById('statusTitle')
+  const statusMessageEl = document.getElementById('statusMessage')
+
+  if (statusTitleEl) statusTitleEl.textContent = title
+  if (statusMessageEl) statusMessageEl.textContent = message
 }
 
-// Hide status
+// Hide status (LEGACY - ne fait plus rien)
 function hideStatus() {
-  document.getElementById('groupStatus').style.display = 'none'
+  // ✅ Ne rien faire - le nouveau système gère l'affichage
 }
 
 // Update leaderboard
