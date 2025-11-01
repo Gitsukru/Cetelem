@@ -490,6 +490,10 @@
         min-width: 100%;
         margin-bottom: 10px;
     }
+
+    .sound-toggle {
+        bottom: 25%;
+    }
 }
 
 @media (max-width: 640px) {
