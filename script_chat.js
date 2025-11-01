@@ -21,14 +21,15 @@ let isSendingMessage = false;
 function initializeChat() {
   console.log('🔧 Initialisation du chat...');
 
-  // Afficher le chat seulement si groupe actif
+  // Vérifier qu'un groupe est actif
   const groupInfo = groupManager.getCurrentGroup();
   if (!groupInfo.group) {
-    document.getElementById('groupChat').style.display = 'none';
+    console.warn('⚠️ Pas de groupe actif - Chat non initialisé');
     return;
   }
 
-  document.getElementById('groupChat').style.display = 'block';
+  // ✅ Nouveau layout : pas besoin d'afficher/masquer #groupChat
+  // Le chat est dans un tab et géré par le système sub-tabs
 
   // Charger les messages existants
   loadChatMessages();
@@ -400,7 +401,9 @@ function resetChat() {
       </div>
     `;
   }
-  document.getElementById('groupChat').style.display = 'none';
+
+  // ✅ Nouveau layout : pas besoin de masquer #groupChat
+  // Le chat est dans un tab et géré par hideGroupTabs()
 }
 
 // Export pour utilisation
