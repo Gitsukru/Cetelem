@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="styles/books.css">
     <link rel="stylesheet" href="styles/pages/tesbihat.css">
     <link rel="stylesheet" href="styles/chat.css">
+    <link rel="stylesheet" href="styles/notifications.css">
 </head>
 <body>
     <!-- Offline Badge -->
@@ -269,6 +270,46 @@
                         <p>📱 Uygulamayı kapattığınızda bile kalır</p>
                         <p>🔒 Güvenlik yedeklemesi oluşturmak için dışa aktarma kullanın</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Section Hatırlatmalar (Notifications/Rappels) -->
+            <div class="management-section">
+                <h2>🔔 Hatırlatmalar</h2>
+                <p style="color: #64748b; margin-top: 8px; margin-bottom: 20px;">
+                    Günlük zikir hatırlatmaları alın
+                </p>
+
+                <!-- Statut permission -->
+                <div class="reminder-status" id="reminderStatus">
+                    <div class="status-icon" id="statusIcon">🔕</div>
+                    <div class="status-text">
+                        <strong id="statusTitle">Bildirimler Kapalı</strong>
+                        <p id="statusMessage">Hatırlatma almak için bildirimleri aktifleştirin</p>
+                    </div>
+                </div>
+
+                <!-- Bouton activation -->
+                <button class="backup-button" id="enableNotificationsBtn" onclick="enableNotifications()" style="width: 100%; margin-top: 16px;">
+                    🔔 Bildirimleri Etkinleştir
+                </button>
+
+                <!-- Liste des rappels -->
+                <div id="remindersList" class="reminders-list" style="display: none;">
+                    <!-- Les rappels seront ajoutés ici dynamiquement -->
+                </div>
+
+                <!-- Bouton ajouter rappel -->
+                <button class="add-button" id="addReminderBtn" onclick="showAddReminderModal()" style="display: none; width: 100%; margin-top: 16px;">
+                    <span style="font-size: 18px; margin-right: 8px;">+</span>
+                    Yeni Hatırlatma Ekle
+                </button>
+
+                <div class="backup-info" style="margin-top: 20px;">
+                    <p>⏰ Hatırlatmalar seçtiğiniz saatlerde otomatik gelir</p>
+                    <p>🔕 İstediğiniz zaman kapatabilirsiniz</p>
+                    <p>📱 Tarayıcı açıkken arka planda çalışır</p>
+                    <p style="font-size: 12px; color: #94a3b8;">ℹ️ iOS Safari bildirimleri desteklemiyor (sadece Android/Desktop)</p>
                 </div>
             </div>
         </div>
@@ -559,6 +600,7 @@
     <script src="src/utils/quota-monitor.js"></script>
     <script src="src/utils/device-backup.js"></script>
     <script src="src/utils/welcome-modal.js"></script>
+    <script src="src/utils/notifications.js"></script>
 
     <!-- Configuration -->
     <script src="src/config/env.js"></script>
@@ -575,6 +617,7 @@
     <script src="script.js"></script>
     <script src="script_group.js"></script>
     <script src="script_chat.js"></script>
+    <script src="script_notifications.js"></script>
     <script src="script_books.js"></script>
 
     <!-- Tesbihat Scripts -->
