@@ -103,6 +103,11 @@ async function doCreateGroup() {
     await groupManager.updateMyScore(stats)
     await updateLeaderboard()
 
+    // 💬 Initialiser le chat
+    if (typeof initializeChat === 'function') {
+      initializeChat()
+    }
+
   } catch (error) {
     console.error('Erreur création groupe:', error)
     showCustomAlert(`Grup oluşturulamadı!<br>${error.message}`, 'error', 4000)
@@ -159,6 +164,11 @@ async function doJoinGroup() {
     const stats = getCurrentUserStats()
     await groupManager.updateMyScore(stats)
     await updateLeaderboard()
+
+    // 💬 Initialiser le chat
+    if (typeof initializeChat === 'function') {
+      initializeChat()
+    }
 
   } catch (error) {
     console.error('Erreur rejoindre groupe:', error)
@@ -462,6 +472,11 @@ function leaveGroup() {
         document.getElementById('joinSection').style.display = 'none'
         document.getElementById('groupStatus').style.display = 'none'
         document.getElementById('leaderboard').style.display = 'none'
+
+        // 💬 Réinitialiser le chat
+        if (typeof resetChat === 'function') {
+          resetChat()
+        }
 
         displayGroupHistory()
         showCustomAlert('Gruptan ayrıldınız', 'success', 2000)

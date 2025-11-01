@@ -26,6 +26,9 @@ let isHost = false;
 let connections = new Map();
 let currentGroup = null;
 
+// Rate limiter pour syncs groupe (5 syncs max par minute)
+const groupSyncLimiter = typeof rateLimiter !== 'undefined' ? rateLimiter : null;
+
 // Timer functions
 function startTimer() {
     startTime = Date.now();
@@ -1574,6 +1577,20 @@ function incrementCounter() {
         // Update group count with new GroupManager system
         if (groupManager && groupManager.hasActiveGroup()) {
             const stats = getCurrentUserStats()
+
+            // 🔒 Rate limiting: 5 syncs max par minute
+            if (groupSyncLimiter) {
+                const rateLimitCheck = groupSyncLimiter.check('group_sync', {
+                    maxAttempts: 5,
+                    windowMs: 60000 // 1 minute
+                })
+
+                if (!rateLimitCheck.allowed) {
+                    console.warn(`⏳ Rate limit: ${rateLimitCheck.message}`)
+                    return // Skip sync si trop rapide
+                }
+            }
+
             // ⚡ FIX: Await pour éviter race condition
             groupManager.updateMyScore(stats).catch(err => {
                 console.error('Erreur mise à jour score:', err)
@@ -2799,6 +2816,11 @@ function initializeBackend() {
         if (isGroupTabActive) {
           showGroupInterface(groupInfo.group.code)
           updateLeaderboard()
+
+          // 💬 Initialiser le chat
+          if (typeof initializeChat === 'function') {
+            initializeChat()
+          }
         }
       } else {
         // Pas de groupe actif - afficher l'historique si onglet groupe actif

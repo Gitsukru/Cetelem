@@ -1,0 +1,393 @@
+/**
+ * CHAT GROUPE - Logique
+ * Gestion des messages en temps réel via Supabase
+ */
+
+// Variables globales chat
+let chatSubscription = null;
+let chatMessages = [];
+let isChatCollapsed = false;
+
+/**
+ * Initialiser le chat quand un groupe est actif
+ */
+function initializeChat() {
+  console.log('🔧 Initialisation du chat...');
+
+  // Afficher le chat seulement si groupe actif
+  const groupInfo = groupManager.getCurrentGroup();
+  if (!groupInfo.group) {
+    document.getElementById('groupChat').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('groupChat').style.display = 'block';
+
+  // Charger les messages existants
+  loadChatMessages();
+
+  // S'abonner aux nouveaux messages (Realtime)
+  subscribeToChatMessages();
+
+  // Ajouter écouteur sur textarea
+  const input = document.getElementById('chatMessageInput');
+  if (input) {
+    // Compteur de caractères
+    input.addEventListener('input', updateCharCount);
+
+    // Enter pour envoyer (Shift+Enter pour nouvelle ligne)
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChatMessage();
+      }
+    });
+  }
+
+  console.log('✅ Chat initialisé');
+}
+
+/**
+ * Charger les messages existants (50 derniers)
+ */
+async function loadChatMessages() {
+  try {
+    const groupInfo = groupManager.getCurrentGroup();
+    if (!groupInfo.group) return;
+
+    const { data, error } = await supabase
+      .from('group_messages')
+      .select('*')
+      .eq('group_id', groupInfo.group.id)
+      .order('created_at', { ascending: true })
+      .limit(50);
+
+    if (error) throw error;
+
+    console.log(`📥 ${data.length} messages chargés`);
+
+    // Vider et afficher les messages
+    chatMessages = data;
+    displayAllMessages();
+
+  } catch (error) {
+    console.error('❌ Erreur chargement messages:', error);
+  }
+}
+
+/**
+ * S'abonner aux nouveaux messages (Realtime)
+ */
+function subscribeToChatMessages() {
+  const groupInfo = groupManager.getCurrentGroup();
+  if (!groupInfo.group) return;
+
+  // Se désabonner si déjà abonné
+  if (chatSubscription) {
+    supabase.removeChannel(chatSubscription);
+  }
+
+  // S'abonner aux messages de ce groupe
+  chatSubscription = supabase
+    .channel(`chat_${groupInfo.group.id}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'group_messages',
+        filter: `group_id=eq.${groupInfo.group.id}`
+      },
+      (payload) => {
+        console.log('💬 Nouveau message reçu:', payload);
+        handleNewMessage(payload.new);
+      }
+    )
+    .subscribe();
+
+  console.log('👂 Abonné aux messages temps réel');
+}
+
+/**
+ * Gérer un nouveau message reçu
+ */
+function handleNewMessage(message) {
+  // Ajouter à la liste si pas déjà présent
+  if (!chatMessages.find(m => m.id === message.id)) {
+    chatMessages.push(message);
+    displayMessage(message, true); // true = animer
+    scrollToBottom();
+  }
+}
+
+/**
+ * Afficher tous les messages
+ */
+function displayAllMessages() {
+  const container = document.getElementById('chatMessages');
+  if (!container) return;
+
+  // Vider le container
+  container.innerHTML = '';
+
+  if (chatMessages.length === 0) {
+    // Afficher message vide
+    container.innerHTML = `
+      <div class="chat-empty">
+        <span class="empty-icon">💭</span>
+        <p>Henüz mesaj yok</p>
+        <small>İlk mesajı siz gönderin!</small>
+      </div>
+    `;
+    return;
+  }
+
+  // Afficher tous les messages
+  chatMessages.forEach(message => {
+    displayMessage(message, false); // false = pas d'animation
+  });
+
+  scrollToBottom();
+}
+
+/**
+ * Afficher un message
+ */
+function displayMessage(message, animate = false) {
+  const container = document.getElementById('chatMessages');
+  if (!container) return;
+
+  // Supprimer le message vide si présent
+  const emptyDiv = container.querySelector('.chat-empty');
+  if (emptyDiv) {
+    emptyDiv.remove();
+  }
+
+  const groupInfo = groupManager.getCurrentGroup();
+  const isMe = message.participant_id === groupInfo.participant?.id;
+
+  // Formater la date
+  const date = new Date(message.created_at);
+  const timeStr = formatMessageTime(date);
+
+  // Créer le HTML du message
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `chat-message ${isMe ? 'me' : 'other'}`;
+  if (animate) {
+    messageDiv.style.animation = 'slideIn 0.3s ease';
+  }
+
+  messageDiv.innerHTML = `
+    <div class="message-bubble">
+      ${!isMe ? `<div class="message-sender">${escapeHtml(message.participant_name)}</div>` : ''}
+      <p class="message-content">${escapeHtml(message.message)}</p>
+      <div class="message-time">${timeStr}</div>
+    </div>
+  `;
+
+  container.appendChild(messageDiv);
+}
+
+/**
+ * Envoyer un message
+ */
+async function sendChatMessage() {
+  const input = document.getElementById('chatMessageInput');
+  if (!input) return;
+
+  const message = input.value.trim();
+
+  // Validation
+  if (!message) {
+    return;
+  }
+
+  if (message.length > 500) {
+    if (typeof showCustomAlert === 'function') {
+      showCustomAlert('⚠️ Mesaj çok uzun (max 500 karakter)', 'warning', 2000);
+    }
+    return;
+  }
+
+  try {
+    const groupInfo = groupManager.getCurrentGroup();
+    if (!groupInfo.group || !groupInfo.participant) {
+      throw new Error('Grup aktif değil');
+    }
+
+    // Désactiver le bouton d'envoi
+    const sendBtn = document.querySelector('.chat-send-btn');
+    if (sendBtn) {
+      sendBtn.disabled = true;
+    }
+
+    // Insérer le message dans Supabase
+    const { data, error } = await supabase
+      .from('group_messages')
+      .insert({
+        group_id: groupInfo.group.id,
+        participant_id: groupInfo.participant.id,
+        participant_name: groupInfo.participant.name,
+        message: message
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    console.log('✅ Message envoyé:', data);
+
+    // Vider l'input
+    input.value = '';
+    updateCharCount();
+
+    // Le message sera ajouté automatiquement via Realtime
+
+  } catch (error) {
+    console.error('❌ Erreur envoi message:', error);
+    if (typeof showCustomAlert === 'function') {
+      showCustomAlert('❌ Mesaj gönderilemedi', 'error', 2000);
+    }
+  } finally {
+    // Réactiver le bouton
+    const sendBtn = document.querySelector('.chat-send-btn');
+    if (sendBtn) {
+      sendBtn.disabled = false;
+    }
+  }
+}
+
+/**
+ * Basculer l'état du chat (ouvert/fermé)
+ */
+function toggleChat() {
+  const chatBody = document.getElementById('chatBody');
+  const toggleIcon = document.getElementById('chatToggleIcon');
+
+  if (!chatBody || !toggleIcon) return;
+
+  isChatCollapsed = !isChatCollapsed;
+
+  if (isChatCollapsed) {
+    chatBody.classList.add('collapsed');
+    toggleIcon.textContent = '▶';
+  } else {
+    chatBody.classList.remove('collapsed');
+    toggleIcon.textContent = '▼';
+    scrollToBottom();
+  }
+}
+
+/**
+ * Mettre à jour le compteur de caractères
+ */
+function updateCharCount() {
+  const input = document.getElementById('chatMessageInput');
+  const counter = document.getElementById('chatCharCount');
+
+  if (!input || !counter) return;
+
+  const length = input.value.length;
+  counter.textContent = `${length}/500`;
+
+  if (length > 500) {
+    counter.classList.add('over-limit');
+  } else {
+    counter.classList.remove('over-limit');
+  }
+}
+
+/**
+ * Scroller vers le bas des messages
+ */
+function scrollToBottom() {
+  const container = document.getElementById('chatMessages');
+  if (!container) return;
+
+  setTimeout(() => {
+    container.scrollTop = container.scrollHeight;
+  }, 100);
+}
+
+/**
+ * Formater le temps d'un message
+ */
+function formatMessageTime(date) {
+  const now = new Date();
+  const diff = now - date;
+
+  // Moins de 1 minute
+  if (diff < 60000) {
+    return 'Şimdi';
+  }
+
+  // Moins de 1 heure
+  if (diff < 3600000) {
+    const minutes = Math.floor(diff / 60000);
+    return `${minutes} dk önce`;
+  }
+
+  // Aujourd'hui
+  if (date.toDateString() === now.toDateString()) {
+    return `Bugün ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  }
+
+  // Hier
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) {
+    return `Dün ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  }
+
+  // Autre jour
+  return `${date.getDate()}/${date.getMonth() + 1} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
+/**
+ * Échapper HTML pour sécurité
+ */
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+/**
+ * Se désabonner du chat
+ */
+function unsubscribeFromChat() {
+  if (chatSubscription) {
+    supabase.removeChannel(chatSubscription);
+    chatSubscription = null;
+    console.log('👋 Désabonné du chat');
+  }
+}
+
+/**
+ * Réinitialiser le chat (quand on quitte le groupe)
+ */
+function resetChat() {
+  unsubscribeFromChat();
+  chatMessages = [];
+  const container = document.getElementById('chatMessages');
+  if (container) {
+    container.innerHTML = `
+      <div class="chat-empty">
+        <span class="empty-icon">💭</span>
+        <p>Henüz mesaj yok</p>
+        <small>İlk mesajı siz gönderin!</small>
+      </div>
+    `;
+  }
+  document.getElementById('groupChat').style.display = 'none';
+}
+
+// Export pour utilisation
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    initializeChat,
+    sendChatMessage,
+    toggleChat,
+    resetChat
+  };
+}
