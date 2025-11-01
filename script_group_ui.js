@@ -51,6 +51,47 @@ function capitalize(str) {
 }
 
 // ============================================
+// MISE À JOUR INFOS GROUPE
+// ============================================
+
+/**
+ * Mettre à jour les infos du groupe dans le tab Settings
+ */
+function updateGroupInfo() {
+  const groupInfo = groupManager.getCurrentGroup();
+  if (!groupInfo || !groupInfo.group) return;
+
+  // Mettre à jour statusTitle et statusMessage
+  const statusTitleEl = document.getElementById('statusTitle');
+  const statusMessageEl = document.getElementById('statusMessage');
+
+  if (statusTitleEl && statusMessageEl) {
+    const isManager = groupInfo.participant?.id === groupInfo.group.manager_id;
+
+    if (isManager) {
+      statusTitleEl.textContent = 'Grup Yöneticisi';
+      statusMessageEl.textContent = `${groupInfo.group.name} grubunu yönetiyorsunuz`;
+    } else {
+      statusTitleEl.textContent = 'Grup Üyesi';
+      statusMessageEl.textContent = `${groupInfo.group.name} grubundasınız`;
+    }
+  }
+
+  // Afficher le code si yönetici
+  const codeShareEl = document.getElementById('codeShare');
+  const displayCodeEl = document.getElementById('displayCode');
+
+  if (groupInfo.participant?.id === groupInfo.group.manager_id) {
+    if (codeShareEl) codeShareEl.style.display = 'block';
+    if (displayCodeEl) displayCodeEl.textContent = groupInfo.group.code;
+  } else {
+    if (codeShareEl) codeShareEl.style.display = 'none';
+  }
+
+  console.log('✅ Infos groupe mises à jour');
+}
+
+// ============================================
 // BANNER GROUPE ACTIF
 // ============================================
 
@@ -135,6 +176,9 @@ function showGroupTabs() {
 
   // Afficher le banner
   showActiveGroupBanner();
+
+  // Mettre à jour les infos du groupe dans tab Settings
+  updateGroupInfo();
 
   // Par défaut, afficher le tab "Sıralama"
   switchGroupTab('ranking');
