@@ -103,9 +103,9 @@ async function doCreateGroup() {
     await groupManager.updateMyScore(stats)
     await updateLeaderboard()
 
-    // 💬 Initialiser le chat
-    if (typeof initializeChat === 'function') {
-      initializeChat()
+    // ✅ Afficher le nouvel UI avec sub-tabs
+    if (typeof onGroupJoined === 'function') {
+      onGroupJoined()
     }
 
   } catch (error) {
@@ -165,9 +165,9 @@ async function doJoinGroup() {
     await groupManager.updateMyScore(stats)
     await updateLeaderboard()
 
-    // 💬 Initialiser le chat
-    if (typeof initializeChat === 'function') {
-      initializeChat()
+    // ✅ Afficher le nouvel UI avec sub-tabs
+    if (typeof onGroupJoined === 'function') {
+      onGroupJoined()
     }
 
   } catch (error) {
@@ -467,15 +467,9 @@ function leaveGroup() {
       try {
         await groupManager.leaveGroup()
 
-        // Reset UI
-        document.getElementById('createSection').style.display = 'none'
-        document.getElementById('joinSection').style.display = 'none'
-        document.getElementById('groupStatus').style.display = 'none'
-        document.getElementById('leaderboard').style.display = 'none'
-
-        // 💬 Réinitialiser le chat
-        if (typeof resetChat === 'function') {
-          resetChat()
+        // ✅ Reset UI avec nouveau système
+        if (typeof onGroupLeft === 'function') {
+          onGroupLeft()
         }
 
         displayGroupHistory()

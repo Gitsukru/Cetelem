@@ -44,6 +44,7 @@
     <link rel="stylesheet" href="styles/chat.css">
     <link rel="stylesheet" href="styles/notifications.css">
     <link rel="stylesheet" href="styles/calendar.css">
+    <link rel="stylesheet" href="styles/group-tabs.css">
 </head>
 <body>
     <!-- Offline Badge -->
@@ -317,15 +318,34 @@
 
         <!-- Grup Sekmesi -->
         <div id="group" class="tab-content">
+            <!-- Sticky Header: Groupe Actif (masqué si pas de groupe) -->
+            <div id="activeGroupBanner" class="active-group-banner" style="display: none;">
+                <div class="banner-left">
+                    <span class="status-dot">🟢</span>
+                    <div class="banner-info">
+                        <div class="banner-group-name" id="bannerGroupName">-</div>
+                        <div class="banner-details">
+                            <span id="bannerGroupCode">-</span> •
+                            <span id="bannerUserRole">Üye</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="banner-leave-btn" onclick="leaveGroup()" title="Gruptan Ayrıl">
+                    🚪
+                </button>
+            </div>
+
             <div class="management-section">
-                <div class="group-header">
+                <!-- Header Initial (quand pas de groupe actif) -->
+                <div id="noGroupHeader" class="group-header">
                     <div class="group-header-icon">👥</div>
                     <h2 class="group-header-title">Grup Çalışması</h2>
                     <p class="group-header-subtitle">Arkadaşlarınla yarış, motivasyonunu artır</p>
                 </div>
 
                 <div class="group-simple-form">
-                    <div class="mode-selection">
+                    <!-- Boutons Créer/Rejoindre (masqués si groupe actif) -->
+                    <div id="modeSelection" class="mode-selection">
                         <button class="mode-button create-btn" onclick="createGroup()">
                             <span class="mode-icon">✨</span>
                             <div class="mode-text">
@@ -394,92 +414,114 @@
                         </div>
                     </div>
 
-                    <!-- Status + Leaderboard combinés -->
-                    <div id="groupStatus" class="section" style="display: none;">
-                        <!-- Header horizontal responsive avec 3 sections -->
-                        <div class="group-info-header">
-                            <!-- Section 1: Statut -->
-                            <div class="group-info-card">
-                                <div class="info-icon">YÖN</div>
-                                <div class="info-content">
-                                    <h3 class="info-title" id="statusTitle">Grup Yöneticisi</h3>
-                                    <p class="info-subtitle" id="statusMessage">Yükleniyor...</p>
-                                </div>
-                            </div>
-
-                            <!-- Section 2: Code -->
-                            <div class="group-info-card" id="codeShare" style="display: none;">
-                                <div class="info-content">
-                                    <label class="info-label">Grup Kodu</label>
-                                    <div class="code-display">
-                                        <span class="code-value" id="displayCode">-</span>
-                                        <button class="share-icon-btn" onclick="shareCode()" title="Paylaş">📤</button>
-                                    </div>
-                                    <p class="info-hint">Arkadaşlarınla bu kodu paylaş</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Leaderboard -->
-                    <div id="leaderboard" class="section" style="display: none;">
-
-                        <div class="leaderboard-table">
-                            <div id="leaderboardContent">Yükleniyor...</div>
-                        </div>
-
-                        <div class="group-controls">
-                            <button class="control-btn refresh-btn" onclick="refreshLeaderboard()">
-                                <span class="control-icon">🔄</span>
-                                <span class="control-text">Yenile</span>
+                    <!-- SUB-TABS Container (affiché quand groupe actif) -->
+                    <div id="groupTabs" class="group-tabs-container" style="display: none;">
+                        <!-- Sub-tabs Navigation -->
+                        <div class="group-subtabs">
+                            <button class="group-subtab active" onclick="switchGroupTab('ranking')" data-tab="ranking">
+                                <span class="subtab-icon">📊</span>
+                                <span class="subtab-label">Sıralama</span>
                             </button>
-                            <button class="control-btn leave-btn" onclick="leaveGroup()">
-                                <span class="control-icon">🚪</span>
-                                <span class="control-text">Ayrıl</span>
+                            <button class="group-subtab" onclick="switchGroupTab('chat')" data-tab="chat">
+                                <span class="subtab-icon">💬</span>
+                                <span class="subtab-label">Sohbet</span>
+                            </button>
+                            <button class="group-subtab" onclick="switchGroupTab('settings')" data-tab="settings">
+                                <span class="subtab-icon">⚙️</span>
+                                <span class="subtab-label">Ayarlar</span>
                             </button>
                         </div>
-                    </div>
 
-                    <!-- Chat Groupe (NOUVEAU) -->
-                    <div id="groupChat" class="section chat-section" style="display: none;">
-                        <div class="chat-container">
-                            <div class="chat-header">
-                                <span class="chat-icon">💬</span>
-                                <h3 class="chat-title">Grup Sohbeti</h3>
-                                <button class="chat-toggle" onclick="toggleChat()" title="Daralt/Genişlet">
-                                    <span id="chatToggleIcon">▼</span>
-                                </button>
-                            </div>
-
-                            <div class="chat-body" id="chatBody">
-                                <div class="chat-messages" id="chatMessages">
-                                    <div class="chat-empty">
-                                        <span class="empty-icon">💭</span>
-                                        <p>Henüz mesaj yok</p>
-                                        <small>İlk mesajı siz gönderin!</small>
+                        <!-- Tab Content -->
+                        <div class="group-tab-content">
+                            <!-- TAB 1: Sıralama (Leaderboard) -->
+                            <div id="tabRanking" class="group-tab-pane active">
+                                <div class="leaderboard-container">
+                                    <div class="leaderboard-table">
+                                        <div id="leaderboardContent">Yükleniyor...</div>
                                     </div>
-                                </div>
-
-                                <div class="chat-input-container">
-                                    <textarea
-                                        id="chatMessageInput"
-                                        class="chat-input"
-                                        placeholder="Mesaj yazın..."
-                                        maxlength="500"
-                                        rows="2"></textarea>
-                                    <button class="chat-send-btn" onclick="sendChatMessage()" title="Gönder (Enter)">
-                                        <span class="send-icon">📤</span>
+                                    <button class="tab-action-btn" onclick="refreshLeaderboard()">
+                                        <span class="btn-icon">🔄</span>
+                                        <span class="btn-text">Yenile</span>
                                     </button>
                                 </div>
-                                <div class="chat-info">
-                                    <small id="chatCharCount">0/500</small>
+                            </div>
+
+                            <!-- TAB 2: Sohbet (Chat) -->
+                            <div id="tabChat" class="group-tab-pane">
+                                <div class="chat-tab-wrapper">
+                                    <div class="chat-messages-full" id="chatMessages">
+                                        <div class="chat-empty">
+                                            <span class="empty-icon">💭</span>
+                                            <p>Henüz mesaj yok</p>
+                                            <small>İlk mesajı siz gönderin!</small>
+                                        </div>
+                                    </div>
+                                    <div class="chat-input-fixed">
+                                        <div class="chat-input-row">
+                                            <textarea
+                                                id="chatMessageInput"
+                                                class="chat-input"
+                                                placeholder="Mesaj yazın..."
+                                                maxlength="500"
+                                                rows="2"></textarea>
+                                            <button class="chat-send-btn" onclick="sendChatMessage()" title="Gönder (Enter)">
+                                                <span class="send-icon">📤</span>
+                                            </button>
+                                        </div>
+                                        <div class="chat-char-count">
+                                            <small id="chatCharCount">0/500</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 3: Ayarlar (Settings) -->
+                            <div id="tabSettings" class="group-tab-pane">
+                                <div class="settings-container">
+                                    <!-- Informations groupe -->
+                                    <div class="settings-section">
+                                        <h3 class="settings-title">Grup Bilgileri</h3>
+                                        <div class="settings-info">
+                                            <div class="info-row">
+                                                <span class="info-label">Durum:</span>
+                                                <span class="info-value" id="statusTitle">Yükleniyor...</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span class="info-label">Mesaj:</span>
+                                                <span class="info-value" id="statusMessage">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Code partage (seulement pour manager) -->
+                                    <div id="codeShare" class="settings-section" style="display: none;">
+                                        <h3 class="settings-title">Grup Kodu</h3>
+                                        <div class="code-share-box">
+                                            <div class="code-display-large" id="displayCode">-</div>
+                                            <button class="share-btn-large" onclick="shareCode()">
+                                                <span class="btn-icon">📤</span>
+                                                <span class="btn-text">Kodu Paylaş</span>
+                                            </button>
+                                        </div>
+                                        <p class="code-hint">Arkadaşlarınla bu kodu paylaş</p>
+                                    </div>
+
+                                    <!-- Historique anciens groupes -->
+                                    <div class="settings-section">
+                                        <h3 class="settings-title">Geçmiş Gruplar</h3>
+                                        <div id="groupHistory" class="group-history-compact"></div>
+                                    </div>
+
+                                    <!-- Bouton Leave -->
+                                    <button class="leave-btn-large" onclick="leaveGroup()">
+                                        <span class="btn-icon">🚪</span>
+                                        <span class="btn-text">Gruptan Ayrıl</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Historique des groupes -->
-                    <div id="groupHistory" class="group-history" style="margin-bottom: 10%;"></div>
                 </div>
             </div>
         </div>
@@ -693,6 +735,7 @@
     <script src="script_chat.js"></script>
     <script src="script_notifications.js"></script>
     <script src="script_calendar.js"></script>
+    <script src="script_group_ui.js"></script>
     <script src="script_books.js"></script>
 
     <!-- Tesbihat Scripts -->

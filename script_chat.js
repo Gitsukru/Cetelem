@@ -8,6 +8,13 @@ let chatSubscription = null;
 let chatMessages = [];
 let isChatCollapsed = false;
 
+// Variables pour éviter doublons listeners
+let chatInputInitialized = false;
+let chatEnterHandler = null;
+
+// Flag pour empêcher envoi multiple
+let isSendingMessage = false;
+
 /**
  * Initialiser le chat quand un groupe est actif
  */
@@ -29,19 +36,23 @@ function initializeChat() {
   // S'abonner aux nouveaux messages (Realtime)
   subscribeToChatMessages();
 
-  // Ajouter écouteur sur textarea
+  // Ajouter écouteur sur textarea (UNE SEULE FOIS)
   const input = document.getElementById('chatMessageInput');
-  if (input) {
+  if (input && !chatInputInitialized) {
     // Compteur de caractères
     input.addEventListener('input', updateCharCount);
 
     // Enter pour envoyer (Shift+Enter pour nouvelle ligne)
-    input.addEventListener('keydown', function(e) {
+    chatEnterHandler = function(e) {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendChatMessage();
       }
-    });
+    };
+    input.addEventListener('keydown', chatEnterHandler);
+
+    chatInputInitialized = true;
+    console.log('✅ Event listeners chat installés');
   }
 
   console.log('✅ Chat initialisé');
@@ -192,6 +203,12 @@ function displayMessage(message, animate = false) {
  * Envoyer un message
  */
 async function sendChatMessage() {
+  // Empêcher envoi multiple
+  if (isSendingMessage) {
+    console.warn('⏳ Envoi déjà en cours...');
+    return;
+  }
+
   const input = document.getElementById('chatMessageInput');
   if (!input) return;
 
@@ -208,6 +225,9 @@ async function sendChatMessage() {
     }
     return;
   }
+
+  // Marquer comme en cours d'envoi
+  isSendingMessage = true;
 
   try {
     const groupInfo = groupManager.getCurrentGroup();
@@ -249,11 +269,12 @@ async function sendChatMessage() {
       showCustomAlert('❌ Mesaj gönderilemedi', 'error', 2000);
     }
   } finally {
-    // Réactiver le bouton
+    // Réactiver le bouton et réinitialiser le flag
     const sendBtn = document.querySelector('.chat-send-btn');
     if (sendBtn) {
       sendBtn.disabled = false;
     }
+    isSendingMessage = false;
   }
 }
 
