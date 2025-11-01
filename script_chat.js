@@ -55,7 +55,7 @@ async function loadChatMessages() {
     const groupInfo = groupManager.getCurrentGroup();
     if (!groupInfo.group) return;
 
-    const { data, error } = await supabase
+    const { data, error } = await groupManager.provider.supabase
       .from('group_messages')
       .select('*')
       .eq('group_id', groupInfo.group.id)
@@ -84,11 +84,11 @@ function subscribeToChatMessages() {
 
   // Se désabonner si déjà abonné
   if (chatSubscription) {
-    supabase.removeChannel(chatSubscription);
+    groupManager.provider.supabase.removeChannel(chatSubscription);
   }
 
   // S'abonner aux messages de ce groupe
-  chatSubscription = supabase
+  chatSubscription = groupManager.provider.supabase
     .channel(`chat_${groupInfo.group.id}`)
     .on(
       'postgres_changes',
@@ -222,7 +222,7 @@ async function sendChatMessage() {
     }
 
     // Insérer le message dans Supabase
-    const { data, error } = await supabase
+    const { data, error } = await groupManager.provider.supabase
       .from('group_messages')
       .insert({
         group_id: groupInfo.group.id,
@@ -357,7 +357,7 @@ function escapeHtml(text) {
  */
 function unsubscribeFromChat() {
   if (chatSubscription) {
-    supabase.removeChannel(chatSubscription);
+    groupManager.provider.supabase.removeChannel(chatSubscription);
     chatSubscription = null;
     console.log('👋 Désabonné du chat');
   }
