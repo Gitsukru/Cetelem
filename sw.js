@@ -1,5 +1,5 @@
 // Version fixe pour éviter les erreurs d'import
-const CACHE_VERSION = '2025-10-31-fix2-network-first';
+const CACHE_VERSION = '2025-11-01-update-system-active';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',

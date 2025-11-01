@@ -2688,20 +2688,30 @@ if ('serviceWorker' in navigator) {
             .then(function(registration) {
                 console.log('Service Worker başarıyla kaydedildi:', registration.scope);
 
-                // Vérifier les mises à jour - DÉSACTIVÉ TEMPORAIREMENT
-                // TODO: Réactiver avec système robuste
-                /*
+                // ✅ Vérifier les mises à jour - RÉACTIVÉ
                 registration.addEventListener('updatefound', function() {
                     const newWorker = registration.installing;
+                    console.log('🔍 Nouvelle version SW en cours d\'installation...');
+
                     newWorker.addEventListener('statechange', function() {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('🆕 Nouvelle version SW détectée (popup désactivé)');
+                            console.log('🆕 Nouvelle version disponible !');
                             pendingServiceWorker = newWorker;
-                            // Pas de popup pour l'instant
+
+                            // Afficher la bannière de mise à jour
+                            showUpdateBanner();
+
+                            // Si l'utilisateur a refusé 3 fois, forcer la MAJ
+                            if (updateRefusedCount >= 3) {
+                                console.log('⚠️ 3 refus atteints - Mise à jour forcée dans 5s');
+                                showCustomAlert('⚠️ Mise à jour obligatoire dans 5s...', 'warning', 5000);
+                                setTimeout(() => {
+                                    applyUpdateNow();
+                                }, 5000);
+                            }
                         }
                     });
                 });
-                */
             })
             .catch(function(error) {
                 console.log('Service Worker hatası:', error);
