@@ -25,7 +25,7 @@ function switchGroupTab(tabName) {
   if (selectedTab) selectedTab.classList.add('active');
   if (selectedPane) selectedPane.classList.add('active');
 
-  // Si on bascule vers Chat, scroll vers le bas
+  // Si on bascule vers Chat, scroll vers le bas ET reset badge
   if (tabName === 'chat') {
     setTimeout(() => {
       const messagesContainer = document.getElementById('chatMessages');
@@ -33,6 +33,11 @@ function switchGroupTab(tabName) {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }
     }, 100);
+
+    // ✅ Reset le badge de messages non lus
+    if (typeof resetUnreadBadge === 'function') {
+      resetUnreadBadge();
+    }
   }
 
   console.log(`📂 Tab actif: ${tabName}`);

@@ -15,6 +15,9 @@ let chatEnterHandler = null;
 // Flag pour empêcher envoi multiple
 let isSendingMessage = false;
 
+// Compteur messages non lus
+let unreadMessagesCount = 0;
+
 /**
  * Initialiser le chat quand un groupe est actif
  */
@@ -129,6 +132,11 @@ function handleNewMessage(message) {
     chatMessages.push(message);
     displayMessage(message, true); // true = animer
     scrollToBottom();
+
+    // ✅ Incrémenter badge si pas sur tab chat
+    if (!isOnChatTab()) {
+      incrementUnreadBadge();
+    }
   }
 }
 
@@ -402,8 +410,54 @@ function resetChat() {
     `;
   }
 
+  // Reset le badge
+  resetUnreadBadge();
+
   // ✅ Nouveau layout : pas besoin de masquer #groupChat
   // Le chat est dans un tab et géré par hideGroupTabs()
+}
+
+// ============================================
+// BADGE NOTIFICATIONS (Messages non lus)
+// ============================================
+
+/**
+ * Vérifier si on est sur le tab chat
+ */
+function isOnChatTab() {
+  const chatTab = document.querySelector('[data-tab="chat"]');
+  return chatTab && chatTab.classList.contains('active');
+}
+
+/**
+ * Incrémenter le badge de messages non lus
+ */
+function incrementUnreadBadge() {
+  unreadMessagesCount++;
+  updateChatBadge();
+}
+
+/**
+ * Reset le badge de messages non lus
+ */
+function resetUnreadBadge() {
+  unreadMessagesCount = 0;
+  updateChatBadge();
+}
+
+/**
+ * Mettre à jour l'affichage du badge
+ */
+function updateChatBadge() {
+  const badge = document.getElementById('chatBadge');
+  if (!badge) return;
+
+  if (unreadMessagesCount > 0) {
+    badge.textContent = unreadMessagesCount > 99 ? '99+' : unreadMessagesCount;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
 }
 
 // Export pour utilisation
