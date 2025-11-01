@@ -369,6 +369,35 @@
   font-size: 14px;
 }
 
+/* Date separators */
+.date-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.date-separator::before,
+.date-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #cbd5e0 50%, transparent);
+}
+
+.date-label {
+  background: #e2e8f0;
+  color: #64748b;
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 12px;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 /* ============================================
    TAB 3: AYARLAR (Settings)
    ============================================ */

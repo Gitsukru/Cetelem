@@ -129,6 +129,23 @@ function subscribeToChatMessages() {
 function handleNewMessage(message) {
   // Ajouter à la liste si pas déjà présent
   if (!chatMessages.find(m => m.id === message.id)) {
+    const container = document.getElementById('chatMessages');
+
+    // Vérifier si on doit ajouter un séparateur de date
+    if (container && chatMessages.length > 0) {
+      const lastMessage = chatMessages[chatMessages.length - 1];
+      const lastDate = new Date(lastMessage.created_at);
+      const newDate = new Date(message.created_at);
+
+      const lastDateLabel = getDateLabel(lastDate);
+      const newDateLabel = getDateLabel(newDate);
+
+      // Si différent jour, ajouter séparateur
+      if (lastDateLabel !== newDateLabel) {
+        insertDateSeparator(container, newDateLabel);
+      }
+    }
+
     chatMessages.push(message);
     displayMessage(message, true); // true = animer
     scrollToBottom();
@@ -141,7 +158,7 @@ function handleNewMessage(message) {
 }
 
 /**
- * Afficher tous les messages
+ * Afficher tous les messages avec séparateurs de date
  */
 function displayAllMessages() {
   const container = document.getElementById('chatMessages');
@@ -162,8 +179,19 @@ function displayAllMessages() {
     return;
   }
 
-  // Afficher tous les messages
+  // Grouper les messages par date
+  let currentDateLabel = null;
+
   chatMessages.forEach(message => {
+    const messageDate = new Date(message.created_at);
+    const dateLabel = getDateLabel(messageDate);
+
+    // Si nouvelle date, ajouter un séparateur
+    if (dateLabel !== currentDateLabel) {
+      insertDateSeparator(container, dateLabel);
+      currentDateLabel = dateLabel;
+    }
+
     displayMessage(message, false); // false = pas d'animation
   });
 
@@ -371,6 +399,40 @@ function formatMessageTime(date) {
 
   // Autre jour
   return `${date.getDate()}/${date.getMonth() + 1} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
+/**
+ * Obtenir le label de date pour un message
+ */
+function getDateLabel(date) {
+  const now = new Date();
+
+  // Aujourd'hui
+  if (date.toDateString() === now.toDateString()) {
+    return 'Bugün';
+  }
+
+  // Hier
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) {
+    return 'Dün';
+  }
+
+  // Autre jour - format: "25 Ekim 2025"
+  const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+                  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+  return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+/**
+ * Insérer un séparateur de date dans le chat
+ */
+function insertDateSeparator(container, label) {
+  const separator = document.createElement('div');
+  separator.className = 'date-separator';
+  separator.innerHTML = `<span class="date-label">${label}</span>`;
+  container.appendChild(separator);
 }
 
 /**
