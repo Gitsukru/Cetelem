@@ -22,10 +22,14 @@ function createGroup() {
 }
 
 function showCreateForm() {
-  document.getElementById('createSection').style.display = 'block'
-  document.getElementById('joinSection').style.display = 'none'
-  document.getElementById('groupStatus').style.display = 'none'
-  document.getElementById('leaderboard').style.display = 'none'
+  const createSection = document.getElementById('createSection')
+  const joinSection = document.getElementById('joinSection')
+
+  if (createSection) createSection.style.display = 'block'
+  if (joinSection) joinSection.style.display = 'none'
+
+  // ✅ Nouveau layout : groupStatus et leaderboard n'existent plus
+  // Les sub-tabs sont masqués automatiquement
 }
 
 // Show join group section
@@ -47,10 +51,14 @@ function showJoinForm() {
 }
 
 function showJoinFormUI() {
-  document.getElementById('createSection').style.display = 'none'
-  document.getElementById('joinSection').style.display = 'block'
-  document.getElementById('groupStatus').style.display = 'none'
-  document.getElementById('leaderboard').style.display = 'none'
+  const createSection = document.getElementById('createSection')
+  const joinSection = document.getElementById('joinSection')
+
+  if (createSection) createSection.style.display = 'none'
+  if (joinSection) joinSection.style.display = 'block'
+
+  // ✅ Nouveau layout : groupStatus et leaderboard n'existent plus
+  // Les sub-tabs sont masqués automatiquement
 }
 
 // Create a new group
