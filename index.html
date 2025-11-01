@@ -43,6 +43,7 @@
     <link rel="stylesheet" href="styles/pages/tesbihat.css">
     <link rel="stylesheet" href="styles/chat.css">
     <link rel="stylesheet" href="styles/notifications.css">
+    <link rel="stylesheet" href="styles/calendar.css">
 </head>
 <body>
     <!-- Offline Badge -->
@@ -544,6 +545,79 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Calendrier de Suivi -->
+                <div class="calendar-section">
+                    <h2>📅 Takip Takvimi</h2>
+                    <p style="color: #64748b; margin-top: 8px; margin-bottom: 20px;">
+                        Günlük ilerlemenizi görselleştirin
+                    </p>
+
+                    <!-- Streak Indicator -->
+                    <div class="streak-container">
+                        <div class="streak-icon">🔥</div>
+                        <div class="streak-info">
+                            <div class="streak-number" id="currentStreak">0</div>
+                            <div class="streak-label">Gün Üst Üste</div>
+                        </div>
+                        <div class="streak-best">
+                            <div style="font-size: 12px; color: #94a3b8;">En İyi</div>
+                            <div style="font-size: 20px; font-weight: 700; color: #667eea;" id="bestStreak">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Mois -->
+                    <div class="calendar-header">
+                        <button class="calendar-nav-btn" onclick="previousMonth()">
+                            ◀
+                        </button>
+                        <div class="calendar-month-year" id="calendarMonthYear">
+                            Ocak 2025
+                        </div>
+                        <button class="calendar-nav-btn" onclick="nextMonth()">
+                            ▶
+                        </button>
+                    </div>
+
+                    <!-- Grille Calendrier -->
+                    <div class="calendar-grid">
+                        <!-- Jours de la semaine -->
+                        <div class="calendar-weekday">Pzt</div>
+                        <div class="calendar-weekday">Sal</div>
+                        <div class="calendar-weekday">Çar</div>
+                        <div class="calendar-weekday">Per</div>
+                        <div class="calendar-weekday">Cum</div>
+                        <div class="calendar-weekday">Cmt</div>
+                        <div class="calendar-weekday">Paz</div>
+
+                        <!-- Les jours seront ajoutés dynamiquement -->
+                        <div id="calendarDays"></div>
+                    </div>
+
+                    <!-- Légende -->
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <div class="legend-color legend-none"></div>
+                            <span>Veri yok</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-low"></div>
+                            <span>&lt; 25%</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-medium"></div>
+                            <span>25-75%</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-high"></div>
+                            <span>&gt; 75%</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-perfect"></div>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -618,6 +692,7 @@
     <script src="script_group.js"></script>
     <script src="script_chat.js"></script>
     <script src="script_notifications.js"></script>
+    <script src="script_calendar.js"></script>
     <script src="script_books.js"></script>
 
     <!-- Tesbihat Scripts -->

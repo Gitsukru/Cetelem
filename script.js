@@ -2031,6 +2031,11 @@ function updateStats() {
         // Afficher l'historique
         displayHistory();
 
+        // Rafraîchir le calendrier
+        if (typeof refreshCalendar === 'function') {
+            refreshCalendar();
+        }
+
     } catch (error) {
         console.error('Erreur statistiques:', error);
     }
