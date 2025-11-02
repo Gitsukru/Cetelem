@@ -2552,11 +2552,56 @@ function shareStatsBySMS() {
         }
     });
 
+    // Ajouter les statistiques des livres si disponibles
+    let totalBooksToday = 0;
+    let totalBooksAll = 0;
+    let booksMessage = '';
+
+    if (typeof BooksManager !== 'undefined') {
+        const books = BooksManager.getBooks();
+        const dateKeyISO = today.toISOString().split('T')[0]; // Format ISO pour les livres
+
+        if (books.length > 0) {
+            booksMessage += `\n📚 KİTAPLAR:\n`;
+
+            books.forEach(book => {
+                const todayPages = (book.history && book.history[dateKeyISO]) ? book.history[dateKeyISO] : 0;
+
+                let bookTotal = 0;
+                if (book.history) {
+                    Object.values(book.history).forEach(pages => {
+                        bookTotal += pages || 0;
+                    });
+                }
+
+                totalBooksToday += todayPages;
+                totalBooksAll += bookTotal;
+
+                if (bookTotal > 0) {
+                    const progress = book.totalPages > 0 ? ` (${bookTotal}/${book.totalPages})` : '';
+                    booksMessage += `${book.name}${progress}:\n`;
+                    booksMessage += `   Bugün: ${todayPages} sayfa\n`;
+                    booksMessage += `   Toplam: ${bookTotal} sayfa\n\n`;
+                }
+            });
+        }
+    }
+
     message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
     message += `ÖZET:\n`;
-    message += `• Bugün: ${totalToday} zikir\n`;
-    message += `• GENEL TOPLAM: ${totalGeneral} zikir\n\n`;
-    message += `Allah dualarımızı kabul etsin\n`;
+    message += `• Bugün: ${totalToday} zikir`;
+    if (totalBooksToday > 0) message += ` + ${totalBooksToday} sayfa\n`;
+    else message += `\n`;
+    message += `• GENEL TOPLAM: ${totalGeneral} zikir`;
+    if (totalBooksAll > 0) message += ` + ${totalBooksAll} sayfa\n`;
+    else message += `\n`;
+
+    // Ajouter les détails des livres
+    if (booksMessage) {
+        message += booksMessage;
+    }
+
+    message += `\nAllah dualarımızı kabul etsin\n`;
     message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
     try {
