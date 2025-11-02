@@ -4,12 +4,13 @@
  */
 
 const APP_VERSION = {
-    number: 'd8a5aa3',
+    number: '47ab47b',
     date: '2025-11-02',
     changelog: [
-        'fix: Retirer attribut integrity Supabase (hash instable)',
-        'fix: Réactiver mise à jour automatique de l\'app',
-        'feat: Afficher numéro commit dans footer'
+        'feat: Refonte complète onglet Sayaç mobile',
+        'feat: Stats card en haut (Bugün/Toplam/Süre)',
+        'feat: Tesbih compact 85vw + mode paysage',
+        'feat: Bouton reset en icône + son dans header'
     ]
 };
 

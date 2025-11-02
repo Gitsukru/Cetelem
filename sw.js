@@ -1,5 +1,5 @@
 // Version fixe pour éviter les erreurs d'import
-const CACHE_VERSION = '2025-11-02-d8a5aa3-show-version';
+const CACHE_VERSION = '2025-11-02-47ab47b-counter-refonte';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',

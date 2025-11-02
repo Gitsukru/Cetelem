@@ -110,11 +110,35 @@
         <!-- Sayaç Sekmesi -->
         <div id="counter" class="tab-content active">
             <div class="counter-section">
-                <div class="category-select-wrapper">
-                    <select id="categorySelect" class="category-select">
-                        <option value="">Zikir</option>
-                    </select>
-                    <button class="add-category-quick" onclick="showQuickAddCategory()" title="Yeni zikir ekle">+</button>
+                <!-- Header avec titre et bouton son -->
+                <div class="counter-header-mobile">
+                    <h2 class="counter-title">Zikir Sayacı</h2>
+                    <div class="counter-header-actions">
+                        <button class="sound-toggle-inline" id="soundToggle" onclick="toggleSound(); playTickSound();" title="Ses Aç/Kapat">
+                            🔊
+                        </button>
+                        <button class="reset-icon-btn" onclick="resetDayCounter()" title="Görüntüyü sıfırla">
+                            🔄
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Card en haut -->
+                <div class="stats-card-mobile">
+                    <div class="stat-item">
+                        <span class="stat-number" id="statToday">0</span>
+                        <span class="stat-label">Bugün</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="statTotal">0</span>
+                        <span class="stat-label">Toplam</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="timerDisplay">00:00:00</span>
+                        <span class="stat-label">Süre</span>
+                    </div>
                 </div>
 
                 <div class="counter-display">
@@ -131,24 +155,16 @@
                                 <span class="goal-label">Günlük hedef:</span>
                                 <span class="goal-value" id="goalValue">0</span>
                             </div>
-                            <div class="timer-display">
-                                <span id="timerDisplay">00:00:00</span>
-                                <span class="timer-label">Süre</span>
-                            </div>
                         </button>
                     </div>
+                </div>
 
-                    <button class="sound-toggle" id="soundToggle" onclick="toggleSound(); playTickSound();" title="Ses Aç/Kapat">
-                        🔊
-                    </button>
-                    
-                    <button class="reset-button" onclick="resetDayCounter()">
-                        🔄 Görüntüyü sıfırla (istatistikler korunur)
-                    </button>
-
-                    <div class="stats-summary">
-                        <p id="summaryText">Zikir özetiniz</p>
-                    </div>
+                <!-- Category select en bas -->
+                <div class="category-select-wrapper">
+                    <select id="categorySelect" class="category-select">
+                        <option value="">Zikir</option>
+                    </select>
+                    <button class="add-category-quick" onclick="showQuickAddCategory()" title="Yeni zikir ekle">+</button>
                 </div>
             </div>
         </div>

@@ -2028,6 +2028,17 @@ function updateStats() {
             summaryElement.textContent = summary;
         }
 
+        // ✅ Mettre à jour la stats card mobile
+        const statTodayElement = document.getElementById('statToday');
+        if (statTodayElement) {
+            statTodayElement.textContent = totalToday;
+        }
+
+        const statTotalElement = document.getElementById('statTotal');
+        if (statTotalElement) {
+            statTotalElement.textContent = totalAll;
+        }
+
         // Afficher l'historique
         displayHistory();
 
