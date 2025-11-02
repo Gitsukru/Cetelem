@@ -4,13 +4,13 @@
  */
 
 const APP_VERSION = {
-    number: '04c3e1b',
+    number: '70318cf',
     date: '2025-11-02',
     changelog: [
+        'feat: Configuration rappels sans autorisation préalable',
         'feat: Choix précis des minutes (0-59) pour rappels',
         'style: Calendrier plus compact sur grand écran',
-        'feat: Renommer onglet Yönetim → Ayarlar',
-        'refactor: Retirer !important (code propre)'
+        'feat: Renommer onglet Yönetim → Ayarlar'
     ]
 };
 

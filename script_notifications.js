@@ -15,12 +15,10 @@ function initializeNotificationsUI() {
   const permission = notificationManager.getPermissionStatus()
   updateNotificationUI(permission)
 
-  // Si déjà autorisé, afficher les rappels
-  if (permission === 'granted') {
-    document.getElementById('remindersList').style.display = 'block'
-    document.getElementById('addReminderBtn').style.display = 'block'
-    displayReminders()
-  }
+  // Toujours afficher la liste et le bouton (permet configuration avant permission)
+  document.getElementById('remindersList').style.display = 'block'
+  document.getElementById('addReminderBtn').style.display = 'block'
+  displayReminders()
 }
 
 // ============================================
@@ -44,10 +42,6 @@ async function enableNotifications() {
       // Permission accordée
       updateNotificationUI('granted')
       notificationManager.startChecking()
-
-      // Afficher liste et bouton ajout
-      document.getElementById('remindersList').style.display = 'block'
-      document.getElementById('addReminderBtn').style.display = 'block'
       displayReminders()
 
       // Masquer le bouton activer
@@ -91,13 +85,13 @@ function updateNotificationUI(permission) {
     // Refusé
     statusIcon.textContent = '🚫'
     statusTitle.textContent = 'Bildirimler Engellenmiş'
-    statusMessage.textContent = 'Tarayıcı ayarlarından izinleri açmanız gerekiyor'
+    statusMessage.textContent = 'Hatırlatmaları şimdi ayarlayabilirsiniz. Tarayıcı izni verdiğinde otomatik çalışacaklar.'
     reminderStatus.classList.remove('enabled')
   } else {
     // Par défaut (default)
     statusIcon.textContent = '🔕'
     statusTitle.textContent = 'Bildirimler Kapalı'
-    statusMessage.textContent = 'Hatırlatma almak için bildirimleri aktifleştirin'
+    statusMessage.textContent = 'Hatırlatmaları şimdi ayarlayabilirsiniz. Aktifleştirince çalışmaya başlayacaklar.'
     reminderStatus.classList.remove('enabled')
   }
 }
@@ -129,16 +123,28 @@ function displayReminders() {
     return a.minute - b.minute
   })
 
+  // Vérifier si notifications autorisées
+  const permission = notificationManager.getPermissionStatus()
+  const notificationsActive = permission === 'granted'
+
   // Générer HTML
   container.innerHTML = reminders.map(reminder => {
     const timeStr = `${String(reminder.hour).padStart(2, '0')}:${String(reminder.minute).padStart(2, '0')}`
     const disabledClass = reminder.enabled ? '' : 'disabled'
     const checkedAttr = reminder.enabled ? 'checked' : ''
 
+    // Badge d'état si notifications non autorisées mais rappel activé
+    let statusBadge = ''
+    if (!notificationsActive && reminder.enabled) {
+      statusBadge = '<span class="reminder-badge pending" title="En attente de permission">⏳</span>'
+    } else if (notificationsActive && reminder.enabled) {
+      statusBadge = '<span class="reminder-badge active" title="Actif">✓</span>'
+    }
+
     return `
       <div class="reminder-item ${disabledClass}">
         <div class="reminder-info">
-          <div class="reminder-time">${timeStr}</div>
+          <div class="reminder-time">${timeStr} ${statusBadge}</div>
           <p class="reminder-message">${escapeHtml(reminder.message)}</p>
         </div>
         <div class="reminder-actions">

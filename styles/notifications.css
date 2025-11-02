@@ -163,6 +163,36 @@
   margin: 0;
 }
 
+/* ============================================
+   BADGES D'ÉTAT
+   ============================================ */
+
+.reminder-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.reminder-badge.active {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+}
+
+.reminder-badge.pending {
+  background: linear-gradient(135deg, #fbd38d 0%, #f6ad55 100%);
+  color: #744210;
+  animation: pendingPulse 2s ease-in-out infinite;
+}
+
+@keyframes pendingPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
 .reminder-actions {
   display: flex;
   gap: 12px;
