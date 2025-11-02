@@ -263,16 +263,18 @@
     justify-content: center;
 }
 
-/* Image tesbih background - Défaut (mobile/small) - AGRANDI et centré sur bouton */
+/* Image tesbih background - Agrandi 125% et centré parfaitement */
 .tesbih-bg {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 125%;
+    height: 125%;
+    margin-left: -12.5%;
+    margin-top: -12.5%;
     background-image: url('/assets/images/tesbih.png?v=2025101202');
-    background-size: 120%; /* Agrandi pour mieux remplir sur mobile */
-    background-position: center center; /* Centré sur le bouton */
+    background-size: contain;
+    background-position: center center;
     background-repeat: no-repeat;
     opacity: 0.77;
     filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.4)) brightness(1.2);
@@ -297,8 +299,12 @@
     }
 
     .tesbih-bg {
-        background-size: contain; /* Taille normale sur desktop */
-        background-position: calc(50% - 4mm) calc(50% + 2mm);
+        width: 120%;
+        height: 120%;
+        margin-left: -10%;
+        margin-top: -10%;
+        background-size: contain;
+        background-position: center center;
     }
 
     .counter-button {

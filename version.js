@@ -4,13 +4,13 @@
  */
 
 const APP_VERSION = {
-    number: '47ab47b',
+    number: '65c3da1',
     date: '2025-11-02',
     changelog: [
+        'feat: Agrandir image tesbih 125% et centrage parfait',
         'feat: Refonte complète onglet Sayaç mobile',
         'feat: Stats card en haut (Bugün/Toplam/Süre)',
-        'feat: Tesbih compact 85vw + mode paysage',
-        'feat: Bouton reset en icône + son dans header'
+        'feat: Tesbih compact 85vw + mode paysage'
     ]
 };
 
