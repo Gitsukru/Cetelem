@@ -1,0 +1,175 @@
+/**
+ * ⚙️ STYLES ACCORDION SETTINGS
+ * Système d'accordéon pour l'onglet Ayarlar
+ */
+
+/* ============================================
+   ACCORDION CONTAINER
+   ============================================ */
+
+.settings-accordion-item {
+  margin-bottom: 12px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.settings-accordion-item:hover {
+  border-color: #cbd5e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Variante danger pour zone de danger */
+.settings-accordion-item.danger-accordion {
+  border-color: #feb2b2;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+}
+
+.settings-accordion-item.danger-accordion:hover {
+  border-color: #fc8181;
+  box-shadow: 0 2px 12px rgba(239, 68, 68, 0.15);
+}
+
+/* ============================================
+   ACCORDION HEADER (Bouton toggle)
+   ============================================ */
+
+.settings-accordion-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.settings-accordion-header:hover {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.danger-accordion .settings-accordion-header:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.settings-accordion-header:active {
+  transform: scale(0.99);
+}
+
+/* Titre avec icône */
+.accordion-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.accordion-icon {
+  font-size: 24px;
+  display: inline-block;
+}
+
+/* Chevron (triangle) */
+.accordion-chevron {
+  font-size: 16px;
+  color: #667eea;
+  transition: transform 0.3s ease;
+  font-weight: 700;
+}
+
+.danger-accordion .accordion-chevron {
+  color: #ef4444;
+}
+
+/* Rotation du chevron quand ouvert */
+.settings-accordion-header.active .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+/* ============================================
+   ACCORDION CONTENT (Contenu dépliable)
+   ============================================ */
+
+.settings-accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;
+  padding: 0 20px;
+}
+
+/* État ouvert */
+.settings-accordion-content.open {
+  max-height: 3000px; /* Grande valeur pour contenu variable */
+  padding: 0 20px 20px 20px;
+}
+
+/* ============================================
+   ANIMATION D'ENTRÉE
+   ============================================ */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.settings-accordion-content.open > * {
+  animation: slideDown 0.3s ease;
+}
+
+/* ============================================
+   RESPONSIVE MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .settings-accordion-item {
+    margin-bottom: 8px;
+    border-radius: 12px;
+  }
+
+  .settings-accordion-header {
+    padding: 14px 16px;
+  }
+
+  .accordion-title {
+    font-size: 16px;
+    gap: 10px;
+  }
+
+  .accordion-icon {
+    font-size: 20px;
+  }
+
+  .accordion-chevron {
+    font-size: 14px;
+  }
+
+  .settings-accordion-content.open {
+    padding: 0 16px 16px 16px;
+  }
+}
+
+/* ============================================
+   PREMIÈRE SECTION OUVERTE PAR DÉFAUT
+   ============================================ */
+
+/* La première section est ouverte au chargement */
+.settings-accordion-item:first-child .settings-accordion-header {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.settings-accordion-item:first-child .settings-accordion-header .accordion-chevron {
+  transform: rotate(180deg);
+}

@@ -43,6 +43,7 @@
     <link rel="stylesheet" href="styles/pages/tesbihat.css">
     <link rel="stylesheet" href="styles/chat.css">
     <link rel="stylesheet" href="styles/notifications.css">
+    <link rel="stylesheet" href="styles/settings-accordion.css">
     <link rel="stylesheet" href="styles/calendar.css">
     <link rel="stylesheet" href="styles/group-tabs.css">
 </head>
@@ -200,134 +201,177 @@
 
         <!-- Ayarlar Sekmesi -->
         <div id="management" class="tab-content">
-            <div class="management-section">
-                <h2>Zikirleri Yönet</h2>
+            <!-- ACCORDION SECTION 1: Zikir Yönetimi -->
+            <div class="settings-accordion-item">
+                <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
+                    <span class="accordion-title">
+                        <span class="accordion-icon">⚙️</span>
+                        <span>Zikir Yönetimi</span>
+                    </span>
+                    <span class="accordion-chevron">▼</span>
+                </button>
+                <div class="settings-accordion-content">
+                    <div class="add-category-form">
+                        <button class="add-button" onclick="showQuickAddCategory()" style="width: 100%;">
+                            <span style="font-size: 18px; margin-right: 8px;">+</span>
+                            Yeni Zikir Ekle
+                        </button>
+                    </div>
 
-                <div class="add-category-form">
-                    <button class="add-button" onclick="showQuickAddCategory()" style="width: 100%;">
-                        <span style="font-size: 18px; margin-right: 8px;">+</span>
-                        Yeni Zikir Ekle
-                    </button>
-                </div>
+                    <ul id="categoriesList" class="categories-list">
+                        <!-- Kategoriler buraya eklenecek -->
+                    </ul>
 
-                <ul id="categoriesList" class="categories-list">
-                    <!-- Kategoriler buraya eklenecek -->
-                </ul>
+                    <div class="divider"></div>
 
-                <div class="divider"></div>
+                    <h3 style="margin-top: 20px; margin-bottom: 16px; font-size: 16px;">Zikir Verilerini Sil</h3>
 
-                <h3 style="margin-top: 30px;">Zikir Verilerini Sil</h3>
-
-                <div class="reset-options">
-                    <div class="reset-option">
-                        <select id="categoryToReset" class="category-select">
-                            <option value="">Zikir</option>
-                        </select>
-                        <div class="reset-buttons">
-                            <button class="reset-button danger" onclick="resetTodayCategory()">Bugünü sil</button>
-                            <button class="reset-button danger" onclick="resetWeekCategory()">Bu hafta sil</button>
-                            <button class="reset-button danger" onclick="resetMonthCategory()">Bu ay sil</button>
-                            <button class="reset-button danger" onclick="resetCategoryCompletely()">Tüm geçmişi sil</button>
+                    <div class="reset-options">
+                        <div class="reset-option">
+                            <select id="categoryToReset" class="category-select">
+                                <option value="">Zikir Seç</option>
+                            </select>
+                            <div class="reset-buttons">
+                                <button class="reset-button danger" onclick="resetTodayCategory()">Bugünü sil</button>
+                                <button class="reset-button danger" onclick="resetWeekCategory()">Bu hafta sil</button>
+                                <button class="reset-button danger" onclick="resetMonthCategory()">Bu ay sil</button>
+                                <button class="reset-button danger" onclick="resetCategoryCompletely()">Tüm geçmişi sil</button>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="danger-zone">
-                    <h3>⚠️ Tehlike Bölgesi</h3>
-                    <button class="danger-button" onclick="resetAllData()">TÜM verileri sil</button>
-                    <p class="warning-text">Bu eylem tüm sayaçlarınızı kalıcı olarak silecek ve geri alınamaz!</p>
+            <!-- ACCORDION SECTION 2: Kitap Yönetimi -->
+            <div class="settings-accordion-item">
+                <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
+                    <span class="accordion-title">
+                        <span class="accordion-icon">📚</span>
+                        <span>Kitap Yönetimi</span>
+                    </span>
+                    <span class="accordion-chevron">▼</span>
+                </button>
+                <div class="settings-accordion-content">
+                    <div class="add-category-form">
+                        <button class="add-button" onclick="showAddBookModal()" style="width: 100%;">
+                            <span style="font-size: 18px; margin-right: 8px;">+</span>
+                            Yeni Kitap Ekle
+                        </button>
+                    </div>
+
+                    <ul id="booksManagementList" class="categories-list">
+                        <!-- Kitaplar buraya eklenecek -->
+                    </ul>
                 </div>
             </div>
 
-            <div class="management-section">
-                <h2>📚 Kitapları Yönet</h2>
+            <!-- ACCORDION SECTION 3: Hatırlatmalar -->
+            <div class="settings-accordion-item">
+                <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
+                    <span class="accordion-title">
+                        <span class="accordion-icon">🔔</span>
+                        <span>Hatırlatmalar</span>
+                    </span>
+                    <span class="accordion-chevron">▼</span>
+                </button>
+                <div class="settings-accordion-content">
+                    <p style="color: #64748b; margin-bottom: 20px;">
+                        Günlük zikir hatırlatmaları alın
+                    </p>
 
-                <div class="add-category-form">
-                    <button class="add-button" onclick="showAddBookModal()" style="width: 100%;">
-                        <span style="font-size: 18px; margin-right: 8px;">+</span>
-                        Yeni Kitap Ekle
+                    <!-- Statut permission -->
+                    <div class="reminder-status" id="reminderStatus">
+                        <div class="status-icon" id="statusIcon">🔕</div>
+                        <div class="status-text">
+                            <strong id="statusTitle">Bildirimler Kapalı</strong>
+                            <p id="statusMessage">Hatırlatma almak için bildirimleri aktifleştirin</p>
+                        </div>
+                    </div>
+
+                    <!-- Bouton activation -->
+                    <button class="backup-button" id="enableNotificationsBtn" onclick="enableNotifications()" style="width: 100%; margin-top: 16px;">
+                        🔔 Bildirimleri Etkinleştir
                     </button>
-                </div>
 
-                <ul id="booksManagementList" class="categories-list">
-                    <!-- Kitaplar buraya eklenecek -->
-                </ul>
+                    <!-- Liste des rappels -->
+                    <div id="remindersList" class="reminders-list" style="display: none;">
+                        <!-- Les rappels seront ajoutés ici dynamiquement -->
+                    </div>
+
+                    <!-- Bouton ajouter rappel -->
+                    <button class="add-button" id="addReminderBtn" onclick="showAddReminderModal()" style="display: none; width: 100%; margin-top: 16px;">
+                        <span style="font-size: 18px; margin-right: 8px;">+</span>
+                        Yeni Hatırlatma Ekle
+                    </button>
+
+                    <div class="backup-info" style="margin-top: 20px;">
+                        <p>⏰ Hatırlatmalar seçtiğiniz saatlerde otomatik gelir</p>
+                        <p>🔕 İstediğiniz zaman kapatabilirsiniz</p>
+                        <p>📱 Tarayıcı açıkken arka planda çalışır</p>
+                        <p style="font-size: 12px; color: #94a3b8;">ℹ️ iOS Safari bildirimleri desteklemiyor (sadece Android/Desktop)</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="management-section">
-                <h2>Yedekleme ve Geri Yükleme</h2>
+            <!-- ACCORDION SECTION 4: Yedekleme -->
+            <div class="settings-accordion-item">
+                <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
+                    <span class="accordion-title">
+                        <span class="accordion-icon">💾</span>
+                        <span>Yedekleme ve Geri Yükleme</span>
+                    </span>
+                    <span class="accordion-chevron">▼</span>
+                </button>
+                <div class="settings-accordion-content">
+                    <div class="backup-section">
+                        <div class="backup-status">
+                            <span id="saveStatus">Otomatik yedekleme aktif</span>
+                            <small id="lastSave">Son yedekleme: şimdi</small>
+                        </div>
 
-                <div class="backup-section">
-                    <div class="backup-status">
-                        <span id="saveStatus">Otomatik yedekleme aktif</span>
-                        <small id="lastSave">Son yedekleme: şimdi</small>
-                    </div>
-
-                    <div class="backup-buttons">
-                        <button class="backup-button" onclick="exportData()">📥 Verilerimi dışa aktar</button>
-                        <button class="backup-button" onclick="document.getElementById('importFile').click()">📤 Veri içe aktar</button>
-                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-                    </div>
-
-                    <div class="device-transfer-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
-                        <h3 style="font-size: 16px; margin-bottom: 12px;">📱 Cihaz Değiştirme</h3>
-                        <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">Verilerinizi yeni cihaza aktarın (giriş gerekmez)</p>
                         <div class="backup-buttons">
-                            <button class="backup-button" onclick="DeviceBackup.showCreateBackupDialog()">
-                                📲 Kod Oluştur
-                            </button>
-                            <button class="backup-button" onclick="DeviceBackup.showRestoreBackupDialog()">
-                                🔓 Kod ile Geri Yükle
-                            </button>
+                            <button class="backup-button" onclick="exportData()">📥 Verilerimi dışa aktar</button>
+                            <button class="backup-button" onclick="document.getElementById('importFile').click()">📤 Veri içe aktar</button>
+                            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
                         </div>
-                        <p style="font-size: 11px; color: #94a3b8; margin-top: 8px;">Kod 7 gün geçerlidir</p>
-                    </div>
 
-                    <div class="backup-info">
-                        <p>✅ Verileriniz otomatik olarak telefonunuzda yedeklenir</p>
-                        <p>📱 Uygulamayı kapattığınızda bile kalır</p>
-                        <p>🔒 Güvenlik yedeklemesi oluşturmak için dışa aktarma kullanın</p>
+                        <div class="device-transfer-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+                            <h3 style="font-size: 16px; margin-bottom: 12px;">📱 Cihaz Değiştirme</h3>
+                            <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">Verilerinizi yeni cihaza aktarın (giriş gerekmez)</p>
+                            <div class="backup-buttons">
+                                <button class="backup-button" onclick="DeviceBackup.showCreateBackupDialog()">
+                                    📲 Kod Oluştur
+                                </button>
+                                <button class="backup-button" onclick="DeviceBackup.showRestoreBackupDialog()">
+                                    🔓 Kod ile Geri Yükle
+                                </button>
+                            </div>
+                            <p style="font-size: 11px; color: #94a3b8; margin-top: 8px;">Kod 7 gün geçerlidir</p>
+                        </div>
+
+                        <div class="backup-info">
+                            <p>✅ Verileriniz otomatik olarak telefonunuzda yedeklenir</p>
+                            <p>📱 Uygulamayı kapattığınızda bile kalır</p>
+                            <p>🔒 Güvenlik yedeklemesi oluşturmak için dışa aktarma kullanın</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Section Hatırlatmalar (Notifications/Rappels) -->
-            <div class="management-section">
-                <h2>🔔 Hatırlatmalar</h2>
-                <p style="color: #64748b; margin-top: 8px; margin-bottom: 20px;">
-                    Günlük zikir hatırlatmaları alın
-                </p>
-
-                <!-- Statut permission -->
-                <div class="reminder-status" id="reminderStatus">
-                    <div class="status-icon" id="statusIcon">🔕</div>
-                    <div class="status-text">
-                        <strong id="statusTitle">Bildirimler Kapalı</strong>
-                        <p id="statusMessage">Hatırlatma almak için bildirimleri aktifleştirin</p>
+            <!-- ACCORDION SECTION 5: Tehlike Bölgesi -->
+            <div class="settings-accordion-item danger-accordion">
+                <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
+                    <span class="accordion-title">
+                        <span class="accordion-icon">⚠️</span>
+                        <span>Tehlike Bölgesi</span>
+                    </span>
+                    <span class="accordion-chevron">▼</span>
+                </button>
+                <div class="settings-accordion-content">
+                    <div class="danger-zone">
+                        <button class="danger-button" onclick="resetAllData()">TÜM verileri sil</button>
+                        <p class="warning-text">Bu eylem tüm sayaçlarınızı kalıcı olarak silecek ve geri alınamaz!</p>
                     </div>
-                </div>
-
-                <!-- Bouton activation -->
-                <button class="backup-button" id="enableNotificationsBtn" onclick="enableNotifications()" style="width: 100%; margin-top: 16px;">
-                    🔔 Bildirimleri Etkinleştir
-                </button>
-
-                <!-- Liste des rappels -->
-                <div id="remindersList" class="reminders-list" style="display: none;">
-                    <!-- Les rappels seront ajoutés ici dynamiquement -->
-                </div>
-
-                <!-- Bouton ajouter rappel -->
-                <button class="add-button" id="addReminderBtn" onclick="showAddReminderModal()" style="display: none; width: 100%; margin-top: 16px;">
-                    <span style="font-size: 18px; margin-right: 8px;">+</span>
-                    Yeni Hatırlatma Ekle
-                </button>
-
-                <div class="backup-info" style="margin-top: 20px;">
-                    <p>⏰ Hatırlatmalar seçtiğiniz saatlerde otomatik gelir</p>
-                    <p>🔕 İstediğiniz zaman kapatabilirsiniz</p>
-                    <p>📱 Tarayıcı açıkken arka planda çalışır</p>
-                    <p style="font-size: 12px; color: #94a3b8;">ℹ️ iOS Safari bildirimleri desteklemiyor (sadece Android/Desktop)</p>
                 </div>
             </div>
         </div>

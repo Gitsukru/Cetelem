@@ -768,6 +768,25 @@ function toggleMobileMenu() {
     }
 }
 
+/**
+ * Toggle accordion sections in Settings tab
+ * @param {HTMLElement} header - L'élément header cliqué
+ */
+function toggleSettingsAccordion(header) {
+    const content = header.nextElementSibling;
+    const isOpen = content.classList.contains('open');
+
+    // Toggle l'état actif du header
+    header.classList.toggle('active');
+
+    // Toggle le contenu
+    if (isOpen) {
+        content.classList.remove('open');
+    } else {
+        content.classList.add('open');
+    }
+}
+
 // Mettre à jour les sélecteurs
 function updateCategorySelect() {
     const select = document.getElementById('categorySelect');
@@ -2510,6 +2529,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize sound and timer
     initSound();
     startTimer();
+
+    // Initialize Settings Accordion (première section ouverte par défaut)
+    const firstAccordion = document.querySelector('.settings-accordion-item:first-child');
+    if (firstAccordion) {
+        const firstHeader = firstAccordion.querySelector('.settings-accordion-header');
+        const firstContent = firstAccordion.querySelector('.settings-accordion-content');
+        if (firstHeader && firstContent) {
+            firstHeader.classList.add('active');
+            firstContent.classList.add('open');
+        }
+    }
 
     // Enable audio on first interaction for mobile
     enableAudioOnInteraction();
