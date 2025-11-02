@@ -4,7 +4,7 @@
  */
 
 const APP_VERSION = {
-    number: '16aef24',
+    number: '5899ec7',
     date: '2025-11-02',
     changelog: [
         'style: Calendrier plus compact sur grand écran (≥1024px)',
