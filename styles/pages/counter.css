@@ -120,11 +120,10 @@
     text-align: center;
     margin: 0;
     position: relative;
-    min-height: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     touch-action: manipulation;
 }
 
@@ -195,10 +194,6 @@
 
 /* Mobile responsive - Portrait */
 @media (max-width: 480px) {
-    .counter-display {
-        min-height: 350px;
-    }
-
     .counter-number {
         font-size: 68px;
     }
@@ -211,16 +206,16 @@
 /* Mobile landscape (horizontal) - Tesbih plus petit */
 @media (max-width: 768px) and (orientation: landscape) {
     .counter-header-mobile {
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
 
     .stats-card-mobile {
-        padding: 10px;
-        margin-bottom: 8px;
+        padding: 8px;
+        margin-bottom: 6px;
     }
 
     .stat-number {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .stat-label {
@@ -230,11 +225,7 @@
     .tesbih-container {
         width: min(450px, 60vh);
         height: min(450px, 60vh);
-        margin: 8px auto;
-    }
-
-    .counter-display {
-        min-height: 300px;
+        margin: 4px auto 0;
     }
 
     .counter-button {
@@ -251,27 +242,27 @@
    TESBIH CONTAINER & BACKGROUND
    ============================================ */
 
-/* Container tesbih - Défaut (mobile/small) - COMPACT */
+/* Container tesbih - Défaut (mobile/small) - COMPACT et CENTRÉ */
 .tesbih-container {
     position: relative;
     width: min(650px, 85vw);
     height: min(650px, 85vw);
     max-width: 100%;
-    margin: 12px auto;
+    margin: 8px auto 0;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Image tesbih background - Par défaut (mobile) agrandi 125% */
+/* Image tesbih background - Par défaut (mobile) agrandi 130% */
 .tesbih-bg {
     position: absolute;
     top: 0;
     left: 0;
-    width: 125%;
-    height: 125%;
-    margin-left: -12.5%;
-    margin-top: -12.5%;
+    width: 130%;
+    height: 130%;
+    margin-left: -15%;
+    margin-top: -15%;
     background-image: url('/assets/images/tesbih.png?v=2025101202');
     background-size: contain;
     background-position: center center;
@@ -291,11 +282,21 @@
     height: clamp(min(60vw, 320px), 60%, 400px) !important;
 }
 
-/* Écran large (≥768px) - Desktop taille normale */
+/* Écran large (≥768px) - Desktop optimisé sans scroll */
 @media (min-width: 768px) {
+    .counter-header-mobile {
+        margin-bottom: 16px;
+    }
+
+    .stats-card-mobile {
+        max-width: 600px;
+        margin: 0 auto 20px;
+    }
+
     .tesbih-container {
-        width: min(700px, 90vw);
-        height: min(700px, 90vw);
+        width: min(600px, 70vw);
+        height: min(600px, 70vw);
+        margin: 0 auto;
     }
 
     .tesbih-bg {
@@ -312,5 +313,10 @@
         /* Desktop : Taille normale 360px */
         width: clamp(min(50vw, 280px), 55%, min(360px, 400px)) !important;
         height: clamp(min(50vw, 280px), 55%, min(360px, 400px)) !important;
+    }
+
+    .category-select-wrapper {
+        max-width: 500px;
+        margin: 20px auto 0;
     }
 }
