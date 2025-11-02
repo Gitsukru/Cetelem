@@ -673,7 +673,7 @@
         <div class="footer-content">
             <div class="footer-section">
                 <p class="footer-text">Çetelem - Dijital Tesbih</p>
-                <p class="footer-version">v3.5.1• 2025</p>
+                <p class="footer-version" id="footerVersion">v3.5.1 • 2025</p>
             </div>
             <div class="footer-section">
                 <a href="legal.html" class="footer-link" target="_blank">
@@ -728,6 +728,16 @@
 
     <!-- Version centrale (chargée en premier) -->
     <script src="version.js"></script>
+
+    <!-- Afficher version dans footer -->
+    <script>
+        if (typeof APP_VERSION !== 'undefined' && APP_VERSION.number) {
+            const footerVersion = document.getElementById('footerVersion');
+            if (footerVersion) {
+                footerVersion.textContent = `v3.5.1 ${APP_VERSION.number} • 2025`;
+            }
+        }
+    </script>
 
     <!-- App Scripts -->
     <script src="script.js"></script>
