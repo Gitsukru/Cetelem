@@ -64,13 +64,21 @@ class NotificationManager {
    * Envoyer une notification
    */
   sendNotification(title, body, icon = '/assets/icons/icon-192x192.png') {
+    console.log('📤 sendNotification() appelé', { title, body, icon })
+    console.log('  - isSupported:', this.isSupported)
+    console.log('  - permission:', this.permission)
+
     if (!this.isSupported || this.permission !== 'granted') {
       console.warn('⚠️ Notifications non autorisées')
+      console.warn('  - isSupported:', this.isSupported)
+      console.warn('  - permission:', this.permission)
       return null
     }
 
     try {
-      const notification = new Notification(title, {
+      console.log('🔨 Création de la notification...')
+
+      const notificationOptions = {
         body: body,
         icon: icon,
         badge: '/assets/icons/favicon-32x32.png',
@@ -78,19 +86,47 @@ class NotificationManager {
         requireInteraction: false,
         tag: 'zikirmatik-reminder',
         renotify: true
-      })
+      }
+
+      console.log('  - Options:', notificationOptions)
+
+      const notification = new Notification(title, notificationOptions)
+
+      console.log('✅ Notification créée:', notification)
+      console.log('  - État:', notification)
+      console.log('  - Tag:', notification.tag)
 
       notification.onclick = () => {
+        console.log('👆 Notification cliquée')
         window.focus()
         notification.close()
       }
 
-      // Auto-fermer après 10 secondes
-      setTimeout(() => notification.close(), 10000)
+      notification.onshow = () => {
+        console.log('👁️ Notification affichée à l\'écran')
+      }
 
+      notification.onerror = (error) => {
+        console.error('❌ Erreur lors de l\'affichage:', error)
+      }
+
+      notification.onclose = () => {
+        console.log('🚪 Notification fermée')
+      }
+
+      // Auto-fermer après 10 secondes
+      setTimeout(() => {
+        console.log('⏰ Auto-fermeture après 10s')
+        notification.close()
+      }, 10000)
+
+      console.log('✅ sendNotification() terminé avec succès')
       return notification
     } catch (error) {
       console.error('❌ Erreur envoi notification:', error)
+      console.error('  - Type:', error.name)
+      console.error('  - Message:', error.message)
+      console.error('  - Stack:', error.stack)
       return null
     }
   }
