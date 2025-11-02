@@ -4,7 +4,7 @@
  */
 
 const APP_VERSION = {
-    number: '70318cf',
+    number: 'b4ecd79',
     date: '2025-11-02',
     changelog: [
         'feat: Configuration rappels sans autorisation préalable',
