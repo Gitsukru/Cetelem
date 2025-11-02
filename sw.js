@@ -1,5 +1,8 @@
-// Version fixe pour éviter les erreurs d'import
-const CACHE_VERSION = '2025-11-02-b781ec7-settings-accordion';
+// Import de la version centralisée
+self.importScripts('./version.js');
+
+// Version dynamique basée sur APP_VERSION
+const CACHE_VERSION = `${self.APP_VERSION.date}-${self.APP_VERSION.number}`;
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',

@@ -88,9 +88,9 @@
   color: #ef4444;
 }
 
-/* Rotation du chevron quand ouvert */
+/* Rotation du chevron quand ouvert (90° vers le bas) */
 .settings-accordion-header.active .accordion-chevron {
-  transform: rotate(180deg);
+  transform: rotate(90deg);
 }
 
 /* ============================================

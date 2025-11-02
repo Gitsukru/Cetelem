@@ -2723,6 +2723,43 @@ function applyUpdateNow() {
     }
 }
 
+/**
+ * Vérifier manuellement les mises à jour
+ * Fonction accessible depuis l'interface utilisateur
+ */
+function checkForUpdates() {
+    if (!('serviceWorker' in navigator)) {
+        showCustomAlert('❌ Service Worker non supporté', 'error', 2000);
+        return;
+    }
+
+    showCustomAlert('🔄 Recherche de mises à jour...', 'info', 2000);
+
+    navigator.serviceWorker.getRegistration().then(registration => {
+        if (!registration) {
+            showCustomAlert('❌ Service Worker non enregistré', 'error', 2000);
+            return;
+        }
+
+        // Forcer la vérification de mise à jour
+        registration.update()
+            .then(() => {
+                console.log('✅ Vérification mise à jour effectuée');
+                // Attendre 2 secondes pour voir si une mise à jour est détectée
+                setTimeout(() => {
+                    if (!pendingServiceWorker) {
+                        showCustomAlert('✅ Application à jour!', 'success', 2000);
+                    }
+                    // Sinon la bannière s'affichera automatiquement
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('❌ Erreur vérification:', error);
+                showCustomAlert('❌ Erreur lors de la vérification', 'error', 2000);
+            });
+    });
+}
+
 // Service Worker pour PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
@@ -2764,6 +2801,20 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('controllerchange', function() {
         window.location.reload();
     });
+
+    // ✅ Vérification périodique automatique des mises à jour (toutes les heures)
+    setInterval(() => {
+        if (navigator.serviceWorker.controller) {
+            console.log('🔄 Vérification automatique des mises à jour...');
+            navigator.serviceWorker.getRegistration().then(registration => {
+                if (registration) {
+                    registration.update().catch(error => {
+                        console.error('❌ Erreur vérification mise à jour:', error);
+                    });
+                }
+            });
+        }
+    }, 60 * 60 * 1000); // Toutes les heures (60 minutes)
 }
 
 // Détection installation PWA
