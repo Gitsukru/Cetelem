@@ -166,6 +166,14 @@ class NotificationManager {
     this.checkReminders()
 
     console.log('⏰ Vérification rappels démarrée (toutes les 30s)')
+
+    // Reprendre la vérification quand l'app revient au premier plan
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && this.permission === 'granted') {
+        console.log('👁️ App visible - Vérification rappels')
+        this.checkReminders()
+      }
+    })
   }
 
   /**
@@ -183,7 +191,10 @@ class NotificationManager {
    * Vérifier si un rappel doit être déclenché
    */
   checkReminders() {
-    if (this.permission !== 'granted') return
+    if (this.permission !== 'granted') {
+      console.log('⚠️ Vérification rappels annulée: permission non granted')
+      return
+    }
 
     const now = new Date()
     const currentHour = now.getHours()
@@ -191,12 +202,18 @@ class NotificationManager {
 
     const activeReminders = this.getActiveReminders()
 
+    console.log(`⏰ Vérification rappels - ${currentHour}:${String(currentMinute).padStart(2, '0')} - ${activeReminders.length} rappels actifs`)
+
     activeReminders.forEach(reminder => {
+      console.log(`  Rappel: ${reminder.hour}:${String(reminder.minute).padStart(2, '0')} - "${reminder.message}"`)
+
       if (reminder.hour === currentHour && reminder.minute === currentMinute) {
         // Vérifier si déjà notifié dans les 2 dernières minutes
         const lastNotified = localStorage.getItem(`notified_${reminder.id}`)
         const lastNotifiedTime = lastNotified ? parseInt(lastNotified) : 0
         const timeSinceLastNotif = Date.now() - lastNotifiedTime
+
+        console.log(`  ✓ Correspondance trouvée! Dernier envoi: ${Math.floor(timeSinceLastNotif / 1000)}s`)
 
         // Ne notifier qu'une fois toutes les 2 minutes (éviter spam)
         if (timeSinceLastNotif > 120000) {
@@ -211,9 +228,11 @@ class NotificationManager {
           localStorage.setItem(`notified_${reminder.id}`, Date.now().toString())
 
           // Analytics (optionnel)
-          if (typeof analytics !== 'undefined') {
+          if (typeof analytics !== 'undefined' && typeof analytics.reminderTriggered === 'function') {
             analytics.reminderTriggered(reminder.id)
           }
+        } else {
+          console.log(`  ⏸️ Rappel déjà envoyé récemment (attendre ${Math.ceil((120000 - timeSinceLastNotif) / 1000)}s)`)
         }
       }
     })
@@ -299,7 +318,18 @@ const notificationManager = new NotificationManager()
 // Démarrer automatiquement si permission accordée
 if (notificationManager.getPermissionStatus() === 'granted') {
   notificationManager.startChecking()
+  console.log('✅ Notifications actives - Vérification automatique démarrée')
+} else {
+  console.log('⚠️ Notifications non actives - Permission requise')
 }
+
+// Redémarrer si permission accordée ultérieurement
+window.addEventListener('focus', () => {
+  if (notificationManager.getPermissionStatus() === 'granted' && !notificationManager.checkInterval) {
+    console.log('🔄 Redémarrage vérification notifications (focus window)')
+    notificationManager.startChecking()
+  }
+})
 
 // Export
 if (typeof module !== 'undefined' && module.exports) {
