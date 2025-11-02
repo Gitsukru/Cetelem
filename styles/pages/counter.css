@@ -229,8 +229,8 @@
     }
 
     .counter-button {
-        width: 75% !important;
-        height: 75% !important;
+        width: 75%;
+        height: 75%;
     }
 
     .counter-number {
@@ -278,8 +278,8 @@
     position: relative;
     z-index: 1;
     /* Mobile : 60% du container, max 400px */
-    width: clamp(min(60vw, 320px), 60%, 400px) !important;
-    height: clamp(min(60vw, 320px), 60%, 400px) !important;
+    width: clamp(min(60vw, 320px), 60%, 400px);
+    height: clamp(min(60vw, 320px), 60%, 400px);
 }
 
 /* Écran large (≥768px) - Desktop optimisé sans scroll */
@@ -311,8 +311,8 @@
 
     .counter-button {
         /* Desktop : Taille normale 360px */
-        width: clamp(min(50vw, 280px), 55%, min(360px, 400px)) !important;
-        height: clamp(min(50vw, 280px), 55%, min(360px, 400px)) !important;
+        width: clamp(min(50vw, 280px), 55%, min(360px, 400px));
+        height: clamp(min(50vw, 280px), 55%, min(360px, 400px));
     }
 
     .category-select-wrapper {
