@@ -4,13 +4,13 @@
  */
 
 const APP_VERSION = {
-    number: '39278a3',
+    number: '81cce79',
     date: '2025-11-02',
     changelog: [
-        'fix: Tesbih 125% uniquement sur mobile (pas desktop)',
+        'refactor: Retirer !important (code propre)',
+        'fix: Desktop sans scroll + tesbih 130% mobile centré',
         'feat: Refonte complète onglet Sayaç mobile',
-        'feat: Stats card en haut (Bugün/Toplam/Süre)',
-        'feat: Tesbih compact 85vw + mode paysage'
+        'feat: Stats card en haut (Bugün/Toplam/Süre)'
     ]
 };
 

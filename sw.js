@@ -1,5 +1,5 @@
 // Version fixe pour éviter les erreurs d'import
-const CACHE_VERSION = '2025-11-02-39278a3-tesbih-mobile-only';
+const CACHE_VERSION = '2025-11-02-81cce79-clean-code';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
