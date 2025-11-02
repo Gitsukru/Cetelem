@@ -40,8 +40,12 @@ const DeviceBackup = {
         counters: counters || {},
         categories: categories || [],
 
-        // Livres et objectifs de livres
-        books: (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '[]'),
+        // Livres et objectifs de livres (TOUJOURS un tableau [])
+        books: (() => {
+          let booksData = (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '[]')
+          // Garantir que books est un tableau, sinon []
+          return Array.isArray(booksData) ? booksData : []
+        })(),
         bookGoals: JSON.parse(localStorage.getItem('bookGoals') || '{}'),
 
         // Métadonnées et objectifs des catégories
@@ -165,10 +169,12 @@ const DeviceBackup = {
 
       // 2. Livres et objectifs de livres
       if (backupData.books) {
+        // Garantir que books est un tableau, sinon []
+        const booksArray = Array.isArray(backupData.books) ? backupData.books : []
         if (typeof books !== 'undefined') {
-          books = backupData.books
+          books = booksArray
         }
-        localStorage.setItem('books', JSON.stringify(backupData.books))
+        localStorage.setItem('books', JSON.stringify(booksArray))
       }
 
       if (backupData.bookGoals) {

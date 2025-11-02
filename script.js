@@ -2348,8 +2348,12 @@ function exportData() {
             categories: categories,
             counters: counters,
 
-            // Livres et objectifs de livres
-            books: (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '[]'),
+            // Livres et objectifs de livres (TOUJOURS un tableau [])
+            books: (() => {
+                let booksData = (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '[]')
+                // Garantir que books est un tableau, sinon []
+                return Array.isArray(booksData) ? booksData : []
+            })(),
             bookGoals: JSON.parse(localStorage.getItem('bookGoals') || '{}'),
 
             // Métadonnées et objectifs des catégories
@@ -2422,10 +2426,12 @@ function importData(event) {
 
                     // 2. Livres et objectifs de livres
                     if (importedData.books) {
+                        // Garantir que books est un tableau, sinon []
+                        const booksArray = Array.isArray(importedData.books) ? importedData.books : [];
                         if (typeof books !== 'undefined') {
-                            books = importedData.books;
+                            books = booksArray;
                         }
-                        localStorage.setItem('books', JSON.stringify(importedData.books));
+                        localStorage.setItem('books', JSON.stringify(booksArray));
                     }
                     if (importedData.bookGoals) {
                         if (typeof bookGoals !== 'undefined') {

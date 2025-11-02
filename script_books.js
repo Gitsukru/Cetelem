@@ -19,17 +19,30 @@ const BooksManager = {
 
   /**
    * Récupérer tous les livres depuis localStorage
+   * Garantit TOUJOURS le retour d'un tableau []
    */
   getBooks() {
     const booksData = localStorage.getItem('books');
-    return booksData ? JSON.parse(booksData) : [];
+    if (!booksData) return [];
+
+    try {
+      const parsed = JSON.parse(booksData);
+      // Si ce n'est pas un tableau, retourner un tableau vide
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error('Erreur parsing books:', error);
+      return [];
+    }
   },
 
   /**
    * Sauvegarder les livres dans localStorage
+   * Valide que books est bien un tableau avant sauvegarde
    */
   saveBooks(books) {
-    localStorage.setItem('books', JSON.stringify(books));
+    // Garantir que books est un tableau
+    const booksArray = Array.isArray(books) ? books : [];
+    localStorage.setItem('books', JSON.stringify(booksArray));
     showSaveIndicator();
   },
 
