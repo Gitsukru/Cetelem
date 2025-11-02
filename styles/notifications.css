@@ -4,6 +4,114 @@
  */
 
 /* ============================================
+   NOTIFICATION IN-APP (VISIBLE DANS L'APP)
+   ============================================ */
+
+.in-app-notification {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 90%;
+  max-width: 400px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 999999;
+  transform: translateX(calc(100% + 40px));
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.in-app-notification.show {
+  transform: translateX(0);
+}
+
+.in-app-notification-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+  animation: bellRing 0.8s ease-in-out infinite;
+}
+
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(-10deg); }
+  20%, 40% { transform: rotate(10deg); }
+  50% { transform: rotate(0deg); }
+}
+
+.in-app-notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.in-app-notification-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: white;
+}
+
+.in-app-notification-body {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+}
+
+.in-app-notification-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.in-app-notification-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.in-app-notification-close:active {
+  transform: scale(0.95);
+}
+
+/* Mobile optimisation */
+@media (max-width: 768px) {
+  .in-app-notification {
+    top: 70px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-width: none;
+    padding: 16px;
+  }
+
+  .in-app-notification-icon {
+    font-size: 28px;
+  }
+
+  .in-app-notification-title {
+    font-size: 15px;
+  }
+
+  .in-app-notification-body {
+    font-size: 13px;
+  }
+}
+
+/* ============================================
    STATUT DES NOTIFICATIONS
    ============================================ */
 

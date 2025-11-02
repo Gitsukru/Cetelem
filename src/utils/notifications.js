@@ -61,22 +61,81 @@ class NotificationManager {
   }
 
   /**
-   * Envoyer une notification
+   * Afficher une notification IN-APP (visible dans l'application)
+   */
+  showInAppNotification(title, body) {
+    console.log('📱 Affichage notification in-app')
+
+    // Créer l'élément de notification
+    const notificationEl = document.createElement('div')
+    notificationEl.className = 'in-app-notification'
+    notificationEl.innerHTML = `
+      <div class="in-app-notification-icon">🔔</div>
+      <div class="in-app-notification-content">
+        <div class="in-app-notification-title">${this.escapeHtml(title)}</div>
+        <div class="in-app-notification-body">${this.escapeHtml(body)}</div>
+      </div>
+      <button class="in-app-notification-close" onclick="this.parentElement.remove()">✕</button>
+    `
+
+    // Ajouter au DOM
+    document.body.appendChild(notificationEl)
+
+    // Animation d'entrée
+    setTimeout(() => {
+      notificationEl.classList.add('show')
+    }, 10)
+
+    // Vibration mobile
+    if ('vibrate' in navigator) {
+      navigator.vibrate([200, 100, 200])
+    }
+
+    // Auto-fermer après 8 secondes
+    setTimeout(() => {
+      notificationEl.classList.remove('show')
+      setTimeout(() => notificationEl.remove(), 300)
+    }, 8000)
+
+    // Son (si disponible)
+    try {
+      const audio = new Audio('/assets/sounds/notification.mp3')
+      audio.volume = 0.3
+      audio.play().catch(() => {
+        console.log('Son notification non disponible')
+      })
+    } catch (error) {
+      // Pas grave si le son ne marche pas
+    }
+  }
+
+  /**
+   * Escape HTML pour éviter XSS
+   */
+  escapeHtml(text) {
+    const div = document.createElement('div')
+    div.textContent = text
+    return div.innerHTML
+  }
+
+  /**
+   * Envoyer une notification (système + in-app)
    */
   sendNotification(title, body, icon = '/assets/icons/icon-192x192.png') {
     console.log('📤 sendNotification() appelé', { title, body, icon })
     console.log('  - isSupported:', this.isSupported)
     console.log('  - permission:', this.permission)
 
+    // TOUJOURS afficher la notification in-app
+    this.showInAppNotification(title, body)
+
     if (!this.isSupported || this.permission !== 'granted') {
-      console.warn('⚠️ Notifications non autorisées')
-      console.warn('  - isSupported:', this.isSupported)
-      console.warn('  - permission:', this.permission)
+      console.warn('⚠️ Notifications système non autorisées, seule notification in-app affichée')
       return null
     }
 
     try {
-      console.log('🔨 Création de la notification...')
+      console.log('🔨 Création de la notification système...')
 
       const notificationOptions = {
         body: body,
@@ -92,41 +151,38 @@ class NotificationManager {
 
       const notification = new Notification(title, notificationOptions)
 
-      console.log('✅ Notification créée:', notification)
-      console.log('  - État:', notification)
-      console.log('  - Tag:', notification.tag)
+      console.log('✅ Notification système créée:', notification)
 
       notification.onclick = () => {
-        console.log('👆 Notification cliquée')
+        console.log('👆 Notification système cliquée')
         window.focus()
         notification.close()
       }
 
       notification.onshow = () => {
-        console.log('👁️ Notification affichée à l\'écran')
+        console.log('👁️ Notification système affichée')
       }
 
       notification.onerror = (error) => {
-        console.error('❌ Erreur lors de l\'affichage:', error)
+        console.error('❌ Erreur notification système:', error)
       }
 
       notification.onclose = () => {
-        console.log('🚪 Notification fermée')
+        console.log('🚪 Notification système fermée')
       }
 
       // Auto-fermer après 10 secondes
       setTimeout(() => {
-        console.log('⏰ Auto-fermeture après 10s')
+        console.log('⏰ Auto-fermeture notification système')
         notification.close()
       }, 10000)
 
       console.log('✅ sendNotification() terminé avec succès')
       return notification
     } catch (error) {
-      console.error('❌ Erreur envoi notification:', error)
+      console.error('❌ Erreur notification système:', error)
       console.error('  - Type:', error.name)
       console.error('  - Message:', error.message)
-      console.error('  - Stack:', error.stack)
       return null
     }
   }
