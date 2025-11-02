@@ -4,7 +4,7 @@
  */
 
 const APP_VERSION = {
-    number: '28bd063',
+    number: 'b781ec7',
     date: '2025-11-02',
     changelog: [
         'refactor: Onglet Ayarlar avec système accordéon',

@@ -1,5 +1,5 @@
 // Version fixe pour éviter les erreurs d'import
-const CACHE_VERSION = '2025-11-02-28bd063-settings-accordion';
+const CACHE_VERSION = '2025-11-02-b781ec7-settings-accordion';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
