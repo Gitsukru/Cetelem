@@ -1,14 +1,14 @@
-// Import de la version centralisée
-self.importScripts('./version.js');
-
-// Version dynamique basée sur APP_VERSION
-const CACHE_VERSION = `${self.APP_VERSION.date}-${self.APP_VERSION.number}`;
+// Version du cache - Mise à jour automatique lors du déploiement
+// Format: YYYY-MM-DD-commit-feature
+const CACHE_VERSION = '2025-11-02-c731610-inapp-notifications';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json'
 ];
+
+console.log('🔧 Service Worker version:', CACHE_VERSION);
 
 // Installation du service worker
 self.addEventListener('install', event => {
