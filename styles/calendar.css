@@ -348,6 +348,30 @@
 }
 
 /* ============================================
+   RESPONSIVE GRAND ÉCRAN
+   ============================================ */
+
+@media (min-width: 1024px) {
+  .calendar-section {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .calendar-grid {
+    gap: 6px;
+  }
+
+  .calendar-day {
+    font-size: 13px;
+  }
+
+  .calendar-weekday {
+    font-size: 11px;
+  }
+}
+
+/* ============================================
    RESPONSIVE MOBILE
    ============================================ */
 

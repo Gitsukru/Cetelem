@@ -4,13 +4,13 @@
  */
 
 const APP_VERSION = {
-    number: '37af595',
+    number: '16aef24',
     date: '2025-11-02',
     changelog: [
+        'style: Calendrier plus compact sur grand écran (≥1024px)',
         'feat: Renommer onglet Yönetim → Ayarlar',
         'refactor: Retirer !important (code propre)',
-        'fix: Desktop sans scroll + tesbih 130% mobile centré',
-        'feat: Refonte complète onglet Sayaç mobile'
+        'fix: Desktop sans scroll + tesbih 130% mobile centré'
     ]
 };
 
