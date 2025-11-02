@@ -116,6 +116,13 @@ const Analytics = {
     this.track('Retour en ligne')
   },
 
+  // Rappel déclenché
+  reminderTriggered(reminderId) {
+    this.track('Rappel déclenché', {
+      reminderId: reminderId
+    })
+  },
+
   // ========================================
   // FONCTIONS UTILITAIRES POUR DASHBOARD
   // ========================================
