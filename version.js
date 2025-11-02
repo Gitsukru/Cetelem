@@ -4,13 +4,13 @@
  */
 
 const APP_VERSION = {
-    number: '81cce79',
+    number: '37af595',
     date: '2025-11-02',
     changelog: [
+        'feat: Renommer onglet Yönetim → Ayarlar',
         'refactor: Retirer !important (code propre)',
         'fix: Desktop sans scroll + tesbih 130% mobile centré',
-        'feat: Refonte complète onglet Sayaç mobile',
-        'feat: Stats card en haut (Bugün/Toplam/Süre)'
+        'feat: Refonte complète onglet Sayaç mobile'
     ]
 };
 
