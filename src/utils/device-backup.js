@@ -5,6 +5,18 @@
  */
 
 const DeviceBackup = {
+  // Générer ou récupérer l'identifiant unique de l'appareil
+  getDeviceId() {
+    let deviceId = localStorage.getItem('deviceId')
+    if (!deviceId) {
+      // Générer un UUID simple et unique pour cet appareil
+      deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11)
+      localStorage.setItem('deviceId', deviceId)
+      logger.log('🆔 Nouvel ID appareil créé:', deviceId)
+    }
+    return deviceId
+  },
+
   // Générer un code aléatoire de 6 caractères (lettres + chiffres)
   generateCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // Sans I, O, 0, 1 pour éviter confusion
@@ -55,6 +67,7 @@ const DeviceBackup = {
 
         timestamp: new Date().toISOString(),
         version: window.APP_VERSION ? window.APP_VERSION.number : '3.5.1',
+        deviceId: this.getDeviceId(), // ID unique de l'appareil source
       }
 
       // Générer un code unique
@@ -122,6 +135,14 @@ const DeviceBackup = {
 
       // Restaurer les données
       const backupData = data.backup_data
+
+      // ⚠️ VÉRIFICATION : Empêcher la restauration sur le même appareil
+      const currentDeviceId = this.getDeviceId()
+      if (backupData.deviceId && backupData.deviceId === currentDeviceId) {
+        logger.warn('🚫 Tentative de restauration sur le même appareil bloquée')
+        analytics.track('Backup restauration bloquée', { reason: 'same_device' })
+        throw new Error('SAME_DEVICE')
+      }
 
       // 1. Compteurs et catégories
       if (backupData.counters) {
@@ -338,7 +359,7 @@ const DeviceBackup = {
     resultDiv.innerHTML = '<p>⏳ Yükleniyor...</p>'
 
     try {
-      const result = await this.restoreBackup(code)
+      await this.restoreBackup(code)
 
       resultDiv.innerHTML = `<p style="color: #16a34a;">✅ Veriler geri yüklendi!</p>`
 
@@ -347,7 +368,21 @@ const DeviceBackup = {
         showCustomAlert('✅ Tüm verileriniz geri yüklendi!', 'success', 4000)
       }, 1500)
     } catch (error) {
-      resultDiv.innerHTML = `<p style="color: #dc2626;">❌ ${error.message}</p>`
+      // Gestion spéciale pour la restauration sur le même appareil
+      if (error.message === 'SAME_DEVICE') {
+        resultDiv.innerHTML = `
+          <div style="background: #fef2f2; border: 2px solid #dc2626; border-radius: 8px; padding: 16px; text-align: left;">
+            <p style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">⚠️ Aynı Cihaz Hatası</p>
+            <p style="color: #7f1d1d; font-size: 13px; line-height: 1.5;">
+              Bu kodu <strong>aynı cihazda</strong> kullanamazsınız.<br><br>
+              Bu işlem verilerinizi kopyalar ve istatistiklerinizi bozar.<br><br>
+              👉 Farklı bir cihazda geri yükleme yapın.
+            </p>
+          </div>
+        `
+      } else {
+        resultDiv.innerHTML = `<p style="color: #dc2626;">❌ ${error.message}</p>`
+      }
     }
   },
 }
