@@ -2349,7 +2349,7 @@ function exportData() {
             counters: counters,
 
             // Livres et objectifs de livres
-            books: (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '{}'),
+            books: (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '[]'),
             bookGoals: JSON.parse(localStorage.getItem('bookGoals') || '{}'),
 
             // Métadonnées et objectifs des catégories
