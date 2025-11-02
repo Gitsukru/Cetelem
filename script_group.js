@@ -509,7 +509,12 @@ function shareCode() {
     navigator.share({
       title: 'Çetelem Grup Kodu',
       text: message
-    }).catch(console.error)
+    }).catch(err => {
+      // Ignorer l'erreur si l'utilisateur annule le partage
+      if (err.name !== 'AbortError') {
+        console.error('Erreur partage:', err)
+      }
+    })
   } else if (navigator.clipboard) {
     navigator.clipboard.writeText(message).then(() => {
       showCustomAlert('Grup kodu panoya kopyalandı!<br>WhatsApp\'ta paylaşabilirsiniz', 'success', 4000)
