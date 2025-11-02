@@ -770,16 +770,17 @@ function toggleMobileMenu() {
 
 /**
  * Toggle accordion sections in Settings tab
+ * Gère l'ouverture/fermeture des sections avec animation du chevron (►/▼)
  * @param {HTMLElement} header - L'élément header cliqué
  */
 function toggleSettingsAccordion(header) {
     const content = header.nextElementSibling;
     const isOpen = content.classList.contains('open');
 
-    // Toggle l'état actif du header
+    // Toggle l'état actif du header (gère automatiquement la rotation du chevron via CSS)
     header.classList.toggle('active');
 
-    // Toggle le contenu
+    // Toggle le contenu avec animation smooth
     if (isOpen) {
         content.classList.remove('open');
     } else {

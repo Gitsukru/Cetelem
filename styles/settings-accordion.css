@@ -162,14 +162,7 @@
 }
 
 /* ============================================
-   PREMIÈRE SECTION OUVERTE PAR DÉFAUT
+   TOUTES LES SECTIONS FERMÉES PAR DÉFAUT
    ============================================ */
 
-/* La première section est ouverte au chargement */
-.settings-accordion-item:first-child .settings-accordion-header {
-  background: rgba(102, 126, 234, 0.05);
-}
-
-.settings-accordion-item:first-child .settings-accordion-header .accordion-chevron {
-  transform: rotate(180deg);
-}
+/* Toutes les sections commencent fermées pour une meilleure organisation */
