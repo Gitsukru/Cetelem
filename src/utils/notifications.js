@@ -5,10 +5,18 @@
 
 class NotificationManager {
   constructor() {
+    console.log('🔧 NotificationManager: Initialisation...')
     this.reminders = this.loadReminders()
     this.checkInterval = null
     this.isSupported = 'Notification' in window
     this.permission = this.isSupported ? Notification.permission : 'denied'
+
+    console.log('🔧 NotificationManager: État initial', {
+      isSupported: this.isSupported,
+      permission: this.permission,
+      nombreRappels: Object.keys(this.reminders).length,
+      rappels: this.reminders
+    })
   }
 
   /**
@@ -106,6 +114,15 @@ class NotificationManager {
     this.saveReminders()
 
     console.log('✅ Rappel ajouté:', reminder)
+    console.log('📋 Tous les rappels actuels:', this.reminders)
+    console.log('🔔 Rappels actifs:', this.getActiveReminders())
+
+    // Démarrer la vérification si ce n'est pas déjà fait
+    if (this.permission === 'granted' && !this.checkInterval) {
+      console.log('🚀 Démarrage automatique de la vérification...')
+      this.startChecking()
+    }
+
     return reminder
   }
 
@@ -153,16 +170,26 @@ class NotificationManager {
    * Démarrer la vérification des rappels
    */
   startChecking() {
+    console.log('🚀 startChecking() appelé')
+    console.log('  - checkInterval existe déjà ?', !!this.checkInterval)
+    console.log('  - permission:', this.permission)
+    console.log('  - nombre de rappels:', Object.keys(this.reminders).length)
+
     if (this.checkInterval) {
+      console.log('⚠️ Nettoyage de l\'ancien interval')
       clearInterval(this.checkInterval)
     }
 
     // Vérifier toutes les 30 secondes
     this.checkInterval = setInterval(() => {
+      console.log('⏱️ Timer 30s déclenché - Appel checkReminders()')
       this.checkReminders()
     }, 30000)
 
+    console.log('✅ setInterval créé, ID:', this.checkInterval)
+
     // Vérifier immédiatement
+    console.log('🔍 Vérification immédiate...')
     this.checkReminders()
 
     console.log('⏰ Vérification rappels démarrée (toutes les 30s)')
@@ -253,16 +280,21 @@ class NotificationManager {
    * Charger les rappels depuis localStorage
    */
   loadReminders() {
+    console.log('📂 loadReminders() appelé')
     try {
       const saved = localStorage.getItem('notifications_reminders')
+      console.log('  - localStorage raw:', saved)
       if (saved) {
-        return JSON.parse(saved)
+        const parsed = JSON.parse(saved)
+        console.log('  - Rappels parsés:', parsed)
+        return parsed
       }
     } catch (error) {
       console.error('❌ Erreur chargement rappels:', error)
     }
 
-    // Rappels par défaut
+    // Rappels par défaut (désactivés)
+    console.log('  - Utilisation des rappels par défaut (désactivés)')
     return {
       '9:0': {
         id: '9:0',
@@ -330,6 +362,44 @@ window.addEventListener('focus', () => {
     notificationManager.startChecking()
   }
 })
+
+// Fonction de test manuelle (accessible depuis console)
+window.testNotifications = function() {
+  console.log('🧪 === TEST NOTIFICATIONS ===')
+  console.log('1. État du système:')
+  console.log('  - isSupported:', notificationManager.isSupported)
+  console.log('  - permission:', notificationManager.permission)
+  console.log('  - checkInterval actif:', !!notificationManager.checkInterval)
+  console.log('')
+
+  console.log('2. Rappels enregistrés:')
+  console.log('  - Tous les rappels:', notificationManager.reminders)
+  console.log('  - Rappels actifs:', notificationManager.getActiveReminders())
+  console.log('')
+
+  console.log('3. Heure actuelle:')
+  const now = new Date()
+  console.log(`  - ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`)
+  console.log('')
+
+  console.log('4. Test de notification immédiate:')
+  if (notificationManager.permission === 'granted') {
+    notificationManager.sendNotification('🧪 Test', 'Si vous voyez ceci, les notifications fonctionnent!')
+    console.log('  ✅ Notification de test envoyée')
+  } else {
+    console.log('  ❌ Permission non accordée')
+  }
+  console.log('')
+
+  console.log('5. Forcer vérification des rappels:')
+  notificationManager.checkReminders()
+  console.log('  ✅ checkReminders() exécuté')
+  console.log('')
+
+  console.log('💡 ASTUCE: Pour tester un rappel dans 2 minutes:')
+  const testTime = new Date(Date.now() + 2 * 60 * 1000)
+  console.log(`  notificationManager.addReminder(${testTime.getHours()}, ${testTime.getMinutes()}, "Test dans 2 min!", true)`)
+}
 
 // Export
 if (typeof module !== 'undefined' && module.exports) {
