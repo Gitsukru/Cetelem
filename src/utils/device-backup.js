@@ -120,9 +120,18 @@ const DeviceBackup = {
       }
 
       // Rafraîchir l'interface
-      loadCategories()
-      updateCounterDisplay()
-      updateStats()
+      if (typeof updateCategorySelect === 'function') {
+        updateCategorySelect()
+      }
+      if (typeof updateCategoriesList === 'function') {
+        updateCategoriesList()
+      }
+      if (typeof updateCounterDisplay === 'function') {
+        updateCounterDisplay()
+      }
+      if (typeof updateStats === 'function') {
+        updateStats()
+      }
 
       logger.log('✅ Données restaurées depuis le backup')
       analytics.track('Backup restauré', { code })
