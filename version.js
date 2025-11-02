@@ -4,7 +4,7 @@
  */
 
 const APP_VERSION = {
-    number: '6696e66',
+    number: '04c3e1b',
     date: '2025-11-02',
     changelog: [
         'feat: Choix précis des minutes (0-59) pour rappels',
