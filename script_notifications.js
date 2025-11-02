@@ -190,9 +190,9 @@ function showAddReminderModal() {
           </select>
           <span class="time-separator">:</span>
           <select id="reminderMinute">
-            ${[0, 15, 30, 45].map(m => {
-              const selected = m === defaultMinute ? 'selected' : ''
-              return `<option value="${m}" ${selected}>${String(m).padStart(2, '0')}</option>`
+            ${Array.from({length: 60}, (_, i) => {
+              const selected = i === defaultMinute ? 'selected' : ''
+              return `<option value="${i}" ${selected}>${String(i).padStart(2, '0')}</option>`
             }).join('')}
           </select>
         </div>

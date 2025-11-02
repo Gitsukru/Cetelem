@@ -1,5 +1,5 @@
 // Version fixe pour éviter les erreurs d'import
-const CACHE_VERSION = '2025-11-02-5899ec7-calendar-compact';
+const CACHE_VERSION = '2025-11-02-6696e66-notifications-minutes';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
