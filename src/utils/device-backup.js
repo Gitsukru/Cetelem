@@ -22,15 +22,39 @@ const DeviceBackup = {
     }
 
     try {
-      // Préparer les données à sauvegarder
+      // Préparer les données à sauvegarder - TOUTES les données importantes
       const backupData = {
+        // Compteurs et catégories
         counters: counters || {},
         categories: categories || [],
+
+        // Livres et objectifs de livres
+        books: (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '{}'),
+        bookGoals: JSON.parse(localStorage.getItem('bookGoals') || '{}'),
+
+        // Métadonnées et objectifs des catégories
+        categoryMetadata: (typeof categoryMetadata !== 'undefined') ? categoryMetadata : JSON.parse(localStorage.getItem('categoryMetadata') || '{}'),
+        categoryGoals: JSON.parse(localStorage.getItem('categoryGoals') || '{}'),
+        goalsAchievedToday: JSON.parse(localStorage.getItem('goalsAchievedToday') || '{}'),
+
+        // Groupe et participant
+        currentGroup: JSON.parse(localStorage.getItem('currentGroup') || 'null'),
+        currentParticipant: JSON.parse(localStorage.getItem('currentParticipant') || 'null'),
+        isCreator: localStorage.getItem('isCreator') === 'true',
+
+        // Notifications et rappels
+        notifications_reminders: JSON.parse(localStorage.getItem('notifications_reminders') || '[]'),
+
+        // Settings
         settings: {
-          soundEnabled: soundEnabled || false,
-          currentCategory: currentCategory || null,
+          soundEnabled: (typeof soundEnabled !== 'undefined') ? soundEnabled : localStorage.getItem('soundEnabled') !== 'false',
+          currentCategory: (typeof currentCategory !== 'undefined') ? currentCategory : null,
+          lastActiveTab: localStorage.getItem('lastActiveTab') || null,
+          lastSelectedCategory: localStorage.getItem('lastSelectedCategory') || null,
         },
+
         timestamp: new Date().toISOString(),
+        version: window.APP_VERSION ? window.APP_VERSION.number : '3.5.1',
       }
 
       // Générer un code unique
@@ -99,27 +123,99 @@ const DeviceBackup = {
       // Restaurer les données
       const backupData = data.backup_data
 
+      // 1. Compteurs et catégories
       if (backupData.counters) {
         counters = backupData.counters
-        saveCounters()
+        if (typeof saveCounters === 'function') {
+          saveCounters()
+        } else {
+          localStorage.setItem('counters', JSON.stringify(counters))
+        }
       }
 
       if (backupData.categories) {
         categories = backupData.categories
-        localStorage.setItem('categories', JSON.stringify(categories))
+        if (typeof saveCategories === 'function') {
+          saveCategories()
+        } else {
+          localStorage.setItem('categories', JSON.stringify(categories))
+        }
       }
 
+      // 2. Livres et objectifs de livres
+      if (backupData.books) {
+        if (typeof books !== 'undefined') {
+          books = backupData.books
+        }
+        localStorage.setItem('books', JSON.stringify(backupData.books))
+      }
+
+      if (backupData.bookGoals) {
+        if (typeof bookGoals !== 'undefined') {
+          bookGoals = backupData.bookGoals
+        }
+        localStorage.setItem('bookGoals', JSON.stringify(backupData.bookGoals))
+      }
+
+      // 3. Métadonnées et objectifs des catégories
+      if (backupData.categoryMetadata) {
+        if (typeof categoryMetadata !== 'undefined') {
+          categoryMetadata = backupData.categoryMetadata
+        }
+        localStorage.setItem('categoryMetadata', JSON.stringify(backupData.categoryMetadata))
+      }
+
+      if (backupData.categoryGoals) {
+        if (typeof categoryGoals !== 'undefined') {
+          categoryGoals = backupData.categoryGoals
+        }
+        localStorage.setItem('categoryGoals', JSON.stringify(backupData.categoryGoals))
+      }
+
+      if (backupData.goalsAchievedToday) {
+        localStorage.setItem('goalsAchievedToday', JSON.stringify(backupData.goalsAchievedToday))
+      }
+
+      // 4. Groupe et participant
+      if (backupData.currentGroup) {
+        localStorage.setItem('currentGroup', JSON.stringify(backupData.currentGroup))
+      }
+
+      if (backupData.currentParticipant) {
+        localStorage.setItem('currentParticipant', JSON.stringify(backupData.currentParticipant))
+      }
+
+      if (backupData.isCreator !== undefined) {
+        localStorage.setItem('isCreator', backupData.isCreator.toString())
+      }
+
+      // 5. Notifications et rappels
+      if (backupData.notifications_reminders) {
+        localStorage.setItem('notifications_reminders', JSON.stringify(backupData.notifications_reminders))
+      }
+
+      // 6. Settings
       if (backupData.settings) {
         if (backupData.settings.soundEnabled !== undefined) {
-          soundEnabled = backupData.settings.soundEnabled
-          localStorage.setItem('soundEnabled', soundEnabled ? 'true' : 'false')
+          if (typeof soundEnabled !== 'undefined') {
+            soundEnabled = backupData.settings.soundEnabled
+          }
+          localStorage.setItem('soundEnabled', backupData.settings.soundEnabled ? 'true' : 'false')
         }
         if (backupData.settings.currentCategory) {
-          currentCategory = backupData.settings.currentCategory
+          if (typeof currentCategory !== 'undefined') {
+            currentCategory = backupData.settings.currentCategory
+          }
+        }
+        if (backupData.settings.lastActiveTab) {
+          localStorage.setItem('lastActiveTab', backupData.settings.lastActiveTab)
+        }
+        if (backupData.settings.lastSelectedCategory) {
+          localStorage.setItem('lastSelectedCategory', backupData.settings.lastSelectedCategory)
         }
       }
 
-      // Rafraîchir l'interface
+      // 7. Rafraîchir l'interface
       if (typeof updateCategorySelect === 'function') {
         updateCategorySelect()
       }
@@ -131,6 +227,12 @@ const DeviceBackup = {
       }
       if (typeof updateStats === 'function') {
         updateStats()
+      }
+      if (typeof loadBooks === 'function') {
+        loadBooks()
+      }
+      if (typeof updateBookDisplay === 'function') {
+        updateBookDisplay()
       }
 
       logger.log('✅ Données restaurées depuis le backup')

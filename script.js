@@ -2344,10 +2344,37 @@ function resetAllData() {
 function exportData() {
     try {
         const exportData = {
+            // Compteurs et catégories
             categories: categories,
             counters: counters,
+
+            // Livres et objectifs de livres
+            books: (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '{}'),
+            bookGoals: JSON.parse(localStorage.getItem('bookGoals') || '{}'),
+
+            // Métadonnées et objectifs des catégories
+            categoryMetadata: (typeof categoryMetadata !== 'undefined') ? categoryMetadata : JSON.parse(localStorage.getItem('categoryMetadata') || '{}'),
+            categoryGoals: JSON.parse(localStorage.getItem('categoryGoals') || '{}'),
+            goalsAchievedToday: JSON.parse(localStorage.getItem('goalsAchievedToday') || '{}'),
+
+            // Groupe et participant
+            currentGroup: JSON.parse(localStorage.getItem('currentGroup') || 'null'),
+            currentParticipant: JSON.parse(localStorage.getItem('currentParticipant') || 'null'),
+            isCreator: localStorage.getItem('isCreator') === 'true',
+
+            // Notifications et rappels
+            notifications_reminders: JSON.parse(localStorage.getItem('notifications_reminders') || '[]'),
+
+            // Settings
+            settings: {
+                soundEnabled: soundEnabled,
+                currentCategory: currentCategory || null,
+                lastActiveTab: localStorage.getItem('lastActiveTab') || null,
+                lastSelectedCategory: localStorage.getItem('lastSelectedCategory') || null,
+            },
+
             exportDate: new Date().toISOString(),
-            version: window.APP_VERSION ? window.APP_VERSION.number : '3.5.1' // Version centralisée
+            version: window.APP_VERSION ? window.APP_VERSION.number : '3.5.1'
         };
 
         const dataStr = JSON.stringify(exportData, null, 2);
@@ -2385,19 +2412,93 @@ function importData(event) {
                 'Veri İçe Aktar',
                 'Bu verileri içe aktarmak mevcut TÜM verilerinizi değiştirecek.<br><br>Devam etmek istiyor musunuz?',
                 function() {
-                    // Confirmation "Oui"
+                    // Confirmation "Oui" - Restaurer toutes les données
+
+                    // 1. Compteurs et catégories
                     categories = importedData.categories;
                     counters = importedData.counters;
-
                     saveCategories();
                     saveCounters();
 
+                    // 2. Livres et objectifs de livres
+                    if (importedData.books) {
+                        if (typeof books !== 'undefined') {
+                            books = importedData.books;
+                        }
+                        localStorage.setItem('books', JSON.stringify(importedData.books));
+                    }
+                    if (importedData.bookGoals) {
+                        if (typeof bookGoals !== 'undefined') {
+                            bookGoals = importedData.bookGoals;
+                        }
+                        localStorage.setItem('bookGoals', JSON.stringify(importedData.bookGoals));
+                    }
+
+                    // 3. Métadonnées et objectifs des catégories
+                    if (importedData.categoryMetadata) {
+                        if (typeof categoryMetadata !== 'undefined') {
+                            categoryMetadata = importedData.categoryMetadata;
+                        }
+                        localStorage.setItem('categoryMetadata', JSON.stringify(importedData.categoryMetadata));
+                    }
+                    if (importedData.categoryGoals) {
+                        if (typeof categoryGoals !== 'undefined') {
+                            categoryGoals = importedData.categoryGoals;
+                        }
+                        localStorage.setItem('categoryGoals', JSON.stringify(importedData.categoryGoals));
+                    }
+                    if (importedData.goalsAchievedToday) {
+                        localStorage.setItem('goalsAchievedToday', JSON.stringify(importedData.goalsAchievedToday));
+                    }
+
+                    // 4. Groupe et participant
+                    if (importedData.currentGroup) {
+                        localStorage.setItem('currentGroup', JSON.stringify(importedData.currentGroup));
+                    }
+                    if (importedData.currentParticipant) {
+                        localStorage.setItem('currentParticipant', JSON.stringify(importedData.currentParticipant));
+                    }
+                    if (importedData.isCreator !== undefined) {
+                        localStorage.setItem('isCreator', importedData.isCreator.toString());
+                    }
+
+                    // 5. Notifications et rappels
+                    if (importedData.notifications_reminders) {
+                        localStorage.setItem('notifications_reminders', JSON.stringify(importedData.notifications_reminders));
+                    }
+
+                    // 6. Settings
+                    if (importedData.settings) {
+                        if (importedData.settings.soundEnabled !== undefined) {
+                            soundEnabled = importedData.settings.soundEnabled;
+                            localStorage.setItem('soundEnabled', soundEnabled ? 'true' : 'false');
+                        }
+                        if (importedData.settings.currentCategory) {
+                            currentCategory = importedData.settings.currentCategory;
+                        }
+                        if (importedData.settings.lastActiveTab) {
+                            localStorage.setItem('lastActiveTab', importedData.settings.lastActiveTab);
+                        }
+                        if (importedData.settings.lastSelectedCategory) {
+                            localStorage.setItem('lastSelectedCategory', importedData.settings.lastSelectedCategory);
+                        }
+                    }
+
+                    // 7. Rafraîchir l'interface
                     updateCategorySelect();
                     updateCategoriesList();
                     updateCounterDisplay();
                     updateStats();
 
-                    showCustomAlert('İçe aktarma başarılı!<br>Verileriniz geri yüklendi', 'success', 3000);
+                    // Rafraîchir les livres si la fonction existe
+                    if (typeof loadBooks === 'function') {
+                        loadBooks();
+                    }
+                    if (typeof updateBookDisplay === 'function') {
+                        updateBookDisplay();
+                    }
+
+                    showCustomAlert('İçe aktarma başarılı!<br>Tüm verileriniz geri yüklendi', 'success', 3000);
                 },
                 function() {
                     // Confirmation "Non"
