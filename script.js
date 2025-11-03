@@ -857,8 +857,12 @@ function updateCategoriesList() {
 
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-button';
-        deleteButton.textContent = 'Kategoriyi sil';
-        deleteButton.onclick = () => deleteCategory(index); // ✅ Éviter onclick inline
+        deleteButton.textContent = '🗑️ Sil';
+        deleteButton.title = 'Zikiri kalıcı olarak sil'; // Tooltip pour clarifier
+        deleteButton.onclick = () => {
+            console.log('Delete button clicked for category:', cat, 'index:', index);
+            deleteCategory(index);
+        };
 
         buttonsDiv.appendChild(editButton);
         buttonsDiv.appendChild(deleteButton);
