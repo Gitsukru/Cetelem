@@ -2996,15 +2996,26 @@ function applyUpdateNow() {
  */
 function checkForUpdates() {
     if (!('serviceWorker' in navigator)) {
-        showCustomAlert('❌ Service Worker non supporté', 'error', 2000);
+        showCustomAlert('❌ Service Worker desteklenmiyor', 'error', 2000);
         return;
     }
 
-    showCustomAlert('🔄 Recherche de mises à jour...', 'info', 2000);
+    showCustomAlert('🔄 Güncelleme kontrol ediliyor...', 'info', 2000);
 
     navigator.serviceWorker.getRegistration().then(registration => {
         if (!registration) {
-            showCustomAlert('❌ Service Worker non enregistré', 'error', 2000);
+            showCustomAlert('❌ Service Worker kayıtlı değil', 'error', 2000);
+            return;
+        }
+
+        // Vérifier s'il y a déjà une mise à jour en attente
+        if (registration.waiting) {
+            console.log('⚡ Mise à jour déjà disponible - activation immédiate');
+            // Envoyer le message SKIP_WAITING au SW en attente
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            showCustomAlert('🔄 Mise à jour en cours...', 'info', 1000);
+
+            // Le controllerchange va déclencher le reload automatique
             return;
         }
 
@@ -3012,17 +3023,23 @@ function checkForUpdates() {
         registration.update()
             .then(() => {
                 console.log('✅ Vérification mise à jour effectuée');
-                // Attendre 2 secondes pour voir si une mise à jour est détectée
+
+                // Attendre 3 secondes pour voir si une mise à jour est détectée
                 setTimeout(() => {
-                    if (!pendingServiceWorker) {
-                        showCustomAlert('✅ Application à jour!', 'success', 2000);
+                    if (registration.waiting) {
+                        // Nouvelle version détectée
+                        console.log('🆕 Nouvelle version détectée - activation');
+                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        showCustomAlert('🔄 Mise à jour en cours...', 'info', 1000);
+                    } else if (!pendingServiceWorker) {
+                        showCustomAlert('✅ Uygulama güncel!', 'success', 2000);
                     }
                     // Sinon la bannière s'affichera automatiquement
-                }, 2000);
+                }, 3000);
             })
             .catch(error => {
                 console.error('❌ Erreur vérification:', error);
-                showCustomAlert('❌ Erreur lors de la vérification', 'error', 2000);
+                showCustomAlert('❌ Güncelleme kontrol hatası', 'error', 2000);
             });
     });
 }

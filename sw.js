@@ -1,6 +1,6 @@
 // Version du cache - Mise à jour automatique lors du déploiement
 // Format: YYYY-MM-DD-commit-feature
-const CACHE_VERSION = '2025-11-02-c731610-inapp-notifications';
+const CACHE_VERSION = '2025-11-03-c237432-grouphistory-refactor';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
@@ -77,12 +77,16 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Stratégie "Network First" pour script.js (toujours la dernière version)
-  if (event.request.url.includes('script.js')) {
+  // Stratégie "Network First" pour TOUS les fichiers JavaScript (toujours la dernière version)
+  if (event.request.url.endsWith('.js')) {
     event.respondWith(
       fetch(event.request)
         .then(response => {
-          // Toujours retourner la version réseau pour script.js
+          // Cloner et mettre en cache la nouvelle version
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
           return response;
         })
         .catch(() => {
@@ -93,7 +97,27 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Stratégie "Cache First" pour les autres ressources (CSS, images)
+  // Stratégie "Network First" pour les fichiers CSS (toujours la dernière version)
+  if (event.request.url.endsWith('.css')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Cloner et mettre en cache la nouvelle version
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        })
+        .catch(() => {
+          // En cas d'échec réseau, utiliser le cache comme fallback
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Stratégie "Cache First" pour les autres ressources (images, fonts, etc.)
   event.respondWith(
     caches.match(event.request)
       .then(response => {
