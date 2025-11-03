@@ -61,19 +61,58 @@ function updateGroupInfo() {
   const groupInfo = groupManager.getCurrentGroup();
   if (!groupInfo || !groupInfo.group) return;
 
-  // Mettre à jour statusTitle et statusMessage
+  // Mettre à jour statusTitle et les nouvelles informations
   const statusTitleEl = document.getElementById('statusTitle');
-  const statusMessageEl = document.getElementById('statusMessage');
+  const groupNameInfoEl = document.getElementById('groupNameInfo');
+  const groupCodeInfoEl = document.getElementById('groupCodeInfo');
+  const groupMembersCountEl = document.getElementById('groupMembersCount');
+  const groupCreatedDateEl = document.getElementById('groupCreatedDate');
+  const lastSyncTimeEl = document.getElementById('lastSyncTime');
 
-  if (statusTitleEl && statusMessageEl) {
+  if (statusTitleEl) {
     const isManager = groupInfo.participant?.id === groupInfo.group.manager_id;
+    statusTitleEl.textContent = isManager ? '👑 Grup Yöneticisi' : '👤 Grup Üyesi';
+  }
 
-    if (isManager) {
-      statusTitleEl.textContent = 'Grup Yöneticisi';
-      statusMessageEl.textContent = `${groupInfo.group.name} grubunu yönetiyorsunuz`;
-    } else {
-      statusTitleEl.textContent = 'Grup Üyesi';
-      statusMessageEl.textContent = `${groupInfo.group.name} grubundasınız`;
+  // Nom du groupe
+  if (groupNameInfoEl) {
+    groupNameInfoEl.textContent = groupInfo.group.name || '-';
+  }
+
+  // Code du groupe
+  if (groupCodeInfoEl) {
+    groupCodeInfoEl.textContent = groupInfo.group.code || '-';
+  }
+
+  // Nombre de membres (à récupérer depuis le leaderboard)
+  if (groupMembersCountEl) {
+    groupManager.provider.getLeaderboard(groupInfo.group.id).then(members => {
+      groupMembersCountEl.textContent = `${members.length} üye`;
+    }).catch(() => {
+      groupMembersCountEl.textContent = '- üye';
+    });
+  }
+
+  // Date de création
+  if (groupCreatedDateEl && groupInfo.group.created_at) {
+    const createdDate = new Date(groupInfo.group.created_at);
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    groupCreatedDateEl.textContent = createdDate.toLocaleDateString('tr-TR', options);
+  }
+
+  // Dernière synchronisation
+  if (lastSyncTimeEl) {
+    const updateSyncTime = () => {
+      const now = new Date();
+      const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      lastSyncTimeEl.textContent = now.toLocaleTimeString('tr-TR', options);
+    };
+
+    updateSyncTime();
+
+    // Mettre à jour toutes les 10 secondes (éviter de créer plusieurs intervals)
+    if (!window.syncTimeInterval) {
+      window.syncTimeInterval = setInterval(updateSyncTime, 10000);
     }
   }
 
