@@ -57,6 +57,7 @@ const DeviceBackup = {
         currentGroup: JSON.parse(localStorage.getItem('currentGroup') || 'null'),
         currentParticipant: JSON.parse(localStorage.getItem('currentParticipant') || 'null'),
         isCreator: localStorage.getItem('isCreator') === 'true',
+        groupHistory: JSON.parse(localStorage.getItem('groupHistory') || '[]'),
 
         // Notifications et rappels
         notifications_reminders: JSON.parse(localStorage.getItem('notifications_reminders') || '[]'),
@@ -216,6 +217,10 @@ const DeviceBackup = {
         localStorage.setItem('isCreator', backupData.isCreator.toString())
       }
 
+      if (backupData.groupHistory) {
+        localStorage.setItem('groupHistory', JSON.stringify(backupData.groupHistory))
+      }
+
       // 5. Notifications et rappels
       if (backupData.notifications_reminders) {
         localStorage.setItem('notifications_reminders', JSON.stringify(backupData.notifications_reminders))
@@ -260,6 +265,12 @@ const DeviceBackup = {
       }
       if (typeof updateBookDisplay === 'function') {
         updateBookDisplay()
+      }
+      if (typeof displayGroupHistory === 'function') {
+        displayGroupHistory()
+      }
+      if (typeof initializeGroupUI === 'function') {
+        initializeGroupUI()
       }
 
       logger.log('✅ Données restaurées depuis le backup')

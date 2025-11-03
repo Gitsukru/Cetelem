@@ -2468,6 +2468,7 @@ function exportData() {
             currentGroup: JSON.parse(localStorage.getItem('currentGroup') || 'null'),
             currentParticipant: JSON.parse(localStorage.getItem('currentParticipant') || 'null'),
             isCreator: localStorage.getItem('isCreator') === 'true',
+            groupHistory: JSON.parse(localStorage.getItem('groupHistory') || '[]'),
 
             // Notifications et rappels
             notifications_reminders: JSON.parse(localStorage.getItem('notifications_reminders') || '[]'),
@@ -2570,6 +2571,9 @@ function importData(event) {
                     if (importedData.isCreator !== undefined) {
                         localStorage.setItem('isCreator', importedData.isCreator.toString());
                     }
+                    if (importedData.groupHistory) {
+                        localStorage.setItem('groupHistory', JSON.stringify(importedData.groupHistory));
+                    }
 
                     // 5. Notifications et rappels
                     if (importedData.notifications_reminders) {
@@ -2605,6 +2609,14 @@ function importData(event) {
                     }
                     if (typeof updateBookDisplay === 'function') {
                         updateBookDisplay();
+                    }
+
+                    // Rafraîchir l'historique des groupes et l'UI du groupe
+                    if (typeof displayGroupHistory === 'function') {
+                        displayGroupHistory();
+                    }
+                    if (typeof initializeGroupUI === 'function') {
+                        initializeGroupUI();
                     }
 
                     showCustomAlert('İçe aktarma başarılı!<br>Tüm verileriniz geri yüklendi', 'success', 3000);
