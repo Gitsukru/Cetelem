@@ -282,20 +282,30 @@
     height: clamp(min(60vw, 320px), 60%, 400px);
 }
 
-/* Écran large (≥768px) - Desktop optimisé sans scroll */
+/* Écran large (≥768px) - Desktop optimisé SANS SCROLL */
 @media (min-width: 768px) {
     .counter-header-mobile {
-        margin-bottom: 16px;
+        margin-bottom: 10px;
     }
 
     .stats-card-mobile {
         max-width: 600px;
-        margin: 0 auto 20px;
+        margin: 0 auto 12px;
+        padding: 12px 10px;
     }
 
+    .stat-number {
+        font-size: 20px;
+    }
+
+    .stat-label {
+        font-size: 10px;
+    }
+
+    /* Container tesbih réduit pour tenir sans scroll */
     .tesbih-container {
-        width: min(600px, 70vw);
-        height: min(600px, 70vw);
+        width: min(450px, 60vh);
+        height: min(450px, 60vh);
         margin: 0 auto;
     }
 
@@ -310,13 +320,34 @@
     }
 
     .counter-button {
-        /* Desktop : Taille normale 360px */
-        width: clamp(min(50vw, 280px), 55%, min(360px, 400px));
-        height: clamp(min(50vw, 280px), 55%, min(360px, 400px));
+        /* Desktop : Bouton réduit pour tenir dans viewport */
+        width: clamp(250px, 55%, 320px);
+        height: clamp(250px, 55%, 320px);
+    }
+
+    .counter-number {
+        font-size: 70px;
+    }
+
+    .counter-label {
+        font-size: 13px;
+    }
+
+    .goal-display {
+        margin: 6px 0 2px 0;
+        padding: 3px 10px;
+    }
+
+    .goal-label {
+        font-size: 10px;
+    }
+
+    .goal-value {
+        font-size: 15px;
     }
 
     .category-select-wrapper {
         max-width: 500px;
-        margin: 20px auto 0;
+        margin: 12px auto 0;
     }
 }

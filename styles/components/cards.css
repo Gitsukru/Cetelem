@@ -280,6 +280,13 @@
     margin-bottom: 15px;
 }
 
+/* Desktop - Réduire padding pour éviter scroll */
+@media (min-width: 768px) {
+    .counter-section {
+        padding: 16px 20px;
+    }
+}
+
 /* Mobile responsive */
 @media (max-width: 640px) {
     .status-card {
