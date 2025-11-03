@@ -895,6 +895,14 @@ function deleteCategory(index) {
             updateCategoriesList();
             updateStats();
 
+            // Mettre à jour le groupe si actif
+            if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+                const stats = getCurrentUserStats();
+                groupManager.updateMyScore(stats).catch(err => {
+                    console.error('Erreur mise à jour groupe après suppression catégorie:', err);
+                });
+            }
+
             if (currentCategory === categoryName) {
                 currentCategory = '';
                 visualOffset = 0;
@@ -1134,6 +1142,14 @@ function finalizeEditZikir() {
     updateCategorySelect();
     updateCategoriesList();
     updateStats();
+
+    // Mettre à jour le groupe si actif
+    if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+        const stats = getCurrentUserStats();
+        groupManager.updateMyScore(stats).catch(err => {
+            console.error('Erreur mise à jour groupe après modification catégorie:', err);
+        });
+    }
 
     // Fermer le modal
     document.querySelector('.custom-modal-overlay').remove();
@@ -1384,6 +1400,14 @@ function finalizeAddZikir() {
     updateCategorySelect();
     updateCategoriesList();
     updateStats();
+
+    // Mettre à jour le groupe si actif
+    if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+        const stats = getCurrentUserStats();
+        groupManager.updateMyScore(stats).catch(err => {
+            console.error('Erreur mise à jour groupe après ajout catégorie:', err);
+        });
+    }
 
     // Sélectionner automatiquement la nouvelle catégorie
     const select = document.getElementById('categorySelect');
@@ -2159,6 +2183,15 @@ function resetTodayCategory() {
                 saveCounters();
                 updateCounterDisplay();
                 updateStats();
+
+                // Mettre à jour le groupe si actif
+                if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+                    const stats = getCurrentUserStats();
+                    groupManager.updateMyScore(stats).catch(err => {
+                        console.error('Erreur mise à jour groupe après reset today:', err);
+                    });
+                }
+
                 showCustomAlert('Bugünün zikirleri silindi!', 'success', 2000);
             }
         }
@@ -2190,6 +2223,15 @@ function resetWeekCategory() {
                 saveCounters();
                 updateCounterDisplay();
                 updateStats();
+
+                // Mettre à jour le groupe si actif
+                if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+                    const stats = getCurrentUserStats();
+                    groupManager.updateMyScore(stats).catch(err => {
+                        console.error('Erreur mise à jour groupe après reset week:', err);
+                    });
+                }
+
                 showCustomAlert('Bu haftanın zikirleri silindi!', 'success', 2000);
             }
         }
@@ -2221,6 +2263,15 @@ function resetMonthCategory() {
                 saveCounters();
                 updateCounterDisplay();
                 updateStats();
+
+                // Mettre à jour le groupe si actif
+                if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+                    const stats = getCurrentUserStats();
+                    groupManager.updateMyScore(stats).catch(err => {
+                        console.error('Erreur mise à jour groupe après reset month:', err);
+                    });
+                }
+
                 showCustomAlert('Bu ayın zikirleri silindi!', 'success', 2000);
             }
         }
@@ -2249,6 +2300,15 @@ function resetCategoryCompletely() {
                     saveCounters();
                     updateCounterDisplay();
                     updateStats();
+
+                    // Mettre à jour le groupe si actif
+                    if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+                        const stats = getCurrentUserStats();
+                        groupManager.updateMyScore(stats).catch(err => {
+                            console.error('Erreur mise à jour groupe après reset complet:', err);
+                        });
+                    }
+
                     showCustomAlert('Geçmiş tamamen silindi!', 'warning', 3000);
                 }
             );
