@@ -15,6 +15,21 @@ body {
     flex-direction: column;
 }
 
+/* Desktop: Permettre scroll body pour accéder au footer */
+@media (min-width: 768px) {
+    body {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .container {
+        overflow-y: visible;
+        flex: initial;
+    }
+}
+
 /* Header - Pas de position (scroll avec le contenu du container) */
 .header {
     flex-shrink: 0;
