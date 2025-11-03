@@ -4,6 +4,118 @@
  */
 
 // ============================================
+// UTILITAIRES DE GÉNÉRATION HTML
+// ============================================
+
+/**
+ * Créer une ligne d'information (info-row)
+ */
+function createInfoRow(label, valueId, valueStyle = '') {
+  const row = document.createElement('div');
+  row.className = 'info-row';
+
+  const labelSpan = document.createElement('span');
+  labelSpan.className = 'info-label';
+  labelSpan.textContent = label;
+
+  const valueSpan = document.createElement('span');
+  valueSpan.className = 'info-value';
+  valueSpan.id = valueId;
+  valueSpan.textContent = '-';
+  if (valueStyle) valueSpan.style.cssText = valueStyle;
+
+  row.appendChild(labelSpan);
+  row.appendChild(valueSpan);
+
+  return row;
+}
+
+/**
+ * Générer la section Grup Bilgileri
+ */
+function renderGroupInfoSection() {
+  const container = document.getElementById('groupInfoContainer');
+  if (!container) return;
+
+  // Vider le container
+  container.innerHTML = '';
+
+  // Créer la section
+  const section = document.createElement('div');
+  section.className = 'settings-section';
+
+  const title = document.createElement('h3');
+  title.className = 'settings-title';
+  title.textContent = 'Grup Bilgileri';
+
+  const infoDiv = document.createElement('div');
+  infoDiv.className = 'settings-info';
+
+  // Définir les lignes d'information
+  const infoRows = [
+    { label: 'Durum:', id: 'statusTitle', style: '' },
+    { label: 'Grup Adı:', id: 'groupNameInfo', style: '' },
+    { label: 'Grup Kodu:', id: 'groupCodeInfo', style: 'font-family: monospace; font-weight: 600; letter-spacing: 2px;' },
+    { label: 'Üye Sayısı:', id: 'groupMembersCount', style: '' },
+    { label: 'Oluşturulma:', id: 'groupCreatedDate', style: '' },
+    { label: 'Son Senkron:', id: 'lastSyncTime', style: '' }
+  ];
+
+  // Créer et ajouter chaque ligne
+  infoRows.forEach(row => {
+    infoDiv.appendChild(createInfoRow(row.label, row.id, row.style));
+  });
+
+  section.appendChild(title);
+  section.appendChild(infoDiv);
+  container.appendChild(section);
+}
+
+/**
+ * Créer un élément de section settings générique
+ */
+function createSettingsSection(title, contentHTML, className = 'settings-section') {
+  const section = document.createElement('div');
+  section.className = className;
+
+  const titleEl = document.createElement('h3');
+  titleEl.className = 'settings-title';
+  titleEl.textContent = title;
+
+  section.appendChild(titleEl);
+
+  if (contentHTML) {
+    const contentDiv = document.createElement('div');
+    contentDiv.innerHTML = contentHTML;
+    section.appendChild(contentDiv);
+  }
+
+  return section;
+}
+
+/**
+ * Créer un bouton avec icône et texte
+ */
+function createIconButton(icon, text, onClick, className = 'btn-primary') {
+  const button = document.createElement('button');
+  button.className = className;
+  button.onclick = onClick;
+
+  const iconSpan = document.createElement('span');
+  iconSpan.className = 'btn-icon';
+  iconSpan.textContent = icon;
+
+  const textSpan = document.createElement('span');
+  textSpan.className = 'btn-text';
+  textSpan.textContent = text;
+
+  button.appendChild(iconSpan);
+  button.appendChild(textSpan);
+
+  return button;
+}
+
+// ============================================
 // SUB-TABS NAVIGATION
 // ============================================
 
@@ -313,6 +425,9 @@ function updateActiveGroupUI() {
  * Vérifier au chargement si un groupe est actif
  */
 function initializeGroupUI() {
+  // Générer la structure HTML des sections
+  renderGroupInfoSection();
+
   const groupInfo = groupManager.getCurrentGroup();
 
   if (groupInfo && groupInfo.group) {

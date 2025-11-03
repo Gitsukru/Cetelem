@@ -554,36 +554,8 @@
                             <!-- TAB 3: Ayarlar (Settings) -->
                             <div id="tabSettings" class="group-tab-pane">
                                 <div class="settings-container">
-                                    <!-- Informations groupe -->
-                                    <div class="settings-section">
-                                        <h3 class="settings-title">Grup Bilgileri</h3>
-                                        <div class="settings-info">
-                                            <div class="info-row">
-                                                <span class="info-label">Durum:</span>
-                                                <span class="info-value" id="statusTitle">Yükleniyor...</span>
-                                            </div>
-                                            <div class="info-row">
-                                                <span class="info-label">Grup Adı:</span>
-                                                <span class="info-value" id="groupNameInfo">-</span>
-                                            </div>
-                                            <div class="info-row">
-                                                <span class="info-label">Grup Kodu:</span>
-                                                <span class="info-value" id="groupCodeInfo" style="font-family: monospace; font-weight: 600; letter-spacing: 2px;">-</span>
-                                            </div>
-                                            <div class="info-row">
-                                                <span class="info-label">Üye Sayısı:</span>
-                                                <span class="info-value" id="groupMembersCount">-</span>
-                                            </div>
-                                            <div class="info-row">
-                                                <span class="info-label">Oluşturulma:</span>
-                                                <span class="info-value" id="groupCreatedDate">-</span>
-                                            </div>
-                                            <div class="info-row">
-                                                <span class="info-label">Son Senkron:</span>
-                                                <span class="info-value" id="lastSyncTime">-</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <!-- Informations groupe (généré dynamiquement) -->
+                                    <div id="groupInfoContainer"></div>
 
                                     <!-- Code partage (seulement pour manager) -->
                                     <div id="codeShare" class="settings-section" style="display: none;">
