@@ -29,6 +29,32 @@ let currentGroup = null;
 // Rate limiter pour syncs groupe (5 syncs max par minute)
 const groupSyncLimiter = typeof rateLimiter !== 'undefined' ? rateLimiter : null;
 
+// Validators object pour la validation des catégories
+const Validators = {
+    validateCategoryName(name) {
+        if (!name || typeof name !== 'string') {
+            return { valid: false, error: 'Zikir adı boş olamaz!' };
+        }
+
+        const trimmed = name.trim();
+
+        if (trimmed.length === 0) {
+            return { valid: false, error: 'Zikir adı boş olamaz!' };
+        }
+
+        if (trimmed.length > 50) {
+            return { valid: false, error: 'Zikir adı çok uzun! (Max 50 karakter)' };
+        }
+
+        // Vérifier les caractères dangereux pour éviter XSS
+        if (/<|>|&lt;|&gt;|<script/i.test(trimmed)) {
+            return { valid: false, error: 'Geçersiz karakterler!' };
+        }
+
+        return { valid: true, value: trimmed };
+    }
+};
+
 // Timer functions
 function startTimer() {
     startTime = Date.now();
@@ -725,6 +751,10 @@ function showTab(tabName, event) {
         } else if (tabName === 'management') {
             updateCategoriesList();
             updateCategorySelect();
+            // Mettre à jour aussi la liste des livres
+            if (typeof BooksManager !== 'undefined' && typeof BooksManager.updateBooksManagementList === 'function') {
+                BooksManager.updateBooksManagementList();
+            }
         } else if (tabName === 'group') {
             // Restore group interface if a group is active
             if (groupManager && groupManager.hasActiveGroup()) {
