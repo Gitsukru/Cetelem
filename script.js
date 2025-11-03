@@ -29,31 +29,7 @@ let currentGroup = null;
 // Rate limiter pour syncs groupe (5 syncs max par minute)
 const groupSyncLimiter = typeof rateLimiter !== 'undefined' ? rateLimiter : null;
 
-// Validators object pour la validation des catégories
-const Validators = {
-    validateCategoryName(name) {
-        if (!name || typeof name !== 'string') {
-            return { valid: false, error: 'Zikir adı boş olamaz!' };
-        }
-
-        const trimmed = name.trim();
-
-        if (trimmed.length === 0) {
-            return { valid: false, error: 'Zikir adı boş olamaz!' };
-        }
-
-        if (trimmed.length > 50) {
-            return { valid: false, error: 'Zikir adı çok uzun! (Max 50 karakter)' };
-        }
-
-        // Vérifier les caractères dangereux pour éviter XSS
-        if (/<|>|&lt;|&gt;|<script/i.test(trimmed)) {
-            return { valid: false, error: 'Geçersiz karakterler!' };
-        }
-
-        return { valid: true, value: trimmed };
-    }
-};
+// Validators est chargé depuis src/utils/validators.js
 
 // Timer functions
 function startTimer() {

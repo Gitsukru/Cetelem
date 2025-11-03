@@ -153,8 +153,10 @@ function getDayProgressData(date) {
     }
 
     // Ajouter les objectifs quotidiens
-    const goals = getCategoryGoals(category);
-    totalGoals += goals.daily || 0;
+    if (typeof getCategoryGoals === 'function') {
+      const goals = getCategoryGoals(category);
+      totalGoals += goals.daily || 0;
+    }
   });
 
   // Ajouter les données des livres
