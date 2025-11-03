@@ -2329,7 +2329,7 @@ function resetCategoryCompletely() {
 function resetAllData() {
     showCustomConfirm(
         'AŞİRİ TEHLİKE',
-        'TÜM zikir verilerinizi silin?<br><br>Bu KALICI olarak silecek:<br>• Tüm sayaçlar<br>• Tüm geçmiş<br>• Tüm istatistikler',
+        'TÜM verilerinizi silin?<br><br>Bu KALICI olarak silecek:<br>• Tüm zikirler ve sayaçlar<br>• Tüm kitaplar ve okuma geçmişi<br>• Tüm geçmiş ve istatistikler<br>• Tüm hedefler',
         function() {
             showCustomConfirm(
                 'SON ŞANS',
@@ -2378,17 +2378,50 @@ function resetAllData() {
 
                     yesBtn.addEventListener('click', () => {
                         if (input.value === 'SİL') {
-                            // Réinitialiser toutes les données
+                            // Réinitialiser TOUTES les données (catégories + livres)
+
+                            // 1. Réinitialiser les compteurs de catégories
                             counters = {};
                             categories.forEach(cat => {
                                 counters[cat] = {};
                             });
-
                             saveCounters();
+
+                            // 2. Supprimer les métadonnées et objectifs de catégories
+                            categoryMetadata = {};
+                            categoryGoals = {};
+                            localStorage.setItem('categoryMetadata', JSON.stringify(categoryMetadata));
+                            localStorage.setItem('categoryGoals', JSON.stringify(categoryGoals));
+                            localStorage.setItem('goalsAchievedToday', JSON.stringify({}));
+
+                            // 3. Supprimer TOUS les livres et leurs objectifs
+                            if (typeof BooksManager !== 'undefined' && typeof BooksManager.saveBooks === 'function') {
+                                BooksManager.saveBooks([]);
+                            }
+                            localStorage.setItem('books', JSON.stringify([]));
+                            localStorage.setItem('bookGoals', JSON.stringify({}));
+
+                            // 4. Mettre à jour l'interface
                             updateCounterDisplay();
                             updateStats();
+                            updateCategoriesList();
+                            if (typeof BooksManager !== 'undefined' && typeof BooksManager.updateBooksManagementList === 'function') {
+                                BooksManager.updateBooksManagementList();
+                            }
+                            if (typeof BooksManager !== 'undefined' && typeof BooksManager.renderBooks === 'function') {
+                                BooksManager.renderBooks();
+                            }
+
+                            // 5. Mettre à jour le groupe si actif
+                            if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+                                const stats = getCurrentUserStats();
+                                groupManager.updateMyScore(stats).catch(err => {
+                                    console.error('Erreur mise à jour groupe après reset total:', err);
+                                });
+                            }
+
                             closeConfirmDiv();
-                            showCustomAlert('TÜM verileriniz silindi!', 'warning', 4000);
+                            showCustomAlert('TÜM verileriniz silindi! (Zikirler + Kitaplar)', 'warning', 4000);
                         } else {
                             showCustomAlert('Yanlış metin! Veriler korundu.', 'warning', 3000);
                             closeConfirmDiv();
