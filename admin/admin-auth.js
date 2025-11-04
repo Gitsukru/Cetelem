@@ -434,7 +434,12 @@ class AdminAuth {
     displayVersion() {
         const versionInfo = document.querySelector('.version-info');
         if (versionInfo) {
-            versionInfo.textContent = `v${this.APP_VERSION} • 2025`;
+            // Obtenir le commit hash depuis version.js (généré par Netlify)
+            const commitHash = (typeof APP_VERSION !== 'undefined' && APP_VERSION.number)
+                ? APP_VERSION.number
+                : 'dev';
+
+            versionInfo.textContent = `v${this.APP_VERSION} • ${commitHash} • 2025`;
         }
     }
 
