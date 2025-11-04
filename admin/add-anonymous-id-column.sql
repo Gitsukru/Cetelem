@@ -4,22 +4,54 @@
 -- Ajoute la colonne manquante pour PrivacyAnalytics
 -- ====================================
 
--- Ajouter la colonne anonymous_id (si elle n'existe pas)
+-- Ajouter les colonnes manquantes pour PrivacyAnalytics
 DO $$
 BEGIN
+  -- anonymous_id
   IF NOT EXISTS (
     SELECT 1 FROM information_schema.columns
     WHERE table_schema = 'public'
     AND table_name = 'analytics_events'
     AND column_name = 'anonymous_id'
   ) THEN
-    ALTER TABLE analytics_events
-    ADD COLUMN anonymous_id TEXT;
-
+    ALTER TABLE analytics_events ADD COLUMN anonymous_id TEXT;
     RAISE NOTICE '✅ Colonne anonymous_id ajoutée';
-  ELSE
-    RAISE NOTICE 'ℹ️  Colonne anonymous_id existe déjà';
   END IF;
+
+  -- screen_width
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+    AND table_name = 'analytics_events'
+    AND column_name = 'screen_width'
+  ) THEN
+    ALTER TABLE analytics_events ADD COLUMN screen_width INTEGER;
+    RAISE NOTICE '✅ Colonne screen_width ajoutée';
+  END IF;
+
+  -- screen_height
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+    AND table_name = 'analytics_events'
+    AND column_name = 'screen_height'
+  ) THEN
+    ALTER TABLE analytics_events ADD COLUMN screen_height INTEGER;
+    RAISE NOTICE '✅ Colonne screen_height ajoutée';
+  END IF;
+
+  -- language
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+    AND table_name = 'analytics_events'
+    AND column_name = 'language'
+  ) THEN
+    ALTER TABLE analytics_events ADD COLUMN language TEXT;
+    RAISE NOTICE '✅ Colonne language ajoutée';
+  END IF;
+
+  RAISE NOTICE '✅ Toutes les colonnes nécessaires sont présentes';
 END $$;
 
 -- Créer un index pour améliorer les performances des requêtes
