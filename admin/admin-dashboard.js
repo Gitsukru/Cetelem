@@ -748,7 +748,7 @@ class AdminDashboard {
     async checkSupabaseQuota() {
         try {
             // Compter rows dans tables principales
-            const tables = ['analytics_events', 'groups', 'group_participants'];
+            const tables = ['analytics_events', 'groups'];
             let totalRows = 0;
 
             for (const table of tables) {
