@@ -201,20 +201,20 @@ class AdminDashboard {
 
         // Zikirlers totaux
         const totalZikirlers = events
-            .filter(e => e.event_type === 'counter_increment')
+            .filter(e => e.event_name === 'counter_increment')
             .reduce((sum, e) => sum + (e.event_data?.value || 0), 0);
 
         // Groupes actifs
         const activeGroups = new Set(
             events7d
-                .filter(e => e.event_type.includes('group'))
+                .filter(e => e.event_name && e.event_name.includes('group'))
                 .map(e => e.event_data?.groupId)
                 .filter(Boolean)
         ).size;
 
         // Livres complétés (7j)
         const booksCompleted = events7d.filter(e =>
-            e.event_type === 'book_completed'
+            e.event_name === 'book_completed'
         ).length;
 
         // Taux d'engagement
@@ -285,7 +285,7 @@ class AdminDashboard {
 
         // Compter les events par catégorie
         const categoryEvents = events.filter(e =>
-            e.event_type === 'counter_increment' && e.event_data?.categoryName
+            e.event_name === 'counter_increment' && e.event_data?.categoryName
         );
 
         const categoryCounts = {};
@@ -352,35 +352,35 @@ class AdminDashboard {
 
         // Groupes
         const groupUsers = new Set(
-            events.filter(e => e.event_type.includes('group'))
+            events.filter(e => e.event_name.includes('group'))
                 .map(e => e.event_data?.deviceId)
                 .filter(Boolean)
         ).size;
 
         // Livres
         const bookUsers = new Set(
-            events.filter(e => e.event_type.includes('book'))
+            events.filter(e => e.event_name.includes('book'))
                 .map(e => e.event_data?.deviceId)
                 .filter(Boolean)
         ).size;
 
         // Tesbihat
         const tesbihatUsers = new Set(
-            events.filter(e => e.event_type.includes('tesbihat'))
+            events.filter(e => e.event_name.includes('tesbihat'))
                 .map(e => e.event_data?.deviceId)
                 .filter(Boolean)
         ).size;
 
         // Notifications
         const notifUsers = new Set(
-            events.filter(e => e.event_type.includes('notification'))
+            events.filter(e => e.event_name.includes('notification'))
                 .map(e => e.event_data?.deviceId)
                 .filter(Boolean)
         ).size;
 
         // Backups
         const backupUsers = new Set(
-            events.filter(e => e.event_type.includes('backup'))
+            events.filter(e => e.event_name.includes('backup'))
                 .map(e => e.event_data?.deviceId)
                 .filter(Boolean)
         ).size;
@@ -617,12 +617,12 @@ class AdminDashboard {
             const { data: events, error } = await this.supabase
                 .from('analytics_events')
                 .select('*')
-                .or('event_type.eq.book_created,event_type.eq.book_completed');
+                .in('event_name', ['book_created', 'book_completed']);
 
             if (error) throw error;
 
-            const booksCreated = events.filter(e => e.event_type === 'book_created').length;
-            const booksCompleted = events.filter(e => e.event_type === 'book_completed').length;
+            const booksCreated = events.filter(e => e.event_name === 'book_created').length;
+            const booksCompleted = events.filter(e => e.event_name === 'book_completed').length;
 
             const completionRate = booksCreated > 0
                 ? (booksCompleted / booksCreated * 100).toFixed(1)
@@ -755,7 +755,7 @@ class AdminDashboard {
             const { data: errors, error } = await this.supabase
                 .from('analytics_events')
                 .select('*')
-                .eq('event_type', 'error')
+                .eq('event_name', 'error')
                 .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
 
             if (error) throw error;
@@ -1053,7 +1053,7 @@ class AdminDashboard {
             const { data: errors, error } = await this.supabase
                 .from('analytics_events')
                 .select('*')
-                .eq('event_type', 'error')
+                .eq('event_name', 'error')
                 .order('created_at', { ascending: false })
                 .limit(50);
 
@@ -1119,7 +1119,7 @@ class AdminDashboard {
             const { data: failedLogins, error } = await this.supabase
                 .from('analytics_events')
                 .select('*')
-                .eq('event_type', 'admin_login_failed')
+                .eq('event_name', 'admin_login_failed')
                 .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
 
             if (error) throw error;
@@ -1184,7 +1184,7 @@ class AdminDashboard {
             'admin_login': 'Connexion admin'
         };
 
-        return labels[event.event_type] || event.event_type;
+        return labels[event.event_name] || event.event_name;
     }
 
     showErrorInSection(sectionId, message) {
