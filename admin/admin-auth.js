@@ -22,6 +22,8 @@ class AdminAuth {
         this.SESSION_DURATION_DAYS = 7;
         this.supabase = null;
         this.currentUser = null;
+        this.APP_VERSION = '3.5.1'; // Synced with package.json
+        this.pendingServiceWorker = null;
     }
 
     /**
@@ -42,6 +44,11 @@ class AdminAuth {
 
         // Vérifier la session
         await this.checkSession();
+
+        // Enregistrer Service Worker (si pas en mode login)
+        if (this.isAuthenticated()) {
+            this.registerServiceWorker();
+        }
     }
 
     /**
@@ -381,6 +388,136 @@ class AdminAuth {
      */
     getCurrentUser() {
         return this.currentUser;
+    }
+
+    /**
+     * Enregistre le Service Worker pour l'admin
+     */
+    registerServiceWorker() {
+        if (!('serviceWorker' in navigator)) {
+            console.log('⚠️ Service Worker non supporté');
+            return;
+        }
+
+        navigator.serviceWorker.register('../sw.js')
+            .then(registration => {
+                console.log('✅ Service Worker enregistré (admin)');
+
+                // Afficher la version
+                this.displayVersion();
+
+                // Vérifier les mises à jour
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('🆕 Nouvelle version disponible (admin)');
+                            this.pendingServiceWorker = newWorker;
+                            this.showUpdateBanner();
+                        }
+                    });
+                });
+
+                // Vérifier immédiatement si update en attente
+                if (registration.waiting) {
+                    this.pendingServiceWorker = registration.waiting;
+                    this.showUpdateBanner();
+                }
+            })
+            .catch(error => {
+                console.error('❌ Erreur Service Worker:', error);
+            });
+    }
+
+    /**
+     * Affiche la version dans le sidebar
+     */
+    displayVersion() {
+        const versionInfo = document.querySelector('.version-info');
+        if (versionInfo) {
+            versionInfo.textContent = `v${this.APP_VERSION} • 2025`;
+        }
+    }
+
+    /**
+     * Affiche la bannière de mise à jour
+     */
+    showUpdateBanner() {
+        // Vérifier si déjà affiché
+        if (document.getElementById('adminUpdateBanner')) return;
+
+        const banner = document.createElement('div');
+        banner.id = 'adminUpdateBanner';
+        banner.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 100000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.3s ease;
+        `;
+
+        banner.innerHTML = `
+            <span style="font-size: 20px;">🎉</span>
+            <span>Nouvelle version disponible !</span>
+            <button onclick="adminAuth.applyUpdate()" style="background: white; color: #059669; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;">
+                🚀 Mettre à jour
+            </button>
+            <button onclick="document.getElementById('adminUpdateBanner').remove()" style="background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); width: 28px; height: 28px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;">
+                ✕
+            </button>
+        `;
+
+        document.body.insertBefore(banner, document.body.firstChild);
+    }
+
+    /**
+     * Applique la mise à jour
+     */
+    applyUpdate() {
+        if (!this.pendingServiceWorker) return;
+
+        const banner = document.getElementById('adminUpdateBanner');
+        if (banner) banner.remove();
+
+        // Afficher message de chargement
+        const loading = document.createElement('div');
+        loading.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 32px 48px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 100001;
+            text-align: center;
+        `;
+        loading.innerHTML = `
+            <div style="font-size: 48px; margin-bottom: 16px;">🔄</div>
+            <div style="font-size: 18px; font-weight: 600; color: #1e293b;">Mise à jour en cours...</div>
+        `;
+        document.body.appendChild(loading);
+
+        // Activer le nouveau Service Worker
+        this.pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+
+        // Recharger après 2s
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
     }
 }
 
