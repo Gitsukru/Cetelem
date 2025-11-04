@@ -129,10 +129,13 @@ const PrivacyAnalytics = {
 
   /**
    * Vérifier si l'utilisateur a accepté les analytics
+   * Par défaut: ACTIVÉ (données 100% anonymes, pas besoin de consentement RGPD)
    */
   isAnalyticsEnabled() {
     const consent = localStorage.getItem('analytics_consent');
-    return consent === 'true';
+    // Si jamais défini, activer par défaut (null → true)
+    // Si explicitement désactivé par l'utilisateur, respecter ce choix
+    return consent !== 'false';
   },
 
   /**
@@ -277,17 +280,16 @@ Acceptez-vous ?
 
 // Initialisation automatique au chargement
 window.addEventListener('DOMContentLoaded', () => {
-  // Demander consentement si nécessaire
-  PrivacyAnalytics.requestConsent().then(accepted => {
-    if (accepted) {
-      PrivacyAnalytics.startSession();
+  // Analytics activés par défaut (données 100% anonymes)
+  // L'utilisateur peut désactiver dans les paramètres si souhaité
+  if (PrivacyAnalytics.isAnalyticsEnabled()) {
+    PrivacyAnalytics.startSession();
 
-      // Tracker la fin de session avant de quitter
-      window.addEventListener('beforeunload', () => {
-        PrivacyAnalytics.endSession();
-      });
-    }
-  });
+    // Tracker la fin de session avant de quitter
+    window.addEventListener('beforeunload', () => {
+      PrivacyAnalytics.endSession();
+    });
+  }
 });
 
 // Export global
