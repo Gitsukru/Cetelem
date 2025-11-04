@@ -18,6 +18,11 @@ try {
     // Récupérer le message du dernier commit
     const commitMsg = execSync('git log -1 --pretty=%B', { encoding: 'utf8' }).split('\n')[0].trim();
 
+    // Échapper les apostrophes et backslashes pour JavaScript
+    const escapedMsg = commitMsg
+        .replace(/\\/g, '\\\\')  // Échapper les backslashes
+        .replace(/'/g, "\\'");   // Échapper les apostrophes
+
     // Générer le contenu de version.js
     const versionContent = `/**
  * VERSION CENTRALE DE L'APPLICATION
@@ -28,7 +33,7 @@ const APP_VERSION = {
     number: '${commitHash}',
     date: '${commitDate}',
     changelog: [
-        '${commitMsg}',
+        '${escapedMsg}',
         'Déploiement automatique Netlify'
     ]
 };
