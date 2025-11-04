@@ -128,7 +128,20 @@ const BooksManager = {
     if (book) {
       const today = new Date().toISOString().split('T')[0];
       const currentPages = book.history[today] || 0;
+      const previousTotalPages = this.getTotalPagesRead(book);
       book.history[today] = currentPages + parseInt(pages);
+      const newTotalPages = this.getTotalPagesRead(book);
+
+      // 📊 Analytics: Livre complété (si on vient de terminer)
+      if (typeof PrivacyAnalytics !== 'undefined' && book.totalPages > 0) {
+        if (previousTotalPages < book.totalPages && newTotalPages >= book.totalPages) {
+          PrivacyAnalytics.trackEvent('book_completed', {
+            bookName: book.name,
+            totalPages: book.totalPages,
+            daysToComplete: Object.keys(book.history).length
+          });
+        }
+      }
 
       this.saveBooks(books);
       this.renderBooks();
@@ -632,6 +645,17 @@ function saveBookFromSteps() {
   // Sauvegarder les objectifs de lecture
   if (data.dailyGoal > 0 || data.weeklyGoal > 0) {
     saveBookGoals(newBook.id, data.dailyGoal, data.weeklyGoal);
+  }
+
+  // 📊 Analytics: Livre créé
+  if (typeof PrivacyAnalytics !== 'undefined') {
+    PrivacyAnalytics.trackEvent('book_created', {
+      bookName: data.name,
+      totalPages: data.totalPages,
+      format: data.format,
+      dailyGoal: data.dailyGoal,
+      weeklyGoal: data.weeklyGoal
+    });
   }
 
   // Fermer le modal

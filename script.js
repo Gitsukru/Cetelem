@@ -1395,6 +1395,15 @@ function finalizeAddZikir() {
     saveCategories();
     initializeCounters();
 
+    // 📊 Analytics: Catégorie créée
+    if (typeof PrivacyAnalytics !== 'undefined') {
+        PrivacyAnalytics.trackEvent('category_created', {
+            categoryName: name,
+            dailyGoal: dailyGoal,
+            weeklyGoal: weeklyGoal
+        });
+    }
+
     // Enregistrer la date de création
     categoryMetadata[name] = {
         createdAt: new Date().toISOString(),
@@ -1620,6 +1629,15 @@ function incrementCounter() {
 
     if (saveCounters()) {
         updateCounterDisplay();
+
+        // 📊 Analytics: Compteur incrémenté
+        if (typeof PrivacyAnalytics !== 'undefined') {
+            const currentCount = counters[currentCategory][currentDate];
+            PrivacyAnalytics.trackEvent('counter_increment', {
+                categoryName: currentCategory,
+                value: currentCount
+            });
+        }
 
         // Vérifier et célébrer les objectifs atteints
         checkAndCelebrateGoals(currentCategory);
