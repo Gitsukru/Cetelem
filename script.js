@@ -2962,8 +2962,8 @@ function hideUpdateBanner() {
  */
 function applyUpdateNow() {
     if (pendingServiceWorker) {
-        // Sauvegarder avant mise à jour
-        showCustomAlert('💾 Sauvegarde en cours...', 'info', 1000);
+        // Sauvegarder avant mise à jour - Durée augmentée pour laisser le temps de voir
+        showCustomAlert('💾 Sauvegarde en cours...', 'info', 2000);
 
         try {
             autoSave();
@@ -2975,13 +2975,16 @@ function applyUpdateNow() {
             // Masquer l'indicateur
             hideUpdateIndicator();
 
-            // Confirmation
-            showCustomAlert('✅ Sauvegardé! Mise à jour...', 'success', 800);
+            // Confirmation - Durée augmentée
+            setTimeout(() => {
+                showCustomAlert('✅ Sauvegardé! Mise à jour en cours...', 'success', 2500);
+            }, 2000);
 
+            // Reload après avoir donné le temps de voir les messages
             setTimeout(() => {
                 pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
                 window.location.reload();
-            }, 1200);
+            }, 4000);
         } catch (error) {
             console.error('⚠️ Erreur sauvegarde:', error);
             showCustomAlert('⚠️ Erreur sauvegarde, MAJ quand même...', 'warning', 1000);
