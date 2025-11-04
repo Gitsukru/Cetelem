@@ -44,11 +44,6 @@ class AdminAuth {
 
         // Vérifier la session
         await this.checkSession();
-
-        // Enregistrer Service Worker (si pas en mode login)
-        if (this.isAuthenticated()) {
-            this.registerServiceWorker();
-        }
     }
 
     /**
@@ -325,6 +320,9 @@ class AdminAuth {
 
         // Afficher l'email admin dans le sidebar
         this.displayAdminInfo();
+
+        // Enregistrer Service Worker et afficher version
+        this.registerServiceWorker();
 
         // Initialiser le dashboard
         if (typeof adminDashboard !== 'undefined') {
