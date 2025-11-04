@@ -1,0 +1,423 @@
+/**
+ * INTERACTIONS - Effets hover et réactivité
+ * Effets cohérents sur tous les éléments cliquables
+ */
+
+/* ============================================
+   BOUTONS GÉNÉRIQUES
+   ============================================ */
+
+/* Tous les boutons de base */
+button:not(.counter-button):not(.hamburger-menu) {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+button:not(.counter-button):not(.hamburger-menu):hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+button:not(.counter-button):not(.hamburger-menu):active {
+    transform: translateY(0);
+    filter: brightness(0.95);
+}
+
+/* ============================================
+   BOUTONS PRIMAIRES & SECONDAIRES
+   ============================================ */
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* ============================================
+   TAB BUTTONS
+   ============================================ */
+
+.tab-button:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.tab-button:active {
+    transform: translateY(0);
+}
+
+.tab-button.active:hover {
+    transform: translateY(-1px);
+}
+
+/* Group sub-tabs */
+.group-subtab:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+.group-subtab.active:hover {
+    transform: translateY(0);
+}
+
+/* ============================================
+   CARDS & CONTAINERS
+   ============================================ */
+
+/* Categories list items */
+.category-item:hover {
+    background: #f8fafc;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Participant cards */
+.participant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+}
+
+/* Book cards */
+.book-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border-color: #667eea;
+}
+
+/* Calendar days */
+.calendar-day:not(.empty):not(.future):hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    z-index: 10;
+}
+
+/* ============================================
+   LIENS & FOOTER
+   ============================================ */
+
+.footer-link:hover {
+    color: #667eea;
+    text-decoration: underline;
+}
+
+.footer-link-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+/* ============================================
+   SELECT & INPUTS
+   ============================================ */
+
+.category-select:hover {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-input:hover:not(:focus) {
+    border-color: #cbd5e0;
+}
+
+.form-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* ============================================
+   BOUTONS D'ACTION
+   ============================================ */
+
+/* Add category quick */
+.add-category-quick:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.add-category-quick:active {
+    transform: scale(1) rotate(90deg);
+}
+
+/* Backup buttons */
+.backup-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(56, 178, 172, 0.3);
+}
+
+/* Reset buttons */
+.reset-btn:hover,
+.leave-btn:hover,
+.leave-btn-large:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+    filter: brightness(1.05);
+}
+
+/* Share buttons */
+.share-btn:hover,
+.share-btn-large:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* ============================================
+   ICÔNES & PETITS BOUTONS
+   ============================================ */
+
+/* Edit, delete, etc. */
+.edit-icon:hover,
+.delete-icon:hover,
+.close-btn:hover {
+    transform: scale(1.15);
+}
+
+.delete-icon:hover {
+    color: #ef4444;
+}
+
+.edit-icon:hover {
+    color: #667eea;
+}
+
+/* Modal close button */
+.modal-close:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* ============================================
+   TESBIHAT CARDS
+   ============================================ */
+
+.tesbihat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    border-color: #667eea;
+}
+
+.tesbihat-card:active {
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   COUNTER BUTTON (spécial)
+   ============================================ */
+
+.counter-button:hover {
+    transform: scale(1.02);
+}
+
+.counter-button:active {
+    transform: scale(0.97);
+}
+
+/* ============================================
+   NOTIFICATIONS
+   ============================================ */
+
+.reminder-item:hover {
+    background: #f8fafc;
+    transform: translateX(4px);
+}
+
+.delete-reminder:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    transform: scale(1.1);
+}
+
+/* ============================================
+   CHAT
+   ============================================ */
+
+.chat-send-btn:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transform: scale(1.05);
+}
+
+.chat-send-btn:active {
+    transform: scale(0.95);
+}
+
+/* ============================================
+   BOUTONS SPÉCIFIQUES PAR PAGE
+   ============================================ */
+
+/* Page Groupe - Boutons mode */
+.mode-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
+}
+
+/* Page Stats - Export buttons */
+.export-btn:hover,
+.import-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Page Ayarlar - Settings buttons */
+.settings-button:hover,
+.backup-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+/* Welcome modal buttons */
+.welcome-start-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Tesbihat navigation */
+.section-nav-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: scale(1.1);
+}
+
+.section-nav-btn:active {
+    transform: scale(0.9);
+}
+
+/* Quick add buttons */
+.quick-add-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Goal buttons */
+.goal-btn:hover,
+.set-goal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+/* Reset counters */
+.reset-day-btn:hover,
+.reset-week-btn:hover,
+.reset-month-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Copy buttons */
+.copy-btn:hover,
+.copy-code-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: scale(1.05);
+}
+
+/* History items clickables */
+.history-item:hover {
+    background: #f8fafc;
+    transform: translateX(3px);
+    border-color: #667eea;
+    cursor: pointer;
+}
+
+/* Accordion headers */
+.accordion-header:hover {
+    background: #f8fafc;
+}
+
+/* Switch toggle */
+.switch:hover {
+    opacity: 0.9;
+}
+
+/* Device backup buttons */
+.device-backup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(56, 178, 172, 0.3);
+}
+
+/* Notification test button */
+.test-notification-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Update banner button */
+.update-banner-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Leaderboard refresh */
+.refresh-leaderboard-btn:hover {
+    transform: rotate(180deg) scale(1.1);
+    transition: transform 0.4s ease;
+}
+
+/* Mobile - Réduire effets pour performance
+   ============================================ */
+
+@media (max-width: 640px) {
+    /* Réduire les transformations sur mobile */
+    button:not(.counter-button):hover {
+        transform: translateY(-1px);
+    }
+
+    .category-item:hover {
+        transform: translateX(2px);
+    }
+
+    .participant-card:hover,
+    .book-card:hover,
+    .tesbihat-card:hover {
+        transform: translateY(-1px);
+    }
+
+    /* Pas de scale sur mobile pour éviter dépassement */
+    .calendar-day:hover {
+        transform: scale(1.05);
+    }
+}
+
+/* ============================================
+   CURSORS
+   ============================================ */
+
+/* Pointer pour tous les éléments cliquables */
+button,
+.category-item,
+.participant-card,
+.book-card,
+.calendar-day:not(.empty):not(.future),
+.tesbihat-card,
+.reminder-item,
+.footer-link,
+.footer-link-btn,
+.modal-close,
+.edit-icon,
+.delete-icon {
+    cursor: pointer;
+}
+
+/* Pas de sélection de texte sur les boutons */
+button,
+.category-item,
+.participant-card,
+.book-card,
+.calendar-day,
+.tesbihat-card {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
