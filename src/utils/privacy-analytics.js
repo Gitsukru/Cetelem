@@ -278,19 +278,22 @@ Acceptez-vous ?
   }
 };
 
-// Initialisation automatique au chargement
-window.addEventListener('DOMContentLoaded', () => {
-  // Analytics activés par défaut (données 100% anonymes)
-  // L'utilisateur peut désactiver dans les paramètres si souhaité
-  if (PrivacyAnalytics.isAnalyticsEnabled()) {
-    PrivacyAnalytics.startSession();
-
-    // Tracker la fin de session avant de quitter
-    window.addEventListener('beforeunload', () => {
-      PrivacyAnalytics.endSession();
-    });
-  }
-});
+// ❌ Initialisation automatique DÉSACTIVÉE
+// ⚠️ PrivacyAnalytics.startSession() doit être appelé MANUELLEMENT dans script.js
+// après que groupManager soit initialisé, sinon groupManager.provider.supabase sera null
+//
+// Appel manuel nécessaire :
+// 1. Attendre que initializeBackend() soit appelé
+// 2. Puis appeler PrivacyAnalytics.startSession()
+//
+// window.addEventListener('DOMContentLoaded', () => {
+//   if (PrivacyAnalytics.isAnalyticsEnabled()) {
+//     PrivacyAnalytics.startSession();
+//     window.addEventListener('beforeunload', () => {
+//       PrivacyAnalytics.endSession();
+//     });
+//   }
+// });
 
 // Export global
 window.PrivacyAnalytics = PrivacyAnalytics;
