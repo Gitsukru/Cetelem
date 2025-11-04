@@ -2972,6 +2972,9 @@ function applyUpdateNow() {
             // Reset compteur de refus
             localStorage.setItem('updateRefusedCount', '0');
 
+            // Masquer l'indicateur
+            hideUpdateIndicator();
+
             // Confirmation
             showCustomAlert('✅ Sauvegardé! Mise à jour...', 'success', 800);
 
@@ -2988,6 +2991,105 @@ function applyUpdateNow() {
             }, 1200);
         }
     }
+}
+
+/**
+ * Afficher l'indicateur de mise à jour dans la navbar
+ */
+function showUpdateIndicator() {
+    const indicator = document.getElementById('updateIndicator');
+    if (indicator) {
+        indicator.style.display = 'flex';
+        console.log('🔔 Indicateur de mise à jour affiché dans la navbar');
+    }
+}
+
+/**
+ * Masquer l'indicateur de mise à jour
+ */
+function hideUpdateIndicator() {
+    const indicator = document.getElementById('updateIndicator');
+    if (indicator) {
+        indicator.style.display = 'none';
+    }
+}
+
+/**
+ * Afficher le popup de détails de mise à jour
+ */
+function showUpdateDetailsPopup() {
+    const popupHTML = `
+        <div class="custom-modal-overlay" id="updatePopup">
+            <div class="custom-modal" style="max-width: 450px;">
+                <div class="modal-header">
+                    <h3>🔔 Yeni Güncelleme Mevcut!</h3>
+                    <button class="modal-close" onclick="document.getElementById('updatePopup').remove()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 64px; margin-bottom: 12px;">🎉</div>
+                        <p style="font-size: 16px; color: #475569; margin-bottom: 8px;">
+                            Uygulamanın yeni bir sürümü hazır!
+                        </p>
+                        <p style="font-size: 14px; color: #64748b;">
+                            Yeni özellikler ve iyileştirmeler içerir.
+                        </p>
+                    </div>
+
+                    <div style="background: #f1f5f9; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <span style="font-size: 24px;">✨</span>
+                            <div>
+                                <div style="font-weight: 600; color: #1e293b; font-size: 14px;">Yeni Özellikler</div>
+                                <div style="font-size: 13px; color: #64748b;">Performans iyileştirmeleri</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 24px;">🐛</span>
+                            <div>
+                                <div style="font-weight: 600; color: #1e293b; font-size: 14px;">Hata Düzeltmeleri</div>
+                                <div style="font-size: 13px; color: #64748b;">Stabilite iyileştirmeleri</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #94a3b8; text-align: center; margin-bottom: 16px;">
+                        ⚡ Güncelleme birkaç saniye sürer
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="document.getElementById('updatePopup').remove()">
+                        Daha Sonra
+                    </button>
+                    <button class="btn-primary" onclick="applyUpdateFromPopup()">
+                        🚀 Şimdi Güncelle
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', popupHTML);
+}
+
+/**
+ * Appliquer la mise à jour depuis le popup
+ */
+function applyUpdateFromPopup() {
+    // Fermer le popup
+    const popup = document.getElementById('updatePopup');
+    if (popup) popup.remove();
+
+    // Masquer l'indicateur
+    hideUpdateIndicator();
+
+    // Afficher message + appliquer
+    showCustomAlert('🔄 Güncelleme uygulanıyor...', 'info', 2000);
+
+    // Appliquer la mise à jour
+    setTimeout(() => {
+        applyUpdateNow();
+    }, 500);
 }
 
 /**
@@ -3060,6 +3162,9 @@ if ('serviceWorker' in navigator) {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                             console.log('🆕 Nouvelle version disponible !');
                             pendingServiceWorker = newWorker;
+
+                            // Afficher l'indicateur dans la navbar
+                            showUpdateIndicator();
 
                             // Afficher la bannière de mise à jour
                             showUpdateBanner();

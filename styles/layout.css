@@ -41,6 +41,90 @@ body {
     margin-top: 1%;
     text-align: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: relative; /* Pour positionner l'indicateur de MAJ */
+}
+
+/* Indicateur de mise à jour (coin supérieur droit) */
+.update-indicator {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.update-indicator:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+}
+
+.update-indicator:active {
+    transform: translateY(0);
+}
+
+/* Animation pulse pour attirer l'attention */
+.update-pulse {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: pulse-update 2s infinite;
+}
+
+@keyframes pulse-update {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.update-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.update-text {
+    font-size: 13px;
+    line-height: 1;
+}
+
+/* Mobile - Positionné entre titre et hamburger */
+@media (max-width: 640px) {
+    .update-indicator {
+        position: fixed; /* Fixed comme le hamburger pour rester visible */
+        top: 15px;
+        right: 65px; /* À gauche du hamburger (qui est à right: 15px + width 40px) */
+        padding: 6px 10px;
+        font-size: 12px;
+        z-index: 1999; /* Juste en dessous du hamburger (z-index: 2000) */
+    }
+
+    .update-text {
+        display: none; /* Cacher le texte sur mobile, garder juste l'icône */
+    }
+
+    .update-icon {
+        font-size: 18px;
+    }
 }
 
 /* Container principal - C'EST LUI QUI SCROLLE (pas le body) */

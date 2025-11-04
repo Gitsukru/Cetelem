@@ -94,6 +94,13 @@
     <div class="header" id="appHeader">
         <h1>Çetelem</h1>
         <p>Günlük zikir ve dualarınızı takip edin</p>
+
+        <!-- Indicateur de mise à jour (affiché seulement si MAJ disponible) -->
+        <button class="update-indicator" id="updateIndicator" style="display: none;" onclick="showUpdateDetailsPopup()" title="Yeni güncelleme mevcut!">
+            <span class="update-pulse"></span>
+            <span class="update-icon">🔔</span>
+            <span class="update-text">Güncelleme</span>
+        </button>
     </div>
 
     <!-- Tabs EN DEHORS du container (masqués sur mobile) -->
