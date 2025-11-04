@@ -13,6 +13,53 @@ const PrivacyAnalytics = {
   STORAGE_KEY: 'app_anonymous_id',
   SESSION_KEY: 'app_session_start',
 
+  // Instance Supabase pour analytics (indépendante de groupManager)
+  supabaseClient: null,
+
+  /**
+   * Initialiser la connexion Supabase pour analytics
+   * Indépendant de groupManager pour garantir que analytics fonctionne toujours
+   */
+  initializeSupabase() {
+    // Si déjà initialisé, ne rien faire
+    if (this.supabaseClient) {
+      return true;
+    }
+
+    try {
+      // Vérifier que Supabase lib est chargée
+      if (typeof supabase === 'undefined' || !supabase.createClient) {
+        console.log('[Analytics] Bibliothèque Supabase non disponible');
+        return false;
+      }
+
+      // Vérifier que ENV est défini
+      if (typeof ENV === 'undefined') {
+        console.log('[Analytics] ENV non défini');
+        return false;
+      }
+
+      // Récupérer les credentials depuis ENV
+      const supabaseUrl = ENV.SUPABASE_URL;
+      const supabaseKey = ENV.SUPABASE_ANON_KEY;
+
+      // Vérifier que les credentials sont valides
+      if (!supabaseUrl || !supabaseKey || supabaseUrl === '' || supabaseKey === '') {
+        console.log('[Analytics] Credentials Supabase manquants (mode local)');
+        return false;
+      }
+
+      // Créer le client Supabase pour analytics
+      this.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+      console.log('✅ [Analytics] Connexion Supabase initialisée');
+      return true;
+
+    } catch (error) {
+      console.error('[Analytics] Erreur initialisation Supabase:', error);
+      return false;
+    }
+  },
+
   /**
    * Obtenir ou créer un ID anonyme pour cet utilisateur
    * Cet ID est aléatoire et ne permet PAS d'identifier la personne
@@ -44,6 +91,9 @@ const PrivacyAnalytics = {
    * Démarrer une session
    */
   startSession() {
+    // Initialiser Supabase si pas encore fait
+    this.initializeSupabase();
+
     const now = Date.now();
     sessionStorage.setItem(this.SESSION_KEY, now.toString());
 
@@ -81,9 +131,13 @@ const PrivacyAnalytics = {
     }
 
     // Vérifier si Supabase disponible
-    if (!this.isSupabaseReady()) {
-      console.log('[Analytics] Supabase non disponible');
-      return;
+    if (!this.supabaseClient) {
+      console.log('[Analytics] Supabase non initialisé, tentative d\'initialisation...');
+      const initialized = this.initializeSupabase();
+      if (!initialized) {
+        console.log('[Analytics] Impossible d\'initialiser Supabase');
+        return;
+      }
     }
 
     try {
@@ -101,7 +155,7 @@ const PrivacyAnalytics = {
         language: navigator.language
       };
 
-      const { error } = await groupManager.provider.supabase
+      const { error } = await this.supabaseClient
         .from('analytics_events')
         .insert(payload);
 
@@ -117,14 +171,10 @@ const PrivacyAnalytics = {
 
   /**
    * Vérifier si Supabase est prêt
+   * (Méthode obsolète, conservée pour compatibilité)
    */
   isSupabaseReady() {
-    return !!(
-      typeof groupManager !== 'undefined' &&
-      groupManager &&
-      groupManager.provider &&
-      groupManager.provider.supabase
-    );
+    return !!this.supabaseClient;
   },
 
   /**
@@ -227,14 +277,14 @@ Acceptez-vous ?
    * Récupérer les statistiques globales
    */
   async getStats() {
-    if (!this.isSupabaseReady()) {
+    if (!this.supabaseClient) {
       console.error('Supabase non disponible');
       return null;
     }
 
     try {
       // Nombre d'utilisateurs uniques (anonymes)
-      const { data: users, error: usersError } = await groupManager.provider.supabase
+      const { data: users, error: usersError } = await this.supabaseClient
         .from('analytics_events')
         .select('anonymous_id')
         .eq('event_name', 'session_start')
@@ -245,7 +295,7 @@ Acceptez-vous ?
       const uniqueUsers = new Set(users.map(u => u.anonymous_id)).size;
 
       // Durée moyenne de session
-      const { data: sessions, error: sessionsError } = await groupManager.provider.supabase
+      const { data: sessions, error: sessionsError } = await this.supabaseClient
         .from('analytics_events')
         .select('event_data')
         .eq('event_name', 'session_end');
@@ -278,22 +328,21 @@ Acceptez-vous ?
   }
 };
 
-// ❌ Initialisation automatique DÉSACTIVÉE
-// ⚠️ PrivacyAnalytics.startSession() doit être appelé MANUELLEMENT dans script.js
-// après que groupManager soit initialisé, sinon groupManager.provider.supabase sera null
-//
-// Appel manuel nécessaire :
-// 1. Attendre que initializeBackend() soit appelé
-// 2. Puis appeler PrivacyAnalytics.startSession()
-//
-// window.addEventListener('DOMContentLoaded', () => {
-//   if (PrivacyAnalytics.isAnalyticsEnabled()) {
-//     PrivacyAnalytics.startSession();
-//     window.addEventListener('beforeunload', () => {
-//       PrivacyAnalytics.endSession();
-//     });
-//   }
-// });
+// ✅ Initialisation automatique au chargement
+// PrivacyAnalytics est maintenant INDÉPENDANT de groupManager
+// Il crée sa propre connexion Supabase directement
+window.addEventListener('DOMContentLoaded', () => {
+  // Analytics activés par défaut (données 100% anonymes)
+  // L'utilisateur peut désactiver dans les paramètres si souhaité
+  if (PrivacyAnalytics.isAnalyticsEnabled()) {
+    PrivacyAnalytics.startSession();
+
+    // Tracker la fin de session avant de quitter
+    window.addEventListener('beforeunload', () => {
+      PrivacyAnalytics.endSession();
+    });
+  }
+});
 
 // Export global
 window.PrivacyAnalytics = PrivacyAnalytics;

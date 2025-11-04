@@ -2870,16 +2870,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize backend (Supabase)
     initializeBackend();
 
-    // 📊 Initialiser PrivacyAnalytics APRÈS que groupManager soit prêt
-    // IMPORTANT: Doit être appelé APRÈS initializeBackend() pour que groupManager.provider soit défini
-    if (typeof PrivacyAnalytics !== 'undefined' && PrivacyAnalytics.isAnalyticsEnabled()) {
-        PrivacyAnalytics.startSession();
-
-        // Tracker la fin de session avant de quitter
-        window.addEventListener('beforeunload', () => {
-            PrivacyAnalytics.endSession();
-        });
-    }
+    // 📊 PrivacyAnalytics s'initialise automatiquement via DOMContentLoaded
+    // Il est maintenant INDÉPENDANT de groupManager et crée sa propre connexion Supabase
 
     // Vérifier le rappel de sauvegarde (tous les 7 jours)
     checkBackupReminder();
