@@ -223,7 +223,7 @@ class AdminDashboard {
 
         return {
             activeUsers24h: uniqueDevices24h,
-            totalDevices,
+            totalDevices: totalDevices, // Garder le nombre brut pour le check
             totalZikirlers: this.formatNumber(totalZikirlers),
             activeGroups,
             booksCompleted,
@@ -251,6 +251,38 @@ class AdminDashboard {
         const engagementDetail30d = document.getElementById('engagementDetail30d');
         if (engagementDetail30d) {
             engagementDetail30d.textContent = metrics.engagementDetail30d;
+        }
+
+        // Afficher un message si pas de données
+        if (metrics.totalDevices === 0) {
+            this.showNoDataMessage();
+        }
+    }
+
+    showNoDataMessage() {
+        const section = document.getElementById('overview');
+        if (!section) return;
+
+        const existingMsg = section.querySelector('.no-data-message');
+        if (existingMsg) return; // Déjà affiché
+
+        const message = document.createElement('div');
+        message.className = 'alert alert-info no-data-message';
+        message.style.marginTop = '20px';
+        message.innerHTML = `
+            <span class="alert-icon">ℹ️</span>
+            <div>
+                <strong>Pas encore de données analytics</strong>
+                <p style="margin: 8px 0 0 0; font-size: 13px; font-weight: normal;">
+                    Le dashboard affichera les statistiques dès que les utilisateurs commenceront à utiliser l'application.
+                    Les données sont collectées automatiquement via la table <code>analytics_events</code>.
+                </p>
+            </div>
+        `;
+
+        const metricsGrid = section.querySelector('.metrics-grid');
+        if (metricsGrid && metricsGrid.nextSibling) {
+            metricsGrid.parentNode.insertBefore(message, metricsGrid.nextSibling);
         }
     }
 
@@ -573,14 +605,22 @@ class AdminDashboard {
     calculateAverageGroupLifetime(groups) {
         if (groups.length === 0) return '0';
 
-        const lifetimes = groups.map(g => {
-            const created = new Date(g.created_at);
-            const updated = new Date(g.updated_at);
-            return (updated - created) / (1000 * 60 * 60 * 24); // days
-        });
+        const lifetimes = groups
+            .filter(g => g.created_at && g.updated_at) // Filtrer invalides
+            .map(g => {
+                const created = new Date(g.created_at);
+                const updated = new Date(g.updated_at);
+                const lifetime = (updated - created) / (1000 * 60 * 60 * 24); // days
+
+                // Vérifier que c'est un nombre valide
+                return isNaN(lifetime) ? 0 : lifetime;
+            })
+            .filter(l => l >= 0); // Seulement positifs
+
+        if (lifetimes.length === 0) return '0';
 
         const avg = lifetimes.reduce((sum, l) => sum + l, 0) / lifetimes.length;
-        return avg.toFixed(0);
+        return isNaN(avg) ? '0' : avg.toFixed(0);
     }
 
     displayTopGroups(groups) {
