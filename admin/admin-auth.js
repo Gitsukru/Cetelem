@@ -49,13 +49,13 @@ class AdminAuth {
      */
     async initSupabase() {
         try {
-            // Récupérer les credentials depuis le fichier config
-            const response = await fetch('../config.json');
-            const config = await response.json();
+            // Configuration Supabase (credentials publics)
+            const SUPABASE_URL = 'https://sxtcyznkxtlcgkgrdrbi.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODgyMjQsImV4cCI6MjA3NTA2NDIyNH0.09FRK2S1zaauEp5tV6g6-7YmynOVNV44pRSGwqpeG8A';
 
             this.supabase = supabase.createClient(
-                config.supabaseUrl,
-                config.supabaseKey
+                SUPABASE_URL,
+                SUPABASE_ANON_KEY
             );
 
             console.log('✅ Supabase client initialisé');
