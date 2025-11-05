@@ -2983,7 +2983,7 @@ function hideUpdateBanner() {
  */
 function applyUpdateNow() {
     if (pendingServiceWorker) {
-        // Sauvegarder avant mise à jour - Durée augmentée pour laisser le temps de voir
+        // Sauvegarder avant mise à jour
         showCustomAlert('💾 Sauvegarde en cours...', 'info', 2000);
 
         try {
@@ -2996,23 +2996,47 @@ function applyUpdateNow() {
             // Masquer l'indicateur
             hideUpdateIndicator();
 
-            // Confirmation - Durée augmentée
+            // Confirmation
             setTimeout(() => {
-                showCustomAlert('✅ Sauvegardé! Mise à jour en cours...', 'success', 2500);
-            }, 2000);
+                showCustomAlert('✅ Sauvegardé! Mise à jour en cours...', 'success', 2000);
+            }, 1000);
 
-            // Reload après avoir donné le temps de voir les messages
+            // Vider TOUS les caches AVANT d'activer le nouveau SW
             setTimeout(() => {
-                pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
-                window.location.reload();
-            }, 4000);
+                console.log('🗑️ Vidage de tous les caches...');
+                caches.keys().then(cacheNames => {
+                    return Promise.all(
+                        cacheNames.map(cacheName => {
+                            console.log('🗑️ Suppression cache:', cacheName);
+                            return caches.delete(cacheName);
+                        })
+                    );
+                }).then(() => {
+                    console.log('✅ Tous les caches vidés');
+
+                    // Maintenant activer le nouveau Service Worker
+                    pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+
+                    // ⚠️ NE PAS recharger ici !
+                    // Le reload sera déclenché automatiquement par le listener 'controllerchange'
+
+                }).catch(error => {
+                    console.error('❌ Erreur vidage cache:', error);
+                    // En cas d'erreur, activer quand même
+                    pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+                });
+            }, 2500);
+
         } catch (error) {
             console.error('⚠️ Erreur sauvegarde:', error);
-            showCustomAlert('⚠️ Erreur sauvegarde, MAJ quand même...', 'warning', 1000);
-            setTimeout(() => {
+            showCustomAlert('⚠️ Erreur, MAJ quand même...', 'warning', 1000);
+
+            // En cas d'erreur, vider caches et activer
+            caches.keys().then(cacheNames => {
+                return Promise.all(cacheNames.map(name => caches.delete(name)));
+            }).finally(() => {
                 pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
-                window.location.reload();
-            }, 1200);
+            });
         }
     }
 }
@@ -3212,7 +3236,25 @@ if ('serviceWorker' in navigator) {
 
     // Écouter les changements de Service Worker
     navigator.serviceWorker.addEventListener('controllerchange', function() {
-        window.location.reload();
+        console.log('🔄 Nouveau Service Worker actif - Vidage caches et reload');
+
+        // Vider tous les caches avant reload pour garantir la nouvelle version
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    console.log('🗑️ Suppression cache (controllerchange):', cacheName);
+                    return caches.delete(cacheName);
+                })
+            );
+        }).then(() => {
+            console.log('✅ Caches vidés, rechargement...');
+            // Hard reload pour forcer le navigateur à tout recharger
+            window.location.reload();
+        }).catch(error => {
+            console.error('❌ Erreur vidage cache:', error);
+            // Si erreur, reload quand même
+            window.location.reload();
+        });
     });
 
     // ✅ Vérification périodique automatique des mises à jour (toutes les heures)
