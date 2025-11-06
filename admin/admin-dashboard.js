@@ -199,10 +199,11 @@ class AdminDashboard {
             events.map(e => e.event_data?.deviceId).filter(Boolean)
         ).size;
 
-        // Zikirlers totaux
+        // Zikirlers totaux (CORRIGÉ: compter les événements, pas les values cumulatives)
+        // Chaque event counter_increment = 1 clic (value contient le total cumulatif, pas l'incrément)
         const totalZikirlers = events
             .filter(e => e.event_name === 'counter_increment')
-            .reduce((sum, e) => sum + (e.event_data?.value || 0), 0);
+            .length; // Nombre d'événements = nombre de clics réels
 
         // Groupes actifs
         const activeGroups = new Set(
@@ -212,10 +213,8 @@ class AdminDashboard {
                 .filter(Boolean)
         ).size;
 
-        // Livres complétés (7j)
-        const booksCompleted = events7d.filter(e =>
-            e.event_name === 'book_completed'
-        ).length;
+        // Total events (7j)
+        const totalEvents7d = events7d.length;
 
         // Taux d'engagement
         const engagement24h = totalDevices > 0 ? (uniqueDevices24h / totalDevices * 100) : 0;
@@ -226,7 +225,7 @@ class AdminDashboard {
             totalDevices: totalDevices, // Garder le nombre brut pour le check
             totalZikirlers: this.formatNumber(totalZikirlers),
             activeGroups,
-            booksCompleted,
+            totalEvents7d,
             engagement24h: engagement24h.toFixed(1),
             engagement30d: engagement30d.toFixed(1),
             engagementDetail24h: `${uniqueDevices24h} / ${totalDevices} devices`,
@@ -238,7 +237,7 @@ class AdminDashboard {
         this.updateMetric('activeUsers24h', metrics.activeUsers24h);
         this.updateMetric('totalZikirlers', metrics.totalZikirlers);
         this.updateMetric('activeGroups', metrics.activeGroups);
-        this.updateMetric('booksCompleted', metrics.booksCompleted);
+        this.updateMetric('totalEvents7d', this.formatNumber(metrics.totalEvents7d));
         this.updateMetric('engagement24h', metrics.engagement24h + '%');
         this.updateMetric('engagement30d', metrics.engagement30d + '%');
 
@@ -320,11 +319,11 @@ class AdminDashboard {
             e.event_name === 'counter_increment' && e.event_data?.categoryName
         );
 
+        // CORRIGÉ: Compter le nombre d'événements par catégorie (1 event = 1 clic)
         const categoryCounts = {};
         categoryEvents.forEach(e => {
             const name = e.event_data.categoryName;
-            const value = e.event_data.value || 1;
-            categoryCounts[name] = (categoryCounts[name] || 0) + value;
+            categoryCounts[name] = (categoryCounts[name] || 0) + 1; // +1 par événement, pas +value
         });
 
         // Top 5
@@ -661,35 +660,85 @@ class AdminDashboard {
 
             if (error) throw error;
 
-            const booksCreated = events.filter(e => e.event_name === 'book_created').length;
-            const booksCompleted = events.filter(e => e.event_name === 'book_completed').length;
+            const createdEvents = events.filter(e => e.event_name === 'book_created');
+            const completedEvents = events.filter(e => e.event_name === 'book_completed');
+
+            const booksCreated = createdEvents.length;
+            const booksCompleted = completedEvents.length;
 
             const completionRate = booksCreated > 0
                 ? (booksCompleted / booksCreated * 100).toFixed(1)
                 : 0;
 
+            // 📊 NOUVELLES MÉTRIQUES
+
+            // 1. Pages totales lues (somme de toutes les pages des livres complétés)
+            const totalPagesRead = completedEvents.reduce((sum, e) => {
+                return sum + (e.event_data?.totalPages || 0);
+            }, 0);
+
+            // 2. Durée moyenne de complétion
+            const completionTimes = completedEvents
+                .map(e => e.event_data?.daysToComplete)
+                .filter(d => d !== undefined && d > 0);
+
+            const avgCompletionTime = completionTimes.length > 0
+                ? (completionTimes.reduce((sum, d) => sum + d, 0) / completionTimes.length).toFixed(1)
+                : 0;
+
+            // 3. Pages moyennes par livre
+            const totalPagesAllBooks = createdEvents.reduce((sum, e) => {
+                return sum + (e.event_data?.totalPages || 0);
+            }, 0);
+
+            const avgPagesPerBook = booksCreated > 0
+                ? (totalPagesAllBooks / booksCreated).toFixed(0)
+                : 0;
+
+            // 4. Vitesse de lecture (pages/jour)
+            const readingSpeed = avgCompletionTime > 0 && totalPagesRead > 0
+                ? (totalPagesRead / (completionTimes.reduce((sum, d) => sum + d, 0))).toFixed(1)
+                : 0;
+
+            // Afficher les métriques
             this.updateMetric('totalBooks', booksCreated);
             this.updateMetric('bookCompletionRate', completionRate + '%');
             this.updateMetric('activeBooksCount', booksCreated - booksCompleted);
             this.updateMetric('completedBooksCount', booksCompleted);
 
-            // Chart types de livres
-            this.createBooksChart(events);
+            // Nouvelles métriques
+            this.updateMetric('totalPagesRead', this.formatNumber(totalPagesRead));
+            this.updateMetric('avgCompletionTime', avgCompletionTime || '--');
+            this.updateMetric('readingSpeed', readingSpeed || '--');
+            this.updateMetric('avgPagesPerBook', avgPagesPerBook || '--');
+
+            // Chart types de livres (avec vraies données)
+            this.createBooksChart(createdEvents);
 
         } catch (error) {
             console.error('❌ Erreur analytics livres:', error);
         }
     }
 
-    createBooksChart(events) {
+    createBooksChart(createdEvents) {
         const canvas = document.getElementById('booksChart');
         if (!canvas) return;
 
-        // Placeholder pour l'instant (données pas assez détaillées)
-        const data = {
-            labels: ['Hatim', 'Coran', 'Dualar', 'Zikirler', 'Autres'],
-            data: [5, 8, 12, 15, 10] // Exemple
-        };
+        // Compter les livres par format (vraies données)
+        const formatCounts = {};
+
+        createdEvents.forEach(e => {
+            const format = e.event_data?.format || 'Autre';
+            formatCounts[format] = (formatCounts[format] || 0) + 1;
+        });
+
+        // Si pas de données, afficher un message
+        if (Object.keys(formatCounts).length === 0) {
+            formatCounts['Aucun livre'] = 1;
+        }
+
+        const labels = Object.keys(formatCounts);
+        const data = Object.values(formatCounts);
 
         if (this.charts.books) {
             this.charts.books.destroy();
@@ -698,21 +747,46 @@ class AdminDashboard {
         this.charts.books = new Chart(canvas, {
             type: 'doughnut',
             data: {
-                labels: data.labels,
+                labels: labels,
                 datasets: [{
-                    data: data.data,
+                    data: data,
                     backgroundColor: [
                         '#667eea',
                         '#764ba2',
                         '#f093fb',
                         '#4facfe',
-                        '#00f2fe'
+                        '#00f2fe',
+                        '#f857a6',
+                        '#ff5858',
+                        '#43e97b'
                     ]
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
             }
         });
     }
@@ -725,8 +799,8 @@ class AdminDashboard {
         try {
             console.log('⚡ Chargement performance...');
 
-            // Load time (exemple)
-            this.updateMetric('loadTime', '1.2s');
+            // Load time (non implémenté - nécessite tracking côté client)
+            this.updateMetric('loadTime', 'N/A');
 
             // Quota Supabase
             await this.checkSupabaseQuota();
@@ -987,12 +1061,12 @@ class AdminDashboard {
             // Growth chart
             this.createGrowthChart(events);
 
-            // Retention (placeholder)
-            this.updateMetric('retention1d', '65%');
-            this.updateMetric('retention7d', '42%');
-            this.updateMetric('retention30d', '28%');
+            // Retention (non implémentée - nécessite tracking de cohortes)
+            this.updateMetric('retention1d', 'N/A');
+            this.updateMetric('retention7d', 'N/A');
+            this.updateMetric('retention30d', 'N/A');
 
-            // User journey (placeholder)
+            // User journey (non implémenté)
             this.displayUserJourney();
 
         } catch (error) {
