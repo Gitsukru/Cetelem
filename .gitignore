@@ -40,3 +40,4 @@ coverage/
 *.jpg
 *.jpeg
 Capture*.png
+dist/
