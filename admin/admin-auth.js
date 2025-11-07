@@ -15,7 +15,7 @@ class AdminAuth {
     constructor() {
         // 🔑 Configuration
         this.ADMIN_EMAILS = [
-            window.ENV?.ADMIN_EMAIL || 'admin@example.com',
+            window.__ENV__?.ADMIN_EMAIL || 'admin@example.com',
             // Ajouter d'autres emails admin ici si besoin
         ];
 
@@ -52,8 +52,8 @@ class AdminAuth {
     async initSupabase() {
         try {
             // Configuration Supabase (utilise variables d'environnement injectées)
-            const SUPABASE_URL = window.ENV?.SUPABASE_URL || '';
-            const SUPABASE_ANON_KEY = window.ENV?.SUPABASE_ANON_KEY || '';
+            const SUPABASE_URL = window.__ENV__?.SUPABASE_URL || '';
+            const SUPABASE_ANON_KEY = window.__ENV__?.SUPABASE_ANON_KEY || '';
 
             if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
                 throw new Error('Variables d\'environnement Supabase manquantes');
