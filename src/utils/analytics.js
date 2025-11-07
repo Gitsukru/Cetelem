@@ -4,6 +4,16 @@
  */
 
 const Analytics = {
+  // Générer ou récupérer un deviceId unique
+  getDeviceId() {
+    let deviceId = localStorage.getItem('analytics_device_id')
+    if (!deviceId) {
+      deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11)
+      localStorage.setItem('analytics_device_id', deviceId)
+    }
+    return deviceId
+  },
+
   // Vérifier si Supabase est prêt
   isReady() {
     return !!(groupManager && groupManager.provider && groupManager.provider.supabase)
@@ -17,19 +27,25 @@ const Analytics = {
     }
 
     try {
+      // Ajouter deviceId à tous les événements
+      const eventData = {
+        ...props,
+        deviceId: this.getDeviceId()
+      }
+
       // Insérer l'événement dans la table analytics_events
       const { error } = await groupManager.provider.supabase
         .from('analytics_events')
         .insert({
           event_name: eventName,
-          event_data: props,
+          event_data: eventData,
           user_agent: navigator.userAgent
         })
 
       if (error) {
         logger.error('Erreur analytics:', error)
       } else {
-        logger.log(`📊 Event tracked: ${eventName}`, props)
+        logger.log(`📊 Event tracked: ${eventName}`, eventData)
       }
     } catch (error) {
       logger.error('Erreur tracking event:', error)
