@@ -46,9 +46,9 @@
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Vue d'ensemble</span>
                 </a>
-                <a href="#usage" class="nav-item" data-section="usage">
-                    <span class="nav-icon">📱</span>
-                    <span class="nav-text">Usage App</span>
+                <a href="#zikirlers" class="nav-item" data-section="zikirlers">
+                    <span class="nav-icon">🔢</span>
+                    <span class="nav-text">Zikirlers</span>
                 </a>
                 <a href="#groups" class="nav-item" data-section="groups">
                     <span class="nav-icon">👥</span>
@@ -62,25 +62,17 @@
                     <span class="nav-icon">⚡</span>
                     <span class="nav-text">Performance</span>
                 </a>
-                <a href="#tools" class="nav-item" data-section="tools">
-                    <span class="nav-icon">🔧</span>
-                    <span class="nav-text">Outils Admin</span>
-                </a>
                 <a href="#trends" class="nav-item" data-section="trends">
                     <span class="nav-icon">📈</span>
                     <span class="nav-text">Tendances</span>
                 </a>
+                <a href="#tools" class="nav-item" data-section="tools">
+                    <span class="nav-icon">🔧</span>
+                    <span class="nav-text">Outils</span>
+                </a>
                 <a href="#debug" class="nav-item" data-section="debug">
                     <span class="nav-icon">🐛</span>
-                    <span class="nav-text">Debug & Logs</span>
-                </a>
-                <a href="#analytics" class="nav-item" data-section="analytics">
-                    <span class="nav-icon">🎨</span>
-                    <span class="nav-text">Analytics+</span>
-                </a>
-                <a href="#security" class="nav-item" data-section="security">
-                    <span class="nav-icon">🔐</span>
-                    <span class="nav-text">Sécurité</span>
+                    <span class="nav-text">Debug</span>
                 </a>
             </nav>
 
@@ -657,139 +649,6 @@
                     </div>
                 </section>
 
-                <!-- SECTION 9: ANALYTICS AVANCÉES -->
-                <section id="analytics" class="content-section">
-                    <div class="section-header">
-                        <h2>🎨 Analytics Avancées</h2>
-                        <p>Heatmaps, funnels, A/B testing</p>
-                    </div>
-
-                    <!-- Heatmap -->
-                    <div class="chart-container">
-                        <h3>🔥 Heatmap Clics UI</h3>
-                        <div id="heatmapViz" class="heatmap-container">
-                            <!-- Populated by JS -->
-                        </div>
-                    </div>
-
-                    <!-- Funnels -->
-                    <div class="chart-container">
-                        <h3>🎯 Funnels de Conversion</h3>
-                        <div id="funnelChart" class="funnel-container">
-                            <div class="funnel-step">
-                                <div class="funnel-bar" style="width: 100%;">
-                                    <span class="funnel-label">Catégorie Créée</span>
-                                    <span class="funnel-value" id="funnel1">--</span>
-                                </div>
-                            </div>
-                            <div class="funnel-step">
-                                <div class="funnel-bar" style="width: 75%;">
-                                    <span class="funnel-label">Groupe Rejoint</span>
-                                    <span class="funnel-value" id="funnel2">--</span>
-                                </div>
-                            </div>
-                            <div class="funnel-step">
-                                <div class="funnel-bar" style="width: 50%;">
-                                    <span class="funnel-label">Livre Créé</span>
-                                    <span class="funnel-value" id="funnel3">--</span>
-                                </div>
-                            </div>
-                            <div class="funnel-step">
-                                <div class="funnel-bar" style="width: 30%;">
-                                    <span class="funnel-label">Livre Complété</span>
-                                    <span class="funnel-value" id="funnel4">--</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- A/B Tests -->
-                    <div class="ab-tests-container">
-                        <h3>🧪 Tests A/B Actifs</h3>
-                        <div id="abTestsList">
-                            <p style="text-align: center; color: #64748b; padding: 40px;">
-                                Aucun test A/B en cours
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 10: SÉCURITÉ -->
-                <section id="security" class="content-section">
-                    <div class="section-header">
-                        <h2>🔐 Sécurité</h2>
-                        <p>Monitoring sécurité et accès</p>
-                    </div>
-
-                    <!-- Security Metrics -->
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <div class="metric-icon">🚨</div>
-                            <div class="metric-content">
-                                <div class="metric-label">Tentatives Admin Échouées</div>
-                                <div class="metric-value" id="failedLogins">--</div>
-                                <div class="metric-subtitle">dernières 24h</div>
-                            </div>
-                        </div>
-
-                        <div class="metric-card">
-                            <div class="metric-icon">🌐</div>
-                            <div class="metric-content">
-                                <div class="metric-label">IPs Suspectes</div>
-                                <div class="metric-value" id="suspiciousIps">--</div>
-                                <div class="metric-subtitle">à surveiller</div>
-                            </div>
-                        </div>
-
-                        <div class="metric-card">
-                            <div class="metric-icon">⚠️</div>
-                            <div class="metric-content">
-                                <div class="metric-label">Requêtes Bloquées</div>
-                                <div class="metric-value" id="blockedRequests">--</div>
-                                <div class="metric-subtitle">dernières 24h</div>
-                            </div>
-                        </div>
-
-                        <div class="metric-card">
-                            <div class="metric-icon">✅</div>
-                            <div class="metric-content">
-                                <div class="metric-label">Intégrité Données</div>
-                                <div class="metric-value" id="dataIntegrity">--</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Security Logs -->
-                    <div class="console-container">
-                        <div class="console-header">
-                            <h3>🔒 Logs Sécurité</h3>
-                        </div>
-                        <div id="securityLogs" class="console-content">
-                            <!-- Populated by JS -->
-                        </div>
-                    </div>
-
-                    <!-- Security Actions -->
-                    <div class="tools-grid">
-                        <div class="tool-card">
-                            <div class="tool-icon">🔍</div>
-                            <h3>Vérifier Intégrité</h3>
-                            <p>Scan complet de la base de données</p>
-                            <button class="tool-btn" onclick="adminDashboard.checkIntegrity()">
-                                Scanner
-                            </button>
-                        </div>
-
-                        <div class="tool-card">
-                            <div class="tool-icon">🚫</div>
-                            <h3>Bloquer IP</h3>
-                            <p>Ajouter IP à la blacklist</p>
-                            <button class="tool-btn" onclick="adminDashboard.blockIP()">
-                                Bloquer
-                            </button>
-                        </div>
-                    </div>
-                </section>
 
             </div>
         </main>
