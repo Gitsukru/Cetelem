@@ -195,90 +195,61 @@
                             </div>
                         </div>
                     </div>
-                </section>
 
-                <!-- SECTION 2: USAGE APPLICATION -->
-                <section id="usage" class="content-section">
-                    <div class="section-header">
-                        <h2>📱 Usage Application</h2>
-                        <p>Statistiques d'utilisation détaillées</p>
-                    </div>
-
-                    <!-- Usage Chart -->
+                    <!-- Usage Features -->
                     <div class="chart-container">
-                        <h3>Utilisateurs Actifs</h3>
-                        <div class="chart-filters">
-                            <button class="filter-btn active" data-period="7d">7 jours</button>
-                            <button class="filter-btn" data-period="30d">30 jours</button>
-                            <button class="filter-btn" data-period="90d">90 jours</button>
-                        </div>
-                        <canvas id="usageChart"></canvas>
-                    </div>
-
-                    <!-- Features Usage -->
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <div class="feature-header">
-                                <span class="feature-icon">🤝</span>
-                                <span class="feature-name">Groupes</span>
-                            </div>
-                            <div class="feature-usage">
-                                <div class="usage-bar">
-                                    <div class="usage-fill" id="groupsUsage" style="width: 0%"></div>
+                        <h3>📊 Utilisation des Fonctionnalités</h3>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-header">
+                                    <span class="feature-icon">🔢</span>
+                                    <span class="feature-name">Zikirlers</span>
                                 </div>
-                                <span class="usage-percent" id="groupsUsagePercent">--%</span>
-                            </div>
-                        </div>
-
-                        <div class="feature-card">
-                            <div class="feature-header">
-                                <span class="feature-icon">📚</span>
-                                <span class="feature-name">Livres</span>
-                            </div>
-                            <div class="feature-usage">
-                                <div class="usage-bar">
-                                    <div class="usage-fill" id="booksUsage" style="width: 0%"></div>
+                                <div class="feature-usage">
+                                    <div class="usage-bar">
+                                        <div class="usage-fill" id="zikirlersUsage" style="width: 0%"></div>
+                                    </div>
+                                    <span class="usage-percent" id="zikirlersUsagePercent">--%</span>
                                 </div>
-                                <span class="usage-percent" id="booksUsagePercent">--%</span>
                             </div>
-                        </div>
 
-                        <div class="feature-card">
-                            <div class="feature-header">
-                                <span class="feature-icon">🏆</span>
-                                <span class="feature-name">Tesbihat</span>
-                            </div>
-                            <div class="feature-usage">
-                                <div class="usage-bar">
-                                    <div class="usage-fill" id="tesbihatUsage" style="width: 0%"></div>
+                            <div class="feature-card">
+                                <div class="feature-header">
+                                    <span class="feature-icon">🤝</span>
+                                    <span class="feature-name">Groupes</span>
                                 </div>
-                                <span class="usage-percent" id="tesbihatUsagePercent">--%</span>
+                                <div class="feature-usage">
+                                    <div class="usage-bar">
+                                        <div class="usage-fill" id="groupsUsage" style="width: 0%"></div>
+                                    </div>
+                                    <span class="usage-percent" id="groupsUsagePercent">--%</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="feature-card">
-                            <div class="feature-header">
-                                <span class="feature-icon">🔔</span>
-                                <span class="feature-name">Notifications</span>
-                            </div>
-                            <div class="feature-usage">
-                                <div class="usage-bar">
-                                    <div class="usage-fill" id="notificationsUsage" style="width: 0%"></div>
+                            <div class="feature-card">
+                                <div class="feature-header">
+                                    <span class="feature-icon">📚</span>
+                                    <span class="feature-name">Livres</span>
                                 </div>
-                                <span class="usage-percent" id="notificationsUsagePercent">--%</span>
+                                <div class="feature-usage">
+                                    <div class="usage-bar">
+                                        <div class="usage-fill" id="booksUsage" style="width: 0%"></div>
+                                    </div>
+                                    <span class="usage-percent" id="booksUsagePercent">--%</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="feature-card">
-                            <div class="feature-header">
-                                <span class="feature-icon">💾</span>
-                                <span class="feature-name">Sauvegardes</span>
-                            </div>
-                            <div class="feature-usage">
-                                <div class="usage-bar">
-                                    <div class="usage-fill" id="backupsUsage" style="width: 0%"></div>
+                            <div class="feature-card">
+                                <div class="feature-header">
+                                    <span class="feature-icon">🏆</span>
+                                    <span class="feature-name">Tesbihat</span>
                                 </div>
-                                <span class="usage-percent" id="backupsUsagePercent">--%</span>
+                                <div class="feature-usage">
+                                    <div class="usage-bar">
+                                        <div class="usage-fill" id="tesbihatUsage" style="width: 0%"></div>
+                                    </div>
+                                    <span class="usage-percent" id="tesbihatUsagePercent">--%</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -290,19 +261,145 @@
                     </div>
                 </section>
 
+
+                <!-- SECTION 2: ZIKIRLERS -->
+                <section id="zikirlers" class="content-section">
+                    <div class="section-header">
+                        <h2>🔢 Zikirlers</h2>
+                        <p>Statistiques détaillées des comptages de zikir</p>
+                    </div>
+
+                    <!-- Metrics principales -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">🔢</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Total Zikirlers</div>
+                                <div class="metric-value" id="zikirlersTotal">--</div>
+                                <div class="metric-subtitle">tous utilisateurs</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📊</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Moyenne / Jour</div>
+                                <div class="metric-value" id="zikirlersPerDay">--</div>
+                                <div class="metric-subtitle">30 derniers jours</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📅</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Cette Semaine</div>
+                                <div class="metric-value" id="zikirlersThisWeek">--</div>
+                                <div class="metric-subtitle">7 derniers jours</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📆</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Ce Mois</div>
+                                <div class="metric-value" id="zikirlersThisMonth">--</div>
+                                <div class="metric-subtitle">30 derniers jours</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evolution dans le temps -->
+                    <div class="chart-container">
+                        <h3>📈 Évolution des Zikirlers</h3>
+                        <div class="chart-controls">
+                            <button class="btn-filter active" onclick="adminDashboard.filterZikirlersChart('7d')">7 jours</button>
+                            <button class="btn-filter" onclick="adminDashboard.filterZikirlersChart('30d')">30 jours</button>
+                            <button class="btn-filter" onclick="adminDashboard.filterZikirlersChart('90d')">90 jours</button>
+                            <button class="btn-filter" onclick="adminDashboard.filterZikirlersChart('all')">Tout</button>
+                        </div>
+                        <canvas id="zikirlersEvolutionChart"></canvas>
+                    </div>
+
+                    <!-- Distribution horaire -->
+                    <div class="chart-container">
+                        <h3>🕐 Zikirlers par Heure</h3>
+                        <p class="chart-subtitle">Distribution des zikirlers selon l'heure de la journée</p>
+                        <canvas id="zikirlersHourlyChart"></canvas>
+                    </div>
+
+                    <!-- Distribution par catégorie -->
+                    <div class="chart-container">
+                        <h3>📊 Top Catégories de Zikir</h3>
+                        <div class="categories-list" id="zikirCategoriesList">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Statistiques avancées -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">⚡</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Session la Plus Active</div>
+                                <div class="metric-value" id="maxZikirlersSession">--</div>
+                                <div class="metric-subtitle">zikirlers en une session</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">🎯</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Moyenne par Session</div>
+                                <div class="metric-value" id="avgZikirlersSession">--</div>
+                                <div class="metric-subtitle">zikirlers/session</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📈</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Croissance (7j)</div>
+                                <div class="metric-value" id="zikirlersGrowth">--</div>
+                                <div class="metric-subtitle">vs semaine précédente</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">🏆</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Meilleur Jour</div>
+                                <div class="metric-value" id="bestZikirlersDay">--</div>
+                                <div class="metric-subtitle">jour avec le plus de zikirlers</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
                 <!-- SECTION 3: ANALYTICS GROUPES -->
                 <section id="groups" class="content-section">
                     <div class="section-header">
                         <h2>👥 Analytics Groupes</h2>
-                        <p>Statistiques anonymes des groupes</p>
+                        <p>Statistiques anonymes des groupes de lecture</p>
                     </div>
 
+                    <!-- Metrics principales -->
                     <div class="metrics-grid">
                         <div class="metric-card">
                             <div class="metric-icon">🤝</div>
                             <div class="metric-content">
                                 <div class="metric-label">Groupes Créés (Total)</div>
                                 <div class="metric-value" id="totalGroups">--</div>
+                                <div class="metric-subtitle">tous les temps</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">✅</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Groupes Actifs</div>
+                                <div class="metric-value" id="activeGroups">--</div>
+                                <div class="metric-subtitle">derniers 30 jours</div>
                             </div>
                         </div>
 
@@ -323,21 +420,66 @@
                                 <div class="metric-subtitle">jours</div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="metric-card">
-                            <div class="metric-icon">📊</div>
-                            <div class="metric-content">
-                                <div class="metric-label">Taux d'Abandon</div>
-                                <div class="metric-value" id="groupAbandonRate">--</div>
-                            </div>
-                        </div>
+                    <!-- Evolution dans le temps -->
+                    <div class="chart-container">
+                        <h3>📈 Création de Groupes dans le Temps</h3>
+                        <canvas id="groupsEvolutionChart"></canvas>
+                    </div>
+
+                    <!-- Distribution par taille -->
+                    <div class="chart-container">
+                        <h3>📊 Distribution par Taille</h3>
+                        <p class="chart-subtitle">Répartition des groupes selon le nombre de participants</p>
+                        <canvas id="groupsSizeDistributionChart"></canvas>
                     </div>
 
                     <!-- Top Groups (anonyme) -->
                     <div class="chart-container">
                         <h3>🏆 Groupes les Plus Actifs</h3>
+                        <p class="chart-subtitle">Top 10 groupes par nombre d'activités (anonymes)</p>
                         <div id="topGroupsList" class="top-list">
                             <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Statistiques d'engagement -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">🎯</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Taux de Complétion</div>
+                                <div class="metric-value" id="groupCompletionRate">--</div>
+                                <div class="metric-subtitle">groupes terminés</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">⏱️</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Temps Moyen Lecture</div>
+                                <div class="metric-value" id="avgGroupReadTime">--</div>
+                                <div class="metric-subtitle">jours pour terminer</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📈</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Croissance (30j)</div>
+                                <div class="metric-value" id="groupsGrowth">--</div>
+                                <div class="metric-subtitle">vs mois précédent</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">👤</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Participation Moyenne</div>
+                                <div class="metric-value" id="avgParticipation">--</div>
+                                <div class="metric-subtitle">% de membres actifs</div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -429,59 +571,153 @@
                 <section id="performance" class="content-section">
                     <div class="section-header">
                         <h2>⚡ Performance & Santé App</h2>
-                        <p>Monitoring technique de l'application</p>
+                        <p>Monitoring technique et performance de l'application</p>
                     </div>
 
-                    <!-- Performance Metrics -->
+                    <!-- Metrics Vitales -->
                     <div class="metrics-grid">
                         <div class="metric-card">
                             <div class="metric-icon">⚡</div>
                             <div class="metric-content">
                                 <div class="metric-label">Temps Chargement</div>
                                 <div class="metric-value" id="loadTime">--</div>
+                                <div class="metric-subtitle">ms moyen (24h)</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">🎯</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Temps Réponse API</div>
+                                <div class="metric-value" id="apiResponseTime">--</div>
                                 <div class="metric-subtitle">ms moyen</div>
                             </div>
                         </div>
 
                         <div class="metric-card">
-                            <div class="metric-icon">💾</div>
+                            <div class="metric-icon">✅</div>
                             <div class="metric-content">
-                                <div class="metric-label">Quota Supabase</div>
-                                <div class="metric-value" id="supabaseQuota">--</div>
-                                <div class="quota-bar">
-                                    <div class="quota-fill" id="quotaFill"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="metric-card">
-                            <div class="metric-icon">📦</div>
-                            <div class="metric-content">
-                                <div class="metric-label">Cache SW</div>
-                                <div class="metric-value" id="cacheSize">--</div>
-                                <div class="metric-subtitle" id="cacheHitRate">--</div>
+                                <div class="metric-label">Disponibilité</div>
+                                <div class="metric-value" id="uptime">--</div>
+                                <div class="metric-subtitle">derniers 30 jours</div>
                             </div>
                         </div>
 
                         <div class="metric-card">
                             <div class="metric-icon">🐛</div>
                             <div class="metric-content">
-                                <div class="metric-label">Erreurs JS</div>
-                                <div class="metric-value" id="jsErrors">--</div>
+                                <div class="metric-label">Erreurs</div>
+                                <div class="metric-value" id="errorCount">--</div>
                                 <div class="metric-subtitle">dernières 24h</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Alerts -->
-                    <div class="alerts-container" id="alertsContainer">
-                        <!-- Populated by JS -->
+                    <!-- Métriques Supabase -->
+                    <div class="chart-container">
+                        <h3>💾 Utilisation Supabase</h3>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-icon">🗄️</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Espace Base de Données</div>
+                                    <div class="metric-value" id="dbSize">--</div>
+                                    <div class="metric-subtitle">
+                                        <div class="quota-bar">
+                                            <div class="quota-fill" id="dbQuotaFill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="metric-icon">📊</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Requêtes API</div>
+                                    <div class="metric-value" id="apiRequests">--</div>
+                                    <div class="metric-subtitle">ce mois</div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="metric-icon">👥</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Utilisateurs Auth</div>
+                                    <div class="metric-value" id="authUsers">--</div>
+                                    <div class="metric-subtitle">inscrits</div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="metric-icon">💿</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Stockage</div>
+                                    <div class="metric-value" id="storageUsed">--</div>
+                                    <div class="metric-subtitle">fichiers</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Performance Chart -->
+                    <!-- Performance Charts -->
                     <div class="chart-container">
-                        <h3>📈 Performance dans le Temps</h3>
-                        <canvas id="performanceChart"></canvas>
+                        <h3>📈 Temps de Réponse (7 derniers jours)</h3>
+                        <canvas id="responseTimeChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>🐛 Erreurs par Type</h3>
+                        <canvas id="errorsByTypeChart"></canvas>
+                    </div>
+
+                    <!-- Alertes & Status -->
+                    <div class="chart-container">
+                        <h3>🚨 Alertes & Notifications</h3>
+                        <div class="alerts-container" id="alertsContainer">
+                            <div class="alert-item alert-success">
+                                <span class="alert-icon">✅</span>
+                                <span>Tous les systèmes opérationnels</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cache & PWA -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">📦</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Cache Service Worker</div>
+                                <div class="metric-value" id="swCacheSize">--</div>
+                                <div class="metric-subtitle">éléments en cache</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">🎯</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Taux Cache Hit</div>
+                                <div class="metric-value" id="cacheHitRate">--</div>
+                                <div class="metric-subtitle">% requêtes en cache</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📱</div>
+                            <div class="metric-content">
+                                <div class="metric-label">PWA Installées</div>
+                                <div class="metric-value" id="pwaInstalls">--</div>
+                                <div class="metric-subtitle">installations</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">🔄</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Version SW</div>
+                                <div class="metric-value" id="swVersion">--</div>
+                                <div class="metric-subtitle">service worker</div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -562,48 +798,182 @@
                 <section id="trends" class="content-section">
                     <div class="section-header">
                         <h2>📈 Tendances & Insights</h2>
-                        <p>Croissance et engagement</p>
+                        <p>Analyse de croissance et d'engagement utilisateur</p>
                     </div>
 
-                    <!-- Growth Chart -->
+                    <!-- Métriques de croissance -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">👥</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Utilisateurs Actifs (30j)</div>
+                                <div class="metric-value" id="mau">--</div>
+                                <div class="metric-subtitle">MAU (Monthly Active Users)</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📅</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Utilisateurs Actifs (7j)</div>
+                                <div class="metric-value" id="wau">--</div>
+                                <div class="metric-subtitle">WAU (Weekly Active Users)</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📊</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Utilisateurs Actifs (24h)</div>
+                                <div class="metric-value" id="dau">--</div>
+                                <div class="metric-subtitle">DAU (Daily Active Users)</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">🎯</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Ratio DAU/MAU</div>
+                                <div class="metric-value" id="stickiness">--</div>
+                                <div class="metric-subtitle">taux d'engagement</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphique de croissance -->
                     <div class="chart-container">
-                        <h3>📊 Croissance Utilisateurs</h3>
+                        <h3>📊 Croissance des Utilisateurs Actifs</h3>
+                        <div class="chart-controls">
+                            <button class="btn-filter active" onclick="adminDashboard.filterGrowthChart('30d')">30 jours</button>
+                            <button class="btn-filter" onclick="adminDashboard.filterGrowthChart('90d')">90 jours</button>
+                            <button class="btn-filter" onclick="adminDashboard.filterGrowthChart('all')">Tout</button>
+                        </div>
                         <canvas id="growthChart"></canvas>
                     </div>
 
-                    <!-- Retention -->
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <div class="metric-icon">🔄</div>
-                            <div class="metric-content">
-                                <div class="metric-label">Rétention J1</div>
-                                <div class="metric-value" id="retention1d">--</div>
+                    <!-- Métriques d'engagement -->
+                    <div class="chart-container">
+                        <h3>💫 Engagement & Utilisation</h3>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-icon">⏱️</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Durée Session Moyenne</div>
+                                    <div class="metric-value" id="avgSessionDuration">--</div>
+                                    <div class="metric-subtitle">minutes</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="metric-card">
-                            <div class="metric-icon">🔄</div>
-                            <div class="metric-content">
-                                <div class="metric-label">Rétention J7</div>
-                                <div class="metric-value" id="retention7d">--</div>
+                            <div class="metric-card">
+                                <div class="metric-icon">🔢</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Actions / Session</div>
+                                    <div class="metric-value" id="actionsPerSession">--</div>
+                                    <div class="metric-subtitle">moyenne</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="metric-card">
-                            <div class="metric-icon">🔄</div>
-                            <div class="metric-content">
-                                <div class="metric-label">Rétention J30</div>
-                                <div class="metric-value" id="retention30d">--</div>
+                            <div class="metric-card">
+                                <div class="metric-icon">📈</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Sessions / Utilisateur</div>
+                                    <div class="metric-value" id="sessionsPerUser">--</div>
+                                    <div class="metric-subtitle">derniers 30j</div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="metric-icon">🌟</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Power Users</div>
+                                    <div class="metric-value" id="powerUsers">--</div>
+                                    <div class="metric-subtitle">>5 sessions/semaine</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- User Journey -->
+                    <!-- Rétention utilisateur -->
                     <div class="chart-container">
-                        <h3>🗺️ Parcours Utilisateur</h3>
+                        <h3>🔄 Rétention Utilisateur</h3>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-icon">1️⃣</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Rétention J1</div>
+                                    <div class="metric-value" id="retention1d">--</div>
+                                    <div class="metric-subtitle">reviennent le lendemain</div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="metric-icon">7️⃣</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Rétention J7</div>
+                                    <div class="metric-value" id="retention7d">--</div>
+                                    <div class="metric-subtitle">reviennent après 7 jours</div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="metric-icon">3️⃣</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Rétention J30</div>
+                                    <div class="metric-value" id="retention30d">--</div>
+                                    <div class="metric-subtitle">reviennent après 30 jours</div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="metric-icon">📉</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Taux d'Abandon</div>
+                                    <div class="metric-value" id="churnRate">--</div>
+                                    <div class="metric-subtitle">utilisateurs perdus</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parcours utilisateur -->
+                    <div class="chart-container">
+                        <h3>🗺️ Parcours Utilisateur Type</h3>
+                        <p class="chart-subtitle">Séquence d'actions la plus commune</p>
                         <div id="userJourney" class="journey-flow">
                             <!-- Populated by JS -->
+                            <div class="journey-step">
+                                <div class="step-number">1</div>
+                                <div class="step-label">Première visite</div>
+                            </div>
+                            <div class="journey-arrow">→</div>
+                            <div class="journey-step">
+                                <div class="step-number">2</div>
+                                <div class="step-label">Zikirler</div>
+                            </div>
+                            <div class="journey-arrow">→</div>
+                            <div class="journey-step">
+                                <div class="step-number">3</div>
+                                <div class="step-label">Livre/Groupe</div>
+                            </div>
+                            <div class="journey-arrow">→</div>
+                            <div class="journey-step">
+                                <div class="step-number">4</div>
+                                <div class="step-label">Utilisateur actif</div>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Fonctionnalités populaires -->
+                    <div class="chart-container">
+                        <h3>⭐ Adoption des Fonctionnalités</h3>
+                        <canvas id="featureAdoptionChart"></canvas>
+                    </div>
+
+                    <!-- Tendances temporelles -->
+                    <div class="chart-container">
+                        <h3>🕐 Patterns d'Utilisation</h3>
+                        <p class="chart-subtitle">Activité par jour de la semaine et heure</p>
+                        <canvas id="usagePatternsChart"></canvas>
                     </div>
                 </section>
 
