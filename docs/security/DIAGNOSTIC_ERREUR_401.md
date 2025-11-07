@@ -3,7 +3,7 @@
 ## 📊 Analyse Complète Effectuée
 
 Date: 2025-10-15
-Erreur: `POST https://sxtcyznkxtlcgkgrdrbi.supabase.co/rest/v1/groups?select=* 401 (Unauthorized)`
+Erreur: `POST https://YOUR-PROJECT.supabase.co/rest/v1/groups?select=* 401 (Unauthorized)`
 
 ---
 
@@ -25,7 +25,7 @@ Erreur: `POST https://sxtcyznkxtlcgkgrdrbi.supabase.co/rest/v1/groups?select=* 4
   ```json
   {
     "iss": "supabase",
-    "ref": "sxtcyznkxtlcgkgrdrbi",
+    "ref": "YOUR-PROJECT-ID",
     "role": "anon",
     "iat": 1759488224,
     "exp": 2075064224  // Expire en 2035!
@@ -56,7 +56,7 @@ C'est un comportement de sécurité de Supabase pour ne pas révéler la structu
 
 1. **Aller sur le dashboard Supabase:**
    ```
-   https://app.supabase.com/project/sxtcyznkxtlcgkgrdrbi
+   https://app.supabase.com/project/YOUR-PROJECT-ID
    ```
 
 2. **Naviguer vers:** `SQL Editor`
@@ -262,13 +262,13 @@ index.html                     ✅ Charge les scripts
 
 ### Test 1: Vérifier la Clé API
 ```bash
-curl -X GET "https://sxtcyznkxtlcgkgrdrbi.supabase.co/rest/v1/" \
-  -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODgyMjQsImV4cCI6MjA3NTA2NDIyNH0.09FRK2S1zaauEp5tV6g6-7YmynOVNV44pRSGwqpeG8A"
+curl -X GET "https://YOUR-PROJECT.supabase.co/rest/v1/" \
+  -H "apikey: YOUR-ANON-KEY-HERE"
 ```
 
 ### Test 2: Tester l'Insertion
 ```bash
-curl -X POST "https://sxtcyznkxtlcgkgrdrbi.supabase.co/rest/v1/groups" \
+curl -X POST "https://YOUR-PROJECT.supabase.co/rest/v1/groups" \
   -H "apikey: VOTRE_CLE" \
   -H "Content-Type: application/json" \
   -d '{"code":"TEST123","name":"Test Group"}'

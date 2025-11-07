@@ -16,7 +16,7 @@ TO anon, authenticated  -- ✅ Autoriser TOUS (anonyme + authentifié)
 WITH CHECK (true);  -- Pas de restriction sur l'insertion
 
 -- L'admin peut toujours LIRE (policy existante)
--- Seul suisse1022@gmail.com peut lire les données via "Admin read analytics"
+-- Seul your-admin-email@example.com peut lire les données via "Admin read analytics"
 
 -- ====================================
 -- VÉRIFICATION DES POLICIES

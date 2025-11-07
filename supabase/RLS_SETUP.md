@@ -33,7 +33,7 @@ Row Level Security (RLS) est une fonctionnalité de PostgreSQL/Supabase qui perm
 
 1. Ouvrir https://supabase.com/dashboard
 2. Se connecter avec votre compte
-3. Sélectionner le projet: **sxtcyznkxtlcgkgrdrbi**
+3. Sélectionner le projet: **YOUR-PROJECT-ID**
 4. Aller dans **"SQL Editor"** (icône 📝 dans la barre latérale)
 
 ### Étape 2: Vérifier la Structure des Tables

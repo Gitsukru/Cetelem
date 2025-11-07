@@ -10,7 +10,7 @@ Pour que l'application fonctionne sur Netlify, vous devez configurer les variabl
 2. **Ajoutez ces variables:**
 
 ```
-VITE_SUPABASE_URL=https://sxtcyznkxtlcgkgrdrbi.supabase.co
+VITE_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
 VITE_SUPABASE_ANON_KEY=votre_clé_anon_supabase
 VITE_ACTIVE_PROVIDER=supabase
 ```

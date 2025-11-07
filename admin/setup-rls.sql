@@ -32,7 +32,7 @@ FOR SELECT
 TO authenticated
 USING (
   auth.jwt() ->> 'email' IN (
-    'suisse1022@gmail.com'
+    'your-admin-email@example.com'
     -- Ajoutez d'autres emails admin ici si besoin
     -- ,'autre-admin@example.com'
   )
@@ -45,7 +45,7 @@ FOR SELECT
 TO authenticated
 USING (
   auth.jwt() ->> 'email' IN (
-    'suisse1022@gmail.com'
+    'your-admin-email@example.com'
   )
 );
 
@@ -56,7 +56,7 @@ FOR SELECT
 TO authenticated
 USING (
   auth.jwt() ->> 'email' IN (
-    'suisse1022@gmail.com'
+    'your-admin-email@example.com'
   )
 );
 
@@ -67,7 +67,7 @@ FOR DELETE
 TO authenticated
 USING (
   auth.jwt() ->> 'email' IN (
-    'suisse1022@gmail.com'
+    'your-admin-email@example.com'
   )
 );
 
@@ -86,4 +86,4 @@ WHERE tablename IN ('analytics_events', 'groups', 'group_participants');
 -- TERMINÉ !
 -- ====================================
 -- Votre dashboard admin est maintenant sécurisé
--- Seul suisse1022@gmail.com peut accéder aux données
+-- Seul votre email admin peut accéder aux données

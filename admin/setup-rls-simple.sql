@@ -29,7 +29,7 @@ FOR SELECT
 TO authenticated
 USING (
   auth.jwt() ->> 'email' IN (
-    'suisse1022@gmail.com'
+    'your-admin-email@example.com'
   )
 );
 
@@ -40,7 +40,7 @@ FOR SELECT
 TO authenticated
 USING (
   auth.jwt() ->> 'email' IN (
-    'suisse1022@gmail.com'
+    'your-admin-email@example.com'
   )
 );
 
@@ -51,7 +51,7 @@ FOR DELETE
 TO authenticated
 USING (
   auth.jwt() ->> 'email' IN (
-    'suisse1022@gmail.com'
+    'your-admin-email@example.com'
   )
 );
 
@@ -62,7 +62,7 @@ FOR INSERT
 TO authenticated
 WITH CHECK (
   auth.jwt() ->> 'email' IN (
-    'suisse1022@gmail.com'
+    'your-admin-email@example.com'
   )
 );
 
@@ -82,4 +82,4 @@ AND schemaname = 'public';
 -- TERMINÉ !
 -- ====================================
 -- RLS configuré sur analytics_events et groups
--- Seul suisse1022@gmail.com peut accéder aux données
+-- Seul your-admin-email@example.com peut accéder aux données

@@ -272,8 +272,8 @@ code VARCHAR(6) NOT NULL UNIQUE
 
 ```javascript
 window.__ENV__ = {
-  SUPABASE_URL: 'https://sxtcyznkxtlcgkgrdrbi.supabase.co',
-  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'  // ⚠️ Visible
+  SUPABASE_URL: 'https://YOUR-PROJECT.supabase.co',
+  SUPABASE_ANON_KEY: 'YOUR-ANON-KEY-HERE'  // ⚠️ Visible
 }
 ```
 

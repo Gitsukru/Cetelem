@@ -263,7 +263,7 @@ ORDER BY tablename, policyname;
 Pour déployer ces politiques RLS:
 
 1. Se connecter à Supabase Dashboard: https://supabase.com/dashboard
-2. Sélectionner le projet: sxtcyznkxtlcgkgrdrbi
+2. Sélectionner le projet: YOUR-PROJECT-ID
 3. Aller dans "SQL Editor"
 4. Copier-coller les sections une par une
 5. Exécuter chaque section

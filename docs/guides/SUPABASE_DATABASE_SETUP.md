@@ -4,7 +4,7 @@
 
 Vous voyez cette erreur dans la console :
 ```
-POST https://sxtcyznkxtlcgkgrdrbi.supabase.co/rest/v1/groups?select=* 401 (Unauthorized)
+POST https://YOUR-PROJECT.supabase.co/rest/v1/groups?select=* 401 (Unauthorized)
 Erreur création groupe Supabase: {message: 'Invalid API key'}
 ```
 
@@ -29,7 +29,7 @@ Vous devez exécuter le script SQL dans Supabase pour créer les tables `groups`
 
 1. Aller sur [supabase.com](https://supabase.com)
 2. Se connecter à votre compte
-3. Sélectionner votre projet : **sxtcyznkxtlcgkgrdrbi**
+3. Sélectionner votre projet : **YOUR-PROJECT-ID**
 4. Dans le menu latéral, cliquer sur **SQL Editor** (icône 📝)
 
 ### Étape 2 : Exécuter le Script de Configuration

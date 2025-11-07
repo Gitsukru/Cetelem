@@ -388,7 +388,7 @@ Cetelem/
 - 📖 Guide: SECURITY.md
 
 ### Utilisateurs
-- 📧 Email: suisse1022@gmail.com
+- 📧 Email: admin@example.com
 - 💬 Support dans l'app (bouton "İletişim")
 - ❓ FAQ dans README.md
 

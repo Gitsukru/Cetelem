@@ -15,7 +15,7 @@ class AdminAuth {
     constructor() {
         // 🔑 Configuration
         this.ADMIN_EMAILS = [
-            'suisse1022@gmail.com',
+            window.ENV?.ADMIN_EMAIL || 'admin@example.com',
             // Ajouter d'autres emails admin ici si besoin
         ];
 
@@ -51,9 +51,13 @@ class AdminAuth {
      */
     async initSupabase() {
         try {
-            // Configuration Supabase (credentials publics)
-            const SUPABASE_URL = 'https://sxtcyznkxtlcgkgrdrbi.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODgyMjQsImV4cCI6MjA3NTA2NDIyNH0.09FRK2S1zaauEp5tV6g6-7YmynOVNV44pRSGwqpeG8A';
+            // Configuration Supabase (utilise variables d'environnement injectées)
+            const SUPABASE_URL = window.ENV?.SUPABASE_URL || '';
+            const SUPABASE_ANON_KEY = window.ENV?.SUPABASE_ANON_KEY || '';
+
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+                throw new Error('Variables d\'environnement Supabase manquantes');
+            }
 
             this.supabase = supabase.createClient(
                 SUPABASE_URL,

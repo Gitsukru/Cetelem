@@ -23,7 +23,7 @@ L'application présente une architecture relativement sûre pour une PWA, mais c
 
 **Problème:**
 ```javascript
-SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+SUPABASE_ANON_KEY: 'YOUR-ANON-KEY-HERE'
 ```
 
 La clé `anon` Supabase est visible dans le code source côté client. Bien que ce soit normal pour Supabase, cela expose l'API à :

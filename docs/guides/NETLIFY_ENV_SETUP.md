@@ -38,14 +38,14 @@ Ce guide explique comment configurer les clés API Supabase sur Netlify pour act
    **Variable 1 :**
    ```
    Key:   VITE_SUPABASE_URL
-   Value: https://sxtcyznkxtlcgkgrdrbi.supabase.co
+   Value: https://YOUR-PROJECT.supabase.co
    ```
    *(Remplacer par votre propre URL Supabase)*
 
    **Variable 2 :**
    ```
    Key:   VITE_SUPABASE_ANON_KEY
-   Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   Value: YOUR-ANON-KEY-HERE
    ```
    *(Remplacer par votre propre clé Supabase)*
 
@@ -156,7 +156,7 @@ Pour voir si les variables sont bien injectées, regarder les logs de build :
 🔧 Netlify Build Script
 =======================
 ✅ Variables injectées dans index.html
-  - SUPABASE_URL: https://sxtcyznkxtlcgkgrdrbi...
+  - SUPABASE_URL: https://YOUR-PROJECT-ID...
   - SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cC...
   - ACTIVE_PROVIDER: supabase
 

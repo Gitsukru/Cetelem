@@ -3,7 +3,7 @@
 ## 🚨 Problème Identifié
 
 ```
-POST https://sxtcyznkxtlcgkgrdrbi.supabase.co/rest/v1/groups 401 (Unauthorized)
+POST https://YOUR-PROJECT.supabase.co/rest/v1/groups 401 (Unauthorized)
 Error: Invalid API key
 ```
 
@@ -14,7 +14,7 @@ Error: Invalid API key
 ### Étape 1: Récupérer la VRAIE clé Supabase
 
 1. **Aller sur Supabase Dashboard:**
-   https://supabase.com/dashboard/project/sxtcyznkxtlcgkgrdrbi
+   https://supabase.com/dashboard/project/YOUR-PROJECT-ID
 
 2. **Navigation:**
    - Cliquer sur "Settings" (⚙️ en bas gauche)
@@ -25,7 +25,7 @@ Error: Invalid API key
    ```
    anon public
    ────────────────────────────────────────
-   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3M...
+   YOUR-ANON-KEY-HERE
    [COPIER LA CLÉ COMPLÈTE]
    ```
 
@@ -43,8 +43,8 @@ Remplacer la ligne `VITE_SUPABASE_ANON_KEY=...` par la nouvelle clé :
 
 ```bash
 # .env
-VITE_SUPABASE_URL=https://sxtcyznkxtlcgkgrdrbi.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4dGN5em5reHRsY2drZ3JkcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkyMjk5MzQsImV4cCI6MjAwNDgwNTkzNH0.VOTRE_NOUVELLE_CLE_ICI
+VITE_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
+VITE_SUPABASE_ANON_KEY=YOUR-ANON-KEY-HERE
 VITE_ACTIVE_PROVIDER=supabase
 ```
 
@@ -88,8 +88,8 @@ Ouvrir la console navigateur (F12), vous devriez voir :
 ```
 ✅ Variables d'environnement chargées depuis env.local.js
 🔍 BackendConfig.supabase appelé
-📍 ENV.SUPABASE_URL: https://sxtcyznkxtlcgkgrdrbi.supabase.co
-🔑 ENV.SUPABASE_ANON_KEY (50 premiers): eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzd...
+📍 ENV.SUPABASE_URL: https://YOUR-PROJECT.supabase.co
+🔑 ENV.SUPABASE_ANON_KEY (50 premiers): YOUR-ANON-KEY-HERE
 🔑 Key length: 267 (ou plus)
 🔑 Key contient des espaces? false
 ✅ Client Supabase créé
@@ -156,7 +156,7 @@ cat create-tables.sql
 
 Si le problème persiste après ces étapes:
 
-1. **Vérifier URL projet:** `https://supabase.com/dashboard/project/sxtcyznkxtlcgkgrdrbi`
+1. **Vérifier URL projet:** `https://supabase.com/dashboard/project/YOUR-PROJECT-ID`
 2. **Vérifier projet actif** (pas pausé)
 3. **Vérifier billing** (plan gratuit OK, mais vérifier quota)
 

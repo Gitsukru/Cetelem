@@ -15,7 +15,7 @@ Chrome et Safari appliquent les politiques CORS beaucoup plus strictement que Fi
 
 1. **Ouvrir le Dashboard Supabase:**
    ```
-   https://app.supabase.com/project/sxtcyznkxtlcgkgrdrbi
+   https://app.supabase.com/project/YOUR-PROJECT-ID
    ```
 
 2. **Naviguer vers:** `Settings` → `API` → `CORS Settings`
@@ -105,7 +105,7 @@ Si vous utilisez les **Realtime subscriptions**, vérifiez aussi:
 
 ```bash
 # Test preflight request (OPTIONS)
-curl -X OPTIONS "https://sxtcyznkxtlcgkgrdrbi.supabase.co/rest/v1/groups" \
+curl -X OPTIONS "https://YOUR-PROJECT.supabase.co/rest/v1/groups" \
   -H "Origin: https://cetelem.netlify.app" \
   -H "Access-Control-Request-Method: POST" \
   -H "Access-Control-Request-Headers: apikey,content-type" \
@@ -141,7 +141,7 @@ Dans la console Chrome, vérifier s'il y a des erreurs CORS:
 
 ```javascript
 // ❌ Erreur CORS typique:
-Access to fetch at 'https://sxtcyznkxtlcgkgrdrbi.supabase.co/rest/v1/groups'
+Access to fetch at 'https://YOUR-PROJECT.supabase.co/rest/v1/groups'
 from origin 'https://cetelem.netlify.app' has been blocked by CORS policy:
 No 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```

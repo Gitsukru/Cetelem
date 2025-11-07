@@ -90,7 +90,7 @@ https://xxxxxxxxxxxxx.supabase.co
 
 #### 🔑 anon public key
 ```
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ...
+YOUR-ANON-KEY-HERE
 (très longue clé)
 ```
 👆 Copie cette clé (elle est PUBLIQUE, pas de danger)

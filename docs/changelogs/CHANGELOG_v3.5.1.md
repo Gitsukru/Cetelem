@@ -273,7 +273,7 @@ Les utilisateurs existants voient simplement un nouvel onglet "Kitap" apparaîtr
 
 ## 📞 Support
 
-- 📧 Email: suisse1022@gmail.com
+- 📧 Email: admin@example.com
 - 🐛 Issues: https://github.com/Gitsukru/Cetelem/issues
 - 📖 Docs: README.md, SECURITY.md
 
