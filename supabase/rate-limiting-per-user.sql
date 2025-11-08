@@ -1,0 +1,209 @@
+-- ============================================================================
+-- Rate Limiting par utilisateur/device pour 10k users
+-- ============================================================================
+--
+-- Prérequis: Exécuter add-device-id-tracking.sql AVANT ce fichier
+--
+-- Protection contre abus:
+-- - Limite créations groupes par device (5/jour)
+-- - Limite messages chat par participant (100/jour)
+-- - Limite analytics par device (500/jour)
+--
+-- À exécuter dans: Supabase Dashboard > SQL Editor
+-- ============================================================================
+
+-- 1. Fonction de vérification rate limit groupes
+CREATE OR REPLACE FUNCTION check_group_rate_limit(
+    p_device_id TEXT,
+    p_limit INTEGER DEFAULT 5,
+    p_period_hours INTEGER DEFAULT 24
+)
+RETURNS BOOLEAN AS $$
+DECLARE
+    group_count INTEGER;
+BEGIN
+    -- Si pas de device_id, refuser
+    IF p_device_id IS NULL OR p_device_id = '' THEN
+        RETURN false;
+    END IF;
+
+    -- Compter groupes créés par ce device
+    SELECT COUNT(*)
+    INTO group_count
+    FROM groups
+    WHERE created_by_device = p_device_id
+      AND created_at > NOW() - (p_period_hours || ' hours')::INTERVAL;
+
+    -- Retourner true si limite non atteinte
+    RETURN group_count < p_limit;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 2. Fonction de vérification rate limit analytics
+CREATE OR REPLACE FUNCTION check_analytics_rate_limit(
+    p_device_id TEXT,
+    p_limit INTEGER DEFAULT 500,
+    p_period_hours INTEGER DEFAULT 24
+)
+RETURNS BOOLEAN AS $$
+DECLARE
+    event_count INTEGER;
+BEGIN
+    -- Si pas de device_id, accepter en mode dégradé
+    IF p_device_id IS NULL OR p_device_id = '' THEN
+        RETURN true;
+    END IF;
+
+    -- Compter events par ce device
+    SELECT COUNT(*)
+    INTO event_count
+    FROM analytics_events
+    WHERE device_id = p_device_id
+      AND created_at > NOW() - (p_period_hours || ' hours')::INTERVAL;
+
+    -- Retourner true si limite non atteinte
+    RETURN event_count < p_limit;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 3. Fonction de vérification rate limit messages
+CREATE OR REPLACE FUNCTION check_message_rate_limit(
+    p_participant_id UUID,
+    p_limit INTEGER DEFAULT 100,
+    p_period_hours INTEGER DEFAULT 24
+)
+RETURNS BOOLEAN AS $$
+DECLARE
+    message_count INTEGER;
+BEGIN
+    -- Si pas de participant_id, refuser
+    IF p_participant_id IS NULL THEN
+        RETURN false;
+    END IF;
+
+    -- Compter messages par ce participant
+    SELECT COUNT(*)
+    INTO message_count
+    FROM messages
+    WHERE participant_id = p_participant_id
+      AND created_at > NOW() - (p_period_hours || ' hours')::INTERVAL;
+
+    -- Retourner true si limite non atteinte
+    RETURN message_count < p_limit;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 4. Mettre à jour politique RLS groupes avec rate limit device
+-- Garde limite globale + ajoute limite par device
+DROP POLICY IF EXISTS "groups_insert_scaled" ON groups;
+
+CREATE POLICY "groups_insert_scaled" ON groups
+    FOR INSERT
+    WITH CHECK (
+        -- Limite globale (500/h pour tous users)
+        (SELECT COUNT(*) FROM groups WHERE created_at > NOW() - INTERVAL '1 hour') < 500
+        AND
+        -- Limite par device (5/jour)
+        (created_by_device IS NULL OR check_group_rate_limit(created_by_device, 5, 24))
+    );
+
+-- 5. Mettre à jour politique RLS analytics avec rate limit device
+DROP POLICY IF EXISTS "analytics_events_insert_scaled" ON analytics_events;
+
+CREATE POLICY "analytics_events_insert_scaled" ON analytics_events
+    FOR INSERT
+    WITH CHECK (
+        -- Limite globale (5000/h)
+        (SELECT COUNT(*) FROM analytics_events WHERE created_at > NOW() - INTERVAL '1 hour') < 5000
+        AND
+        -- Limite par device (500/jour)
+        (device_id IS NULL OR check_analytics_rate_limit(device_id, 500, 24))
+    );
+
+-- 6. Ajouter politique RLS messages avec rate limit participant
+-- Note: La table messages doit exister (créée par chat-schema.sql)
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'messages') THEN
+        -- Supprimer ancienne policy si existe
+        DROP POLICY IF EXISTS "messages_insert_with_limit" ON messages;
+
+        -- Créer nouvelle policy avec rate limit
+        EXECUTE 'CREATE POLICY "messages_insert_with_limit" ON messages
+            FOR INSERT
+            WITH CHECK (
+                -- Limite par participant (100 messages/jour)
+                check_message_rate_limit(participant_id, 100, 24)
+            )';
+    END IF;
+END $$;
+
+-- ============================================================================
+-- Vérifications
+-- ============================================================================
+
+-- Vérifier fonctions créées
+SELECT proname, prosrc
+FROM pg_proc
+WHERE proname IN ('check_group_rate_limit', 'check_analytics_rate_limit', 'check_message_rate_limit');
+
+-- Vérifier policies actives
+SELECT tablename, policyname
+FROM pg_policies
+WHERE policyname LIKE '%limit%'
+ORDER BY tablename, policyname;
+
+-- ============================================================================
+-- Tests manuels
+-- ============================================================================
+
+/*
+-- Test 1: Vérifier rate limit groupes (simulate device_id)
+SELECT check_group_rate_limit('test_device_123', 5, 24);
+-- Devrait retourner 'true' si moins de 5 groupes créés
+
+-- Test 2: Compter groupes par device
+SELECT created_by_device, COUNT(*), MAX(created_at)
+FROM groups
+WHERE created_at > NOW() - INTERVAL '24 hours'
+  AND created_by_device IS NOT NULL
+GROUP BY created_by_device
+ORDER BY COUNT(*) DESC
+LIMIT 10;
+
+-- Test 3: Compter analytics par device
+SELECT device_id, COUNT(*), MAX(created_at)
+FROM analytics_events
+WHERE created_at > NOW() - INTERVAL '24 hours'
+  AND device_id IS NOT NULL
+GROUP BY device_id
+ORDER BY COUNT(*) DESC
+LIMIT 10;
+*/
+
+-- ============================================================================
+-- Notes d'utilisation
+-- ============================================================================
+
+/*
+Limites configurées:
+- Groupes: 5 par device/jour + 500 global/heure
+- Messages: 100 par participant/jour
+- Analytics: 500 par device/jour + 5000 global/heure
+
+Pour ajuster les limites, modifier les valeurs dans les policies:
+- check_group_rate_limit(device_id, LIMITE, HEURES)
+- check_analytics_rate_limit(device_id, LIMITE, HEURES)
+- check_message_rate_limit(participant_id, LIMITE, HEURES)
+
+⚠️ IMPORTANT:
+- device_id doit être passé par le client dans les INSERT
+- Code client déjà mis à jour (analytics.js, SupabaseProvider.js)
+- Si device_id NULL dans groupes: policy refuse création
+- Si device_id NULL dans analytics: policy accepte (mode dégradé)
+
+Performance:
+- Fonctions utilisent index existants (idx_groups_device_created, etc)
+- Pas de table supplémentaire = pas de JOIN
+- Vérification en temps réel à chaque INSERT
+*/

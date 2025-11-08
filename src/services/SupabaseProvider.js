@@ -37,11 +37,14 @@ class SupabaseProvider extends BackendProvider {
       const code = this.generateGroupCode()
 
       // 1. Créer le groupe
+      const deviceId = window.analytics?.getDeviceId?.() || null
+
       const { data: group, error: groupError } = await this.supabase
         .from('groups')
         .insert({
           code: code,
           name: groupName || 'Zikir Grubu',
+          created_by_device: deviceId, // Pour rate limiting
           created_at: new Date().toISOString()
         })
         .select()
@@ -55,6 +58,7 @@ class SupabaseProvider extends BackendProvider {
         .insert({
           group_id: group.id,
           name: creatorName,
+          device_id: deviceId, // Pour tracking multi-device
           today_count: 0,
           week_count: 0,
           total_count: 0,

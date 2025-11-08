@@ -39,6 +39,7 @@ const Analytics = {
         .insert({
           event_name: eventName,
           event_data: eventData,
+          device_id: this.getDeviceId(), // Pour rate limiting serveur
           user_agent: navigator.userAgent
         })
 

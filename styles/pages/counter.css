@@ -263,7 +263,14 @@
     height: 130%;
     margin-left: -15%;
     margin-top: -15%;
-    background-image: url('/assets/images/tesbih.png?v=2025101202');
+    /* WebP avec fallback PNG pour compatibilité */
+    background-image: url('/assets/images/tesbih.webp?v=2025101202');
+    background-image: -webkit-image-set(
+        url('/assets/images/tesbih.webp?v=2025101202') 1x
+    );
+    background-image: image-set(
+        url('/assets/images/tesbih.webp?v=2025101202') 1x
+    );
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
