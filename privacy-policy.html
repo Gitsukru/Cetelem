@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique de Confidentialité - Zikirmatik</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 { color: #2c3e50; margin-top: 40px; }
+        h2 { color: #34495e; margin-top: 30px; }
+        .last-updated { color: #7f8c8d; font-style: italic; }
+        ul { padding-left: 20px; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Retour à l'application</a>
+
+    <h1>Politique de Confidentialité</h1>
+    <p class="last-updated">Dernière mise à jour : 8 novembre 2025</p>
+
+    <h2>1. Introduction</h2>
+    <p>
+        Zikirmatik (« l'Application ») respecte votre vie privée. Cette politique de confidentialité
+        explique quelles données nous collectons, comment nous les utilisons, et vos droits.
+    </p>
+
+    <h2>2. Données collectées</h2>
+
+    <h3>2.1 Données locales (stockées sur votre appareil)</h3>
+    <ul>
+        <li><strong>Compteurs de zikir</strong> : nombre de répétitions, catégories personnalisées</li>
+        <li><strong>Historique</strong> : dates et statistiques de vos sessions</li>
+        <li><strong>Préférences</strong> : paramètres de l'application (thème, langue, sons)</li>
+        <li><strong>Livres</strong> : suivi de lecture, notes personnelles</li>
+    </ul>
+    <p><strong>Ces données restent sur votre appareil et ne sont jamais envoyées automatiquement vers nos serveurs.</strong></p>
+
+    <h3>2.2 Données de groupe (si vous rejoignez un groupe)</h3>
+    <ul>
+        <li><strong>Nom de participant</strong> : le nom que vous choisissez (pseudonyme accepté)</li>
+        <li><strong>Statistiques de groupe</strong> : compteurs partagés avec votre groupe</li>
+        <li><strong>Code de groupe</strong> : pour identifier votre groupe</li>
+    </ul>
+    <p>Ces données sont stockées sur Supabase (hébergement Europe) et visibles par les membres du groupe.</p>
+
+    <h3>2.3 Données de sauvegarde (optionnel)</h3>
+    <ul>
+        <li><strong>Code de sauvegarde</strong> : code unique généré aléatoirement</li>
+        <li><strong>Données exportées</strong> : compteurs et paramètres (si vous créez une sauvegarde)</li>
+    </ul>
+    <p>Sauvegardes automatiquement supprimées après 90 jours.</p>
+
+    <h3>2.4 Analytics anonymes (optionnel)</h3>
+    <ul>
+        <li><strong>Événements d'usage</strong> : actions dans l'app (création groupe, utilisation tesbihat)</li>
+        <li><strong>Données techniques</strong> : type d'appareil, navigateur, langue</li>
+        <li><strong>ID anonyme</strong> : identifiant aléatoire (non lié à votre identité)</li>
+    </ul>
+    <p><strong>Aucune donnée personnelle identifiable.</strong> Ces analytics nous aident à améliorer l'app.</p>
+
+    <h2>3. Comment nous utilisons vos données</h2>
+    <ul>
+        <li><strong>Fonctionnement de l'app</strong> : sauvegarder vos compteurs, synchroniser les groupes</li>
+        <li><strong>Amélioration</strong> : comprendre l'usage pour ajouter des fonctionnalités</li>
+        <li><strong>Support technique</strong> : diagnostiquer et corriger les bugs</li>
+    </ul>
+
+    <p><strong>Nous ne vendons JAMAIS vos données.</strong></p>
+    <p><strong>Nous ne partageons JAMAIS vos données avec des tiers (sauf services techniques : Supabase, Sentry).</strong></p>
+
+    <h2>4. Services tiers utilisés</h2>
+    <ul>
+        <li><strong>Supabase</strong> (base de données) : hébergement Europe, certifié RGPD
+            <br><a href="https://supabase.com/privacy" target="_blank">Politique Supabase</a>
+        </li>
+        <li><strong>Sentry</strong> (monitoring erreurs) : anonyme, données techniques uniquement
+            <br><a href="https://sentry.io/privacy/" target="_blank">Politique Sentry</a>
+        </li>
+        <li><strong>Netlify</strong> (hébergement) : infrastructure Europe/USA
+            <br><a href="https://www.netlify.com/privacy/" target="_blank">Politique Netlify</a>
+        </li>
+    </ul>
+
+    <h2>5. Vos droits (RGPD)</h2>
+    <p>Vous avez le droit de :</p>
+    <ul>
+        <li><strong>Accéder</strong> à vos données (export JSON disponible dans l'app)</li>
+        <li><strong>Rectifier</strong> vos données (modifiable dans l'app)</li>
+        <li><strong>Supprimer</strong> vos données :
+            <ul>
+                <li>Données locales : Paramètres → Réinitialiser</li>
+                <li>Données de groupe : contacter contact@zikirmatik.app</li>
+            </ul>
+        </li>
+        <li><strong>Portabilité</strong> : export JSON téléchargeable</li>
+        <li><strong>Opposition</strong> : ne pas créer de compte/groupe</li>
+    </ul>
+
+    <h2>6. Sécurité</h2>
+    <ul>
+        <li>HTTPS activé (toutes les communications chiffrées)</li>
+        <li>Pas de mot de passe (pas de risque de fuite)</li>
+        <li>Codes de groupe aléatoires (6 caractères)</li>
+        <li>Rate limiting (protection anti-spam)</li>
+    </ul>
+
+    <h2>7. Cookies et stockage local</h2>
+    <p>L'application utilise :</p>
+    <ul>
+        <li><strong>localStorage</strong> : stockage des compteurs et paramètres (essentiel au fonctionnement)</li>
+        <li><strong>Service Worker</strong> : mode hors ligne (PWA)</li>
+    </ul>
+    <p><strong>Aucun cookie tiers de tracking publicitaire.</strong></p>
+
+    <h2>8. Durée de conservation</h2>
+    <ul>
+        <li><strong>Données locales</strong> : jusqu'à suppression par vous</li>
+        <li><strong>Groupes inactifs</strong> : supprimés après 365 jours d'inactivité</li>
+        <li><strong>Sauvegardes</strong> : 90 jours</li>
+        <li><strong>Analytics</strong> : 90 jours</li>
+    </ul>
+
+    <h2>9. Mineurs</h2>
+    <p>
+        L'application est accessible à tous. Pour les mineurs de moins de 16 ans,
+        le consentement parental est requis pour créer un groupe ou une sauvegarde cloud.
+    </p>
+
+    <h2>10. Modifications</h2>
+    <p>
+        Cette politique peut être mise à jour. La date de dernière modification est indiquée en haut.
+        Les changements importants seront notifiés dans l'application.
+    </p>
+
+    <h2>11. Contact</h2>
+    <p>
+        Pour toute question sur vos données personnelles ou cette politique :
+        <br><strong>Email</strong> : contact@zikirmatik.app
+        <br><strong>GitHub</strong> : <a href="https://github.com/Gitsukru/Cetelem" target="_blank">github.com/Gitsukru/Cetelem</a>
+    </p>
+
+    <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;">
+
+    <p style="text-align: center; color: #7f8c8d; font-size: 14px;">
+        Zikirmatik - Application de compteur de zikir et suivi de lecture
+        <br>Open Source - Respectueux de la vie privée
+    </p>
+
+    <p style="text-align: center;">
+        <a href="index.html" class="back-link">← Retour à l'application</a>
+    </p>
+</body>
+</html>
