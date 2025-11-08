@@ -85,7 +85,7 @@ CREATE POLICY "participants_insert_limited" ON participants
     -- Limite globale: 1000 participants créés par heure (pour toute l'app)
     (SELECT COUNT(*)
      FROM participants
-     WHERE created_at > NOW() - INTERVAL '1 hour'
+     WHERE joined_at > NOW() - INTERVAL '1 hour'
     ) < 1000
   );
 
@@ -214,7 +214,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Index sur created_at pour les requêtes de rate limiting
 CREATE INDEX IF NOT EXISTS idx_groups_created_at ON groups(created_at);
-CREATE INDEX IF NOT EXISTS idx_participants_created_at ON participants(created_at);
+CREATE INDEX IF NOT EXISTS idx_participants_joined_at ON participants(joined_at);
 CREATE INDEX IF NOT EXISTS idx_device_backups_created_at ON device_backups(created_at);
 CREATE INDEX IF NOT EXISTS idx_analytics_events_created_at ON analytics_events(created_at);
 CREATE INDEX IF NOT EXISTS idx_category_notes_created_at ON category_notes(created_at);
