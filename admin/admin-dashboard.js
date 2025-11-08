@@ -391,23 +391,23 @@ class AdminDashboard {
                 .filter(Boolean)
         ).size;
 
-        // Groupes
+        // Groupes (case-insensitive)
         const groupUsers = new Set(
-            events.filter(e => e.event_name && e.event_name.includes('group'))
+            events.filter(e => e.event_name && e.event_name.toLowerCase().includes('group'))
                 .map(e => e.event_data?.deviceId)
                 .filter(Boolean)
         ).size;
 
-        // Livres
+        // Livres (case-insensitive)
         const bookUsers = new Set(
-            events.filter(e => e.event_name && e.event_name.includes('book'))
+            events.filter(e => e.event_name && e.event_name.toLowerCase().includes('book'))
                 .map(e => e.event_data?.deviceId)
                 .filter(Boolean)
         ).size;
 
-        // Tesbihat
+        // Tesbihat (case-insensitive)
         const tesbihatUsers = new Set(
-            events.filter(e => e.event_name && e.event_name.includes('tesbihat'))
+            events.filter(e => e.event_name && e.event_name.toLowerCase().includes('tesbihat'))
                 .map(e => e.event_data?.deviceId)
                 .filter(Boolean)
         ).size;
