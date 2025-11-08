@@ -1,6 +1,6 @@
 // Version du cache - Mise à jour automatique lors du déploiement
 // Format: YYYY-MM-DD-commit-feature
-const CACHE_VERSION = '2025-11-05-fix-update-cache-clearing';
+const CACHE_VERSION = '2025-11-08-fix-update-button-waiting';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
@@ -20,8 +20,10 @@ self.addEventListener('install', event => {
         return cache.addAll(urlsToCache);
       })
       .then(() => {
-        console.log('Service Worker: Installation terminée');
-        return self.skipWaiting();
+        console.log('Service Worker: Installation terminée - En attente activation utilisateur');
+        // ⚠️ NE PAS appeler skipWaiting() ici !
+        // Le SW doit rester en état "waiting" jusqu'à ce que l'utilisateur clique sur MAJ
+        // skipWaiting() sera appelé via le message 'SKIP_WAITING' quand l'utilisateur accepte
       })
       .catch(error => {
         console.error('Service Worker: Erreur installation', error);
