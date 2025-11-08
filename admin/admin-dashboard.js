@@ -784,37 +784,47 @@ class AdminDashboard {
 
             const { data: groups, error } = await this.supabase
                 .from('groups')
-                .select('*');
+                .select(`
+                    *,
+                    participants(id)
+                `);
 
             if (error) throw error;
+
+            // Ajouter participant_count à chaque groupe
+            const groupsWithCount = groups.map(g => ({
+                ...g,
+                participant_count: g.participants ? g.participants.length : 0,
+                participants: undefined // Nettoyer pour économiser mémoire
+            }));
 
             const now = Date.now();
             const day = 24 * 60 * 60 * 1000;
 
             // Metrics principales
-            const totalGroups = groups.length;
+            const totalGroups = groupsWithCount.length;
 
             // Groupes actifs (derniers 30 jours)
-            const activeGroups = groups.filter(g => {
+            const activeGroups = groupsWithCount.filter(g => {
                 const lastActivity = new Date(g.updated_at || g.created_at);
                 const daysSince = (now - lastActivity.getTime()) / day;
                 return daysSince <= 30;
             }).length;
 
             // Taille moyenne des groupes
-            const avgSize = groups.length > 0
-                ? (groups.reduce((sum, g) => sum + (g.participant_count || 0), 0) / groups.length).toFixed(1)
+            const avgSize = groupsWithCount.length > 0
+                ? (groupsWithCount.reduce((sum, g) => sum + (g.participant_count || 0), 0) / groupsWithCount.length).toFixed(1)
                 : 0;
 
             // Durée de vie moyenne
-            const avgLifetime = this.calculateAverageGroupLifetime(groups);
+            const avgLifetime = this.calculateAverageGroupLifetime(groupsWithCount);
 
             // Taux de complétion (groupes avec completed: true)
-            const completedGroups = groups.filter(g => g.completed || g.status === 'completed').length;
+            const completedGroups = groupsWithCount.filter(g => g.completed || g.status === 'completed').length;
             const completionRate = totalGroups > 0 ? (completedGroups / totalGroups * 100).toFixed(1) : 0;
 
             // Temps moyen lecture (pour groupes complétés)
-            const readTimes = groups
+            const readTimes = groupsWithCount
                 .filter(g => g.completed && g.created_at)
                 .map(g => {
                     const created = new Date(g.created_at);
@@ -826,11 +836,11 @@ class AdminDashboard {
                 : 0;
 
             // Croissance (30j)
-            const groupsThisMonth = groups.filter(g => {
+            const groupsThisMonth = groupsWithCount.filter(g => {
                 const created = new Date(g.created_at).getTime();
                 return (now - created) < (30 * day);
             }).length;
-            const groupsLastMonth = groups.filter(g => {
+            const groupsLastMonth = groupsWithCount.filter(g => {
                 const created = new Date(g.created_at).getTime();
                 return (now - created) >= (30 * day) && (now - created) < (60 * day);
             }).length;
@@ -853,11 +863,11 @@ class AdminDashboard {
             this.updateMetric('avgParticipation', avgParticipation + '%');
 
             // Charts
-            this.createGroupsEvolutionChart(groups);
-            this.createGroupsSizeDistributionChart(groups);
+            this.createGroupsEvolutionChart(groupsWithCount);
+            this.createGroupsSizeDistributionChart(groupsWithCount);
 
             // Top groups
-            this.displayTopGroups(groups);
+            this.displayTopGroups(groupsWithCount);
 
         } catch (error) {
             console.error('❌ Erreur analytics groupes:', error);
