@@ -2,7 +2,8 @@
   # Commande à exécuter avant déploiement
   # 1. Générer version.js avec hash Git
   # 2. Injecter variables d'environnement dans index.html
-  command = "node generate-version.cjs && node inject-env.cjs"
+  # 3. Ajouter cache-busting (versions) aux fichiers JS/CSS
+  command = "node generate-version.cjs && node inject-env.cjs && node add-cache-busting.cjs"
   # Dossier à publier (racine du projet)
   publish = "."
 
