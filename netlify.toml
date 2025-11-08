@@ -11,27 +11,94 @@
   NODE_VERSION = "18"
 
 # Headers de sécurité pour PWA
+# ⚠️ ORDRE IMPORTANT : Les règles spécifiques AVANT les règles générales
+
+# Service Worker - JAMAIS de cache
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate, no-cache"
+
+# HTML - pas de cache pour détecter mises à jour
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate, no-cache"
+
+# JavaScript - cache court (1 heure) pour mise à jour rapide
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+
+# CSS - cache court (1 heure) pour mise à jour rapide
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+
+# JavaScript dans dossiers - cache court
+[[headers]]
+  for = "/admin/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/src/**/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+
+# Images et assets statiques - cache long (1 an)
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Manifest et autres fichiers PWA - cache court
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# Règle par défaut pour tout le reste
 [[headers]]
   for = "/*"
   [headers.values]
-    # Cache les assets statiques
-    Cache-Control = "public, max-age=31536000, immutable"
     # Sécurité
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-
-# Service Worker - pas de cache
-[[headers]]
-  for = "/sw.js"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-
-# HTML - cache court pour détecter mises à jour rapidement
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+    # Cache modéré pour tout le reste
+    Cache-Control = "public, max-age=86400, must-revalidate"
 
 # Redirections pour PWA (toutes les routes → index.html)
 [[redirects]]
