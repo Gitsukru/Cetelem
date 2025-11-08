@@ -293,11 +293,14 @@ function displayLeaderboard(participants) {
 
     const rowClass = isMe ? 'my-row' : ''
 
+    // Échapper le nom pour éviter XSS
+    const safeName = escapeHtml(participant.name);
+
     html += `
       <tr class="${rowClass}" onclick="toggleParticipantDetails('${participant.id}')">
         <td class="rank-cell">${position}</td>
         <td class="name-cell">
-          ${participant.name}${isMe ? ' <span class="me-badge">Sen</span>' : ''}
+          ${safeName}${isMe ? ' <span class="me-badge">Sen</span>' : ''}
         </td>
         <td class="count-cell">${participant.todayCount}</td>
         <td class="percent-cell">${todayPercent}%</td>

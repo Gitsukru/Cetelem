@@ -15,6 +15,27 @@ function escapeHtml(text) {
 }
 
 /**
+ * Template tag pour créer du HTML sécurisé
+ * Usage: html`<div>${unsafeUserData}</div>`
+ * Toutes les interpolations ${} sont automatiquement échappées
+ *
+ * @param {Array} strings - Parties statiques du template
+ * @param {...any} values - Valeurs à interpoler (seront échappées)
+ * @returns {string} - HTML sécurisé
+ */
+function html(strings, ...values) {
+  let result = strings[0];
+
+  for (let i = 0; i < values.length; i++) {
+    // Échapper chaque valeur
+    const escaped = escapeHtml(String(values[i]));
+    result += escaped + strings[i + 1];
+  }
+
+  return result;
+}
+
+/**
  * Crée un élément DOM sécurisé avec textContent au lieu de innerHTML
  * @param {string} tag - Type d'élément (div, p, span, etc.)
  * @param {string} text - Texte à afficher
@@ -139,9 +160,14 @@ function sanitizeCategoryName(name) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     escapeHtml,
+    html,
     createSecureElement,
     setInnerHTMLSafe,
     buildSecureDOM,
     sanitizeCategoryName
   };
 }
+
+// Export global pour utilisation dans les scripts
+window.escapeHtml = escapeHtml;
+window.safeHTML = html; // Template tag global
