@@ -382,7 +382,7 @@ class AdminDashboard {
             events.map(e => e.event_data?.deviceId).filter(Boolean)
         ).size;
 
-        if (totalDevices === 0) return;
+        // Ne pas abandonner si totalDevices = 0, afficher 0% à la place
 
         // Zikirlers (counter_increment events)
         const zikirlerUsers = new Set(
@@ -412,7 +412,7 @@ class AdminDashboard {
                 .filter(Boolean)
         ).size;
 
-        // Afficher les pourcentages
+        // Afficher les pourcentages (0% si pas de devices)
         this.updateFeatureUsage('zikirlers', zikirlerUsers, totalDevices);
         this.updateFeatureUsage('groups', groupUsers, totalDevices);
         this.updateFeatureUsage('books', bookUsers, totalDevices);
