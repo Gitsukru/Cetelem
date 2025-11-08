@@ -90,6 +90,16 @@ class TesbihatSlider {
       btn.addEventListener('click', () => {
         this.currentNamazIndex = index;
         this.currentSectionIndex = 0;
+
+        // 📊 Analytics: Tesbihat utilisé (changement de namaz)
+        if (typeof analytics !== 'undefined') {
+          const namazName = this.namazOrder[index];
+          const namaz = TESBIHAT_DATA[this.currentLang][namazName];
+          if (namaz) {
+            analytics.tesbihatUsed(namazName, namaz.name);
+          }
+        }
+
         this.renderPage();
       });
     });
@@ -199,6 +209,17 @@ class TesbihatSlider {
     if (this.currentSectionIndex < namaz.sections.length - 1) {
       this.currentSectionIndex++;
       this.renderPage();
+
+      // 📊 Analytics: Tesbihat utilisé
+      if (typeof analytics !== 'undefined') {
+        const namazName = this.namazOrder[this.currentNamazIndex];
+        analytics.tesbihatUsed(namazName, namaz.name);
+
+        // Si on atteint la dernière section, tracker la complétion
+        if (this.currentSectionIndex === namaz.sections.length - 1) {
+          analytics.tesbihatCompleted(namazName, namaz.sections.length);
+        }
+      }
     }
     // Ne change plus de namaz - reste dans le namaz sélectionné
   }
