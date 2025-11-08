@@ -888,7 +888,7 @@ function deleteCategory(index) {
 
     showCustomConfirm(
         'Zikiri Sil',
-        `"${categoryName}" zikrini kalıcı olarak silmek istediğinize emin misiniz?<br><br>Bu işlem geri alınamaz!`,
+        `"${escapeHtml(categoryName)}" zikrini kalıcı olarak silmek istediğinize emin misiniz?<br><br>Bu işlem geri alınamaz!`,
         function() {
             // Supprimer de la liste active
             categories.splice(index, 1);
@@ -1692,7 +1692,7 @@ function resetDayCounter() {
 
     showCustomConfirm(
         'Görüntü Sıfırlama',
-        `"${currentCategory}" için sayaç GÖRÜNTÜSÜNÜ sıfırlayın?<br><br>İstatistikler etkilenMEYECEK.`,
+        `"${escapeHtml(currentCategory)}" için sayaç GÖRÜNTÜSÜNÜ sıfırlayın?<br><br>İstatistikler etkilenMEYECEK.`,
         function() {
             // Confirmation "Oui"
             const stats = getStatisticsForCategory(currentCategory);
@@ -2203,7 +2203,7 @@ function resetTodayCategory() {
 
     showCustomConfirm(
         'Bugünü Sil',
-        `"${category}" için BUGÜNÜN tüm zikirlerini sil?<br><br>Bu işlem istatistikleri etkileyecek!`,
+        `"${escapeHtml(category)}" için BUGÜNÜN tüm zikirlerini sil?<br><br>Bu işlem istatistikleri etkileyecek!`,
         function() {
             const today = new Date().toDateString();
             if (counters[category] && counters[category][today]) {
@@ -2235,7 +2235,7 @@ function resetWeekCategory() {
 
     showCustomConfirm(
         'Bu Hafta Sil',
-        `"${category}" için BU HAFTANıN tüm zikirlerini sil?<br><br>Bu işlem istatistikleri etkileyecek!`,
+        `"${escapeHtml(category)}" için BU HAFTANıN tüm zikirlerini sil?<br><br>Bu işlem istatistikleri etkileyecek!`,
         function() {
             const today = new Date();
             const weekStart = getWeekStart(today);
@@ -2275,7 +2275,7 @@ function resetMonthCategory() {
 
     showCustomConfirm(
         'Bu Ayı Sil',
-        `"${category}" için BU AYıN tüm zikirlerini sil?<br><br>Bu işlem istatistikleri etkileyecek!`,
+        `"${escapeHtml(category)}" için BU AYıN tüm zikirlerini sil?<br><br>Bu işlem istatistikleri etkileyecek!`,
         function() {
             const today = new Date();
             const monthStart = getMonthStart(today);
@@ -2315,11 +2315,11 @@ function resetCategoryCompletely() {
 
     showCustomConfirm(
         'TEHLİKE - Tamamen Silme',
-        `"${category}" kategorisinin tüm geçmişini KALICI olarak sil?<br><br>Bu işlem GERİ ALINMAZ!`,
+        `"${escapeHtml(category)}" kategorisinin tüm geçmişini KALICI olarak sil?<br><br>Bu işlem GERİ ALINMAZ!`,
         function() {
             showCustomConfirm(
                 'SON ŞANS',
-                `GERÇEKTEN emin misiniz?<br><br>"${category}" kategorisinin TÜM geçmişi kaybolacak!`,
+                `GERÇEKTEN emin misiniz?<br><br>"${escapeHtml(category)}" kategorisinin TÜM geçmişi kaybolacak!`,
                 function() {
                     // Réinitialiser complètement la catégorie
                     counters[category] = {};
