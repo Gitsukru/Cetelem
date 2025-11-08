@@ -2951,6 +2951,7 @@ setInterval(updateSaveStatus, 60000);
 // Variables globales pour tracking des mises à jour
 let pendingServiceWorker = null;
 let updateRefusedCount = parseInt(localStorage.getItem('updateRefusedCount') || '0');
+let isReloading = false; // Flag pour éviter double reload
 
 /**
  * Afficher la bannière de mise à jour disponible
@@ -3017,13 +3018,26 @@ function applyUpdateNow() {
                     // Maintenant activer le nouveau Service Worker
                     pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
 
-                    // ⚠️ NE PAS recharger ici !
-                    // Le reload sera déclenché automatiquement par le listener 'controllerchange'
+                    // ⚠️ Reload de secours après 3s si controllerchange ne se déclenche pas
+                    setTimeout(() => {
+                        if (!isReloading) {
+                            console.log('🔄 Reload de secours (controllerchange n\'a pas fonctionné)...');
+                            isReloading = true;
+                            try {
+                                window.location.reload(true);
+                            } catch (e) {
+                                window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
+                            }
+                        }
+                    }, 3000);
 
                 }).catch(error => {
                     console.error('❌ Erreur vidage cache:', error);
-                    // En cas d'erreur, activer quand même
+                    // En cas d'erreur, activer et recharger quand même
                     pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+                    setTimeout(() => {
+                        window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
+                    }, 2000);
                 });
             }, 2500);
 
@@ -3197,7 +3211,9 @@ function checkForUpdates() {
 // Service Worker pour PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js')
+        // ⚡ Cache-busting: Ajouter version pour forcer Opera à recharger sw.js
+        const SW_VERSION = '2025-11-08-fix-opera-cache-busting';
+        navigator.serviceWorker.register('./sw.js?v=' + SW_VERSION)
             .then(function(registration) {
                 console.log('Service Worker başarıyla kaydedildi:', registration.scope);
 
@@ -3236,35 +3252,23 @@ if ('serviceWorker' in navigator) {
 
     // Écouter les changements de Service Worker
     navigator.serviceWorker.addEventListener('controllerchange', function() {
-        console.log('🔄 Nouveau Service Worker actif - Vidage caches et reload');
+        if (isReloading) {
+            console.log('🔄 Reload déjà en cours, ignore controllerchange');
+            return;
+        }
 
-        // Vider tous les caches avant reload pour garantir la nouvelle version
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => {
-                    console.log('🗑️ Suppression cache (controllerchange):', cacheName);
-                    return caches.delete(cacheName);
-                })
-            );
-        }).then(() => {
-            console.log('✅ Caches vidés, rechargement forcé...');
+        console.log('🔄 Nouveau Service Worker actif - Reload immédiat');
+        isReloading = true;
 
-            // FORCER un hard reload qui bypass TOUS les caches
-            // Méthode 1: Essayer le hard reload standard
-            if (window.location.reload) {
-                try {
-                    window.location.reload(true); // true = hard reload (deprecated mais fonctionne)
-                } catch (e) {
-                    // Si ça échoue (certains navigateurs), utiliser méthode 2
-                    console.log('🔄 Fallback: Cache busting reload');
-                    window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
-                }
-            }
-        }).catch(error => {
-            console.error('❌ Erreur vidage cache:', error);
-            // Si erreur, reload quand même avec cache busting
+        // Les caches sont déjà vidés dans applyUpdateNow, donc reload directement
+        // FORCER un hard reload qui bypass TOUS les caches
+        try {
+            window.location.reload(true); // true = hard reload (deprecated mais fonctionne)
+        } catch (e) {
+            // Si ça échoue (certains navigateurs), utiliser méthode 2
+            console.log('🔄 Fallback: Cache busting reload');
             window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
-        });
+        }
     });
 
     // ✅ Vérification périodique automatique des mises à jour (toutes les heures)

@@ -24,6 +24,7 @@ class AdminAuth {
         this.currentUser = null;
         this.APP_VERSION = '3.5.1'; // Synced with package.json
         this.pendingServiceWorker = null;
+        this.isReloading = false; // Flag pour éviter double reload
     }
 
     /**
@@ -401,9 +402,11 @@ class AdminAuth {
             return;
         }
 
-        navigator.serviceWorker.register('../sw.js')
+        // ⚡ Cache-busting: Ajouter version pour forcer Opera à recharger sw.js
+        const SW_VERSION = '2025-11-08-fix-opera-cache-busting';
+        navigator.serviceWorker.register('../sw.js?v=' + SW_VERSION)
             .then(registration => {
-                console.log('✅ Service Worker enregistré (admin)');
+                console.log('✅ Service Worker enregistré (admin):', SW_VERSION);
 
                 // Afficher la version
                 this.displayVersion();
@@ -433,32 +436,23 @@ class AdminAuth {
 
         // Écouter les changements de Service Worker pour reload automatique
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-            console.log('🔄 Nouveau Service Worker actif (admin) - Vidage caches et reload');
+            if (this.isReloading) {
+                console.log('🔄 Reload déjà en cours (admin), ignore controllerchange');
+                return;
+            }
 
-            // Vider tous les caches avant reload pour garantir la nouvelle version
-            caches.keys().then(cacheNames => {
-                return Promise.all(
-                    cacheNames.map(cacheName => {
-                        console.log('🗑️ Suppression cache (admin):', cacheName);
-                        return caches.delete(cacheName);
-                    })
-                );
-            }).then(() => {
-                console.log('✅ Caches vidés (admin), rechargement forcé...');
+            console.log('🔄 Nouveau Service Worker actif (admin) - Reload immédiat');
+            this.isReloading = true;
 
-                // FORCER un hard reload qui bypass TOUS les caches
-                try {
-                    window.location.reload(true); // true = hard reload
-                } catch (e) {
-                    // Fallback: cache busting reload
-                    console.log('🔄 Fallback: Cache busting reload (admin)');
-                    window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
-                }
-            }).catch(error => {
-                console.error('❌ Erreur vidage cache (admin):', error);
-                // Si erreur, reload quand même avec cache busting
+            // Les caches sont déjà vidés dans applyUpdate, donc reload directement
+            // FORCER un hard reload qui bypass TOUS les caches
+            try {
+                window.location.reload(true); // true = hard reload
+            } catch (e) {
+                // Fallback: cache busting reload
+                console.log('🔄 Fallback: Cache busting reload (admin)');
                 window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
-            });
+            }
         });
     }
 
@@ -561,12 +555,25 @@ class AdminAuth {
             // Activer le nouveau Service Worker
             this.pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
 
-            // ⚠️ NE PAS recharger ici !
-            // Le reload sera déclenché automatiquement par le listener 'controllerchange'
+            // ⚠️ Reload de secours après 3s si controllerchange ne se déclenche pas
+            setTimeout(() => {
+                if (!this.isReloading) {
+                    console.log('🔄 Reload de secours (admin, controllerchange n\'a pas fonctionné)...');
+                    this.isReloading = true;
+                    try {
+                        window.location.reload(true);
+                    } catch (e) {
+                        window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
+                    }
+                }
+            }, 3000);
         }).catch(error => {
             console.error('❌ Erreur vidage cache (admin):', error);
-            // En cas d'erreur, activer quand même
+            // En cas d'erreur, activer et recharger quand même
             this.pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+            setTimeout(() => {
+                window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
+            }, 2000);
         });
     }
 }

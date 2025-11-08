@@ -1,6 +1,6 @@
 // Version du cache - Mise à jour automatique lors du déploiement
 // Format: YYYY-MM-DD-commit-feature
-const CACHE_VERSION = '2025-11-08-fix-update-button-waiting';
+const CACHE_VERSION = '2025-11-08-fix-opera-cache-busting';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
