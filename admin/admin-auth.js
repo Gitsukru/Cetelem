@@ -430,6 +430,36 @@ class AdminAuth {
             .catch(error => {
                 console.error('❌ Erreur Service Worker:', error);
             });
+
+        // Écouter les changements de Service Worker pour reload automatique
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            console.log('🔄 Nouveau Service Worker actif (admin) - Vidage caches et reload');
+
+            // Vider tous les caches avant reload pour garantir la nouvelle version
+            caches.keys().then(cacheNames => {
+                return Promise.all(
+                    cacheNames.map(cacheName => {
+                        console.log('🗑️ Suppression cache (admin):', cacheName);
+                        return caches.delete(cacheName);
+                    })
+                );
+            }).then(() => {
+                console.log('✅ Caches vidés (admin), rechargement forcé...');
+
+                // FORCER un hard reload qui bypass TOUS les caches
+                try {
+                    window.location.reload(true); // true = hard reload
+                } catch (e) {
+                    // Fallback: cache busting reload
+                    console.log('🔄 Fallback: Cache busting reload (admin)');
+                    window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
+                }
+            }).catch(error => {
+                console.error('❌ Erreur vidage cache (admin):', error);
+                // Si erreur, reload quand même avec cache busting
+                window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
+            });
+        });
     }
 
     /**
@@ -518,13 +548,26 @@ class AdminAuth {
         `;
         document.body.appendChild(loading);
 
-        // Activer le nouveau Service Worker
-        this.pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+        // Vider les caches AVANT d'activer le nouveau SW
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    console.log('🗑️ Suppression cache (admin applyUpdate):', cacheName);
+                    return caches.delete(cacheName);
+                })
+            );
+        }).then(() => {
+            console.log('✅ Caches vidés (admin), activation nouveau SW');
+            // Activer le nouveau Service Worker
+            this.pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
 
-        // Recharger après 2s
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
+            // ⚠️ NE PAS recharger ici !
+            // Le reload sera déclenché automatiquement par le listener 'controllerchange'
+        }).catch(error => {
+            console.error('❌ Erreur vidage cache (admin):', error);
+            // En cas d'erreur, activer quand même
+            this.pendingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+        });
     }
 }
 

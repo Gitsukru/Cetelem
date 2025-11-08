@@ -3247,13 +3247,23 @@ if ('serviceWorker' in navigator) {
                 })
             );
         }).then(() => {
-            console.log('✅ Caches vidés, rechargement...');
-            // Hard reload pour forcer le navigateur à tout recharger
-            window.location.reload();
+            console.log('✅ Caches vidés, rechargement forcé...');
+
+            // FORCER un hard reload qui bypass TOUS les caches
+            // Méthode 1: Essayer le hard reload standard
+            if (window.location.reload) {
+                try {
+                    window.location.reload(true); // true = hard reload (deprecated mais fonctionne)
+                } catch (e) {
+                    // Si ça échoue (certains navigateurs), utiliser méthode 2
+                    console.log('🔄 Fallback: Cache busting reload');
+                    window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
+                }
+            }
         }).catch(error => {
             console.error('❌ Erreur vidage cache:', error);
-            // Si erreur, reload quand même
-            window.location.reload();
+            // Si erreur, reload quand même avec cache busting
+            window.location.href = window.location.href.split('?')[0] + '?updated=' + Date.now();
         });
     });
 
