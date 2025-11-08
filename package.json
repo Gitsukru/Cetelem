@@ -10,6 +10,8 @@
     "serve": "vite preview --port 8000",
     "sync-version": "node scripts/sync-version.cjs",
     "gen-env-local": "node scripts/generate-env-local.cjs",
+    "minify": "node minify-production.cjs",
+    "minify:dry-run": "node minify-production.cjs --dry-run",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
