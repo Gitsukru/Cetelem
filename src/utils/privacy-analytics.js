@@ -77,6 +77,23 @@ const PrivacyAnalytics = {
   },
 
   /**
+   * Obtenir ou créer un ID pour cet appareil
+   * Permet de suivre les statistiques par appareil de manière anonyme
+   */
+  getDeviceId() {
+    const DEVICE_KEY = 'app_device_id';
+    let deviceId = localStorage.getItem(DEVICE_KEY);
+
+    if (!deviceId) {
+      // Générer un UUID v4 aléatoire pour l'appareil
+      deviceId = 'device_' + this.generateUUID();
+      localStorage.setItem(DEVICE_KEY, deviceId);
+    }
+
+    return deviceId;
+  },
+
+  /**
    * Générer un UUID v4 (identifiant unique aléatoire)
    */
   generateUUID() {
@@ -146,6 +163,7 @@ const PrivacyAnalytics = {
         event_name: eventName,
         event_data: {
           ...data,
+          deviceId: this.getDeviceId(), // Ajouter deviceId pour dashboard admin
           timestamp: new Date().toISOString()
         },
         // Infos générales (pas d'identification)
