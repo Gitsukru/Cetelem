@@ -443,6 +443,13 @@
     cursor: pointer;
     padding: 6px;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-note-btn svg {
+    display: block;
 }
 
 .category-note-btn:hover {
