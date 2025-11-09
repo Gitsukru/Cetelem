@@ -3271,7 +3271,7 @@ if ('serviceWorker' in navigator) {
         }
     });
 
-    // ✅ Vérification périodique automatique des mises à jour (toutes les 5 minutes)
+    // ✅ Vérification périodique automatique des mises à jour (toutes les heures)
     setInterval(() => {
         if (navigator.serviceWorker.controller) {
             console.log('🔄 Vérification automatique des mises à jour...');
@@ -3283,7 +3283,7 @@ if ('serviceWorker' in navigator) {
                 }
             });
         }
-    }, 5 * 60 * 1000); // Toutes les 5 minutes
+    }, 60 * 60 * 1000); // Toutes les heures (économie batterie)
 
     // ✅ Vérification quand l'app revient au premier plan (mobile PWA)
     document.addEventListener('visibilitychange', () => {
