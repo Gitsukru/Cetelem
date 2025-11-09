@@ -50,10 +50,10 @@ async function enableNotifications() {
       // Permission refusée
       updateNotificationUI('denied')
       btn.disabled = false
-      btn.textContent = '🔔 Bildirimleri Etkinleştir'
+      btn.textContent = 'Bildirimleri Etkinleştir'
 
       // Afficher message d'aide
-      alert('⚠️ Bildirimlere izin verilmedi.\n\nLütfen tarayıcı ayarlarından izinleri kontrol edin.')
+      alert('Bildirimlere izin verilmedi.\n\nLütfen tarayıcı ayarlarından izinleri kontrol edin.')
     }
   } catch (error) {
     console.error('Erreur activation notifications:', error)
@@ -77,19 +77,29 @@ function updateNotificationUI(permission) {
 
   if (permission === 'granted') {
     // Activé
-    statusIcon.textContent = '🔔'
-    statusTitle.textContent = 'Bildirimler Aktif ✅'
+    statusIcon.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+    </svg>`
+    statusTitle.textContent = 'Bildirimler Aktif'
     statusMessage.textContent = 'Hatırlatmalarınız zamanında size ulaşacak'
     reminderStatus.classList.add('enabled')
   } else if (permission === 'denied') {
     // Refusé
-    statusIcon.textContent = '🚫'
+    statusIcon.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+    </svg>`
     statusTitle.textContent = 'Bildirimler Engellenmiş'
     statusMessage.textContent = 'Hatırlatmaları şimdi ayarlayabilirsiniz. Tarayıcı izni verdiğinde otomatik çalışacaklar.'
     reminderStatus.classList.remove('enabled')
   } else {
     // Par défaut (default)
-    statusIcon.textContent = '🔕'
+    statusIcon.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+      <line x1="1" y1="1" x2="23" y2="23"></line>
+    </svg>`
     statusTitle.textContent = 'Bildirimler Kapalı'
     statusMessage.textContent = 'Hatırlatmaları şimdi ayarlayabilirsiniz. Aktifleştirince çalışmaya başlayacaklar.'
     reminderStatus.classList.remove('enabled')
@@ -242,7 +252,13 @@ function showAddReminderModal() {
   modal.innerHTML = `
     <div class="modal-content">
       <div class="modal-header">
-        <h3>🔔 Yeni Hatırlatma</h3>
+        <h3 style="display: flex; align-items: center; gap: 10px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          Yeni Hatırlatma
+        </h3>
         <button class="modal-close" onclick="closeAddReminderModal()">×</button>
       </div>
 

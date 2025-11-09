@@ -60,7 +60,17 @@
         <div class="update-banner-content">
             <span class="update-icon">🎉</span>
             <span class="update-text">Yeni sürüm hazır! Hemen güncelleyin.</span>
-            <button class="update-btn" onclick="applyUpdateNow()">🚀 Şimdi Güncelle</button>
+            <button class="update-btn" onclick="applyUpdateNow()" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+                    <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+                    <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                Şimdi Güncelle
+            </button>
             <button class="update-close" onclick="hideUpdateBanner()">✕</button>
         </div>
     </div>
@@ -141,10 +151,17 @@
                     <h2 class="counter-title">Zikir Sayacı</h2>
                     <div class="counter-header-actions">
                         <button class="sound-toggle-inline" id="soundToggle" onclick="toggleSound(); playTickSound();" title="Ses Aç/Kapat">
-                            🔊
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                            </svg>
                         </button>
                         <button class="reset-icon-btn" onclick="resetDayCounter()" title="Görüntüyü sıfırla">
-                            🔄
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -331,7 +348,13 @@
 
                     <!-- Statut permission -->
                     <div class="reminder-status" id="reminderStatus">
-                        <div class="status-icon" id="statusIcon">🔕</div>
+                        <div class="status-icon" id="statusIcon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                        </div>
                         <div class="status-text">
                             <strong id="statusTitle">Bildirimler Kapalı</strong>
                             <p id="statusMessage">Hatırlatma almak için bildirimleri aktifleştirin</p>
@@ -359,10 +382,36 @@
                     </button>
 
                     <div class="backup-info" style="margin-top: 20px;">
-                        <p>⏰ Hatırlatmalar seçtiğiniz saatlerde otomatik gelir</p>
-                        <p>🔕 İstediğiniz zaman kapatabilirsiniz</p>
-                        <p>📱 Tarayıcı açıkken arka planda çalışır</p>
-                        <p style="font-size: 12px; color: #94a3b8;">ℹ️ iOS Safari bildirimleri desteklemiyor (sadece Android/Desktop)</p>
+                        <p style="display: flex; align-items: center; gap: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Hatırlatmalar seçtiğiniz saatlerde otomatik gelir
+                        </p>
+                        <p style="display: flex; align-items: center; gap: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            İstediğiniz zaman kapatabilirsiniz
+                        </p>
+                        <p style="display: flex; align-items: center; gap: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                            </svg>
+                            Tarayıcı açıkken arka planda çalışır
+                        </p>
+                        <p style="font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 8px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            iOS Safari bildirimleri desteklemiyor (sadece Android/Desktop)
+                        </p>
                     </div>
                 </div>
             </div>
@@ -371,7 +420,13 @@
             <div class="settings-accordion-item">
                 <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
                     <span class="accordion-title">
-                        <span class="accordion-icon">💾</span>
+                        <span class="accordion-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                        </span>
                         <span>Yedekleme ve Geri Yükleme</span>
                     </span>
                     <span class="accordion-chevron">►</span>
@@ -384,46 +439,114 @@
                         </div>
 
                         <div class="backup-buttons">
-                            <button class="backup-button" onclick="exportData()">📥 Verilerimi dışa aktar</button>
-                            <button class="backup-button" onclick="document.getElementById('importFile').click()">📤 Veri içe aktar</button>
+                            <button class="backup-button" onclick="exportData()" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Verilerimi dışa aktar
+                            </button>
+                            <button class="backup-button" onclick="document.getElementById('importFile').click()" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                Veri içe aktar
+                            </button>
                             <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
                         </div>
 
                         <!-- NOUVEAU: Section PWA Refresh -->
                         <div class="pwa-refresh-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
-                            <h3 style="font-size: 16px; margin-bottom: 12px;">🔄 Sayfa Yenileme</h3>
+                            <h3 style="font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="23 4 23 10 17 10"></polyline>
+                                    <polyline points="1 20 1 14 7 14"></polyline>
+                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                </svg>
+                                Sayfa Yenileme
+                            </h3>
                             <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">PWA yüklüyse veya sorun yaşarsanız sayfayı yenileyin</p>
                             <div class="backup-buttons">
-                                <button class="backup-button" onclick="window.location.reload()" style="background: #10b981;">
-                                    🔄 Sayfayı Yenile
+                                <button class="backup-button" onclick="window.location.reload()" style="background: #10b981; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="23 4 23 10 17 10"></polyline>
+                                        <polyline points="1 20 1 14 7 14"></polyline>
+                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                    </svg>
+                                    Sayfayı Yenile
                                 </button>
-                                <button class="backup-button" onclick="forceHardReload()" style="background: #f59e0b;">
-                                    ⚡ Zorla Yenile (Cache Temizle)
+                                <button class="backup-button" onclick="forceHardReload()" style="background: #f59e0b; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                                    </svg>
+                                    Zorla Yenile (Cache Temizle)
                                 </button>
                             </div>
-                            <p style="font-size: 11px; color: #94a3b8; margin-top: 8px;">
-                                💡 Sorun yaşıyorsanız "Zorla Yenile" kullanın
+                            <p style="font-size: 11px; color: #94a3b8; margin-top: 8px; display: flex; align-items: center; gap: 6px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                Sorun yaşıyorsanız "Zorla Yenile" kullanın
                             </p>
                         </div>
 
                         <div class="device-transfer-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
-                            <h3 style="font-size: 16px; margin-bottom: 12px;">📱 Cihaz Değiştirme</h3>
+                            <h3 style="font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                </svg>
+                                Cihaz Değiştirme
+                            </h3>
                             <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">Verilerinizi yeni cihaza aktarın (giriş gerekmez)</p>
                             <div class="backup-buttons">
-                                <button class="backup-button" onclick="DeviceBackup.showCreateBackupDialog()">
-                                    📲 Kod Oluştur
+                                <button class="backup-button" onclick="DeviceBackup.showCreateBackupDialog()" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                        <path d="M12 8v4"></path>
+                                        <path d="M12 12l-2-2"></path>
+                                        <path d="M12 12l2-2"></path>
+                                    </svg>
+                                    Kod Oluştur
                                 </button>
-                                <button class="backup-button" onclick="DeviceBackup.showRestoreBackupDialog()">
-                                    🔓 Kod ile Geri Yükle
+                                <button class="backup-button" onclick="DeviceBackup.showRestoreBackupDialog()" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                                    </svg>
+                                    Kod ile Geri Yükle
                                 </button>
                             </div>
                             <p style="font-size: 11px; color: #94a3b8; margin-top: 8px;">Kod 7 gün geçerlidir</p>
                         </div>
 
                         <div class="backup-info">
-                            <p>✅ Verileriniz otomatik olarak telefonunuzda yedeklenir</p>
-                            <p>📱 Uygulamayı kapattığınızda bile kalır</p>
-                            <p>🔒 Güvenlik yedeklemesi oluşturmak için dışa aktarma kullanın</p>
+                            <p style="display: flex; align-items: center; gap: 8px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                Verileriniz otomatik olarak telefonunuzda yedeklenir
+                            </p>
+                            <p style="display: flex; align-items: center; gap: 8px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                </svg>
+                                Uygulamayı kapattığınızda bile kalır
+                            </p>
+                            <p style="display: flex; align-items: center; gap: 8px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                Güvenlik yedeklemesi oluşturmak için dışa aktarma kullanın
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -433,7 +556,13 @@
             <div class="settings-accordion-item danger-accordion">
                 <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
                     <span class="accordion-title">
-                        <span class="accordion-icon">⚠️</span>
+                        <span class="accordion-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </span>
                         <span>Tehlike Bölgesi</span>
                     </span>
                     <span class="accordion-chevron">►</span>
@@ -515,14 +644,23 @@
                     <!-- Boutons Créer/Rejoindre (masqués si groupe actif) -->
                     <div id="modeSelection" class="mode-selection">
                         <button class="mode-button create-btn" onclick="createGroup()">
-                            <span class="mode-icon">✨</span>
+                            <span class="mode-icon">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                            </span>
                             <div class="mode-text">
                                 <span class="mode-title">Yeni Grup Oluştur</span>
                                 <span class="mode-desc">Arkadaşlarını davet et</span>
                             </div>
                         </button>
                         <button class="mode-button join-btn" onclick="showJoinForm()">
-                            <span class="mode-icon">🔗</span>
+                            <span class="mode-icon">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                </svg>
+                            </span>
                             <div class="mode-text">
                                 <span class="mode-title">Gruba Katıl</span>
                                 <span class="mode-desc">Grup kodu ile katıl</span>
@@ -534,7 +672,11 @@
                     <div id="createSection" class="section" style="display: none;">
                         <div class="form-card">
                             <div class="form-card-header">
-                                <span class="form-card-icon">✨</span>
+                                <span class="form-card-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                    </svg>
+                                </span>
                                 <h3 class="form-card-title">Yeni Grup Oluştur</h3>
                                 <p class="form-card-desc">Arkadaşlarınla zikir yarışması başlat</p>
                             </div>
@@ -549,7 +691,11 @@
                                     <input type="text" id="creatorNameInput" class="form-input" placeholder="Adınızı girin" maxlength="20" required>
                                 </div>
                                 <button class="form-submit-btn create-submit" onclick="doCreateGroup()">
-                                    <span class="btn-icon">✨</span>
+                                    <span class="btn-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                        </svg>
+                                    </span>
                                     <span class="btn-text">Grup Oluştur</span>
                                 </button>
                             </div>
@@ -560,7 +706,12 @@
                     <div id="joinSection" class="section" style="display: none;">
                         <div class="form-card">
                             <div class="form-card-header">
-                                <span class="form-card-icon">🔗</span>
+                                <span class="form-card-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                    </svg>
+                                </span>
                                 <h3 class="form-card-title">Gruba Katıl</h3>
                                 <p class="form-card-desc">Grup kodunu girerek yarışmaya katıl</p>
                             </div>
@@ -575,7 +726,13 @@
                                     <input type="text" id="participantNameInput" class="form-input" placeholder="Adınızı girin" maxlength="20" required>
                                 </div>
                                 <button class="form-submit-btn join-submit" onclick="doJoinGroup()">
-                                    <span class="btn-icon">🚀</span>
+                                    <span class="btn-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="16 12 12 8 8 12"></polyline>
+                                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                                        </svg>
+                                    </span>
                                     <span class="btn-text">Katıl</span>
                                 </button>
                             </div>
@@ -624,7 +781,13 @@
                                         <div id="leaderboardContent">Yükleniyor...</div>
                                     </div>
                                     <button class="tab-action-btn" onclick="refreshLeaderboard()">
-                                        <span class="btn-icon">🔄</span>
+                                        <span class="btn-icon">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="23 4 23 10 17 10"></polyline>
+                                                <polyline points="1 20 1 14 7 14"></polyline>
+                                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                            </svg>
+                                        </span>
                                         <span class="btn-text">Yenile</span>
                                     </button>
                                 </div>
@@ -635,7 +798,11 @@
                                 <div class="chat-tab-wrapper">
                                     <div class="chat-messages-full" id="chatMessages">
                                         <div class="chat-empty">
-                                            <span class="empty-icon">💭</span>
+                                            <span class="empty-icon">
+                                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                                </svg>
+                                            </span>
                                             <p>Henüz mesaj yok</p>
                                             <small>İlk mesajı siz gönderin!</small>
                                         </div>
@@ -649,7 +816,12 @@
                                                 maxlength="500"
                                                 rows="2"></textarea>
                                             <button class="chat-send-btn" onclick="sendChatMessage()" title="Gönder (Enter)">
-                                                <span class="send-icon">📤</span>
+                                                <span class="send-icon">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                                    </svg>
+                                                </span>
                                             </button>
                                         </div>
                                         <div class="chat-char-count">
@@ -671,7 +843,13 @@
                                         <div class="code-share-box">
                                             <div class="code-display-large" id="displayCode">-</div>
                                             <button class="share-btn-large" onclick="shareCode()">
-                                                <span class="btn-icon">📤</span>
+                                                <span class="btn-icon">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                                        <polyline points="16 6 12 2 8 6"></polyline>
+                                                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                                                    </svg>
+                                                </span>
                                                 <span class="btn-text">Kodu Paylaş</span>
                                             </button>
                                         </div>
@@ -686,7 +864,13 @@
 
                                     <!-- Bouton Leave -->
                                     <button class="leave-btn-large" onclick="leaveGroup()">
-                                        <span class="btn-icon">🚪</span>
+                                        <span class="btn-icon">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                                <polyline points="16 17 21 12 16 7"></polyline>
+                                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                                            </svg>
+                                        </span>
                                         <span class="btn-text">Gruptan Ayrıl</span>
                                     </button>
                                 </div>
@@ -725,8 +909,21 @@
                 </div>
 
                 <div class="stats-actions">
-                    <button class="share-button" onclick="shareStatsBySMS()">📱 SMS ile paylaş</button>
-                    <button class="refresh-button" onclick="updateStats()">🔄 Yenile</button>
+                    <button class="share-button" onclick="shareStatsBySMS()" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                        SMS ile paylaş
+                    </button>
+                    <button class="refresh-button" onclick="updateStats()" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Yenile
+                    </button>
                 </div>
 
                 <h2>Tüm İstatistiklerim</h2>
@@ -761,14 +958,26 @@
 
                 <!-- Calendrier de Suivi -->
                 <div class="calendar-section">
-                    <h2>📅 Takip Takvimi</h2>
+                    <h2 style="display: flex; align-items: center; gap: 10px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Takip Takvimi
+                    </h2>
                     <p style="color: #64748b; margin-top: 8px; margin-bottom: 20px;">
                         Günlük ilerlemenizi görselleştirin
                     </p>
 
                     <!-- Streak Indicator -->
                     <div class="streak-container">
-                        <div class="streak-icon">🔥</div>
+                        <div class="streak-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                <path d="M12 2s-5 4.5-5 10c0 3.87 3.13 7 7 7s7-3.13 7-7c0-5.5-5-10-5-10zm1.5 15c-1.93 0-3.5-1.57-3.5-3.5 0-2.5 2-4.5 2-4.5s2 2 2 4.5c0 1.93-1.57 3.5-3.5 3.5z" fill="#f97316"/>
+                            </svg>
+                        </div>
                         <div class="streak-info">
                             <div class="streak-number" id="currentStreak">0</div>
                             <div class="streak-label">Gün Üst Üste</div>
@@ -836,7 +1045,12 @@
     </div>
 
     <!-- Indicateur de sauvegarde -->
-    <div id="saveIndicator" class="save-indicator">✅ Kaydedildi</div>
+    <div id="saveIndicator" class="save-indicator" style="display: flex; align-items: center; gap: 6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Kaydedildi
+    </div>
 
     <!-- Footer -->
     <footer class="app-footer">
