@@ -361,6 +361,7 @@
 
 .subtab-icon svg {
   color: currentColor;
+  fill: currentColor;
   stroke: currentColor;
 }
 

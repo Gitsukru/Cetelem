@@ -58,6 +58,11 @@
     line-height: 1;
 }
 
+.add-category-quick svg {
+    stroke: white;
+    color: white;
+}
+
 .add-category-quick:hover {
     background: #059669;
     transform: scale(1.05);
