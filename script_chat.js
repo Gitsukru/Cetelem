@@ -83,7 +83,7 @@ async function loadChatMessages() {
 
     // Vider et afficher les messages
     chatMessages = data;
-    displayAllMessages();
+    await displayAllMessages();
 
   } catch (error) {
     console.error('❌ Erreur chargement messages:', error);
@@ -160,7 +160,7 @@ function handleNewMessage(message) {
 /**
  * Afficher tous les messages avec séparateurs de date
  */
-function displayAllMessages() {
+async function displayAllMessages() {
   const container = document.getElementById('chatMessages');
   if (!container) return;
 
@@ -168,14 +168,56 @@ function displayAllMessages() {
   container.innerHTML = '';
 
   if (chatMessages.length === 0) {
-    // Afficher message vide
-    container.innerHTML = `
-      <div class="chat-empty">
-        <span class="empty-icon">💭</span>
-        <p>Henüz mesaj yok</p>
-        <small>İlk mesajı siz gönderin!</small>
-      </div>
-    `;
+    // Vérifier le nombre de participants pour afficher le bon message
+    let emptyMessage = '';
+
+    try {
+      if (groupManager && groupManager.hasActiveGroup()) {
+        const leaderboard = await groupManager.getLeaderboard();
+        const participantCount = leaderboard ? leaderboard.length : 0;
+
+        if (participantCount <= 1) {
+          // Seul dans le groupe
+          emptyMessage = `
+            <div class="chat-empty">
+              <span class="empty-icon">👥</span>
+              <p>Henüz grubunuzda katılımcı yok</p>
+              <small>Grup kodunu paylaşarak arkadaşlarınızı davet edin</small>
+            </div>
+          `;
+        } else {
+          // Il y a des participants mais pas de messages
+          emptyMessage = `
+            <div class="chat-empty">
+              <span class="empty-icon">💭</span>
+              <p>Henüz mesaj yok</p>
+              <small>İlk mesajı siz gönderin!</small>
+            </div>
+          `;
+        }
+      } else {
+        // Pas de groupe actif
+        emptyMessage = `
+          <div class="chat-empty">
+            <span class="empty-icon">💭</span>
+            <p>Henüz mesaj yok</p>
+            <small>İlk mesajı siz gönderin!</small>
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('Erreur vérification participants:', error);
+      // Message par défaut en cas d'erreur
+      emptyMessage = `
+        <div class="chat-empty">
+          <span class="empty-icon">💭</span>
+          <p>Henüz mesaj yok</p>
+          <small>İlk mesajı siz gönderin!</small>
+        </div>
+      `;
+    }
+
+    container.innerHTML = emptyMessage;
     return;
   }
 
