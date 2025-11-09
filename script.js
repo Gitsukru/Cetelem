@@ -3281,17 +3281,39 @@ if ('serviceWorker' in navigator) {
     // ⚡ FIX CHROME: Timestamp de chargement de la page pour éviter vérification MAJ trop rapide
     const pageLoadTime = Date.now();
 
+    // ⚡ FIX PWA: Détecter si on est en mode standalone (PWA installée)
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
+                  window.navigator.standalone === true;
+
+    if (isPWA) {
+        console.log('📱 Mode PWA standalone détecté - Optimisations MAJ activées');
+    } else {
+        console.log('🌐 Mode navigateur normal');
+    }
+
+    // ⚡ FIX PWA: Nettoyer l'URL ?updated= après le chargement pour PWA
+    if (isPWA && window.location.search.includes('updated=')) {
+        console.log('🧹 PWA: Nettoyage URL après MAJ');
+        // Attendre 2s puis nettoyer l'URL sans recharger
+        setTimeout(() => {
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+            console.log('✅ PWA: URL nettoyée');
+        }, 2000);
+    }
+
     // Fonction helper: Vérifier si on peut checker les MAJ (évite boucle infinie)
     function canCheckForUpdates() {
-        // ⚡ FIX CHROME: Attendre au moins 10 secondes après le chargement de la page
+        // ⚡ FIX PWA: Pour les PWA installées, délai de grâce réduit à 5s
+        const graceTime = isPWA ? 5000 : 10000;
         const timeSincePageLoad = Date.now() - pageLoadTime;
-        if (timeSincePageLoad < 10000) {
-            console.log(`⏳ Délai de grâce après chargement (${Math.ceil((10000 - timeSincePageLoad) / 1000)}s restantes)`);
+        if (timeSincePageLoad < graceTime) {
+            console.log(`⏳ Délai de grâce après chargement (${Math.ceil((graceTime - timeSincePageLoad) / 1000)}s restantes)`);
             return false;
         }
 
-        // ⚡ FIX CHROME: Vérifier si on vient de mettre à jour via l'URL
-        if (window.location.search.includes('updated=')) {
+        // ⚡ FIX CHROME: Vérifier si on vient de mettre à jour via l'URL (sauf PWA)
+        if (!isPWA && window.location.search.includes('updated=')) {
             console.log('⏳ Page rechargée après MAJ, pas de nouvelle vérification');
             return false;
         }
@@ -3354,6 +3376,27 @@ if ('serviceWorker' in navigator) {
             });
         }
     });
+
+    // ⚡ FIX PWA: Vérification forcée au démarrage pour les PWA installées
+    if (isPWA) {
+        console.log('📱 Mode PWA détecté - Vérification MAJ au démarrage activée');
+
+        // Attendre le délai de grâce (5s pour PWA) + 1s de sécurité
+        setTimeout(() => {
+            if (navigator.serviceWorker.controller) {
+                console.log('🔄 PWA: Vérification MAJ au démarrage...');
+                navigator.serviceWorker.getRegistration().then(registration => {
+                    if (registration) {
+                        registration.update()
+                            .then(() => console.log('✅ PWA: Vérification MAJ terminée'))
+                            .catch(error => {
+                                console.error('❌ PWA: Erreur vérification MAJ:', error);
+                            });
+                    }
+                });
+            }
+        }, 6000); // 5s délai de grâce + 1s de sécurité
+    }
 }
 
 // Détection installation PWA
