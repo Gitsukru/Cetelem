@@ -2486,7 +2486,10 @@ function exportData() {
             categoryGoals: JSON.parse(localStorage.getItem('categoryGoals') || '{}'),
             goalsAchievedToday: JSON.parse(localStorage.getItem('goalsAchievedToday') || '{}'),
 
-            // Groupe et participant
+            // ⚡ NOUVEAU: Système multi-groupe
+            multiGroups: JSON.parse(localStorage.getItem('multiGroups') || 'null'),
+
+            // Groupe et participant (ancien système - pour compatibilité)
             currentGroup: JSON.parse(localStorage.getItem('currentGroup') || 'null'),
             currentParticipant: JSON.parse(localStorage.getItem('currentParticipant') || 'null'),
             isCreator: localStorage.getItem('isCreator') === 'true',
@@ -2583,7 +2586,16 @@ function importData(event) {
                         localStorage.setItem('goalsAchievedToday', JSON.stringify(importedData.goalsAchievedToday));
                     }
 
-                    // 4. Groupe et participant
+                    // 4. Système multi-groupe (NOUVEAU)
+                    if (importedData.multiGroups) {
+                        localStorage.setItem('multiGroups', JSON.stringify(importedData.multiGroups));
+                        // Recharger le GroupManager avec les nouvelles données
+                        if (typeof groupManager !== 'undefined' && groupManager.loadSavedGroup) {
+                            groupManager.loadSavedGroup();
+                        }
+                    }
+
+                    // 5. Groupe et participant (ancien système - pour compatibilité)
                     if (importedData.currentGroup) {
                         localStorage.setItem('currentGroup', JSON.stringify(importedData.currentGroup));
                     }
@@ -2597,12 +2609,12 @@ function importData(event) {
                         localStorage.setItem('groupHistory', JSON.stringify(importedData.groupHistory));
                     }
 
-                    // 5. Notifications et rappels
+                    // 6. Notifications et rappels
                     if (importedData.notifications_reminders) {
                         localStorage.setItem('notifications_reminders', JSON.stringify(importedData.notifications_reminders));
                     }
 
-                    // 6. Settings
+                    // 7. Settings
                     if (importedData.settings) {
                         if (importedData.settings.soundEnabled !== undefined) {
                             soundEnabled = importedData.settings.soundEnabled;
@@ -2619,7 +2631,7 @@ function importData(event) {
                         }
                     }
 
-                    // 7. Rafraîchir l'interface
+                    // 8. Rafraîchir l'interface
                     updateCategorySelect();
                     updateCategoriesList();
                     updateCounterDisplay();
@@ -2632,6 +2644,9 @@ function importData(event) {
                     if (typeof updateBookDisplay === 'function') {
                         updateBookDisplay();
                     }
+                    if (typeof renderBooksManagementList === 'function') {
+                        renderBooksManagementList();
+                    }
 
                     // Rafraîchir l'historique des groupes et l'UI du groupe
                     if (typeof displayGroupHistory === 'function') {
@@ -2639,6 +2654,9 @@ function importData(event) {
                     }
                     if (typeof initializeGroupUI === 'function') {
                         initializeGroupUI();
+                    }
+                    if (typeof renderMultiGroupTabs === 'function') {
+                        renderMultiGroupTabs();
                     }
 
                     showCustomAlert('İçe aktarma başarılı!<br>Tüm verileriniz geri yüklendi', 'success', 3000);

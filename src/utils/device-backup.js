@@ -30,7 +30,7 @@ const DeviceBackup = {
   // Sauvegarder les données avec un code
   async createBackup() {
     if (!groupManager || !groupManager.provider || !groupManager.provider.supabase) {
-      throw new Error('Supabase non initialisé')
+      throw new Error('Bağlantı başlatılıyor, lütfen 5 saniye bekleyip tekrar deneyin')
     }
 
     try {
@@ -53,7 +53,10 @@ const DeviceBackup = {
         categoryGoals: JSON.parse(localStorage.getItem('categoryGoals') || '{}'),
         goalsAchievedToday: JSON.parse(localStorage.getItem('goalsAchievedToday') || '{}'),
 
-        // Groupe et participant
+        // ⚡ NOUVEAU: Système multi-groupe
+        multiGroups: JSON.parse(localStorage.getItem('multiGroups') || 'null'),
+
+        // Groupe et participant (ancien système - pour compatibilité)
         currentGroup: JSON.parse(localStorage.getItem('currentGroup') || 'null'),
         currentParticipant: JSON.parse(localStorage.getItem('currentParticipant') || 'null'),
         isCreator: localStorage.getItem('isCreator') === 'true',
@@ -123,7 +126,7 @@ const DeviceBackup = {
   // Restaurer les données avec un code
   async restoreBackup(code) {
     if (!groupManager || !groupManager.provider || !groupManager.provider.supabase) {
-      throw new Error('Supabase non initialisé')
+      throw new Error('Bağlantı başlatılıyor, lütfen 5 saniye bekleyip tekrar deneyin')
     }
 
     try {
@@ -132,10 +135,15 @@ const DeviceBackup = {
         .select('*')
         .eq('backup_code', code.toUpperCase())
         .gt('expires_at', new Date().toISOString()) // Pas expiré
-        .single()
+        .maybeSingle() // ⚡ FIX: maybeSingle au lieu de single pour éviter 406
 
-      if (error || !data) {
-        throw new Error('Code invalide ou expiré')
+      if (error) {
+        console.error('Erreur Supabase restore:', error)
+        throw new Error('Veritabanı hatası')
+      }
+
+      if (!data) {
+        throw new Error('Kod geçersiz veya süresi dolmuş')
       }
 
       // Restaurer les données
@@ -204,7 +212,16 @@ const DeviceBackup = {
         localStorage.setItem('goalsAchievedToday', JSON.stringify(backupData.goalsAchievedToday))
       }
 
-      // 4. Groupe et participant
+      // 4. Système multi-groupe (NOUVEAU)
+      if (backupData.multiGroups) {
+        localStorage.setItem('multiGroups', JSON.stringify(backupData.multiGroups))
+        // Recharger le GroupManager avec les nouvelles données
+        if (typeof groupManager !== 'undefined' && groupManager.loadSavedGroup) {
+          groupManager.loadSavedGroup()
+        }
+      }
+
+      // 5. Groupe et participant (ancien système - pour compatibilité)
       if (backupData.currentGroup) {
         localStorage.setItem('currentGroup', JSON.stringify(backupData.currentGroup))
       }
@@ -221,12 +238,12 @@ const DeviceBackup = {
         localStorage.setItem('groupHistory', JSON.stringify(backupData.groupHistory))
       }
 
-      // 5. Notifications et rappels
+      // 6. Notifications et rappels
       if (backupData.notifications_reminders) {
         localStorage.setItem('notifications_reminders', JSON.stringify(backupData.notifications_reminders))
       }
 
-      // 6. Settings
+      // 7. Settings
       if (backupData.settings) {
         if (backupData.settings.soundEnabled !== undefined) {
           if (typeof soundEnabled !== 'undefined') {
@@ -247,7 +264,7 @@ const DeviceBackup = {
         }
       }
 
-      // 7. Rafraîchir l'interface
+      // 8. Rafraîchir l'interface
       if (typeof updateCategorySelect === 'function') {
         updateCategorySelect()
       }
@@ -266,11 +283,17 @@ const DeviceBackup = {
       if (typeof updateBookDisplay === 'function') {
         updateBookDisplay()
       }
+      if (typeof renderBooksManagementList === 'function') {
+        renderBooksManagementList()
+      }
       if (typeof displayGroupHistory === 'function') {
         displayGroupHistory()
       }
       if (typeof initializeGroupUI === 'function') {
         initializeGroupUI()
+      }
+      if (typeof renderMultiGroupTabs === 'function') {
+        renderMultiGroupTabs()
       }
 
       logger.log('✅ Données restaurées depuis le backup')
