@@ -3212,7 +3212,7 @@ function checkForUpdates() {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         // ⚡ Cache-busting: Ajouter version pour forcer Opera à recharger sw.js
-        const SW_VERSION = '2025-11-08-fix-opera-cache-busting';
+        const SW_VERSION = '2025-11-09-faster-update-check';
         navigator.serviceWorker.register('./sw.js?v=' + SW_VERSION)
             .then(function(registration) {
                 console.log('Service Worker başarıyla kaydedildi:', registration.scope);
@@ -3271,7 +3271,7 @@ if ('serviceWorker' in navigator) {
         }
     });
 
-    // ✅ Vérification périodique automatique des mises à jour (toutes les heures)
+    // ✅ Vérification périodique automatique des mises à jour (toutes les 5 minutes)
     setInterval(() => {
         if (navigator.serviceWorker.controller) {
             console.log('🔄 Vérification automatique des mises à jour...');
@@ -3283,7 +3283,35 @@ if ('serviceWorker' in navigator) {
                 }
             });
         }
-    }, 60 * 60 * 1000); // Toutes les heures (60 minutes)
+    }, 5 * 60 * 1000); // Toutes les 5 minutes
+
+    // ✅ Vérification quand l'app revient au premier plan (mobile PWA)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && navigator.serviceWorker.controller) {
+            console.log('📱 App revenue au premier plan - Vérification MAJ...');
+            navigator.serviceWorker.getRegistration().then(registration => {
+                if (registration) {
+                    registration.update().catch(error => {
+                        console.error('❌ Erreur vérification MAJ:', error);
+                    });
+                }
+            });
+        }
+    });
+
+    // ✅ Vérification au focus de la fenêtre (desktop)
+    window.addEventListener('focus', () => {
+        if (navigator.serviceWorker.controller) {
+            console.log('🖥️ Fenêtre focus - Vérification MAJ...');
+            navigator.serviceWorker.getRegistration().then(registration => {
+                if (registration) {
+                    registration.update().catch(error => {
+                        console.error('❌ Erreur vérification MAJ:', error);
+                    });
+                }
+            });
+        }
+    });
 }
 
 // Détection installation PWA
