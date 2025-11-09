@@ -23,17 +23,13 @@ const BooksManager = {
    */
   getBooks() {
     const booksData = localStorage.getItem('books');
-    console.error('📚 DEBUG getBooks() - Raw:', booksData ? `${booksData.substring(0, 100)}...` : 'NULL');
 
     if (!booksData) {
-      console.error('⚠️ DEBUG getBooks() - PAS DE DONNÉES');
       return [];
     }
 
     try {
       const parsed = JSON.parse(booksData);
-      console.error('📚 DEBUG getBooks() - Array?', Array.isArray(parsed), 'Length:', parsed.length);
-
       // Si ce n'est pas un tableau, retourner un tableau vide
       return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
@@ -234,13 +230,11 @@ const BooksManager = {
    */
   renderBooks() {
     const books = this.getBooks();
-    console.error('🎨 DEBUG renderBooks() - Livres trouvés:', books.length);
 
     const container = document.getElementById('booksList');
     const noBookMsg = document.getElementById('noBooksMessage');
 
     if (!container) {
-      console.error('⚠️ Container #booksList introuvable!');
       return;
     }
 

@@ -2584,54 +2584,24 @@ function importData(event) {
                 throw new Error('Geçersiz format');
             }
 
-            // DEBUG: Vérifier le contenu avant import
-            const debugInfo = `
-                📚 Livres trouvés: ${importedData.books ? (Array.isArray(importedData.books) ? importedData.books.length : 'PAS UN TABLEAU') : 'AUCUN'}
-                👥 Groupes trouvés: ${importedData.multiGroups ? 'OUI' : 'NON'}
-            `;
-            console.log('🔍 DEBUG IMPORT:', debugInfo);
-
             showCustomConfirm(
                 'Veri İçe Aktar',
                 'Bu verileri içe aktarmak mevcut TÜM verilerinizi değiştirecek.<br><br>Devam etmek istiyor musunuz?',
                 function() {
                     // Confirmation "Oui" - Restaurer toutes les données
 
-                    // DEBUG: Message visible à l'écran
-                    let debugMsg = '🔄 Import en cours...\n';
-
                     // 1. Compteurs et catégories
                     categories = importedData.categories;
                     counters = importedData.counters;
                     saveCategories();
                     saveCounters();
-                    debugMsg += '✅ Catégories et compteurs OK\n';
 
                     // 2. Livres et objectifs de livres
                     if (importedData.books) {
                         // Garantir que books est un tableau, sinon []
                         const booksArray = Array.isArray(importedData.books) ? importedData.books : [];
-                        console.log('📚 Import livres - Nombre:', booksArray.length);
-                        console.log('📚 Import livres - Données:', booksArray);
-                        debugMsg += `📚 Livres: ${booksArray.length} trouvés\n`;
-
-                        if (typeof books !== 'undefined') {
-                            books = booksArray;
-                        }
                         localStorage.setItem('books', JSON.stringify(booksArray));
-
-                        // Vérifier que c'est bien écrit
-                        const verification = localStorage.getItem('books');
-                        const verifiedCount = verification ? JSON.parse(verification).length : 0;
-                        console.log('✅ Livres écrits dans localStorage:', verifiedCount);
-                        debugMsg += `✅ Livres sauvegardés: ${verifiedCount}\n`;
-                    } else {
-                        console.warn('⚠️ Pas de livres dans importedData');
-                        debugMsg += '⚠️ AUCUN livre dans le fichier\n';
                     }
-
-                    // Afficher le debug avant de continuer
-                    console.log(debugMsg);
 
                     if (importedData.bookGoals) {
                         if (typeof bookGoals !== 'undefined') {
