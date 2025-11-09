@@ -276,7 +276,9 @@
    ============================================ */
 
 .reminder-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -285,15 +287,27 @@
   vertical-align: middle;
 }
 
+.reminder-badge svg {
+  display: block;
+}
+
 .reminder-badge.active {
   background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
   color: white;
+}
+
+.reminder-badge.active svg {
+  stroke: white;
 }
 
 .reminder-badge.pending {
   background: linear-gradient(135deg, #fbd38d 0%, #f6ad55 100%);
   color: #744210;
   animation: pendingPulse 2s ease-in-out infinite;
+}
+
+.reminder-badge.pending svg {
+  stroke: #744210;
 }
 
 @keyframes pendingPulse {
@@ -370,12 +384,24 @@
   border-radius: 8px;
   transition: all 0.2s ease;
   opacity: 0.6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reminder-delete svg {
+  display: block;
+  stroke: #e53e3e;
 }
 
 .reminder-delete:hover {
   background: #fed7d7;
   opacity: 1;
   transform: scale(1.1);
+}
+
+.reminder-delete:hover svg {
+  stroke: #c53030;
 }
 
 /* ============================================

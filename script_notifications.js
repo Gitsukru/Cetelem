@@ -33,7 +33,7 @@ async function enableNotifications() {
 
   // Désactiver le bouton pendant traitement
   btn.disabled = true
-  btn.textContent = '⏳ Demande en cours...'
+  btn.textContent = 'Demande en cours...'
 
   try {
     const success = await notificationManager.requestPermission()
@@ -58,7 +58,7 @@ async function enableNotifications() {
   } catch (error) {
     console.error('Erreur activation notifications:', error)
     btn.disabled = false
-    btn.textContent = '❌ Hata - Tekrar Dene'
+    btn.textContent = 'Hata - Tekrar Dene'
   }
 }
 
@@ -144,8 +144,9 @@ function updateTesbihSoundToggle() {
   // Contenu du toggle
   toggleContainer.innerHTML = `
     <div style="flex: 1;">
-      <div style="font-weight: 600; font-size: 13px; color: #1e293b; margin-bottom: 4px;">
-        🔊 Tesbih Sesi
+      <div style="font-weight: 600; font-size: 13px; color: #1e293b; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        Tesbih Sesi
       </div>
       <div style="font-size: 11px; color: #64748b;">
         Hatırlatmalarda tesbih sesi çal (5 kez)
@@ -164,7 +165,7 @@ function updateTesbihSoundToggle() {
 function toggleTesbihSound(enabled) {
   notificationManager.toggleTesbihSound(enabled)
   const status = enabled ? 'açıldı' : 'kapatıldı'
-  showToast(`🔊 Tesbih sesi ${status}`)
+  showToast(`Tesbih sesi ${status}`)
 }
 
 // ============================================
@@ -207,9 +208,9 @@ function displayReminders() {
     // Badge d'état si notifications non autorisées mais rappel activé
     let statusBadge = ''
     if (!notificationsActive && reminder.enabled) {
-      statusBadge = '<span class="reminder-badge pending" title="En attente de permission">⏳</span>'
+      statusBadge = '<span class="reminder-badge pending" title="En attente de permission"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>'
     } else if (notificationsActive && reminder.enabled) {
-      statusBadge = '<span class="reminder-badge active" title="Actif">✓</span>'
+      statusBadge = '<span class="reminder-badge active" title="Actif"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>'
     }
 
     return `
@@ -224,7 +225,7 @@ function displayReminders() {
             <span class="toggle-slider"></span>
           </label>
           <button class="reminder-delete" onclick="deleteReminder('${reminder.id}')" title="Sil">
-            🗑️
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           </button>
         </div>
       </div>
@@ -342,7 +343,7 @@ function saveNewReminder() {
   closeAddReminderModal()
 
   // Feedback visuel
-  showToast('✅ Hatırlatma eklendi!')
+  showToast('Hatırlatma eklendi!')
 }
 
 // ============================================
@@ -357,7 +358,7 @@ function toggleReminderStatus(reminderId) {
   displayReminders()
 
   const status = enabled ? 'aktif' : 'devre dışı'
-  showToast(`🔄 Hatırlatma ${status}`)
+  showToast(`Hatırlatma ${status}`)
 }
 
 /**
@@ -365,13 +366,13 @@ function toggleReminderStatus(reminderId) {
  */
 function deleteReminder(reminderId) {
   // Confirmation
-  if (!confirm('🗑️ Bu hatırlatmayı silmek istediğinizden emin misiniz?')) {
+  if (!confirm('Bu hatırlatmayı silmek istediğinizden emin misiniz?')) {
     return
   }
 
   notificationManager.removeReminder(reminderId)
   displayReminders()
-  showToast('🗑️ Hatırlatma silindi')
+  showToast('Hatırlatma silindi')
 }
 
 // ============================================
