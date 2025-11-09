@@ -49,9 +49,19 @@ const PrivacyAnalytics = {
         return false;
       }
 
-      // Créer le client Supabase pour analytics
-      this.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-      console.log('✅ [Analytics] Connexion Supabase initialisée');
+      // Réutiliser le client Supabase existant si disponible (évite instances multiples)
+      if (window.groupManager?.provider?.supabase) {
+        this.supabaseClient = window.groupManager.provider.supabase;
+        console.log('✅ [Analytics] Réutilisation client Supabase existant');
+      } else if (window.supabaseClient) {
+        this.supabaseClient = window.supabaseClient;
+        console.log('✅ [Analytics] Réutilisation client Supabase global');
+      } else {
+        // Créer un nouveau client seulement si aucun n'existe
+        this.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        window.supabaseClient = this.supabaseClient; // Stocker globalement
+        console.log('✅ [Analytics] Nouveau client Supabase créé');
+      }
       return true;
 
     } catch (error) {
