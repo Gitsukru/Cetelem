@@ -513,7 +513,7 @@ async function loadParticipantDetailedStats(participantId, container) {
       .from('participants')
       .select('metadata')
       .eq('id', participantId)
-      .single()
+      .maybeSingle()
 
     // Les statistiques détaillées sont stockées dans metadata JSON
     const detailedStats = participant?.metadata?.categories || {}
@@ -734,7 +734,7 @@ async function displayGroupHistory() {
           .from('groups')
           .select('id')
           .eq('code', item.code)
-          .single()
+          .maybeSingle()
 
         if (data) {
           statusClass = 'active'
@@ -775,7 +775,7 @@ async function rejoinGroup(code) {
       .from('groups')
       .select('*')
       .eq('code', code)
-      .single()
+      .maybeSingle()
 
     if (error || !groupData) {
       showCustomAlert('Bu grup artık mevcut değil', 'error', 3000)
@@ -946,7 +946,7 @@ async function showNotesModal(participantId, participantName, isMe) {
       .from('participants')
       .select('public_notes')
       .eq('id', participantId)
-      .single()
+      .maybeSingle()
 
     if (error) throw error
 
