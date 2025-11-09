@@ -284,7 +284,8 @@ function playTickSound() {
 }
 
 // Enable audio on first user interaction (for mobile)
-let audioEnabled = false;
+// ⚡ FIX CHROME: Sauvegarder audioEnabled pour éviter de perdre le son après MAJ
+let audioEnabled = localStorage.getItem('audioEnabled') === 'true';
 function enableAudioOnInteraction() {
     if (!audioEnabled) {
         const enableAudio = async () => {
@@ -301,12 +302,14 @@ function enableAudioOnInteraction() {
                         await tickSound.play();
                     }
                     audioEnabled = true;
+                    localStorage.setItem('audioEnabled', 'true'); // ⚡ Sauvegarder
                     console.log('Audio context enabled for mobile');
                     showCustomAlert('🔊 Ses etkinleştirildi!', 'success', 1500);
                 }
             } catch (e) {
                 console.log('Audio enable error:', e);
                 audioEnabled = true; // Mark as attempted
+                localStorage.setItem('audioEnabled', 'true'); // ⚡ Sauvegarder quand même
             }
         };
 
@@ -338,6 +341,7 @@ function toggleSound() {
                         tickSound.pause();
                         tickSound.currentTime = 0;
                         audioEnabled = true;
+                        localStorage.setItem('audioEnabled', 'true'); // ⚡ Sauvegarder
                         console.log('Audio enabled via sound button');
                     }).catch(() => {
                         enableAudioOnInteraction();
@@ -3274,8 +3278,24 @@ if ('serviceWorker' in navigator) {
         }
     });
 
+    // ⚡ FIX CHROME: Timestamp de chargement de la page pour éviter vérification MAJ trop rapide
+    const pageLoadTime = Date.now();
+
     // Fonction helper: Vérifier si on peut checker les MAJ (évite boucle infinie)
     function canCheckForUpdates() {
+        // ⚡ FIX CHROME: Attendre au moins 10 secondes après le chargement de la page
+        const timeSincePageLoad = Date.now() - pageLoadTime;
+        if (timeSincePageLoad < 10000) {
+            console.log(`⏳ Délai de grâce après chargement (${Math.ceil((10000 - timeSincePageLoad) / 1000)}s restantes)`);
+            return false;
+        }
+
+        // ⚡ FIX CHROME: Vérifier si on vient de mettre à jour via l'URL
+        if (window.location.search.includes('updated=')) {
+            console.log('⏳ Page rechargée après MAJ, pas de nouvelle vérification');
+            return false;
+        }
+
         const justUpdated = sessionStorage.getItem('justUpdated');
         if (justUpdated) {
             const timeSinceUpdate = Date.now() - parseInt(justUpdated);
@@ -3830,7 +3850,7 @@ function checkForAppUpdates() {
 }
 
 // Afficher le prompt de mise à jour - DÉSACTIVÉE
-function showUpdatePrompt(newVersion) {
+function showUpdatePrompt(_newVersion) {
     // Fonction désactivée pour éviter les popups en boucle
     console.log('⏸️ Popup mise à jour désactivé');
     return;
