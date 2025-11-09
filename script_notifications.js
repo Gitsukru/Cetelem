@@ -94,6 +94,67 @@ function updateNotificationUI(permission) {
     statusMessage.textContent = 'Hatırlatmaları şimdi ayarlayabilirsiniz. Aktifleştirince çalışmaya başlayacaklar.'
     reminderStatus.classList.remove('enabled')
   }
+
+  // ⚡ NOUVEAU: Afficher le toggle son tesbih
+  updateTesbihSoundToggle()
+}
+
+/**
+ * ⚡ NOUVEAU: Mettre à jour le toggle son tesbih
+ */
+function updateTesbihSoundToggle() {
+  let toggleContainer = document.getElementById('tesbihSoundToggle')
+
+  // Créer le toggle s'il n'existe pas
+  if (!toggleContainer) {
+    toggleContainer = document.createElement('div')
+    toggleContainer.id = 'tesbihSoundToggle'
+    toggleContainer.className = 'tesbih-sound-toggle'
+    toggleContainer.style.cssText = `
+      margin-top: 16px;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    `
+
+    // Insérer après le statut des notifications
+    const reminderStatus = document.querySelector('.reminder-status')
+    if (reminderStatus && reminderStatus.parentNode) {
+      reminderStatus.parentNode.insertBefore(toggleContainer, reminderStatus.nextSibling)
+    }
+  }
+
+  // État actuel
+  const isEnabled = notificationManager.tesbihSoundEnabled
+
+  // Contenu du toggle
+  toggleContainer.innerHTML = `
+    <div style="flex: 1;">
+      <div style="font-weight: 600; font-size: 13px; color: #1e293b; margin-bottom: 4px;">
+        🔊 Tesbih Sesi
+      </div>
+      <div style="font-size: 11px; color: #64748b;">
+        Hatırlatmalarda tesbih sesi çal (5 kez)
+      </div>
+    </div>
+    <label class="reminder-toggle">
+      <input type="checkbox" ${isEnabled ? 'checked' : ''} onchange="toggleTesbihSound(this.checked)">
+      <span class="toggle-slider"></span>
+    </label>
+  `
+}
+
+/**
+ * ⚡ NOUVEAU: Toggle son tesbih
+ */
+function toggleTesbihSound(enabled) {
+  notificationManager.toggleTesbihSound(enabled)
+  const status = enabled ? 'açıldı' : 'kapatıldı'
+  showToast(`🔊 Tesbih sesi ${status}`)
 }
 
 // ============================================

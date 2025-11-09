@@ -10,10 +10,13 @@ class NotificationManager {
     this.checkInterval = null
     this.isSupported = 'Notification' in window
     this.permission = this.isSupported ? Notification.permission : 'denied'
+    // ⚡ NOUVEAU: Option son tesbih pour les rappels
+    this.tesbihSoundEnabled = localStorage.getItem('reminderTesbihSound') !== 'false'
 
     console.log('🔧 NotificationManager: État initial', {
       isSupported: this.isSupported,
       permission: this.permission,
+      tesbihSoundEnabled: this.tesbihSoundEnabled,
       nombreRappels: Object.keys(this.reminders).length,
       rappels: this.reminders
     })
@@ -97,16 +100,60 @@ class NotificationManager {
       setTimeout(() => notificationEl.remove(), 300)
     }, 8000)
 
-    // Son (si disponible)
-    try {
-      const audio = new Audio('/assets/sounds/notification.mp3')
-      audio.volume = 0.3
-      audio.play().catch(() => {
-        console.log('Son notification non disponible')
-      })
-    } catch (error) {
-      // Pas grave si le son ne marche pas
+    // ⚡ NOUVEAU: Son tesbih (si activé)
+    if (this.tesbihSoundEnabled) {
+      this.playTesbihSound(5) // Jouer 5 fois
     }
+  }
+
+  /**
+   * ⚡ NOUVEAU: Jouer le son tesbih N fois
+   */
+  playTesbihSound(times = 5) {
+    console.log(`🔊 Jouer son tesbih ${times}x`)
+
+    let playCount = 0
+
+    const playNext = () => {
+      if (playCount >= times) {
+        console.log('✅ Son tesbih terminé')
+        return
+      }
+
+      try {
+        const audio = new Audio('./assets/audio/tesbih_variant_1.mp3')
+        audio.volume = 0.7
+
+        audio.addEventListener('ended', () => {
+          playCount++
+          console.log(`🔊 Son ${playCount}/${times} terminé`)
+          // Petit délai entre chaque son (200ms)
+          setTimeout(playNext, 200)
+        })
+
+        audio.addEventListener('error', (e) => {
+          console.error('❌ Erreur chargement son tesbih:', e)
+        })
+
+        audio.play().catch((err) => {
+          console.error('❌ Erreur lecture son tesbih:', err)
+        })
+      } catch (error) {
+        console.error('❌ Erreur création audio tesbih:', error)
+      }
+    }
+
+    playNext()
+  }
+
+  /**
+   * ⚡ NOUVEAU: Activer/Désactiver le son tesbih
+   */
+  toggleTesbihSound(enabled) {
+    this.tesbihSoundEnabled = enabled
+    localStorage.setItem('reminderTesbihSound', enabled.toString())
+    console.log('🔊 Son tesbih rappels:', enabled ? 'ACTIVÉ' : 'DÉSACTIVÉ')
+    return this.tesbihSoundEnabled
   }
 
   /**
