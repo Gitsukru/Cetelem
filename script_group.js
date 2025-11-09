@@ -3,22 +3,173 @@
  * Compatible Supabase (actuel) et Infomaniak (futur)
  */
 
+// ========================================
+// MULTI-GROUP TABS MANAGEMENT
+// ========================================
+
+/**
+ * Render les tabs multi-groupe
+ */
+function renderMultiGroupTabs() {
+  const container = document.getElementById('multiGroupTabsScroll')
+  const multiGroupTabsDiv = document.getElementById('multiGroupTabs')
+
+  if (!container || !multiGroupTabsDiv) return
+
+  const groups = groupManager.getAllGroups()
+
+  if (groups.length === 0) {
+    // Masquer si aucun groupe
+    multiGroupTabsDiv.style.display = 'none'
+    return
+  }
+
+  // Afficher les tabs
+  multiGroupTabsDiv.style.display = 'block'
+
+  // Vider le container
+  container.innerHTML = ''
+
+  // Créer un tab pour chaque groupe
+  groups.forEach(groupData => {
+    const isActive = groupData.groupId === groupManager.activeGroupId
+
+    const tab = document.createElement('div')
+    tab.className = `multi-group-tab ${isActive ? 'active' : ''}`
+    tab.dataset.groupId = groupData.groupId
+    tab.onclick = () => switchToGroup(groupData.groupId)
+
+    // Icône
+    const icon = document.createElement('span')
+    icon.className = 'multi-group-tab-icon'
+    icon.textContent = groupData.isCreator ? '👑' : '👥'
+    tab.appendChild(icon)
+
+    // Nom du groupe
+    const name = document.createElement('span')
+    name.className = 'multi-group-tab-name'
+    name.textContent = groupData.name
+    name.title = groupData.name
+    tab.appendChild(name)
+
+    // Bouton fermer (quitter le groupe)
+    const closeBtn = document.createElement('span')
+    closeBtn.className = 'multi-group-tab-close'
+    closeBtn.textContent = '×'
+    closeBtn.onclick = (e) => {
+      e.stopPropagation()
+      confirmLeaveGroup(groupData.groupId)
+    }
+    tab.appendChild(closeBtn)
+
+    container.appendChild(tab)
+  })
+
+  // Bouton ajouter groupe (si < 10 groupes)
+  if (groups.length < groupManager.MAX_GROUPS) {
+    const addBtn = document.createElement('button')
+    addBtn.className = 'multi-group-add-btn'
+    addBtn.textContent = '+'
+    addBtn.title = 'Nouveau groupe ou rejoindre'
+    addBtn.onclick = showAddGroupOptions
+    container.appendChild(addBtn)
+  }
+}
+
+/**
+ * Switcher vers un groupe
+ */
+function switchToGroup(groupId) {
+  if (groupManager.switchActiveGroup(groupId)) {
+    renderMultiGroupTabs()
+    updateLeaderboard()
+
+    // Mettre à jour l'interface
+    const groupInfo = groupManager.getCurrentGroup()
+    showGroupInterface(groupInfo.group.code)
+
+    // Afficher le nouvel UI avec sub-tabs
+    if (typeof onGroupJoined === 'function') {
+      onGroupJoined()
+    }
+  }
+}
+
+/**
+ * Confirmer quitter un groupe
+ */
+function confirmLeaveGroup(groupId) {
+  const groupData = groupManager.getGroup(groupId)
+  if (!groupData) return
+
+  showCustomConfirm(
+    'Gruptan Ayrıl',
+    `"${groupData.name}" grubundan ayrılmak istediğinizden emin misiniz? Bu eylem geri alınamaz.`,
+    async function() {
+      try {
+        await groupManager.leaveGroup(groupId)
+        renderMultiGroupTabs()
+
+        // Si aucun groupe restant, afficher l'écran de création
+        if (!groupManager.hasActiveGroup()) {
+          if (typeof onGroupLeft === 'function') {
+            onGroupLeft()
+          }
+        } else {
+          // Rafraîchir le leaderboard du groupe actif
+          await updateLeaderboard()
+        }
+
+        showCustomAlert('Gruptan ayrıldınız', 'success', 2000)
+      } catch (error) {
+        console.error('Erreur quitter groupe:', error)
+        showCustomAlert('Hata!', 'error', 2000)
+      }
+    }
+  )
+}
+
+/**
+ * Afficher les options pour ajouter un groupe
+ */
+function showAddGroupOptions() {
+  // Afficher les boutons créer/rejoindre
+  const modeSelection = document.getElementById('modeSelection')
+  if (modeSelection) {
+    modeSelection.style.display = 'grid'
+  }
+
+  // Masquer les sections create/join
+  const createSection = document.getElementById('createSection')
+  const joinSection = document.getElementById('joinSection')
+  if (createSection) createSection.style.display = 'none'
+  if (joinSection) joinSection.style.display = 'none'
+
+  // Scroll vers les boutons
+  const groupContent = document.getElementById('group')
+  if (groupContent) {
+    setTimeout(() => {
+      const rect = modeSelection?.getBoundingClientRect()
+      if (rect) {
+        window.scrollTo({
+          top: window.scrollY + rect.top - 100,
+          behavior: 'smooth'
+        })
+      }
+    }, 100)
+  }
+}
+
 // Show create group section
 function createGroup() {
-  // Si déjà dans un groupe, demander confirmation
-  if (groupManager && groupManager.hasActiveGroup()) {
-    const groupInfo = groupManager.getCurrentGroup()
-    showCustomConfirm(
-      'Grup Değiştir',
-      `Şu anda "${groupInfo.group.name}" grubundasınız. Yeni grup oluşturmak için bu gruptan geçici olarak ayrılacaksınız (verileriniz korunur). Devam edilsin mi?`,
-      function() {
-        groupManager.switchGroup() // Juste changer sans supprimer
-        showCreateForm()
-      }
-    )
-  } else {
-    showCreateForm()
+  // NOUVEAU: Multi-groupe activé, pas besoin de confirmation
+  // Vérifier limite de groupes
+  if (groupManager && groupManager.groups.size >= groupManager.MAX_GROUPS) {
+    showCustomAlert(`Maximum ${groupManager.MAX_GROUPS} groupes atteint. Veuillez quitter un groupe d'abord.`, 'warning', 3000)
+    return
   }
+
+  showCreateForm()
 }
 
 function showCreateForm() {
@@ -34,20 +185,14 @@ function showCreateForm() {
 
 // Show join group section
 function showJoinForm() {
-  // Si déjà dans un groupe, demander confirmation
-  if (groupManager && groupManager.hasActiveGroup()) {
-    const groupInfo = groupManager.getCurrentGroup()
-    showCustomConfirm(
-      'Grup Değiştir',
-      `Şu anda "${groupInfo.group.name}" grubundasınız. Başka bir gruba katılmak için bu gruptan geçici olarak ayrılacaksınız (verileriniz korunur). Devam edilsin mi?`,
-      function() {
-        groupManager.switchGroup() // Juste changer sans supprimer
-        showJoinFormUI()
-      }
-    )
-  } else {
-    showJoinFormUI()
+  // NOUVEAU: Multi-groupe activé, pas besoin de confirmation
+  // Vérifier limite de groupes
+  if (groupManager && groupManager.groups.size >= groupManager.MAX_GROUPS) {
+    showCustomAlert(`Maximum ${groupManager.MAX_GROUPS} groupes atteint. Veuillez quitter un groupe d'abord.`, 'warning', 3000)
+    return
   }
+
+  showJoinFormUI()
 }
 
 function showJoinFormUI() {
@@ -98,6 +243,9 @@ async function doCreateGroup() {
 
   try {
     const result = await groupManager.createGroup(groupName, creatorName)
+
+    // Render les tabs multi-groupe
+    renderMultiGroupTabs()
 
     showGroupInterface(result.code)
     saveGroupToHistory(result.code, groupName, true)
@@ -160,6 +308,9 @@ async function doJoinGroup() {
 
   try {
     const result = await groupManager.joinGroup(groupCode, participantName)
+
+    // Render les tabs multi-groupe
+    renderMultiGroupTabs()
 
     showGroupInterface(result.code)
     saveGroupToHistory(result.code, result.name, false)
@@ -770,7 +921,11 @@ function getTimeAgo(dateString) {
 
 // Afficher l'historique au chargement
 if (typeof window !== 'undefined') {
-  setTimeout(() => displayGroupHistory(), 100)
+  setTimeout(() => {
+    displayGroupHistory()
+    // NOUVEAU: Render multi-group tabs au chargement
+    renderMultiGroupTabs()
+  }, 100)
 }
 
 // La restauration du groupe est maintenant gérée dans script.js > initializeBackend()

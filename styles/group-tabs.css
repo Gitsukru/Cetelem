@@ -4,6 +4,169 @@
  */
 
 /* ============================================
+   MULTI-GROUP TABS (NOUVEAU)
+   ============================================ */
+
+.multi-group-tabs {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 101;
+  background: white;
+  border-bottom: 2px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.multi-group-tabs-scroll {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 transparent;
+}
+
+.multi-group-tabs-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.multi-group-tabs-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.multi-group-tabs-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 2px;
+}
+
+.multi-group-tabs-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.multi-group-tab {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #f7fafc;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+  position: relative;
+}
+
+.multi-group-tab:hover {
+  background: #e2e8f0;
+  color: #4a5568;
+}
+
+.multi-group-tab.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.multi-group-tab-icon {
+  font-size: 16px;
+}
+
+.multi-group-tab-name {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multi-group-tab-close {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.multi-group-tab:hover .multi-group-tab-close {
+  opacity: 1;
+}
+
+.multi-group-tab.active .multi-group-tab-close {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.multi-group-tab-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.multi-group-tab.active .multi-group-tab-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Bouton ajouter groupe */
+.multi-group-add-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(72, 187, 120, 0.3);
+}
+
+.multi-group-add-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(72, 187, 120, 0.4);
+}
+
+.multi-group-add-btn:active {
+  transform: scale(0.95);
+}
+
+.multi-group-add-btn:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Animation pour nouveau tab */
+@keyframes slideInTab {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.multi-group-tab.new {
+  animation: slideInTab 0.3s ease;
+}
+
+/* ============================================
    STICKY BANNER - Groupe Actif
    ============================================ */
 

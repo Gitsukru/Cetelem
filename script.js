@@ -1663,8 +1663,8 @@ function incrementCounter() {
                 }
             }
 
-            // ⚡ FIX: Await pour éviter race condition
-            groupManager.updateMyScore(stats).catch(err => {
+            // ⚡ NOUVEAU: Sync TOUS les groupes (syncAll=true)
+            groupManager.updateMyScore(stats, true).catch(err => {
                 console.error('Erreur mise à jour score:', err)
             })
         }
