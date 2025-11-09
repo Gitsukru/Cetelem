@@ -1953,7 +1953,7 @@ function updateStats() {
 
                     const bookCell = document.createElement('td');
                     const bookIcon = document.createElement('span');
-                    bookIcon.textContent = '📚 ';
+                    bookIcon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 4px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
                     bookCell.appendChild(bookIcon);
                     const bookName = document.createTextNode(book.name);
                     bookCell.appendChild(bookName);
@@ -1999,7 +1999,7 @@ function updateStats() {
 
                     // Note cell avec bouton pour les livres
                     const bookNote = getBookNote(book.id);
-                    const bookNoteIcon = bookNote ? '📝' : '📝';
+                    const bookNoteIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
                     const bookNoteOpacity = bookNote ? '1' : '0.3';
 
                     const noteCell = document.createElement('td');
@@ -2010,7 +2010,7 @@ function updateStats() {
                     noteButton.style.opacity = bookNoteOpacity;
                     noteButton.style.color = '#3b82f6';
                     noteButton.title = 'Not ekle/düzenle';
-                    noteButton.textContent = bookNoteIcon;
+                    noteButton.innerHTML = bookNoteIcon;
                     noteButton.onclick = (event) => showBookNoteModal(book, event);
 
                     noteCell.appendChild(noteButton);
