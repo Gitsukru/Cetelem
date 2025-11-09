@@ -41,11 +41,10 @@ const DeviceBackup = {
         categories: categories || [],
 
         // Livres et objectifs de livres (TOUJOURS un tableau [])
-        books: (() => {
-          let booksData = (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '[]')
-          // Garantir que books est un tableau, sinon []
-          return Array.isArray(booksData) ? booksData : []
-        })(),
+        // ⚡ FIX: Utiliser BooksManager.getBooks() pour garantir la bonne lecture
+        books: (typeof BooksManager !== 'undefined' && BooksManager.getBooks)
+          ? BooksManager.getBooks()
+          : JSON.parse(localStorage.getItem('books') || '[]'),
         bookGoals: JSON.parse(localStorage.getItem('bookGoals') || '{}'),
 
         // Métadonnées et objectifs des catégories

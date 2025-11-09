@@ -2518,11 +2518,10 @@ function exportData() {
             counters: counters,
 
             // Livres et objectifs de livres (TOUJOURS un tableau [])
-            books: (() => {
-                let booksData = (typeof books !== 'undefined') ? books : JSON.parse(localStorage.getItem('books') || '[]')
-                // Garantir que books est un tableau, sinon []
-                return Array.isArray(booksData) ? booksData : []
-            })(),
+            // ⚡ FIX: Utiliser BooksManager.getBooks() pour garantir la bonne lecture
+            books: (typeof BooksManager !== 'undefined' && BooksManager.getBooks)
+                ? BooksManager.getBooks()
+                : JSON.parse(localStorage.getItem('books') || '[]'),
             bookGoals: JSON.parse(localStorage.getItem('bookGoals') || '{}'),
 
             // Métadonnées et objectifs des catégories
@@ -2585,17 +2584,28 @@ function importData(event) {
                 throw new Error('Geçersiz format');
             }
 
+            // DEBUG: Vérifier le contenu avant import
+            const debugInfo = `
+                📚 Livres trouvés: ${importedData.books ? (Array.isArray(importedData.books) ? importedData.books.length : 'PAS UN TABLEAU') : 'AUCUN'}
+                👥 Groupes trouvés: ${importedData.multiGroups ? 'OUI' : 'NON'}
+            `;
+            console.log('🔍 DEBUG IMPORT:', debugInfo);
+
             showCustomConfirm(
                 'Veri İçe Aktar',
                 'Bu verileri içe aktarmak mevcut TÜM verilerinizi değiştirecek.<br><br>Devam etmek istiyor musunuz?',
                 function() {
                     // Confirmation "Oui" - Restaurer toutes les données
 
+                    // DEBUG: Message visible à l'écran
+                    let debugMsg = '🔄 Import en cours...\n';
+
                     // 1. Compteurs et catégories
                     categories = importedData.categories;
                     counters = importedData.counters;
                     saveCategories();
                     saveCounters();
+                    debugMsg += '✅ Catégories et compteurs OK\n';
 
                     // 2. Livres et objectifs de livres
                     if (importedData.books) {
@@ -2603,6 +2613,7 @@ function importData(event) {
                         const booksArray = Array.isArray(importedData.books) ? importedData.books : [];
                         console.log('📚 Import livres - Nombre:', booksArray.length);
                         console.log('📚 Import livres - Données:', booksArray);
+                        debugMsg += `📚 Livres: ${booksArray.length} trouvés\n`;
 
                         if (typeof books !== 'undefined') {
                             books = booksArray;
@@ -2611,10 +2622,16 @@ function importData(event) {
 
                         // Vérifier que c'est bien écrit
                         const verification = localStorage.getItem('books');
-                        console.log('✅ Livres écrits dans localStorage:', verification ? JSON.parse(verification).length : 0);
+                        const verifiedCount = verification ? JSON.parse(verification).length : 0;
+                        console.log('✅ Livres écrits dans localStorage:', verifiedCount);
+                        debugMsg += `✅ Livres sauvegardés: ${verifiedCount}\n`;
                     } else {
                         console.warn('⚠️ Pas de livres dans importedData');
+                        debugMsg += '⚠️ AUCUN livre dans le fichier\n';
                     }
+
+                    // Afficher le debug avant de continuer
+                    console.log(debugMsg);
 
                     if (importedData.bookGoals) {
                         if (typeof bookGoals !== 'undefined') {

@@ -23,18 +23,16 @@ const BooksManager = {
    */
   getBooks() {
     const booksData = localStorage.getItem('books');
-    console.log('📚 BooksManager.getBooks() - Raw data:', booksData);
+    console.error('📚 DEBUG getBooks() - Raw:', booksData ? `${booksData.substring(0, 100)}...` : 'NULL');
 
     if (!booksData) {
-      console.log('📚 BooksManager.getBooks() - Pas de données, retour []');
+      console.error('⚠️ DEBUG getBooks() - PAS DE DONNÉES');
       return [];
     }
 
     try {
       const parsed = JSON.parse(booksData);
-      console.log('📚 BooksManager.getBooks() - Parsed:', parsed);
-      console.log('📚 BooksManager.getBooks() - Is array?', Array.isArray(parsed));
-      console.log('📚 BooksManager.getBooks() - Length:', Array.isArray(parsed) ? parsed.length : 'N/A');
+      console.error('📚 DEBUG getBooks() - Array?', Array.isArray(parsed), 'Length:', parsed.length);
 
       // Si ce n'est pas un tableau, retourner un tableau vide
       return Array.isArray(parsed) ? parsed : [];
@@ -236,10 +234,15 @@ const BooksManager = {
    */
   renderBooks() {
     const books = this.getBooks();
+    console.error('🎨 DEBUG renderBooks() - Livres trouvés:', books.length);
+
     const container = document.getElementById('booksList');
     const noBookMsg = document.getElementById('noBooksMessage');
 
-    if (!container) return;
+    if (!container) {
+      console.error('⚠️ Container #booksList introuvable!');
+      return;
+    }
 
     if (books.length === 0) {
       container.innerHTML = '';
