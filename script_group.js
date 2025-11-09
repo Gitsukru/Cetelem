@@ -42,7 +42,9 @@ function renderMultiGroupTabs() {
     // Icône
     const icon = document.createElement('span')
     icon.className = 'multi-group-tab-icon'
-    icon.textContent = groupData.isCreator ? '👑' : '👥'
+    icon.innerHTML = groupData.isCreator
+        ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>'
+        : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'
     tab.appendChild(icon)
 
     // Nom du groupe
