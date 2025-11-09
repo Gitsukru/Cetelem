@@ -80,7 +80,7 @@
 
 .accordion-icon svg {
   color: currentColor;
-  fill: currentColor;
+  fill: none;
   stroke: currentColor;
 }
 
