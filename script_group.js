@@ -417,7 +417,7 @@ function displayLeaderboard(participants) {
 
   // Créer un tableau avec style similaire aux statistiques
   let html = '<div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">'
-  html += '<h3 style="margin-bottom: 16px; color: #4a5568;">Grup Sıralaması</h3>'
+  html += `<h3 style="margin-bottom: 16px; color: #4a5568;">${escapeHtml(groupInfo.name)} - Sıralama</h3>`
   html += '<table class="group-leaderboard-table">'
   html += '<thead>'
   html += '<tr>'
