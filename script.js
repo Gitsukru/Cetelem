@@ -2601,16 +2601,27 @@ function importData(event) {
                     if (importedData.books) {
                         // Garantir que books est un tableau, sinon []
                         const booksArray = Array.isArray(importedData.books) ? importedData.books : [];
+                        console.log('📚 Import livres - Nombre:', booksArray.length);
+                        console.log('📚 Import livres - Données:', booksArray);
+
                         if (typeof books !== 'undefined') {
                             books = booksArray;
                         }
                         localStorage.setItem('books', JSON.stringify(booksArray));
+
+                        // Vérifier que c'est bien écrit
+                        const verification = localStorage.getItem('books');
+                        console.log('✅ Livres écrits dans localStorage:', verification ? JSON.parse(verification).length : 0);
+                    } else {
+                        console.warn('⚠️ Pas de livres dans importedData');
                     }
+
                     if (importedData.bookGoals) {
                         if (typeof bookGoals !== 'undefined') {
                             bookGoals = importedData.bookGoals;
                         }
                         localStorage.setItem('bookGoals', JSON.stringify(importedData.bookGoals));
+                        console.log('✅ BookGoals importés');
                     }
 
                     // 3. Métadonnées et objectifs des catégories

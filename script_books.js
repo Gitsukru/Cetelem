@@ -23,14 +23,23 @@ const BooksManager = {
    */
   getBooks() {
     const booksData = localStorage.getItem('books');
-    if (!booksData) return [];
+    console.log('📚 BooksManager.getBooks() - Raw data:', booksData);
+
+    if (!booksData) {
+      console.log('📚 BooksManager.getBooks() - Pas de données, retour []');
+      return [];
+    }
 
     try {
       const parsed = JSON.parse(booksData);
+      console.log('📚 BooksManager.getBooks() - Parsed:', parsed);
+      console.log('📚 BooksManager.getBooks() - Is array?', Array.isArray(parsed));
+      console.log('📚 BooksManager.getBooks() - Length:', Array.isArray(parsed) ? parsed.length : 'N/A');
+
       // Si ce n'est pas un tableau, retourner un tableau vide
       return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
-      console.error('Erreur parsing books:', error);
+      console.error('❌ Erreur parsing books:', error);
       return [];
     }
   },
