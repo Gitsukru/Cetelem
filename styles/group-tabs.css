@@ -245,7 +245,6 @@
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
-  font-size: 18px;
   width: 40px;
   height: 40px;
   border-radius: 10px;
@@ -255,6 +254,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.banner-action-btn svg {
+  color: white;
+  stroke: white;
 }
 
 .banner-action-btn:hover {
@@ -270,13 +274,20 @@
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
-  font-size: 20px;
   width: 40px;
   height: 40px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-leave-btn svg {
+  color: white;
+  stroke: white;
 }
 
 .banner-leave-btn:hover {
@@ -760,13 +771,21 @@
   .banner-action-btn {
     width: 36px;
     height: 36px;
-    font-size: 16px;
+  }
+
+  .banner-action-btn svg {
+    width: 18px;
+    height: 18px;
   }
 
   .banner-leave-btn {
     width: 36px;
     height: 36px;
-    font-size: 18px;
+  }
+
+  .banner-leave-btn svg {
+    width: 20px;
+    height: 20px;
   }
 
   .group-subtabs {
