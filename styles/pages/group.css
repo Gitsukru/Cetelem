@@ -108,8 +108,11 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 16px;
+    gap: 20px;
     margin-bottom: 24px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .mode-icon {
@@ -628,7 +631,10 @@
     .group-info-card {
         min-width: 100%;
     }
+}
 
+/* Mode selection: Vertical seulement sur mobile */
+@media (max-width: 480px) {
     .mode-selection {
         flex-direction: column;
         gap: 12px;
