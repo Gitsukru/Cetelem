@@ -788,28 +788,18 @@ async function rejoinGroup(code) {
 
     if (!historyItem) return
 
-    // Si déjà dans un groupe, vérifier si c'est le même
+    // Vérifier si c'est déjà le groupe actif
     if (groupManager.hasActiveGroup()) {
       const currentGroup = groupManager.getCurrentGroup()
-
-      // Si c'est le même groupe, ne rien faire
       if (currentGroup.group.code === code) {
-        showCustomAlert('Zaten bu grupta bulunuyorsunuz', 'info', 2000)
+        showCustomAlert('Bu grup zaten aktif', 'info', 2000)
         return
       }
-
-      // Sinon, demander confirmation pour changer de groupe
-      showCustomConfirm(
-        'Grup Değiştir',
-        `Şu anda "${currentGroup.group.name}" grubundasınız. "${groupData.name}" grubuna geçmek için bu gruptan geçici olarak ayrılacaksınız (verileriniz korunur). Devam edilsin mi?`,
-        async function() {
-          groupManager.switchGroup() // Juste changer sans supprimer
-          await doRejoinGroup(code, groupData, historyItem)
-        }
-      )
-    } else {
-      await doRejoinGroup(code, groupData, historyItem)
     }
+
+    // NOUVEAU: Multi-groupe activé, pas besoin de confirmation
+    // Juste switcher ou ajouter le groupe
+    await doRejoinGroup(code, groupData, historyItem)
   } catch (error) {
     console.error('Erreur rejoin:', error)
     showCustomAlert('Hata oluştu', 'error', 2000)
@@ -865,28 +855,38 @@ async function doRejoinGroup(code, groupData, historyItem) {
       }
     }
 
-    // Reconnecter au groupe avec le format GroupManager
-    groupManager.currentGroup = {
-      id: groupData.id,
-      code: groupData.code,
-      name: groupData.name,
-      provider: 'SupabaseProvider'
+    // Vérifier si le groupe est déjà dans le Map multi-groupe
+    const existingGroup = Array.from(groupManager.groups.values()).find(g => g.groupId === groupData.id)
+
+    if (existingGroup) {
+      // Groupe déjà présent, juste switcher
+      groupManager.switchActiveGroup(existingGroup.groupId)
+      console.log('✅ Switched to existing group:', existingGroup.name)
+    } else {
+      // Groupe pas encore dans le Map, l'ajouter
+      const groupDataForMap = {
+        groupId: groupData.id,
+        code: groupData.code,
+        name: groupData.name,
+        participantId: myParticipant.id,
+        participantName: myParticipant.name,
+        isCreator: historyItem.isCreator,
+        provider: 'SupabaseProvider',
+        lastSync: new Date().toISOString()
+      }
+
+      groupManager.groups.set(groupData.id, groupDataForMap)
+      groupManager.activeGroupId = groupData.id
+      groupManager._updateLegacyProperties()
+      groupManager.subscribeToUpdates()
+      console.log('✅ Added group to Map:', groupDataForMap.name)
     }
 
-    groupManager.currentParticipant = {
-      id: myParticipant.id,
-      name: myParticipant.name
-    }
+    // Sauvegarder le nouvel état
+    groupManager.saveGroup()
 
-    groupManager.isCreator = historyItem.isCreator
-
-    // Sauvegarder dans localStorage
-    localStorage.setItem('currentGroup', JSON.stringify(groupManager.currentGroup))
-    localStorage.setItem('currentParticipant', JSON.stringify(groupManager.currentParticipant))
-    localStorage.setItem('isCreator', historyItem.isCreator)
-
-    // S'abonner aux mises à jour temps réel
-    groupManager.subscribeToUpdates()
+    // IMPORTANT: Mettre à jour l'affichage des tabs
+    renderMultiGroupTabs()
 
     showGroupInterface(code)
     saveGroupToHistory(code, groupData.name, historyItem.isCreator)
