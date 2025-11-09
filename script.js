@@ -2984,6 +2984,9 @@ function hideUpdateBanner() {
  */
 function applyUpdateNow() {
     if (pendingServiceWorker) {
+        // Marquer qu'on vient de faire une MAJ (évite boucle infinie)
+        sessionStorage.setItem('justUpdated', Date.now().toString());
+
         // Sauvegarder avant mise à jour
         showCustomAlert('💾 Sauvegarde en cours...', 'info', 2000);
 
@@ -3271,9 +3274,28 @@ if ('serviceWorker' in navigator) {
         }
     });
 
+    // Fonction helper: Vérifier si on peut checker les MAJ (évite boucle infinie)
+    function canCheckForUpdates() {
+        const justUpdated = sessionStorage.getItem('justUpdated');
+        if (justUpdated) {
+            const timeSinceUpdate = Date.now() - parseInt(justUpdated);
+            const COOLDOWN = 5 * 60 * 1000; // 5 minutes de cooldown après MAJ
+
+            if (timeSinceUpdate < COOLDOWN) {
+                const remainingMinutes = Math.ceil((COOLDOWN - timeSinceUpdate) / 60000);
+                console.log(`⏳ Cooldown MAJ actif (${remainingMinutes}min restantes)`);
+                return false;
+            } else {
+                // Cooldown terminé, effacer le flag
+                sessionStorage.removeItem('justUpdated');
+            }
+        }
+        return true;
+    }
+
     // ✅ Vérification périodique automatique des mises à jour (toutes les heures)
     setInterval(() => {
-        if (navigator.serviceWorker.controller) {
+        if (navigator.serviceWorker.controller && canCheckForUpdates()) {
             console.log('🔄 Vérification automatique des mises à jour...');
             navigator.serviceWorker.getRegistration().then(registration => {
                 if (registration) {
@@ -3287,7 +3309,7 @@ if ('serviceWorker' in navigator) {
 
     // ✅ Vérification quand l'app revient au premier plan (mobile PWA)
     document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && navigator.serviceWorker.controller) {
+        if (!document.hidden && navigator.serviceWorker.controller && canCheckForUpdates()) {
             console.log('📱 App revenue au premier plan - Vérification MAJ...');
             navigator.serviceWorker.getRegistration().then(registration => {
                 if (registration) {
@@ -3301,7 +3323,7 @@ if ('serviceWorker' in navigator) {
 
     // ✅ Vérification au focus de la fenêtre (desktop)
     window.addEventListener('focus', () => {
-        if (navigator.serviceWorker.controller) {
+        if (navigator.serviceWorker.controller && canCheckForUpdates()) {
             console.log('🖥️ Fenêtre focus - Vérification MAJ...');
             navigator.serviceWorker.getRegistration().then(registration => {
                 if (registration) {
