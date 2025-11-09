@@ -234,6 +234,38 @@
   margin-top: 2px;
 }
 
+.banner-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.banner-action-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-action-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.banner-action-btn:active {
+  transform: scale(0.95);
+}
+
 .banner-leave-btn {
   background: rgba(255, 255, 255, 0.2);
   border: none;
@@ -719,6 +751,16 @@
 
   .banner-details {
     font-size: 11px;
+  }
+
+  .banner-actions {
+    gap: 6px;
+  }
+
+  .banner-action-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
   }
 
   .banner-leave-btn {

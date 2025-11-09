@@ -293,6 +293,91 @@ function hideActiveGroupBanner() {
   }
 }
 
+/**
+ * Copier le code du groupe actif
+ */
+function copyGroupCode() {
+  const groupInfo = groupManager.getCurrentGroup();
+  if (!groupInfo || !groupInfo.group || !groupInfo.group.code) {
+    showCustomAlert('Grup kodu bulunamadı', 'error', 2000);
+    return;
+  }
+
+  const code = groupInfo.group.code;
+
+  // Copier dans le presse-papier
+  navigator.clipboard.writeText(code).then(() => {
+    showCustomAlert(`📋 Kod kopyalandı: ${code}`, 'success', 2000);
+
+    // Analytics
+    if (typeof window !== 'undefined' && window.analytics?.track) {
+      window.analytics.track('Kod kopyalandı', {
+        groupId: groupInfo.group.id,
+        code: code
+      });
+    }
+  }).catch(err => {
+    console.error('Erreur copie code:', err);
+    showCustomAlert('Kopyalama başarısız', 'error', 2000);
+  });
+}
+
+/**
+ * Partager le code du groupe actif via Web Share API
+ */
+function shareGroupCode() {
+  const groupInfo = groupManager.getCurrentGroup();
+  if (!groupInfo || !groupInfo.group) {
+    showCustomAlert('Grup bilgisi bulunamadı', 'error', 2000);
+    return;
+  }
+
+  const code = groupInfo.group.code;
+  const groupName = groupInfo.group.name || 'Grup';
+  const shareText = `🕌 "${groupName}" grubuna katıl!\n\nGrup Kodu: ${code}\n\nÇetelem uygulamasında "Grup Yönetimi" > "Gruba Katıl" bölümünden bu kodu kullanarak katılabilirsin.\n\nhttps://cetelem.netlify.app`;
+
+  // Vérifier si Web Share API est disponible
+  if (navigator.share) {
+    navigator.share({
+      title: `${groupName} - Çetelem Grup`,
+      text: shareText
+    }).then(() => {
+      console.log('✅ Code partagé avec succès');
+
+      // Analytics
+      if (typeof window !== 'undefined' && window.analytics?.track) {
+        window.analytics.track('Kod paylaşıldı', {
+          groupId: groupInfo.group.id,
+          code: code,
+          method: 'web_share_api'
+        });
+      }
+    }).catch(err => {
+      // Utilisateur a annulé le partage ou erreur
+      if (err.name !== 'AbortError') {
+        console.error('Erreur partage:', err);
+      }
+    });
+  } else {
+    // Fallback: copier dans le presse-papier
+    navigator.clipboard.writeText(shareText).then(() => {
+      showCustomAlert('📋 Paylaşım metni kopyalandı!', 'success', 3000);
+
+      // Analytics
+      if (typeof window !== 'undefined' && window.analytics?.track) {
+        window.analytics.track('Kod paylaşıldı', {
+          groupId: groupInfo.group.id,
+          code: code,
+          method: 'clipboard_fallback'
+        });
+      }
+    }).catch(err => {
+      console.error('Erreur copie:', err);
+      showCustomAlert('Paylaşım başarısız', 'error', 2000);
+    });
+  }
+}
+
 // ============================================
 // AFFICHAGE DES SECTIONS
 // ============================================
