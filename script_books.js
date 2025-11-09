@@ -249,7 +249,11 @@ const BooksManager = {
 
     container.innerHTML = books.map(book => {
       const stats = this.getBookStats(book);
-      const formatIcon = book.format === 'digital' ? '📱' : book.format === 'print' ? '📖' : '📚';
+      const formatIcon = book.format === 'digital'
+        ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>'
+        : book.format === 'print'
+        ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>'
+        : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
       const formatText = book.format === 'digital' ? 'Dijital' : book.format === 'print' ? 'Basılı' : '';
 
       return `
@@ -264,7 +268,7 @@ const BooksManager = {
               </p>
             </div>
             <button class="book-delete-btn" onclick="deleteBookConfirm('${book.id}')" title="Sil">
-              🗑️
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </button>
           </div>
 
@@ -339,7 +343,7 @@ const BooksManager = {
       const contentDiv = document.createElement('div');
 
       const strongElement = document.createElement('strong');
-      strongElement.textContent = `📚 ${book.name}`;
+      strongElement.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 4px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> ' + book.name;
 
       const smallElement = document.createElement('small');
       smallElement.style.color = '#666';
@@ -360,13 +364,13 @@ const BooksManager = {
       // Bouton de modification
       const editButton = document.createElement('button');
       editButton.className = 'edit-button';
-      editButton.textContent = '✏️ Düzenle';
+      editButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Düzenle';
       editButton.onclick = () => showEditBookModal(book.id);
 
       // Bouton de suppression
       const deleteButton = document.createElement('button');
       deleteButton.className = 'delete-button';
-      deleteButton.textContent = 'Kitabı sil';
+      deleteButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Kitabı sil';
       deleteButton.onclick = () => deleteBookConfirm(book.id);
 
       buttonsDiv.appendChild(editButton);
