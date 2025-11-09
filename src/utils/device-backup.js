@@ -110,7 +110,10 @@ const DeviceBackup = {
       }
 
       logger.log('✅ Backup créé avec le code:', code)
-      analytics.track('Backup créé', { code })
+      // ⚡ FIX: Vérifier que analytics existe avant de l'utiliser
+      if (typeof window !== 'undefined' && window.analytics?.track) {
+        window.analytics.track('Backup créé', { code })
+      }
 
       return {
         success: true,
@@ -153,7 +156,10 @@ const DeviceBackup = {
       const currentDeviceId = this.getDeviceId()
       if (backupData.deviceId && backupData.deviceId === currentDeviceId) {
         logger.warn('🚫 Tentative de restauration sur le même appareil bloquée')
-        analytics.track('Backup restauration bloquée', { reason: 'same_device' })
+        // ⚡ FIX: Vérifier que analytics existe avant de l'utiliser
+        if (typeof window !== 'undefined' && window.analytics?.track) {
+          window.analytics.track('Backup restauration bloquée', { reason: 'same_device' })
+        }
         throw new Error('SAME_DEVICE')
       }
 
@@ -297,7 +303,10 @@ const DeviceBackup = {
       }
 
       logger.log('✅ Données restaurées depuis le backup')
-      analytics.track('Backup restauré', { code })
+      // ⚡ FIX: Vérifier que analytics existe avant de l'utiliser
+      if (typeof window !== 'undefined' && window.analytics?.track) {
+        window.analytics.track('Backup restauré', { code })
+      }
 
       return {
         success: true,
