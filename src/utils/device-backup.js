@@ -270,42 +270,6 @@ const DeviceBackup = {
         }
       }
 
-      // 8. Rafraîchir l'interface
-      if (typeof updateCategorySelect === 'function') {
-        updateCategorySelect()
-      }
-      if (typeof updateCategoriesList === 'function') {
-        updateCategoriesList()
-      }
-      if (typeof updateCounterDisplay === 'function') {
-        updateCounterDisplay()
-      }
-      if (typeof updateStats === 'function') {
-        updateStats()
-      }
-
-      // ⚡ FIX: Rafraîchir les livres avec BooksManager
-      if (typeof BooksManager !== 'undefined' && BooksManager.renderBooks) {
-        BooksManager.renderBooks()
-        console.log('✅ Livres rechargés depuis backup')
-      }
-
-      // ⚡ FIX: Rafraîchir les groupes avec GroupManager
-      if (typeof groupManager !== 'undefined' && groupManager.loadSavedGroup) {
-        groupManager.loadSavedGroup()
-        console.log('✅ Groupes rechargés depuis backup')
-      }
-
-      if (typeof displayGroupHistory === 'function') {
-        displayGroupHistory()
-      }
-      if (typeof initializeGroupUI === 'function') {
-        initializeGroupUI()
-      }
-      if (typeof renderMultiGroupTabs === 'function') {
-        renderMultiGroupTabs()
-      }
-
       logger.log('✅ Données restaurées depuis le backup')
       // ⚡ FIX: Vérifier que analytics existe avant de l'utiliser
       if (typeof window !== 'undefined' && window.analytics?.track) {
@@ -414,12 +378,18 @@ const DeviceBackup = {
     try {
       await this.restoreBackup(code)
 
-      resultDiv.innerHTML = `<p style="color: #16a34a;">✅ Veriler geri yüklendi!</p>`
+      resultDiv.innerHTML = `<p style="color: #16a34a;">✅ Veriler geri yüklendi!<br>Sayfa yeniden yükleniyor...</p>`
 
       setTimeout(() => {
         document.getElementById('restoreModal').remove()
-        showCustomAlert('✅ Tüm verileriniz geri yüklendi!', 'success', 4000)
-      }, 1500)
+        showCustomAlert('✅ Tüm verileriniz geri yüklendi!<br>Sayfa yeniden yükleniyor...', 'success', 2000)
+
+        // ⚡ FIX: Recharger la page pour garantir que tout s'affiche
+        setTimeout(() => {
+          console.log('🔄 Rechargement page après restore backup...')
+          window.location.reload()
+        }, 2000)
+      }, 1000)
     } catch (error) {
       // Gestion spéciale pour la restauration sur le même appareil
       if (error.message === 'SAME_DEVICE') {

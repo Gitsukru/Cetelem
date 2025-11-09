@@ -343,6 +343,23 @@
                             <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
                         </div>
 
+                        <!-- NOUVEAU: Section PWA Refresh -->
+                        <div class="pwa-refresh-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+                            <h3 style="font-size: 16px; margin-bottom: 12px;">🔄 Sayfa Yenileme</h3>
+                            <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">PWA yüklüyse veya sorun yaşarsanız sayfayı yenileyin</p>
+                            <div class="backup-buttons">
+                                <button class="backup-button" onclick="window.location.reload()" style="background: #10b981;">
+                                    🔄 Sayfayı Yenile
+                                </button>
+                                <button class="backup-button" onclick="forceHardReload()" style="background: #f59e0b;">
+                                    ⚡ Zorla Yenile (Cache Temizle)
+                                </button>
+                            </div>
+                            <p style="font-size: 11px; color: #94a3b8; margin-top: 8px;">
+                                💡 Sorun yaşıyorsanız "Zorla Yenile" kullanın
+                            </p>
+                        </div>
+
                         <div class="device-transfer-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
                             <h3 style="font-size: 16px; margin-bottom: 12px;">📱 Cihaz Değiştirme</h3>
                             <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">Verilerinizi yeni cihaza aktarın (giriş gerekmez)</p>

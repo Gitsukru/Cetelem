@@ -2348,6 +2348,50 @@ function resetCategoryCompletely() {
     );
 }
 
+/**
+ * ⚡ NOUVEAU: Forcer un hard reload (vide le cache)
+ * Pour PWA mobile qui n'ont pas accès aux DevTools
+ */
+function forceHardReload() {
+    showCustomConfirm(
+        '🔄 Zorla Yenile',
+        'Cache temizlenecek ve sayfa yeniden yüklenecek.<br><br>Bu işlem:<br>• Tüm önbelleği temizler<br>• Sayfayı sıfırdan yükler<br>• Verileri silmez',
+        function() {
+            console.log('🗑️ Vidage du cache...');
+
+            // Vider tous les caches
+            if ('caches' in window) {
+                caches.keys().then(cacheNames => {
+                    return Promise.all(
+                        cacheNames.map(cacheName => {
+                            console.log('🗑️ Suppression cache:', cacheName);
+                            return caches.delete(cacheName);
+                        })
+                    );
+                }).then(() => {
+                    console.log('✅ Cache vidé, rechargement...');
+                    showCustomAlert('✅ Cache temizlendi!<br>Sayfa yenileniyor...', 'success', 2000);
+
+                    setTimeout(() => {
+                        // Hard reload
+                        window.location.reload(true);
+                    }, 2000);
+                }).catch(error => {
+                    console.error('❌ Erreur vidage cache:', error);
+                    // Reload quand même
+                    window.location.reload(true);
+                });
+            } else {
+                // Pas de support cache API, juste reload
+                window.location.reload(true);
+            }
+        },
+        function() {
+            showCustomAlert('❌ İptal edildi', 'info', 1500);
+        }
+    );
+}
+
 function resetAllData() {
     showCustomConfirm(
         'AŞİRİ TEHLİKE',
@@ -2637,30 +2681,13 @@ function importData(event) {
                     updateCounterDisplay();
                     updateStats();
 
-                    // ⚡ FIX: Rafraîchir les livres avec BooksManager
-                    if (typeof BooksManager !== 'undefined' && BooksManager.renderBooks) {
-                        BooksManager.renderBooks();
-                        console.log('✅ Livres rechargés');
-                    }
+                    // ⚡ FIX: Recharger la page pour garantir que TOUT se recharge
+                    showCustomAlert('İçe aktarma başarılı!<br>Sayfa yeniden yükleniyor...', 'success', 2000);
 
-                    // ⚡ FIX: Rafraîchir les groupes avec GroupManager
-                    if (typeof groupManager !== 'undefined' && groupManager.loadSavedGroup) {
-                        groupManager.loadSavedGroup();
-                        console.log('✅ Groupes rechargés');
-                    }
-
-                    // Rafraîchir l'historique des groupes et l'UI du groupe
-                    if (typeof displayGroupHistory === 'function') {
-                        displayGroupHistory();
-                    }
-                    if (typeof initializeGroupUI === 'function') {
-                        initializeGroupUI();
-                    }
-                    if (typeof renderMultiGroupTabs === 'function') {
-                        renderMultiGroupTabs();
-                    }
-
-                    showCustomAlert('İçe aktarma başarılı!<br>Tüm verileriniz geri yüklendi', 'success', 3000);
+                    setTimeout(() => {
+                        console.log('🔄 Rechargement page après import...');
+                        window.location.reload();
+                    }, 2000);
                 },
                 function() {
                     // Confirmation "Non"
