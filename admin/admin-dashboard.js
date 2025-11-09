@@ -208,11 +208,11 @@ class AdminDashboard {
             .filter(e => e.event_name === 'counter_increment')
             .length; // Nombre d'événements = nombre de clics réels
 
-        // Groupes actifs
+        // Groupes actifs (7 derniers jours via analytics)
         const activeGroups = new Set(
             events7d
                 .filter(e => e.event_name && e.event_name.includes('group'))
-                .map(e => e.event_data?.groupId)
+                .map(e => e.event_data?.groupCode) // groupCode au lieu de groupId
                 .filter(Boolean)
         ).size;
 
