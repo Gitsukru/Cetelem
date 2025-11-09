@@ -73,7 +73,14 @@
 
 .accordion-icon {
   font-size: 24px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.accordion-icon svg {
+  color: currentColor;
+  stroke: currentColor;
 }
 
 /* Chevron (triangle) */

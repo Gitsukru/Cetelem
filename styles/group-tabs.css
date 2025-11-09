@@ -207,7 +207,14 @@
 
 .status-dot {
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot svg {
+  filter: drop-shadow(0 0 4px rgba(72, 187, 120, 0.8));
 }
 
 @keyframes pulse {
@@ -347,6 +354,14 @@
 
 .subtab-icon {
   font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subtab-icon svg {
+  color: currentColor;
+  stroke: currentColor;
 }
 
 .subtab-label {

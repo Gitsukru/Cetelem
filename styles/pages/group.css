@@ -13,6 +13,14 @@
     font-size: 42px;
     margin-bottom: 8px;
     opacity: 0.8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.group-header-icon svg {
+    color: currentColor;
+    stroke: currentColor;
 }
 
 .group-header-title {
