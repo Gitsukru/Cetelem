@@ -854,7 +854,7 @@ class AdminDashboard {
 
             // Afficher métriques
             this.updateMetric('totalGroups', totalGroups);
-            this.updateMetric('activeGroups', activeGroups);
+            this.updateMetric('activeGroups30d', activeGroups); // Section Analytics Groupes (30j)
             this.updateMetric('avgGroupSize', avgSize);
             this.updateMetric('avgGroupLifetime', avgLifetime);
             this.updateMetric('groupCompletionRate', completionRate + '%');
