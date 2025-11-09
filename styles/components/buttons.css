@@ -356,23 +356,30 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 16px 18px;
-    background: #007bff;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
     border: 2px solid #007bff;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
-    width: 25%;
+    flex: 1;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.mode-button * {
     color: white;
 }
 
 .mode-button:hover {
     border-color: #0056b3;
-    background: #0056b3;
+    background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+    transform: translateY(-2px);
 }
 
 .mode-button:active {
-    transform: scale(0.98);
+    transform: translateY(0) scale(0.98);
 }
 
 /* Bouton submit formulaire */
