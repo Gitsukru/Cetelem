@@ -283,15 +283,19 @@ const DeviceBackup = {
       if (typeof updateStats === 'function') {
         updateStats()
       }
-      if (typeof loadBooks === 'function') {
-        loadBooks()
+
+      // ⚡ FIX: Rafraîchir les livres avec BooksManager
+      if (typeof BooksManager !== 'undefined' && BooksManager.renderBooks) {
+        BooksManager.renderBooks()
+        console.log('✅ Livres rechargés depuis backup')
       }
-      if (typeof updateBookDisplay === 'function') {
-        updateBookDisplay()
+
+      // ⚡ FIX: Rafraîchir les groupes avec GroupManager
+      if (typeof groupManager !== 'undefined' && groupManager.loadSavedGroup) {
+        groupManager.loadSavedGroup()
+        console.log('✅ Groupes rechargés depuis backup')
       }
-      if (typeof renderBooksManagementList === 'function') {
-        renderBooksManagementList()
-      }
+
       if (typeof displayGroupHistory === 'function') {
         displayGroupHistory()
       }

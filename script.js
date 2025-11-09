@@ -2637,15 +2637,16 @@ function importData(event) {
                     updateCounterDisplay();
                     updateStats();
 
-                    // Rafraîchir les livres si la fonction existe
-                    if (typeof loadBooks === 'function') {
-                        loadBooks();
+                    // ⚡ FIX: Rafraîchir les livres avec BooksManager
+                    if (typeof BooksManager !== 'undefined' && BooksManager.renderBooks) {
+                        BooksManager.renderBooks();
+                        console.log('✅ Livres rechargés');
                     }
-                    if (typeof updateBookDisplay === 'function') {
-                        updateBookDisplay();
-                    }
-                    if (typeof renderBooksManagementList === 'function') {
-                        renderBooksManagementList();
+
+                    // ⚡ FIX: Rafraîchir les groupes avec GroupManager
+                    if (typeof groupManager !== 'undefined' && groupManager.loadSavedGroup) {
+                        groupManager.loadSavedGroup();
+                        console.log('✅ Groupes rechargés');
                     }
 
                     // Rafraîchir l'historique des groupes et l'UI du groupe
