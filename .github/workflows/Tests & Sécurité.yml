@@ -78,7 +78,7 @@ jobs:
         continue-on-error: true
 
       - name: 🛡️ Run security tests
-        run: npm test -- tests/security/ -- passWithNoTests || echo "Security tests not yet activated"
+        run: npm test -- tests/security/ --passWithNoTests || echo "Security tests not yet activated"
         continue-on-error: true
 
   # =======================
