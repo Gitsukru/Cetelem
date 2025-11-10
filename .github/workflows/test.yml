@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Script pour push sans le workflow (contournement OAuth)
+
+echo "🚀 Push des commits sans le workflow GitHub Actions"
+echo ""
+
+# Sauvegarder le workflow
+echo "📦 Sauvegarde du workflow..."
+cp .github/workflows/test.yml /tmp/test.yml.backup
+
+# Supprimer le workflow
+echo "🗑️  Suppression temporaire du workflow..."
+rm -rf .github/workflows/test.yml
+
+# Amender le commit
+echo "📝 Amendement du commit..."
+git add -A
+git commit --amend --no-edit
+
+# Push
+echo "⬆️  Push vers GitHub..."
+if git push --force-with-lease; then
+    echo ""
+    echo "✅ Push réussi!"
+    echo ""
+    echo "📋 Prochaine étape: Ajouter le workflow manuellement sur GitHub"
+    echo "   1. Aller sur github.com/${PWD##*/}"
+    echo "   2. Créer .github/workflows/test.yml"
+    echo "   3. Copier le contenu depuis /tmp/test.yml.backup"
+
+    # Restaurer localement
+    echo ""
+    echo "🔄 Restauration locale du workflow..."
+    mkdir -p .github/workflows
+    cp /tmp/test.yml.backup .github/workflows/test.yml
+
+    echo "✅ Workflow restauré localement"
+else
+    echo ""
+    echo "❌ Erreur lors du push"
+
+    # Restaurer le workflow
+    echo "🔄 Restauration du workflow..."
+    mkdir -p .github/workflows
+    cp /tmp/test.yml.backup .github/workflows/test.yml
+
+    exit 1
+fi
