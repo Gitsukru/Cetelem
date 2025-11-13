@@ -334,7 +334,7 @@ function shareGroupCode() {
 
   const code = groupInfo.group.code;
   const groupName = groupInfo.group.name || 'Grup';
-  const shareText = `🕌 "${groupName}" grubuna katıl!\n\nGrup Kodu: ${code}\n\nÇetelem uygulamasında "Grup Yönetimi" > "Gruba Katıl" bölümünden bu kodu kullanarak katılabilirsin.\n\nhttps://cetelem.netlify.app`;
+  const shareText = `🕌 "${groupName}" grubuna katıl!\n\nGrup Kodu: ${code}\n\nÇetelem uygulamasında "Grup Yönetimi" > "Gruba Katıl" bölümünden bu kodu kullanarak katılabilirsin.\n\nhttps://cetelems.netlify.app`;
 
   // Vérifier si Web Share API est disponible
   if (navigator.share) {

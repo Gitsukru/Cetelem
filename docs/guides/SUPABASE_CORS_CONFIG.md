@@ -39,8 +39,8 @@ file://
 #### Pour Production (Netlify):
 
 ```
-https://cetelem.netlify.app
-https://www.cetelem.netlify.app
+https://cetelems.netlify.app
+https://www.cetelems.netlify.app
 https://*.netlify.app
 ```
 
@@ -58,7 +58,7 @@ Si l'option existe, configurez comme ceci:
     "http://127.0.0.1:8080",
     "http://127.0.0.1:5173",
     "file://",
-    "https://cetelem.netlify.app",
+    "https://cetelems.netlify.app",
     "https://*.netlify.app"
   ],
   "allowedMethods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -74,14 +74,14 @@ Si l'option existe, configurez comme ceci:
 1. **Naviguer vers:** `Authentication` → `URL Configuration`
 
 2. **Ajouter les URLs autorisées:**
-   - **Site URL:** `https://cetelem.netlify.app`
+   - **Site URL:** `https://cetelems.netlify.app`
    - **Redirect URLs:**
      ```
      http://localhost:3000
      http://localhost:8080
      http://localhost:5173
      http://127.0.0.1:3000
-     https://cetelem.netlify.app
+     https://cetelems.netlify.app
      https://*.netlify.app
      ```
 
@@ -106,7 +106,7 @@ Si vous utilisez les **Realtime subscriptions**, vérifiez aussi:
 ```bash
 # Test preflight request (OPTIONS)
 curl -X OPTIONS "https://YOUR-PROJECT.supabase.co/rest/v1/groups" \
-  -H "Origin: https://cetelem.netlify.app" \
+  -H "Origin: https://cetelems.netlify.app" \
   -H "Access-Control-Request-Method: POST" \
   -H "Access-Control-Request-Headers: apikey,content-type" \
   -v
@@ -115,7 +115,7 @@ curl -X OPTIONS "https://YOUR-PROJECT.supabase.co/rest/v1/groups" \
 **Résultat attendu:**
 ```
 < HTTP/2 204
-< access-control-allow-origin: https://cetelem.netlify.app
+< access-control-allow-origin: https://cetelems.netlify.app
 < access-control-allow-methods: GET, POST, PUT, PATCH, DELETE
 < access-control-allow-headers: apikey, content-type
 < access-control-max-age: 3600
@@ -131,7 +131,7 @@ curl -X OPTIONS "https://YOUR-PROJECT.supabase.co/rest/v1/groups" \
 
 ```
 Response Headers:
-  access-control-allow-origin: https://cetelem.netlify.app
+  access-control-allow-origin: https://cetelems.netlify.app
   access-control-allow-credentials: true
 ```
 
@@ -142,7 +142,7 @@ Dans la console Chrome, vérifier s'il y a des erreurs CORS:
 ```javascript
 // ❌ Erreur CORS typique:
 Access to fetch at 'https://YOUR-PROJECT.supabase.co/rest/v1/groups'
-from origin 'https://cetelem.netlify.app' has been blocked by CORS policy:
+from origin 'https://cetelems.netlify.app' has been blocked by CORS policy:
 No 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```
 
@@ -160,7 +160,7 @@ No 'Access-Control-Allow-Origin' header is present on the requested resource.
 - allowedOrigins: ["*"]
 + allowedOrigins: [
 +   "http://localhost:3000",
-+   "https://cetelem.netlify.app"
++   "https://cetelems.netlify.app"
 + ]
 ```
 
@@ -183,7 +183,7 @@ php -S localhost:8080
 
 ### Problème 3: Sous-domaine Netlify non autorisé
 
-**Symptôme:** Fonctionne sur `cetelem.netlify.app` mais pas sur `deploy-preview-123--cetelem.netlify.app`
+**Symptôme:** Fonctionne sur `cetelems.netlify.app` mais pas sur `deploy-preview-123--cetelems.netlify.app`
 
 **Solution:** Utiliser un wildcard Netlify
 
@@ -237,7 +237,7 @@ C'est pourquoi **Firefox/Opera fonctionnent** mais **Chrome/Safari ne fonctionne
 - [ ] 1. Aller sur Supabase Dashboard
 - [ ] 2. Settings → API → CORS Settings
 - [ ] 3. Ajouter `http://localhost:*`
-- [ ] 4. Ajouter `https://cetelem.netlify.app`
+- [ ] 4. Ajouter `https://cetelems.netlify.app`
 - [ ] 5. Ajouter `https://*.netlify.app`
 - [ ] 6. Authentication → URL Configuration
 - [ ] 7. Ajouter les mêmes URLs dans Redirect URLs

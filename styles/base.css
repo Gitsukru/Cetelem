@@ -9,12 +9,26 @@
   box-sizing: border-box;
 }
 
+/* Empêcher le zoom au double-tap sur tous les éléments interactifs */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"],
+[tabindex] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   font-family: var(--font-family-base);
   background: var(--gradient-primary);
   color: var(--color-text-primary);
   line-height: var(--line-height-normal);
   /* IMPORTANT: Structure flexbox définie dans layout.css */
+  /* Empêcher le zoom au pinch et double-tap */
+  touch-action: pan-x pan-y;
 }
 
 /* Divider */

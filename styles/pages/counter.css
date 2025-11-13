@@ -203,38 +203,55 @@
     }
 }
 
-/* Mobile landscape (horizontal) - Tesbih plus petit */
+/* Mobile landscape (horizontal) - Tesbih plus petit et optimisé */
 @media (max-width: 768px) and (orientation: landscape) {
     .counter-header-mobile {
-        margin-bottom: 6px;
+        margin-bottom: 4px;
+        padding: 4px 8px;
     }
 
     .stats-card-mobile {
-        padding: 8px;
-        margin-bottom: 6px;
+        padding: 6px;
+        margin-bottom: 4px;
     }
 
     .stat-number {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .stat-label {
-        font-size: 10px;
+        font-size: 9px;
     }
 
+    /* Tesbih BEAUCOUP plus petit en paysage (max 50% de la hauteur) */
     .tesbih-container {
-        width: min(450px, 60vh);
-        height: min(450px, 60vh);
-        margin: 4px auto 0;
+        width: min(280px, 50vh);
+        height: min(280px, 50vh);
+        margin: 2px auto 0;
     }
 
     .counter-button {
-        width: 75%;
-        height: 75%;
+        width: 70%;
+        height: 70%;
     }
 
     .counter-number {
-        font-size: 56px;
+        font-size: 42px;
+    }
+
+    /* Réduire les marges globales en paysage */
+    body {
+        overflow-x: hidden;
+    }
+
+    .app-container {
+        padding: 4px;
+    }
+
+    /* Boutons d'action plus compacts */
+    .action-buttons button {
+        padding: 6px 12px;
+        font-size: 12px;
     }
 }
 

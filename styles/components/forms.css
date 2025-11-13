@@ -197,6 +197,20 @@
 @media (max-width: 640px) {
     .form-input {
         padding: 14px 16px;
-        font-size: 15px;
+        font-size: 16px; /* Minimum 16px pour éviter zoom iOS */
+    }
+}
+
+/* Mode paysage - Inputs plus compacts */
+@media (max-width: 768px) and (orientation: landscape) {
+    .form-input,
+    .category-select,
+    .category-input {
+        padding: 8px 12px;
+        font-size: 16px; /* Minimum 16px pour éviter zoom iOS */
+    }
+
+    .input-label {
+        font-size: 12px;
     }
 }
