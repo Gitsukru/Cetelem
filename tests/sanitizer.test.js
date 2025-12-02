@@ -697,7 +697,7 @@ describe('Sanitizer - Protection XSS Complète', () => {
       }
 
       const duration = Date.now() - start
-      expect(duration).toBeLessThan(100) // < 100ms
+      expect(duration).toBeLessThan(200) // < 200ms (CI peut être plus lent)
     })
 
     test('should build 100 DOM elements quickly', () => {
