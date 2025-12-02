@@ -658,22 +658,9 @@ function checkStorageQuota(newData) {
     }
 }
 
-// Indicateur de sauvegarde
+// Indicateur de sauvegarde - désactivé
 function showSaveIndicator() {
-    let indicator = document.getElementById('saveIndicator');
-    if (!indicator) {
-        const div = document.createElement('div');
-        div.id = 'saveIndicator';
-        div.className = 'save-indicator';
-        div.textContent = 'Kaydedildi';
-        document.body.appendChild(div);
-        indicator = div;
-    }
-
-    indicator.classList.add('show');
-    setTimeout(() => {
-        indicator.classList.remove('show');
-    }, 2000);
+    // Désactivé - trop intrusif
 }
 
 function updateSaveStatus() {
