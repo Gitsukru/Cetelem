@@ -3137,6 +3137,66 @@ function hideUpdateIndicator() {
 }
 
 /**
+ * Afficher un banner persistant pour mise à jour PWA
+ */
+function showPWAUpdateBanner() {
+    // Supprimer l'ancien banner si existe
+    const existingBanner = document.getElementById('pwaUpdateBanner');
+    if (existingBanner) existingBanner.remove();
+
+    const banner = document.createElement('div');
+    banner.id = 'pwaUpdateBanner';
+    banner.innerHTML = `
+        <div style="
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            z-index: 10000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        ">
+            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                <span style="font-size: 24px;">🆕</span>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">Yeni sürüm mevcut!</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Güncellemek için tıklayın</div>
+                </div>
+            </div>
+            <button onclick="applyUpdateNow()" style="
+                background: white;
+                color: #667eea;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                white-space: nowrap;
+            ">Güncelle</button>
+            <button onclick="document.getElementById('pwaUpdateBanner').remove()" style="
+                background: transparent;
+                color: white;
+                border: none;
+                padding: 8px;
+                cursor: pointer;
+                opacity: 0.7;
+                font-size: 20px;
+            ">✕</button>
+        </div>
+    `;
+    document.body.appendChild(banner);
+    console.log('📱 PWA: Banner de mise à jour affiché');
+}
+
+/**
  * Afficher le popup de détails de mise à jour
  */
 function showUpdateDetailsPopup() {
@@ -3272,7 +3332,7 @@ function checkForUpdates() {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         // ⚡ Cache-busting: Ajouter version pour forcer Opera à recharger sw.js
-        const SW_VERSION = '2025-12-02-auto-silent-update';
+        const SW_VERSION = '2025-12-02-pwa-update-banner';
         navigator.serviceWorker.register('./sw.js?v=' + SW_VERSION)
             .then(function(registration) {
                 console.log('Service Worker başarıyla kaydedildi:', registration.scope);
@@ -3284,11 +3344,18 @@ if ('serviceWorker' in navigator) {
 
                     newWorker.addEventListener('statechange', function() {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('🆕 Nouvelle version disponible - Mise à jour automatique silencieuse...');
+                            console.log('🆕 Nouvelle version disponible');
                             pendingServiceWorker = newWorker;
 
-                            // ⚡ MAJ AUTOMATIQUE SILENCIEUSE: Appliquer immédiatement sans intervention utilisateur
-                            applyUpdateNow();
+                            // ⚡ PWA: Afficher banner persistant pour mise à jour manuelle
+                            // Browser: Appliquer automatiquement
+                            const isPWAMode = window.matchMedia('(display-mode: standalone)').matches ||
+                                              window.navigator.standalone === true;
+                            if (isPWAMode) {
+                                showPWAUpdateBanner();
+                            } else {
+                                applyUpdateNow();
+                            }
                         }
                     });
                 });
@@ -3388,7 +3455,7 @@ if ('serviceWorker' in navigator) {
                 }
             });
         }
-    }, 60 * 60 * 1000); // Toutes les heures (économie batterie)
+    }, isPWA ? 5 * 60 * 1000 : 60 * 60 * 1000); // PWA: 5 min, Browser: 1 heure
 
     // ✅ Vérification quand l'app revient au premier plan (mobile PWA)
     document.addEventListener('visibilitychange', () => {
