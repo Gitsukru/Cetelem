@@ -3332,7 +3332,7 @@ function checkForUpdates() {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         // ⚡ Cache-busting: Ajouter version pour forcer Opera à recharger sw.js
-        const SW_VERSION = '2025-12-02-pwa-update-test';
+        const SW_VERSION = '2025-12-02-pwa-15min-interval';
         navigator.serviceWorker.register('./sw.js?v=' + SW_VERSION)
             .then(function(registration) {
                 console.log('Service Worker başarıyla kaydedildi:', registration.scope);
@@ -3455,7 +3455,7 @@ if ('serviceWorker' in navigator) {
                 }
             });
         }
-    }, isPWA ? 5 * 60 * 1000 : 60 * 60 * 1000); // PWA: 5 min, Browser: 1 heure
+    }, isPWA ? 15 * 60 * 1000 : 60 * 60 * 1000); // PWA: 15 min, Browser: 1 heure
 
     // ✅ Vérification quand l'app revient au premier plan (mobile PWA)
     document.addEventListener('visibilitychange', () => {
