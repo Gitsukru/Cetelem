@@ -60,7 +60,8 @@ body {
   border-radius: var(--spacing-5);
   font-size: var(--font-size-base);
   opacity: 0;
-  transition: opacity var(--transition-medium);
+  visibility: hidden;
+  transition: opacity var(--transition-medium), visibility var(--transition-medium);
   z-index: var(--z-toast);
   display: flex;
   align-items: center;
@@ -70,4 +71,5 @@ body {
 
 .save-indicator.show {
   opacity: 1;
+  visibility: visible;
 }
