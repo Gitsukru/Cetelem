@@ -827,7 +827,7 @@ function updateCategorySelect() {
 
     // Sélecteur principal
     if (select) {
-        select.innerHTML = '<option value="">Zikir</option>';
+        select.innerHTML = '<option value="">Zikir Seçiniz</option>';
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
@@ -838,7 +838,7 @@ function updateCategorySelect() {
 
     // Sélecteur pour l'effacement
     if (resetSelect) {
-        resetSelect.innerHTML = '<option value="">Zikir</option>';
+        resetSelect.innerHTML = '<option value="">Zikir Seçiniz</option>';
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
@@ -3285,7 +3285,7 @@ function checkForUpdates() {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         // ⚡ Cache-busting: Ajouter version pour forcer Opera à recharger sw.js
-        const SW_VERSION = '2025-11-09-faster-update-check';
+        const SW_VERSION = '2025-12-02-auto-silent-update';
         navigator.serviceWorker.register('./sw.js?v=' + SW_VERSION)
             .then(function(registration) {
                 console.log('Service Worker başarıyla kaydedildi:', registration.scope);
@@ -3297,23 +3297,11 @@ if ('serviceWorker' in navigator) {
 
                     newWorker.addEventListener('statechange', function() {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('🆕 Nouvelle version disponible !');
+                            console.log('🆕 Nouvelle version disponible - Mise à jour automatique silencieuse...');
                             pendingServiceWorker = newWorker;
 
-                            // Afficher l'indicateur dans la navbar
-                            showUpdateIndicator();
-
-                            // Afficher la bannière de mise à jour
-                            showUpdateBanner();
-
-                            // Si l'utilisateur a refusé 3 fois, forcer la MAJ
-                            if (updateRefusedCount >= 3) {
-                                console.log('⚠️ 3 refus atteints - Mise à jour forcée dans 5s');
-                                showCustomAlert('⚠️ Mise à jour obligatoire dans 5s...', 'warning', 5000);
-                                setTimeout(() => {
-                                    applyUpdateNow();
-                                }, 5000);
-                            }
+                            // ⚡ MAJ AUTOMATIQUE SILENCIEUSE: Appliquer immédiatement sans intervention utilisateur
+                            applyUpdateNow();
                         }
                     });
                 });

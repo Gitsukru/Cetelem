@@ -62,6 +62,10 @@ body {
   opacity: 0;
   transition: opacity var(--transition-medium);
   z-index: var(--z-toast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
 }
 
 .save-indicator.show {
