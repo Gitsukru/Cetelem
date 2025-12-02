@@ -3332,7 +3332,7 @@ function checkForUpdates() {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         // ⚡ Cache-busting: Ajouter version pour forcer Opera à recharger sw.js
-        const SW_VERSION = '2025-12-02-pwa-update-banner';
+        const SW_VERSION = '2025-12-02-pwa-update-test';
         navigator.serviceWorker.register('./sw.js?v=' + SW_VERSION)
             .then(function(registration) {
                 console.log('Service Worker başarıyla kaydedildi:', registration.scope);
