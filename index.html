@@ -148,7 +148,12 @@
             <div class="counter-section">
                 <!-- Header avec titre et bouton son -->
                 <div class="counter-header-mobile">
-                    <h2 class="counter-title">Zikir Sayacı</h2>
+                    <h2 class="counter-title">Zikir</h2>
+                    <button class="tavsiye-btn" onclick="showTavsiyeModal()" title="Tavsiye Edilenler">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </button>
                     <div class="counter-header-actions">
                         <button class="sound-toggle-inline" id="soundToggle" onclick="toggleSound(); playTickSound();" title="Ses Aç/Kapat">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -279,6 +284,17 @@
                     <ul id="categoriesList" class="categories-list">
                         <!-- Kategoriler buraya eklenecek -->
                     </ul>
+
+                    <div class="divider"></div>
+
+                    <!-- Tavsiye Edilenler -->
+                    <div style="margin-top: 20px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 12px; font-size: 16px;">⭐ Tavsiye Edilenler</h3>
+                        <button class="add-button" onclick="showTavsiyeModal()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); width: 100%;">
+                            <span style="margin-right: 8px;">📋</span>
+                            Tavsiye Edilen Zikirleri Göster
+                        </button>
+                    </div>
 
                     <div class="divider"></div>
 

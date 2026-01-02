@@ -1461,6 +1461,161 @@ function finalizeAddZikir() {
 }
 
 // ========================================
+// TAVSIYE EDILEN ZIKIRLER (Zikirs Conseillés)
+// ========================================
+
+// Liste des zikirs conseillés
+const TAVSIYE_ZIKIRLER = [
+    { name: 'Estağfirullah', detail: '100 defa' },
+    { name: 'Kuran', detail: '3 sayfa' },
+    { name: 'Cevşen', detail: '35 bab' },
+    { name: 'Teheccüd', detail: '1 defa' },
+    { name: 'Kaset/Video', detail: '2 adet' },
+    { name: 'Kitap', detail: '10 sayfa' },
+    { name: 'Ya Baki entel baki', detail: '33 defa' },
+    { name: 'Salavat', detail: '100 defa' },
+    { name: 'La ilahe illa ente sübhaneke inni küntü minezzalimin', detail: '100 defa' },
+    { name: 'Subhanallahi ve bihamdihi Subhanallahil azim', detail: '100 defa' },
+    { name: 'Ya Latif', detail: '129 defa' }
+];
+
+// Afficher le modal des zikirs conseillés
+function showTavsiyeModal() {
+    // Générer la liste HTML des zikirs
+    const zikirListHTML = TAVSIYE_ZIKIRLER.map((zikir, index) => {
+        const alreadyExists = categories.includes(zikir.name);
+        return `
+            <label class="tavsiye-item ${alreadyExists ? 'already-added' : ''}" ${alreadyExists ? 'title="Bu zikir zaten ekli"' : ''}>
+                <input type="checkbox"
+                       value="${index}"
+                       ${alreadyExists ? 'disabled checked' : ''}
+                       onchange="updateTavsiyeAddButton()">
+                <div class="tavsiye-item-info">
+                    <span class="tavsiye-item-name">${zikir.name}</span>
+                    <span class="tavsiye-item-detail">${zikir.detail}</span>
+                </div>
+                ${alreadyExists ? '<span class="tavsiye-item-badge">Eklendi ✓</span>' : ''}
+            </label>
+        `;
+    }).join('');
+
+    const modalHTML = `
+        <div class="tavsiye-modal-overlay" onclick="if(event.target === this) closeTavsiyeModal()">
+            <div class="tavsiye-modal">
+                <div class="tavsiye-modal-header">
+                    <h3>⭐ Tavsiye Edilen Zikirler</h3>
+                    <button class="tavsiye-modal-close" onclick="closeTavsiyeModal()">✕</button>
+                </div>
+                <div class="tavsiye-modal-body">
+                    <p style="color: #64748b; font-size: 13px; margin-bottom: 16px;">
+                        Eklemek istediğiniz zikirleri seçin:
+                    </p>
+                    <div class="tavsiye-list">
+                        ${zikirListHTML}
+                    </div>
+                </div>
+                <div class="tavsiye-modal-footer">
+                    <button class="tavsiye-btn-cancel" onclick="closeTavsiyeModal()">Kapat</button>
+                    <button class="tavsiye-btn-add" id="tavsiyeAddBtn" onclick="addSelectedTavsiyeler()" disabled>
+                        Seçilenleri Ekle
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Marquer comme vu (pour ne pas réafficher automatiquement)
+    localStorage.setItem('tavsiyeModalShown', 'true');
+}
+
+// Fermer le modal tavsiye
+function closeTavsiyeModal() {
+    const modal = document.querySelector('.tavsiye-modal-overlay');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Mettre à jour l'état du bouton "Seçilenleri Ekle"
+function updateTavsiyeAddButton() {
+    const checkboxes = document.querySelectorAll('.tavsiye-modal-overlay input[type="checkbox"]:not(:disabled):checked');
+    const addBtn = document.getElementById('tavsiyeAddBtn');
+    if (addBtn) {
+        addBtn.disabled = checkboxes.length === 0;
+        addBtn.textContent = checkboxes.length > 0
+            ? `Seçilenleri Ekle (${checkboxes.length})`
+            : 'Seçilenleri Ekle';
+    }
+}
+
+// Ajouter les zikirs sélectionnés
+function addSelectedTavsiyeler() {
+    const checkboxes = document.querySelectorAll('.tavsiye-modal-overlay input[type="checkbox"]:not(:disabled):checked');
+    const selectedIndices = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+    let addedCount = 0;
+
+    selectedIndices.forEach(index => {
+        const zikir = TAVSIYE_ZIKIRLER[index];
+        if (zikir && !categories.includes(zikir.name)) {
+            // Ajouter la catégorie
+            categories.push(zikir.name);
+
+            // Enregistrer les métadonnées
+            categoryMetadata[zikir.name] = {
+                createdAt: new Date().toISOString(),
+                type: 'zikir',
+                source: 'tavsiye'
+            };
+
+            addedCount++;
+        }
+    });
+
+    if (addedCount > 0) {
+        // Sauvegarder
+        saveCategories();
+        localStorage.setItem('categoryMetadata', JSON.stringify(categoryMetadata));
+        initializeCounters();
+        updateCategorySelect();
+        updateCategoriesList();
+        updateStats();
+
+        // Mettre à jour le groupe si actif
+        if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
+            const stats = getCurrentUserStats();
+            groupManager.updateMyScore(stats).catch(err => {
+                console.error('Erreur mise à jour groupe après ajout tavsiye:', err);
+            });
+        }
+
+        showCustomAlert(`${addedCount} zikir başarıyla eklendi! ✓`, 'success', 3000);
+    }
+
+    closeTavsiyeModal();
+}
+
+// Vérifier et afficher le modal au premier lancement
+function checkTavsiyeFirstLaunch() {
+    // Si le modal n'a jamais été affiché
+    if (!localStorage.getItem('tavsiyeModalShown')) {
+        // Attendre que le welcome modal soit fermé (2 secondes après le chargement)
+        setTimeout(() => {
+            // Vérifier si le welcome modal est toujours visible
+            const welcomeModal = document.querySelector('.welcome-modal-overlay');
+            if (!welcomeModal) {
+                showTavsiyeModal();
+            } else {
+                // Réessayer dans 5 secondes
+                setTimeout(checkTavsiyeFirstLaunch, 5000);
+            }
+        }, 2000);
+    }
+}
+
+// ========================================
 // GESTION DES OBJECTIFS DE ZIKIR
 // ========================================
 
@@ -2932,6 +3087,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Vérifier le rappel de sauvegarde (tous les 7 jours)
     checkBackupReminder();
+
+    // Vérifier si c'est le premier lancement pour afficher les zikirs conseillés
+    checkTavsiyeFirstLaunch();
 
     // Événements
     const categorySelect = document.getElementById('categorySelect');

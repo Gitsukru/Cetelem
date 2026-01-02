@@ -71,6 +71,223 @@
     transform: scale(1.05);
 }
 
+/* Bouton Tavsiye Edilenler */
+.tavsiye-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.1);
+    border: 2px solid #10b981;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: 8px;
+    color: #10b981;
+}
+
+.tavsiye-btn:hover {
+    background: rgba(16, 185, 129, 0.2);
+    transform: scale(1.05);
+}
+
+.tavsiye-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+}
+
+/* ============================================
+   MODAL TAVSIYE EDILENLER
+   ============================================ */
+
+.tavsiye-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.tavsiye-modal {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease-out;
+}
+
+.tavsiye-modal-header {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    padding: 20px 24px;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tavsiye-modal-header h3 {
+    color: white;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.tavsiye-modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.tavsiye-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.tavsiye-modal-body {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.tavsiye-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tavsiye-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tavsiye-item:hover {
+    background: #f1f5f9;
+    border-color: #10b981;
+}
+
+.tavsiye-item.selected {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: #10b981;
+}
+
+.tavsiye-item.already-added {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tavsiye-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    accent-color: #10b981;
+    cursor: pointer;
+}
+
+.tavsiye-item-info {
+    flex: 1;
+}
+
+.tavsiye-item-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 14px;
+    display: block;
+}
+
+.tavsiye-item-detail {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.tavsiye-item-badge {
+    font-size: 11px;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.tavsiye-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 12px;
+}
+
+.tavsiye-btn-cancel {
+    flex: 1;
+    padding: 12px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tavsiye-btn-cancel:hover {
+    background: #e2e8f0;
+}
+
+.tavsiye-btn-add {
+    flex: 2;
+    padding: 12px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tavsiye-btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.tavsiye-btn-add:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 /* ============================================
    STATS CARD MOBILE (en haut)
    ============================================ */
