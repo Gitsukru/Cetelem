@@ -403,7 +403,7 @@ class AdminAuth {
         }
 
         // ⚡ Cache-busting: Ajouter version pour forcer Opera à recharger sw.js
-        const SW_VERSION = '2025-11-08-fix-opera-cache-busting';
+        const SW_VERSION = '2025-12-02-pwa-15min-interval';
         navigator.serviceWorker.register('../sw.js?v=' + SW_VERSION)
             .then(registration => {
                 console.log('✅ Service Worker enregistré (admin):', SW_VERSION);
