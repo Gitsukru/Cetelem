@@ -435,14 +435,31 @@ class AdminAuth {
             });
 
         // Écouter les changements de Service Worker pour reload automatique
+        // PROTECTION contre les boucles de reload infinies
         navigator.serviceWorker.addEventListener('controllerchange', () => {
             if (this.isReloading) {
                 console.log('🔄 Reload déjà en cours (admin), ignore controllerchange');
                 return;
             }
 
+            // Vérifier si on a reload récemment (moins de 5 secondes)
+            const lastReload = sessionStorage.getItem('admin_last_sw_reload');
+            const now = Date.now();
+            if (lastReload && (now - parseInt(lastReload, 10)) < 5000) {
+                console.log('⚠️ Reload ignoré - trop récent (protection boucle infinie)');
+                return;
+            }
+
+            // Seulement reloader si l'utilisateur a cliqué sur "Mettre à jour"
+            // (this.pendingServiceWorker est défini quand l'utilisateur clique)
+            if (!this.pendingServiceWorker) {
+                console.log('ℹ️ Nouveau SW détecté mais pas de mise à jour demandée - pas de reload auto');
+                return;
+            }
+
             console.log('🔄 Nouveau Service Worker actif (admin) - Reload immédiat');
             this.isReloading = true;
+            sessionStorage.setItem('admin_last_sw_reload', now.toString());
 
             // Les caches sont déjà vidés dans applyUpdate, donc reload directement
             // FORCER un hard reload qui bypass TOUS les caches
