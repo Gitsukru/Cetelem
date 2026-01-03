@@ -383,9 +383,45 @@ const BooksManager = {
   },
 
   /**
+   * Initialiser les livres prédéfinis (Kuran, Cevşen)
+   * Appelé au premier lancement
+   */
+  initPredefinedBooks() {
+    const books = this.getBooks();
+    const predefinedBooks = [
+      { name: 'Kuran', totalPages: 604, isPredefined: true },
+      { name: 'Cevşen', totalPages: 35, isPredefined: true }
+    ];
+
+    let added = false;
+    predefinedBooks.forEach(predefined => {
+      const exists = books.some(book => book.name.toLowerCase() === predefined.name.toLowerCase());
+      if (!exists) {
+        const newBook = {
+          id: `book_${Date.now()}_${predefined.name.toLowerCase()}`,
+          name: predefined.name,
+          totalPages: predefined.totalPages,
+          history: {},
+          createdAt: Date.now(),
+          isPredefined: true
+        };
+        books.push(newBook);
+        added = true;
+      }
+    });
+
+    if (added) {
+      this.saveBooks(books);
+      console.log('📚 Livres prédéfinis ajoutés (Kuran, Cevşen)');
+    }
+  },
+
+  /**
    * Initialiser le module
    */
   init() {
+    // Initialiser les livres prédéfinis au premier lancement
+    this.initPredefinedBooks();
     this.renderBooks();
     this.updateBooksManagementList();
     console.log('📚 BooksManager initialisé');

@@ -100,6 +100,21 @@
                 </svg>
                 Kitap
             </button>
+            <button class="mobile-tab-btn" onclick="showTab('namaz', event); toggleMobileMenu();" style="display: flex; align-items: center; gap: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                Namaz
+            </button>
+            <button class="mobile-tab-btn" onclick="showTab('sohbet', event); toggleMobileMenu();" style="display: flex; align-items: center; gap: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
+                Sohbet
+            </button>
             <button class="mobile-tab-btn" onclick="showTab('group', event); toggleMobileMenu();">Grup</button>
             <button class="mobile-tab-btn" onclick="showTab('competition', event); toggleMobileMenu();">Tesbihat</button>
             <button class="mobile-tab-btn" onclick="showTab('management', event); toggleMobileMenu();">Ayarlar</button>
@@ -134,6 +149,21 @@
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
             Kitap
+        </button>
+        <button class="tab-button" onclick="showTab('namaz', event)" style="display: flex; align-items: center; gap: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5"></path>
+                <path d="M2 12l10 5 10-5"></path>
+            </svg>
+            Namaz
+        </button>
+        <button class="tab-button" onclick="showTab('sohbet', event)" style="display: flex; align-items: center; gap: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+            </svg>
+            Sohbet
         </button>
         <button class="tab-button" onclick="showTab('group', event)">Grup</button>
         <button class="tab-button" onclick="showTab('competition', event)">Tesbihat</button>
@@ -250,9 +280,119 @@
                 <!-- Message si pas de livres -->
                 <div id="noBooksMessage" class="no-books-message" style="display: none;">
                     <p style="color: #94a3b8; text-align: center; padding: 40px 20px;">
-                        📖 Henüz kitap eklemediniz<br>
-                        <span style="font-size: 14px;">Yukarıdaki butona tıklayarak başlayın</span>
+                        Henuz kitap eklemediniz<br>
+                        <span style="font-size: 14px;">Yukaridaki butona tiklayarak baslayin</span>
                     </p>
+                </div>
+
+                <!-- Liens vers ressources externes -->
+                <div class="external-links-section" style="margin-top: 24px; padding: 16px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; border: 1px solid #bae6fd;">
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; color: #0369a1; font-size: 16px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Fethullah Gulen Hocaefendi'nin Eserleri
+                    </h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <a href="https://fgulen.com/tr/eserleri" target="_blank" rel="noopener noreferrer"
+                           style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; background: white; border-radius: 8px; color: #0369a1; text-decoration: none; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            Kitaplar
+                        </a>
+                        <a href="https://fgulen.com/tr/ses-ve-video-tr" target="_blank" rel="noopener noreferrer"
+                           style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; background: white; border-radius: 8px; color: #0369a1; text-decoration: none; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                            </svg>
+                            Ses ve Video
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Namaz Sekmesi -->
+        <div id="namaz" class="tab-content">
+            <div class="counter-section">
+                <!-- Header avec titre et bouton -->
+                <div class="counter-header-mobile">
+                    <h2 class="counter-title">Namaz</h2>
+                    <button class="tavsiye-btn" onclick="showNamazTavsiyeModal()" title="Tavsiye Edilen Namazlar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </button>
+                    <div class="counter-header-actions">
+                        <button class="sound-toggle-inline" onclick="toggleSound(); playTickSound();" title="Ses Ac/Kapat">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Card en haut -->
+                <div class="stats-card-mobile">
+                    <div class="stat-item">
+                        <span class="stat-number" id="namazStatToday">0</span>
+                        <span class="stat-label">Bugun</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="namazStatTotal">0</span>
+                        <span class="stat-label">Toplam</span>
+                    </div>
+                </div>
+
+                <div class="counter-display">
+                    <div class="tesbih-container">
+                        <div class="tesbih-bg"></div>
+                        <button class="counter-button" id="namazCountButton" onclick="incrementNamazCounter()">
+                            <span class="counter-number" id="namazCounterDisplay">0</span>
+                            <div class="counter-label" id="namazCounterLabel">Namaz</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category select en bas -->
+                <div class="category-select-wrapper">
+                    <select id="namazCategorySelect" class="category-select" onchange="NamazManager.updateNamazDisplay()">
+                        <option value="">Namaz Seciniz</option>
+                    </select>
+                    <button class="add-category-quick" onclick="showQuickAddNamaz()" title="Yeni namaz ekle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sohbet Sekmesi -->
+        <div id="sohbet" class="tab-content">
+            <div class="management-section">
+                <div class="books-header">
+                    <h2 style="display: flex; align-items: center; gap: 10px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                        </svg>
+                        Sohbet Takibi
+                    </h2>
+                    <p style="color: #64748b; margin-top: 8px;">Izlediginiz ve dinlediginiz sohbetleri takip edin</p>
+                </div>
+
+                <!-- Liste des sources de sohbet -->
+                <div id="sohbetList">
+                    <!-- Les sources seront ajoutees ici dynamiquement -->
                 </div>
             </div>
         </div>
@@ -345,7 +485,81 @@
                 </div>
             </div>
 
-            <!-- ACCORDION SECTION 3: Hatırlatmalar -->
+            <!-- ACCORDION SECTION 3: Namaz Yonetimi -->
+            <div class="settings-accordion-item">
+                <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
+                    <span class="accordion-title">
+                        <span class="accordion-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                <path d="M2 17l10 5 10-5"></path>
+                                <path d="M2 12l10 5 10-5"></path>
+                            </svg>
+                        </span>
+                        <span>Namaz Yonetimi</span>
+                    </span>
+                    <span class="accordion-chevron">+</span>
+                </button>
+                <div class="settings-accordion-content">
+                    <p style="color: #64748b; margin-bottom: 16px;">
+                        Nafile namazlarinizi yonetin
+                    </p>
+
+                    <!-- Buton Tavsiye Namazlar -->
+                    <button class="add-category-btn" onclick="showNamazTavsiyeModal()" style="width: 100%; margin-bottom: 16px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        Tavsiye Edilen Namazlar
+                    </button>
+
+                    <!-- Buton Yeni Namaz Ekle -->
+                    <button class="add-category-btn" onclick="NamazManager.showAddModal()" style="width: 100%; margin-bottom: 16px; background: #f1f5f9; color: #475569;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Yeni Namaz Ekle
+                    </button>
+
+                    <!-- Liste des namazlar -->
+                    <ul id="namazCategoriesList" class="categories-list">
+                        <!-- Liste dynamique -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ACCORDION SECTION 4: Sohbet Yonetimi -->
+            <div class="settings-accordion-item">
+                <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
+                    <span class="accordion-title">
+                        <span class="accordion-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                            </svg>
+                        </span>
+                        <span>Sohbet Yonetimi</span>
+                    </span>
+                    <span class="accordion-chevron">+</span>
+                </button>
+                <div class="settings-accordion-content">
+                    <p style="color: #64748b; margin-bottom: 16px;">
+                        Sohbet takip istatistiklerinizi yonetin
+                    </p>
+
+                    <!-- Buton Reset -->
+                    <button class="danger-btn" onclick="if(confirm('Tum sohbet gecmisini silmek istediginizden emin misiniz?')) SohbetManager.resetAllSources()" style="width: 100%;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Tum Sohbet Gecmisini Sil
+                    </button>
+                </div>
+            </div>
+
+            <!-- ACCORDION SECTION 5: Hatırlatmalar -->
             <div class="settings-accordion-item">
                 <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
                     <span class="accordion-title">
@@ -1188,6 +1402,8 @@
     <script src="script_calendar.js?v=1762615531742"></script>
     <script src="script_group_ui.js?v=1762615531742"></script>
     <script src="script_books.js?v=1762615531742"></script>
+    <script src="script_namaz.js?v=1762615531742"></script>
+    <script src="script_sohbet.js?v=1762615531742"></script>
 
     <!-- Tesbihat Scripts -->
     <script src="data/tesbihat.js?v=1762615531742"></script>

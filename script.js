@@ -740,9 +740,24 @@ function showTab(tabName, event) {
         } else if (tabName === 'management') {
             updateCategoriesList();
             updateCategorySelect();
-            // Mettre à jour aussi la liste des livres
+            // Mettre a jour aussi la liste des livres
             if (typeof BooksManager !== 'undefined' && typeof BooksManager.updateBooksManagementList === 'function') {
                 BooksManager.updateBooksManagementList();
+            }
+            // Mettre a jour la liste des namazlar
+            if (typeof NamazManager !== 'undefined' && typeof NamazManager.renderNamazList === 'function') {
+                NamazManager.renderNamazList();
+            }
+        } else if (tabName === 'namaz') {
+            // Initialiser l'affichage Namaz
+            if (typeof NamazManager !== 'undefined') {
+                NamazManager.updateNamazSelect();
+                NamazManager.updateNamazDisplay();
+            }
+        } else if (tabName === 'sohbet') {
+            // Initialiser l'affichage Sohbet
+            if (typeof SohbetManager !== 'undefined') {
+                SohbetManager.renderSohbetList();
             }
         } else if (tabName === 'group') {
             // Restore group interface if a group is active
@@ -1464,14 +1479,9 @@ function finalizeAddZikir() {
 // TAVSIYE EDILEN ZIKIRLER (Zikirs Conseillés)
 // ========================================
 
-// Liste des zikirs conseillés
+// Liste des zikirs conseillés (Kuran/Cevşen → Kitap, Teheccüd → Namaz, Kaset/Video → Sohbet)
 const TAVSIYE_ZIKIRLER = [
     { name: 'Estağfirullah', detail: '100 defa' },
-    { name: 'Kuran', detail: '3 sayfa' },
-    { name: 'Cevşen', detail: '35 bab' },
-    { name: 'Teheccüd', detail: '1 defa' },
-    { name: 'Kaset/Video', detail: '2 adet' },
-    { name: 'Kitap', detail: '10 sayfa' },
     { name: 'Ya Baki entel baki', detail: '33 defa' },
     { name: 'Salavat', detail: '100 defa' },
     { name: 'La ilahe illa ente sübhaneke inni küntü minezzalimin', detail: '100 defa' },
@@ -2343,12 +2353,36 @@ function getCurrentUserStats() {
                 }
             };
 
-            // ⚡ IMPORTANT: Ajouter les pages lues aux totaux pour le classement groupe
+            // IMPORTANT: Ajouter les pages lues aux totaux pour le classement groupe
             totalToday += bookStats.today || 0;
             totalWeek += bookStats.week || 0;
             totalMonth += bookStats.month || 0;
             totalAll += bookStats.total || 0;
         });
+    }
+
+    // Ajouter les statistiques des namazlar
+    const namazDetails = {};
+    if (typeof NamazManager !== 'undefined') {
+        const namazStats = NamazManager.getAllStats();
+        namazDetails.categories = namazStats.categories || {};
+        // Ajouter aux totaux pour le classement groupe
+        totalToday += namazStats.today || 0;
+        totalWeek += namazStats.week || 0;
+        totalMonth += namazStats.month || 0;
+        totalAll += namazStats.total || 0;
+    }
+
+    // Ajouter les statistiques des sohbets (minutes)
+    const sohbetDetails = {};
+    if (typeof SohbetManager !== 'undefined') {
+        const sohbetStats = SohbetManager.getAllStats();
+        sohbetDetails.sources = sohbetStats.sources || {};
+        // Ajouter aux totaux pour le classement groupe (minutes convertis en points)
+        totalToday += sohbetStats.today || 0;
+        totalWeek += sohbetStats.week || 0;
+        totalMonth += sohbetStats.month || 0;
+        totalAll += sohbetStats.total || 0;
     }
 
     return {
@@ -2357,7 +2391,9 @@ function getCurrentUserStats() {
         month: totalMonth,
         total: totalAll,
         categories: categoriesDetails,
-        books: booksDetails // Nouveau: inclure les livres
+        books: booksDetails,
+        namaz: namazDetails,
+        sohbet: sohbetDetails
     };
 }
 
@@ -2705,6 +2741,16 @@ function exportData() {
             // Notifications et rappels
             notifications_reminders: JSON.parse(localStorage.getItem('notifications_reminders') || '[]'),
 
+            // Namaz data
+            namazCategories: JSON.parse(localStorage.getItem('namazCategories') || '[]'),
+            namazCounters: JSON.parse(localStorage.getItem('namazCounters') || '{}'),
+            namazMetadata: JSON.parse(localStorage.getItem('namazMetadata') || '{}'),
+            namazGoals: JSON.parse(localStorage.getItem('namazGoals') || '{}'),
+
+            // Sohbet data
+            sohbetHistory: JSON.parse(localStorage.getItem('sohbetHistory') || '{}'),
+            sohbetMetadata: JSON.parse(localStorage.getItem('sohbetMetadata') || '{}'),
+
             // Settings
             settings: {
                 soundEnabled: soundEnabled,
@@ -2820,7 +2866,29 @@ function importData(event) {
                         localStorage.setItem('notifications_reminders', JSON.stringify(importedData.notifications_reminders));
                     }
 
-                    // 7. Settings
+                    // 7. Namaz data
+                    if (importedData.namazCategories) {
+                        localStorage.setItem('namazCategories', JSON.stringify(importedData.namazCategories));
+                    }
+                    if (importedData.namazCounters) {
+                        localStorage.setItem('namazCounters', JSON.stringify(importedData.namazCounters));
+                    }
+                    if (importedData.namazMetadata) {
+                        localStorage.setItem('namazMetadata', JSON.stringify(importedData.namazMetadata));
+                    }
+                    if (importedData.namazGoals) {
+                        localStorage.setItem('namazGoals', JSON.stringify(importedData.namazGoals));
+                    }
+
+                    // 8. Sohbet data
+                    if (importedData.sohbetHistory) {
+                        localStorage.setItem('sohbetHistory', JSON.stringify(importedData.sohbetHistory));
+                    }
+                    if (importedData.sohbetMetadata) {
+                        localStorage.setItem('sohbetMetadata', JSON.stringify(importedData.sohbetMetadata));
+                    }
+
+                    // 9. Settings
                     if (importedData.settings) {
                         if (importedData.settings.soundEnabled !== undefined) {
                             soundEnabled = importedData.settings.soundEnabled;
@@ -4181,7 +4249,83 @@ window.addEventListener('load', function() {
 // BARRES CHROME MOBILE - NOTE
 // ============================================
 
-// Chrome 141+ affiche les barres de navigation de manière persistante.
+// Chrome 141+ affiche les barres de navigation de maniere persistante.
 // Il n'existe pas de solution CSS/JS fiable pour les cacher.
-// Solution recommandée : Installer l'app comme PWA (mode standalone).
+// Solution recommandee : Installer l'app comme PWA (mode standalone).
 // En mode PWA, il n'y a AUCUNE barre Chrome du tout.
+
+// ============================================
+// SWIPE NAVIGATION ENTRE ONGLETS
+// ============================================
+
+const SWIPE_TABS = ['counter', 'books', 'namaz', 'sohbet'];
+let swipeTouchStartX = 0;
+let swipeTouchEndX = 0;
+let swipeCurrentTab = 'counter';
+
+function initSwipeNavigation() {
+    const container = document.querySelector('.container');
+    if (!container) return;
+
+    container.addEventListener('touchstart', (e) => {
+        swipeTouchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    container.addEventListener('touchend', (e) => {
+        swipeTouchEndX = e.changedTouches[0].screenX;
+        handleSwipeGesture();
+    }, { passive: true });
+}
+
+function handleSwipeGesture() {
+    const threshold = 80; // Minimum pixels pour un swipe
+    const diff = swipeTouchStartX - swipeTouchEndX;
+
+    // Verifier quel onglet est actuellement actif
+    const activeTab = document.querySelector('.tab-content.active');
+    if (!activeTab) return;
+
+    const currentTabId = activeTab.id;
+    const currentIndex = SWIPE_TABS.indexOf(currentTabId);
+
+    // Si l'onglet actuel n'est pas dans la liste des swipe tabs, ignorer
+    if (currentIndex === -1) return;
+
+    if (Math.abs(diff) > threshold) {
+        if (diff > 0 && currentIndex < SWIPE_TABS.length - 1) {
+            // Swipe gauche -> onglet suivant
+            showTab(SWIPE_TABS[currentIndex + 1]);
+        } else if (diff < 0 && currentIndex > 0) {
+            // Swipe droite -> onglet precedent
+            showTab(SWIPE_TABS[currentIndex - 1]);
+        }
+    }
+}
+
+// Navigation avec boutons (pour desktop)
+function navigateToPrevTab() {
+    const activeTab = document.querySelector('.tab-content.active');
+    if (!activeTab) return;
+
+    const currentIndex = SWIPE_TABS.indexOf(activeTab.id);
+    if (currentIndex > 0) {
+        showTab(SWIPE_TABS[currentIndex - 1]);
+    }
+}
+
+function navigateToNextTab() {
+    const activeTab = document.querySelector('.tab-content.active');
+    if (!activeTab) return;
+
+    const currentIndex = SWIPE_TABS.indexOf(activeTab.id);
+    if (currentIndex < SWIPE_TABS.length - 1) {
+        showTab(SWIPE_TABS[currentIndex + 1]);
+    }
+}
+
+// Initialiser le swipe au chargement
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSwipeNavigation);
+} else {
+    initSwipeNavigation();
+}
