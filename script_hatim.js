@@ -700,6 +700,7 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
         }
 
         const participantName = document.getElementById('claimParticipantName')?.value?.trim();
+        const claimBtn = document.querySelector('#claimModal button[onclick*="doClaim"]');
 
         // Validation
         if (!participantName || participantName.length < 2) {
@@ -715,6 +716,13 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
         // Save name
         localStorage.setItem('lastHatimName', participantName);
 
+        // Show loading state
+        if (claimBtn) {
+            claimBtn.disabled = true;
+            claimBtn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⏳</span> Seciliyor...';
+            claimBtn.style.opacity = '0.7';
+        }
+
         try {
             await this.provider.claimUnit({
                 hatimId,
@@ -724,14 +732,29 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
             });
 
             document.getElementById('claimModal')?.remove();
-            showCustomAlert('Basariyla secildi!', 'success', 2000);
+            showCustomAlert('✅ Basariyla secildi!', 'success', 2000);
 
             // Refresh view
             this.refreshCurrentHatim();
 
         } catch (error) {
             console.error('Claim error:', error);
-            showCustomAlert(error.message || 'Bir hata olustu', 'error', 2500);
+
+            // Better error message for race condition
+            if (error.message === 'Bu birim zaten alinmis') {
+                showCustomAlert('⚠️ Bu cüz az önce başkası tarafından alındı! Başka bir cüz seçin.', 'warning', 3500);
+                document.getElementById('claimModal')?.remove();
+                // Auto-refresh to show updated grid
+                this.refreshCurrentHatim();
+            } else {
+                showCustomAlert(error.message || 'Bir hata olustu', 'error', 2500);
+                // Reset button
+                if (claimBtn) {
+                    claimBtn.disabled = false;
+                    claimBtn.innerHTML = 'Sec';
+                    claimBtn.style.opacity = '1';
+                }
+            }
         }
     },
 
