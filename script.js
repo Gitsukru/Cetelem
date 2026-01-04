@@ -2058,20 +2058,23 @@ function updateStats() {
             tbody.innerHTML = '';
 
             // Helper pour créer une ligne de titre de section
-            const createSectionHeader = (title, icon, bgColor) => {
+            const createSectionHeader = (title, bgColor) => {
                 const headerRow = document.createElement('tr');
                 headerRow.className = 'section-header-row';
                 headerRow.style.background = bgColor;
                 const headerCell = document.createElement('td');
                 headerCell.colSpan = 10;
-                headerCell.innerHTML = `<span style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; color: #374151;">${icon} ${title}</span>`;
+                headerCell.style.fontWeight = '600';
+                headerCell.style.fontSize = '13px';
+                headerCell.style.color = '#374151';
+                headerCell.textContent = title;
                 headerRow.appendChild(headerCell);
                 return headerRow;
             };
 
             // Section Zikir
             if (categories.length > 0) {
-                tbody.appendChild(createSectionHeader('ZİKİRLER', '📿', '#f3f4f6'));
+                tbody.appendChild(createSectionHeader('ZİKİRLER', '#f3f4f6'));
             }
 
             categories.forEach(cat => {
@@ -2240,7 +2243,7 @@ function updateStats() {
 
                 // Section Kitap
                 if (books.length > 0) {
-                    tbody.appendChild(createSectionHeader('KİTAPLAR', '📚', '#eef2ff'));
+                    tbody.appendChild(createSectionHeader('KİTAPLAR', '#eef2ff'));
                 }
 
                 books.forEach(book => {
@@ -2404,7 +2407,7 @@ function updateStats() {
 
                 // Section Namaz
                 if (namazCategories.length > 0) {
-                    tbody.appendChild(createSectionHeader('NAMAZLAR', '🕌', '#ecfdf5'));
+                    tbody.appendChild(createSectionHeader('NAMAZLAR', '#ecfdf5'));
                 }
 
                 namazCategories.forEach(cat => {
@@ -2533,7 +2536,7 @@ function updateStats() {
 
                 if (sohbetStats.today > 0 || sohbetStats.week > 0 || sohbetStats.total > 0) {
                     // Section Sohbet
-                    tbody.appendChild(createSectionHeader('SOHBET', '🎬', '#fef9c3'));
+                    tbody.appendChild(createSectionHeader('SOHBET', '#fef9c3'));
 
                     // Ligne unique pour le total sohbet
                     const sohbetRow = document.createElement('tr');
