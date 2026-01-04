@@ -1126,14 +1126,7 @@ function deleteBookConfirm(bookId) {
   }
 }
 
-/**
- * Échapper les caractères HTML
- */
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+// escapeHtml est défini globalement dans sanitizer.js (window.escapeHtml)
 
 /**
  * Afficher une notification

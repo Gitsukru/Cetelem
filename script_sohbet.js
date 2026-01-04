@@ -424,10 +424,9 @@ const SohbetManager = {
     // HELPERS
     // ========================================
 
+    // Utilise window.escapeHtml de sanitizer.js
     escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        return window.escapeHtml ? window.escapeHtml(text) : text;
     },
 
     updateGroupIfNeeded() {

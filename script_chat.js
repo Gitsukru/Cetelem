@@ -3,6 +3,10 @@
  * Gestion des messages en temps réel via Supabase
  */
 
+// Constantes
+const CHAT_MAX_MESSAGE_LENGTH = 500;
+const CHAT_MAX_MESSAGES_LOAD = 50;
+
 // Variables globales chat
 let chatSubscription = null;
 let chatMessages = [];
@@ -75,7 +79,7 @@ async function loadChatMessages() {
       .select('*')
       .eq('group_id', groupInfo.group.id)
       .order('created_at', { ascending: true })
-      .limit(50);
+      .limit(CHAT_MAX_MESSAGES_LOAD);
 
     if (error) throw error;
 
@@ -298,9 +302,9 @@ async function sendChatMessage() {
     return;
   }
 
-  if (message.length > 500) {
+  if (message.length > CHAT_MAX_MESSAGE_LENGTH) {
     if (typeof showCustomAlert === 'function') {
-      showCustomAlert('⚠️ Mesaj çok uzun (max 500 karakter)', 'warning', 2000);
+      showCustomAlert(`⚠️ Mesaj çok uzun (max ${CHAT_MAX_MESSAGE_LENGTH} karakter)`, 'warning', 2000);
     }
     return;
   }
@@ -388,9 +392,9 @@ function updateCharCount() {
   if (!input || !counter) return;
 
   const length = input.value.length;
-  counter.textContent = `${length}/500`;
+  counter.textContent = `${length}/${CHAT_MAX_MESSAGE_LENGTH}`;
 
-  if (length > 500) {
+  if (length > CHAT_MAX_MESSAGE_LENGTH) {
     counter.classList.add('over-limit');
   } else {
     counter.classList.remove('over-limit');
@@ -477,14 +481,7 @@ function insertDateSeparator(container, label) {
   container.appendChild(separator);
 }
 
-/**
- * Échapper HTML pour sécurité
- */
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+// escapeHtml est défini globalement dans sanitizer.js (window.escapeHtml)
 
 /**
  * Se désabonner du chat

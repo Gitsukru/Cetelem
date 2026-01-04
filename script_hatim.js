@@ -64,15 +64,9 @@ const HatimManager = {
         return String(id).replace(/[^a-f0-9-]/gi, '').substring(0, 36);
     },
 
-    // Échapper HTML (inclut apostrophes)
+    // Utilise window.escapeHtml de sanitizer.js
     escapeHtml(text) {
-        if (!text) return '';
-        return String(text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
+        return window.escapeHtml ? window.escapeHtml(text) : String(text || '');
     },
 
     // ========================================

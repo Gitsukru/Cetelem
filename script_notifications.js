@@ -379,14 +379,7 @@ function deleteReminder(reminderId) {
 // UTILITAIRES
 // ============================================
 
-/**
- * Escape HTML pour prévenir XSS
- */
-function escapeHtml(text) {
-  const div = document.createElement('div')
-  div.textContent = text
-  return div.innerHTML
-}
+// escapeHtml est défini globalement dans sanitizer.js (window.escapeHtml)
 
 /**
  * Afficher un toast de notification

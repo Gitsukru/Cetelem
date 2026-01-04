@@ -4440,18 +4440,6 @@ function showUpdatePrompt(_newVersion) {
     return;
 }
 
-// Vérification DÉSACTIVÉE TEMPORAIREMENT (à cause de bug sur mobile)
-// TODO: Réactiver après correction du bug
-/*
-window.addEventListener('load', function() {
-    // Première vérification après 10 secondes (laisser l'app se charger)
-    setTimeout(function() {
-        console.log('🔍 Vérification initiale des mises à jour');
-        checkForAppUpdates();
-    }, 10000);
-});
-*/
-
 // ============================================
 // BARRES CHROME MOBILE - NOTE
 // ============================================
