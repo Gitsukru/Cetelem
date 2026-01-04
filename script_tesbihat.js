@@ -348,6 +348,9 @@ class TesbihatSlider {
 
     container.innerHTML = html;
 
+    // Reset le flag pour permettre de re-attacher les listeners aux nouveaux elements
+    this._namazButtonsSetup = false;
+
     // Re-setup les événements sur les boutons namaz et langue
     this.setupNamazButtons();
 
