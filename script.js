@@ -1471,7 +1471,8 @@ function finalizeAddZikir() {
 
 // Liste des recommandations par categorie
 // Note: Sohbet utilise des sources predefinies (Herkul.org) et suivi de temps, pas de compteur
-const TAVSIYE_ITEMS = {
+// Tavsiye items - dynamique, peut etre modifie via admin
+const DEFAULT_TAVSIYE_ITEMS = {
     zikir: [
         { name: 'Estagfirullah', detail: '100 defa' },
         { name: 'Ya Baki entel baki', detail: '33 defa' },
@@ -1498,6 +1499,25 @@ const TAVSIYE_ITEMS = {
         { name: 'Cevsen', detail: '35 bab', dailyGoal: 35, totalPages: 100 }
     ]
 };
+
+// Charger les items depuis localStorage (modifies par admin) ou utiliser les defauts
+function getTavsiyeItems() {
+    const stored = localStorage.getItem('adminTavsiyeItems');
+    if (stored) {
+        try {
+            return JSON.parse(stored);
+        } catch (e) {
+            console.error('Error parsing adminTavsiyeItems:', e);
+        }
+    }
+    return DEFAULT_TAVSIYE_ITEMS;
+}
+
+// Variable globale pour compatibilite avec le code existant
+let TAVSIYE_ITEMS = getTavsiyeItems();
+
+// Exposer globalement pour l'admin
+window.TAVSIYE_ITEMS = TAVSIYE_ITEMS;
 
 // Labels pour les categories
 const TAVSIYE_CATEGORY_LABELS = {
@@ -1545,6 +1565,9 @@ const TAVSIYE_FILTER_MAP = {
 // Afficher le modal des recommandations
 // filter: 'zikir', 'kitap', 'namaz', ou 'all' (defaut pour premiere utilisation)
 function showTavsiyeModal(filter = 'all') {
+    // Rafraichir les items depuis localStorage (peut avoir ete modifie par admin)
+    TAVSIYE_ITEMS = getTavsiyeItems();
+
     const categoriesToShow = TAVSIYE_FILTER_MAP[filter] || TAVSIYE_FILTER_MAP.all;
     const isMultiCategory = categoriesToShow.length > 1;
 

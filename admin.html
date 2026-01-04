@@ -61,6 +61,18 @@
                     <span class="nav-icon">📚</span>
                     <span class="nav-text">Livres</span>
                 </a>
+                <a href="#namaz" class="nav-item" data-section="namaz">
+                    <span class="nav-icon">🕌</span>
+                    <span class="nav-text">Namaz</span>
+                </a>
+                <a href="#sohbet" class="nav-item" data-section="sohbet">
+                    <span class="nav-icon">🎬</span>
+                    <span class="nav-text">Sohbet</span>
+                </a>
+                <a href="#tavsiye" class="nav-item" data-section="tavsiye">
+                    <span class="nav-icon">⭐</span>
+                    <span class="nav-text">Tavsiye Yonetimi</span>
+                </a>
                 <a href="#performance" class="nav-item" data-section="performance">
                     <span class="nav-icon">⚡</span>
                     <span class="nav-text">Performance</span>
@@ -570,7 +582,230 @@
                     </div>
                 </section>
 
-                <!-- SECTION 5: PERFORMANCE -->
+                <!-- SECTION 5: NAMAZ ANALYTICS -->
+                <section id="namaz" class="content-section">
+                    <div class="section-header">
+                        <h2>🕌 Namaz Analytics</h2>
+                        <p>Statistiques des prieres surrerogatoires</p>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">🕌</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Namazlar Totaux</div>
+                                <div class="metric-value" id="totalNamazlar">--</div>
+                                <div class="metric-subtitle">tous utilisateurs</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📊</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Moyenne / Jour</div>
+                                <div class="metric-value" id="namazPerDay">--</div>
+                                <div class="metric-subtitle">30 derniers jours</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📅</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Cette Semaine</div>
+                                <div class="metric-value" id="namazThisWeek">--</div>
+                                <div class="metric-subtitle">7 derniers jours</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">🎯</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Namaz Categories</div>
+                                <div class="metric-value" id="namazCategoriesCount">--</div>
+                                <div class="metric-subtitle">types de namaz</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Namaz Categories -->
+                    <div class="chart-container">
+                        <h3>🕌 Top Namazlar</h3>
+                        <div class="categories-list" id="namazCategoriesList">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Namaz Evolution Chart -->
+                    <div class="chart-container">
+                        <h3>📈 Evolution des Namazlar</h3>
+                        <canvas id="namazEvolutionChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- SECTION 6: SOHBET ANALYTICS -->
+                <section id="sohbet" class="content-section">
+                    <div class="section-header">
+                        <h2>🎬 Sohbet Analytics</h2>
+                        <p>Statistiques des sohbets ecoutes/regardes</p>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">⏱️</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Minutes Totales</div>
+                                <div class="metric-value" id="totalSohbetMinutes">--</div>
+                                <div class="metric-subtitle">tous utilisateurs</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📊</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Moyenne / Jour</div>
+                                <div class="metric-value" id="sohbetPerDay">--</div>
+                                <div class="metric-subtitle">minutes</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">📅</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Cette Semaine</div>
+                                <div class="metric-value" id="sohbetThisWeek">--</div>
+                                <div class="metric-subtitle">minutes</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-icon">🎬</div>
+                            <div class="metric-content">
+                                <div class="metric-label">Sources Actives</div>
+                                <div class="metric-value" id="sohbetSourcesCount">--</div>
+                                <div class="metric-subtitle">sources utilisees</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sohbet Sources Distribution -->
+                    <div class="chart-container">
+                        <h3>🎬 Distribution par Source</h3>
+                        <canvas id="sohbetSourcesChart"></canvas>
+                    </div>
+
+                    <!-- Sohbet Sources List -->
+                    <div class="chart-container">
+                        <h3>📋 Sources Predefinies</h3>
+                        <div class="categories-list" id="sohbetSourcesList">
+                            <div class="category-item">
+                                <span class="category-name">Sohbet Kaset</span>
+                                <span class="category-detail">Ses/Video kasetleri</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-name">Bamteli</span>
+                                <span class="category-detail">Video sohbetler</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-name">Kirik Testi</span>
+                                <span class="category-detail">Yazilar</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-name">Herkul Nagme</span>
+                                <span class="category-detail">Ses kayitlari</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-name">Besinci Kat</span>
+                                <span class="category-detail">Ozel icerikler</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-name">Vaazlar</span>
+                                <span class="category-detail">Vaaz arsivi</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-name">Herkul Radyo</span>
+                                <span class="category-detail">Canli radyo</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 7: TAVSIYE YONETIMI -->
+                <section id="tavsiye" class="content-section">
+                    <div class="section-header">
+                        <h2>⭐ Tavsiye Edilenler Yonetimi</h2>
+                        <p>Kullanicilara onerilecek varsayilan ogeleri yonetin</p>
+                    </div>
+
+                    <!-- Category Tabs -->
+                    <div class="tavsiye-admin-tabs">
+                        <button class="tavsiye-tab active" onclick="adminDashboard.showTavsiyeCategory('zikir')">Zikirler</button>
+                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('kitap')">Kitaplar</button>
+                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('namaz')">Namazlar</button>
+                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('kuran')">Kuran</button>
+                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('cevsen')">Cevsen</button>
+                    </div>
+
+                    <!-- Add New Item -->
+                    <div class="chart-container">
+                        <h3>➕ Yeni Tavsiye Ekle</h3>
+                        <div class="tavsiye-add-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Kategori</label>
+                                    <select id="tavsiyeNewCategory">
+                                        <option value="zikir">Zikir</option>
+                                        <option value="kitap">Kitap</option>
+                                        <option value="namaz">Namaz</option>
+                                        <option value="kuran">Kuran</option>
+                                        <option value="cevsen">Cevsen</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Isim</label>
+                                    <input type="text" id="tavsiyeNewName" placeholder="ornek: Ya Vedud">
+                                </div>
+                                <div class="form-group">
+                                    <label>Detay</label>
+                                    <input type="text" id="tavsiyeNewDetail" placeholder="ornek: 100 defa">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Gunluk Hedef (opsiyonel)</label>
+                                    <input type="number" id="tavsiyeNewDailyGoal" placeholder="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Toplam Sayfa (kitaplar icin)</label>
+                                    <input type="number" id="tavsiyeNewTotalPages" placeholder="0">
+                                </div>
+                                <div class="form-group form-actions">
+                                    <button class="tool-btn" onclick="adminDashboard.addTavsiyeItem()">
+                                        Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Items List -->
+                    <div class="chart-container">
+                        <h3>📋 Mevcut Tavsiyeler</h3>
+                        <div id="tavsiyeItemsList" class="tavsiye-items-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Reset to Defaults -->
+                    <div class="chart-container">
+                        <h3>🔄 Varsayilanlara Sifirla</h3>
+                        <p style="color: #64748b; margin-bottom: 16px;">Tum tavsiye ogelerini varsayilan degerlere sifirlar.</p>
+                        <button class="tool-btn" style="background: #dc2626;" onclick="adminDashboard.resetTavsiyeToDefaults()">
+                            Sifirla
+                        </button>
+                    </div>
+                </section>
+
+                <!-- SECTION 8: PERFORMANCE -->
                 <section id="performance" class="content-section">
                     <div class="section-header">
                         <h2>⚡ Performance & Santé App</h2>
