@@ -110,6 +110,18 @@
     padding: 15px 10px;
 }
 
+/* Section header row */
+.section-header-row {
+    border-top: 2px solid #d1d5db;
+}
+
+.section-header-row td {
+    padding: 10px 12px !important;
+    text-align: left !important;
+    font-size: 13px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
 /* Reset options */
 .reset-options {
     margin-bottom: 30px;

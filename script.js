@@ -2057,6 +2057,23 @@ function updateStats() {
         if (tbody) {
             tbody.innerHTML = '';
 
+            // Helper pour créer une ligne de titre de section
+            const createSectionHeader = (title, icon, bgColor) => {
+                const headerRow = document.createElement('tr');
+                headerRow.className = 'section-header-row';
+                headerRow.style.background = bgColor;
+                const headerCell = document.createElement('td');
+                headerCell.colSpan = 10;
+                headerCell.innerHTML = `<span style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; color: #374151;">${icon} ${title}</span>`;
+                headerRow.appendChild(headerCell);
+                return headerRow;
+            };
+
+            // Section Zikir
+            if (categories.length > 0) {
+                tbody.appendChild(createSectionHeader('ZİKİRLER', '📿', '#f3f4f6'));
+            }
+
             categories.forEach(cat => {
                 const row = document.createElement('tr');
                 const stats = getStatisticsForCategory(cat);
@@ -2220,6 +2237,12 @@ function updateStats() {
             // Ajouter les livres au tableau
             if (typeof BooksManager !== 'undefined') {
                 const books = BooksManager.getBooks();
+
+                // Section Kitap
+                if (books.length > 0) {
+                    tbody.appendChild(createSectionHeader('KİTAPLAR', '📚', '#eef2ff'));
+                }
+
                 books.forEach(book => {
                     const row = document.createElement('tr');
                     row.style.background = '#f8f9ff'; // Couleur légèrement différente pour les livres
@@ -2379,6 +2402,11 @@ function updateStats() {
                 const namazCategories = NamazManager.getCategories();
                 let namazTotalToday = 0, namazTotalWeek = 0, namazTotalMonth = 0, namazTotalYear = 0;
 
+                // Section Namaz
+                if (namazCategories.length > 0) {
+                    tbody.appendChild(createSectionHeader('NAMAZLAR', '🕌', '#ecfdf5'));
+                }
+
                 namazCategories.forEach(cat => {
                     const row = document.createElement('tr');
                     row.style.background = '#f0fdf4'; // Vert clair pour les namazlar
@@ -2445,24 +2473,55 @@ function updateStats() {
                     namazTotalRow.style.background = '#dcfce7';
 
                     const labelCell = document.createElement('td');
-                    labelCell.innerHTML = '<strong>TOPLAM NAMAZLAR</strong>';
+                    const labelStrong = document.createElement('strong');
+                    labelStrong.textContent = 'TOPLAM NAMAZLAR';
+                    labelCell.appendChild(labelStrong);
 
                     const todayCell = document.createElement('td');
-                    todayCell.innerHTML = '<strong>' + namazTotalToday + '</strong>';
+                    const todayStrong = document.createElement('strong');
+                    todayStrong.textContent = namazTotalToday;
+                    todayCell.appendChild(todayStrong);
 
-                    const cells = [];
-                    for (let i = 0; i < 8; i++) {
-                        const cell = document.createElement('td');
-                        if (i === 0) cell.innerHTML = '<strong>' + namazTotalWeek + '</strong>';
-                        else if (i === 2) cell.innerHTML = '<strong>' + namazTotalMonth + '</strong>';
-                        else if (i === 4) cell.innerHTML = '<strong>' + namazTotalYear + '</strong>';
-                        else cell.textContent = '';
-                        cells.push(cell);
-                    }
+                    const todayPercentCell = document.createElement('td');
+                    todayPercentCell.textContent = '';
+
+                    const weekCellTotal = document.createElement('td');
+                    const weekStrong = document.createElement('strong');
+                    weekStrong.textContent = namazTotalWeek;
+                    weekCellTotal.appendChild(weekStrong);
+
+                    const weekPercentCell = document.createElement('td');
+                    weekPercentCell.textContent = '';
+
+                    const monthCellTotal = document.createElement('td');
+                    const monthStrong = document.createElement('strong');
+                    monthStrong.textContent = namazTotalMonth;
+                    monthCellTotal.appendChild(monthStrong);
+
+                    const monthPercentCell = document.createElement('td');
+                    monthPercentCell.textContent = '';
+
+                    const yearCellTotal = document.createElement('td');
+                    const yearStrong = document.createElement('strong');
+                    yearStrong.textContent = namazTotalYear;
+                    yearCellTotal.appendChild(yearStrong);
+
+                    const yearPercentCell = document.createElement('td');
+                    yearPercentCell.textContent = '';
+
+                    const emptyCell = document.createElement('td');
+                    emptyCell.textContent = '';
 
                     namazTotalRow.appendChild(labelCell);
                     namazTotalRow.appendChild(todayCell);
-                    cells.forEach(c => namazTotalRow.appendChild(c));
+                    namazTotalRow.appendChild(todayPercentCell);
+                    namazTotalRow.appendChild(weekCellTotal);
+                    namazTotalRow.appendChild(weekPercentCell);
+                    namazTotalRow.appendChild(monthCellTotal);
+                    namazTotalRow.appendChild(monthPercentCell);
+                    namazTotalRow.appendChild(yearCellTotal);
+                    namazTotalRow.appendChild(yearPercentCell);
+                    namazTotalRow.appendChild(emptyCell);
 
                     tbody.appendChild(namazTotalRow);
                 }
@@ -2473,6 +2532,9 @@ function updateStats() {
                 const sohbetStats = SohbetManager.getAllStats();
 
                 if (sohbetStats.today > 0 || sohbetStats.week > 0 || sohbetStats.total > 0) {
+                    // Section Sohbet
+                    tbody.appendChild(createSectionHeader('SOHBET', '🎬', '#fef9c3'));
+
                     // Ligne unique pour le total sohbet
                     const sohbetRow = document.createElement('tr');
                     sohbetRow.style.background = '#fef3c7'; // Jaune clair pour sohbet
