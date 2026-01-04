@@ -474,47 +474,54 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
 
         let html = `
             <div class="hatim-participation-view">
-                <!-- Header -->
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                    <h3 style="margin: 0 0 8px; display: flex; align-items: center; gap: 10px;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <!-- Header compact -->
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px;">
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 14px; border-radius: 20px; font-size: 13px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                         </svg>
-                        ${typeLabel}
-                    </h3>
-                    <p style="margin: 0; opacity: 0.9;">Kod: <strong style="letter-spacing: 2px;">${hatim.code}</strong></p>
-                    ${hatim.description ? `<p style="margin: 10px 0 0; font-size: 14px; opacity: 0.85;">${escapeHtml(hatim.description)}</p>` : ''}
-                    ${hatim.deadline ? `<p style="margin: 6px 0 0; font-size: 13px; opacity: 0.8;">Hedef: ${new Date(hatim.deadline).toLocaleDateString('tr-TR')}</p>` : ''}
+                        <span style="font-weight: 600;">${typeLabel}</span>
+                        <span style="opacity: 0.9; letter-spacing: 1px;">${hatim.code}</span>
+                    </div>
+                    ${hatim.deadline ? `<span style="font-size: 12px; color: #64748b;">Hedef: ${new Date(hatim.deadline).toLocaleDateString('tr-TR')}</span>` : ''}
+                    <button onclick="HatimManager.shareVia('${hatim.code}', '${hatim.type}')"
+                            style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #10b981; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Paylas
+                    </button>
+                    <button onclick="HatimManager.backToList()"
+                            style="display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; background: #f1f5f9; color: #475569; border: none; border-radius: 20px; cursor: pointer; font-size: 12px;">
+                        ← Geri
+                    </button>
+                </div>
+                ${hatim.description ? `<p style="margin: 0 0 12px; font-size: 13px; color: #64748b;">${escapeHtml(hatim.description)}</p>` : ''}
+
+                <!-- Progress compact -->
+                <div style="display: inline-flex; align-items: center; gap: 12px; background: #f8fafc; padding: 8px 14px; border-radius: 20px; margin-bottom: 12px; font-size: 13px;">
+                    <span style="font-weight: 600; color: #334155;">Tur ${hatim.current_round}</span>
+                    <div style="width: 80px; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                        <div style="width: ${progressPercent}%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+                    </div>
+                    <span style="color: #64748b;">${claimed}/${totalUnits}</span>
+                    ${hatim.current_round > 1 ? `<span style="color: #10b981; font-size: 11px;">(${hatim.current_round - 1} tur ✓)</span>` : ''}
                 </div>
 
-                <!-- Progress -->
-                <div style="background: #f8fafc; padding: 16px; border-radius: 10px; margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="font-weight: 600; color: #334155;">Tur ${hatim.current_round}</span>
-                        <span style="color: #64748b;">${claimed}/${totalUnits} alinmis</span>
-                    </div>
-                    <div style="height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden;">
-                        <div style="width: ${progressPercent}%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s;"></div>
-                    </div>
-                    ${hatim.current_round > 1 ? `<p style="margin: 10px 0 0; font-size: 13px; color: #10b981;">${hatim.current_round - 1} tur tamamlandi</p>` : ''}
-                </div>
-
-                <!-- Share button -->
-                <button onclick="HatimManager.shareVia('${hatim.code}', '${hatim.type}')"
-                        style="width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="18" cy="5" r="3"></circle>
-                        <circle cx="6" cy="12" r="3"></circle>
-                        <circle cx="18" cy="19" r="3"></circle>
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                    </svg>
-                    Paylas
-                </button>
-
-                <!-- Units grid -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(${isKuran ? '100%' : '90px'}, 1fr)); gap: 10px;">
+                <!-- Units list (collapsible) -->
+                <details open style="margin-top: 12px;">
+                    <summary style="cursor: pointer; padding: 8px 14px; background: #f1f5f9; border-radius: 20px; font-weight: 500; color: #334155; display: inline-flex; align-items: center; gap: 6px; list-style: none; font-size: 13px; margin-bottom: 10px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        ${totalUnits} ${unitLabel}
+                    </summary>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px; max-height: 400px; overflow-y: auto;">
         `;
 
         // Render units
@@ -523,72 +530,34 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
             const unitInfo = isKuran ? KURAN_CUZLER.find(c => c.cuz === i) : null;
 
             if (participation) {
-                // Claimed unit
+                // Claimed unit - compact chip
                 const bgColor = participation.is_completed ? '#dcfce7' : '#fef3c7';
                 const borderColor = participation.is_completed ? '#10b981' : '#f59e0b';
+                const checkMark = participation.is_completed ? ' ✓' : '';
 
-                if (isKuran) {
-                    html += `
-                        <div style="background: ${bgColor}; border: 2px solid ${borderColor}; border-radius: 10px; padding: 12px; display: flex; align-items: center; justify-content: space-between;">
-                            <div>
-                                <div style="font-weight: 600; color: #1e293b;">${i}. ${unitLabel}</div>
-                                <div style="font-size: 12px; color: #64748b; margin: 4px 0;">${unitInfo?.icerik || ''}</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-weight: 600; color: #374151;">${escapeHtml(participation.participant_name)}</div>
-                                ${participation.is_completed ? '<span style="color: #10b981; font-size: 13px;">✓ Tamamlandi</span>' : ''}
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div style="background: ${bgColor}; border: 2px solid ${borderColor}; border-radius: 10px; padding: 12px; text-align: center;">
-                            <div style="font-weight: 600; color: #1e293b; margin-bottom: 6px;">${i}. ${unitLabel}</div>
-                            <div style="font-size: 12px; color: #374151;">${escapeHtml(participation.participant_name)}</div>
-                            ${participation.is_completed ? '<div style="color: #10b981; margin-top: 4px;">✓</div>' : ''}
-                        </div>
-                    `;
-                }
+                html += `
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: ${bgColor}; border: 1px solid ${borderColor}; border-radius: 8px; padding: 8px 12px; font-size: 13px;">
+                        <span style="font-weight: 600; color: #1e293b;">${i}. ${unitLabel}</span>
+                        <span style="color: #374151;">${escapeHtml(participation.participant_name)}${checkMark}</span>
+                    </div>
+                `;
             } else {
-                // Available unit
-                if (isKuran) {
-                    html += `
-                        <div onclick="HatimManager.showClaimModal('${hatim.id}', ${hatim.current_round}, ${i}, '${unitLabel}')"
-                             style="background: white; border: 2px dashed #cbd5e1; border-radius: 10px; padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s;"
-                             onmouseover="this.style.borderColor='#667eea'; this.style.background='#f0f4ff';"
-                             onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='white';">
-                            <div>
-                                <div style="font-weight: 600; color: #1e293b;">${i}. ${unitLabel}</div>
-                                <div style="font-size: 12px; color: #64748b; margin: 4px 0;">${unitInfo?.icerik || ''}</div>
-                            </div>
-                            <div style="color: #667eea; font-weight: 500;">Sec →</div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div onclick="HatimManager.showClaimModal('${hatim.id}', ${hatim.current_round}, ${i}, '${unitLabel}')"
-                             style="background: white; border: 2px dashed #cbd5e1; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s;"
-                             onmouseover="this.style.borderColor='#667eea'; this.style.background='#f0f4ff';"
-                             onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='white';">
-                            <div style="font-weight: 600; color: #1e293b;">${i}. ${unitLabel}</div>
-                            <div style="font-size: 12px; color: #667eea; margin-top: 6px;">Sec</div>
-                        </div>
-                    `;
-                }
+                // Available unit - compact chip
+                html += `
+                    <div onclick="HatimManager.showClaimModal('${hatim.id}', ${hatim.current_round}, ${i}, '${unitLabel}')"
+                         style="display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 13px;"
+                         onmouseover="this.style.borderColor='#667eea'; this.style.background='#f0f4ff';"
+                         onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='white';">
+                        <span style="font-weight: 600; color: #1e293b;">${i}. ${unitLabel}</span>
+                        <span style="color: #667eea;">Sec →</span>
+                    </div>
+                `;
             }
         }
 
         html += `
-                </div>
-
-                <!-- Back button -->
-                <button onclick="HatimManager.backToList()"
-                        style="margin-top: 24px; padding: 12px 24px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                    Geri
-                </button>
+                    </div>
+                </details>
             </div>
         `;
 
