@@ -72,13 +72,14 @@ class HatimProvider {
             throw new Error('Hatim bulunamadi');
         }
 
-        // Calculer le progres
+        // Calculer le progres et inclure les participations
         const participations = await this.getParticipations(data.id, data.current_round);
         const claimedCount = participations.length;
         const completedCount = participations.filter(p => p.is_completed).length;
 
         return {
             ...data,
+            participations, // Inclure les participations pour éviter double fetch
             claimed_count: claimedCount,
             completed_count: completedCount,
             progress_percent: Math.round((claimedCount / data.total_units) * 100)
@@ -299,6 +300,44 @@ class HatimProvider {
             localStorage.setItem('hatim_device_id', deviceId);
         }
         return deviceId;
+    }
+
+    /**
+     * Demarrer un nouveau tour pour un Hatim
+     * @param {string} hatimId - ID du hatim
+     * @returns {Promise<number>} Nouveau numero de tour
+     */
+    async startNewRound(hatimId) {
+        // D'abord, obtenir le hatim actuel
+        const { data: hatim, error: getError } = await this.supabase
+            .from('hatims')
+            .select('current_round')
+            .eq('id', hatimId)
+            .single();
+
+        if (getError) {
+            console.error('Erreur get hatim for new round:', getError);
+            throw new Error('Hatim bulunamadı');
+        }
+
+        const newRound = hatim.current_round + 1;
+
+        // Mettre a jour le numero de tour
+        const { error: updateError } = await this.supabase
+            .from('hatims')
+            .update({
+                current_round: newRound,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', hatimId);
+
+        if (updateError) {
+            console.error('Erreur start new round:', updateError);
+            throw new Error('Yeni tur başlatılamadı');
+        }
+
+        console.log(`Nouveau tour demarre: ${newRound}`);
+        return newRound;
     }
 
     /**

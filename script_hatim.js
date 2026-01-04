@@ -468,6 +468,62 @@ Linke tıklayın ve uygulamayı yükleyin
         }
     },
 
+    /**
+     * Démarrer un nouveau tour pour le hatim actuel
+     * @param {string} hatimId - ID du hatim
+     */
+    async startNewRound(hatimId) {
+        if (!this.provider) {
+            showCustomAlert('Bağlantı hatası', 'error', 2500);
+            return;
+        }
+
+        // Confirmation avant de démarrer
+        const confirmed = await new Promise((resolve) => {
+            const modal = document.createElement('div');
+            modal.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: white; padding: 24px; border-radius: 16px; max-width: 320px; margin: 20px; text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 12px;">🔄</div>
+                        <h3 style="margin: 0 0 12px; color: #1f2937;">Yeni Tur Başlat</h3>
+                        <p style="margin: 0 0 20px; color: #6b7280; font-size: 14px;">
+                            Mevcut tur tamamlandı. Yeni tur başlatmak istediğinize emin misiniz?
+                        </p>
+                        <div style="display: flex; gap: 12px;">
+                            <button id="cancelNewRound" style="flex: 1; padding: 12px; background: #f1f5f9; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                                İptal
+                            </button>
+                            <button id="confirmNewRound" style="flex: 1; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                Başlat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            modal.querySelector('#cancelNewRound').onclick = () => {
+                modal.remove();
+                resolve(false);
+            };
+            modal.querySelector('#confirmNewRound').onclick = () => {
+                modal.remove();
+                resolve(true);
+            };
+        });
+
+        if (!confirmed) return;
+
+        try {
+            const newRound = await this.provider.startNewRound(hatimId);
+            showCustomAlert(`🎉 Tur ${newRound} başlatıldı!`, 'success', 2500);
+            this.refreshCurrentHatim();
+        } catch (error) {
+            console.error('Start new round error:', error);
+            showCustomAlert(error.message || 'Yeni tur başlatılamadı', 'error', 2500);
+        }
+    },
+
     // ========================================
     // VUE DE PARTICIPATION
     // ========================================
@@ -476,7 +532,26 @@ Linke tıklayın ve uygulamayı yükleyin
         const container = document.getElementById('hatimContent');
         if (!container) return;
 
-        const participations = await this.provider.getParticipations(hatim.id, hatim.current_round);
+        // Vérifier provider
+        if (!this.provider) {
+            container.innerHTML = '<div style="padding: 20px; text-align: center; color: #dc2626;">Bağlantı hatası. Sayfayı yenileyin.</div>';
+            return;
+        }
+
+        // Utiliser participations du cache si disponibles, sinon fetch
+        let participations;
+        if (hatim.participations && Array.isArray(hatim.participations)) {
+            participations = hatim.participations;
+        } else {
+            try {
+                participations = await this.provider.getParticipations(hatim.id, hatim.current_round);
+            } catch (error) {
+                console.error('Participations fetch error:', error);
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #dc2626;">Veriler yüklenemedi. Lütfen tekrar deneyin.</div>';
+                return;
+            }
+        }
+
         const claimedMap = new Map(participations.map(p => [p.unit_number, p]));
 
         const isKuran = hatim.type === 'kuran';
@@ -492,6 +567,30 @@ Linke tıklayın ve uygulamayı yükleyin
         // Current user's device ID
         const myDeviceId = this.provider.getDeviceId();
         const myParticipations = participations.filter(p => p.device_id === myDeviceId);
+
+        // Deadline status
+        let deadlineStatus = null; // null, 'ok', 'soon', 'passed'
+        let deadlineMessage = '';
+        if (hatim.deadline) {
+            const deadlineDate = new Date(hatim.deadline);
+            deadlineDate.setHours(23, 59, 59, 999); // Fin de la journée
+            const now = new Date();
+            const daysLeft = Math.ceil((deadlineDate - now) / (1000 * 60 * 60 * 24));
+
+            if (daysLeft < 0) {
+                deadlineStatus = 'passed';
+                deadlineMessage = 'Süre doldu!';
+            } else if (daysLeft === 0) {
+                deadlineStatus = 'soon';
+                deadlineMessage = 'Bugün son gün!';
+            } else if (daysLeft <= 3) {
+                deadlineStatus = 'soon';
+                deadlineMessage = `${daysLeft} gün kaldı`;
+            } else {
+                deadlineStatus = 'ok';
+                deadlineMessage = new Date(hatim.deadline).toLocaleDateString('tr-TR');
+            }
+        }
 
         // Escape HTML helper
         const escapeHtml = (text) => {
@@ -519,11 +618,22 @@ Linke tıklayın ve uygulamayı yükleyin
                         </button>
                     </div>
                     ${hatim.description ? `<p style="margin: 0 0 8px; font-size: 13px; opacity: 0.9;">${escapeHtml(hatim.description)}</p>` : ''}
-                    <div style="display: flex; gap: 16px; font-size: 12px; opacity: 0.85;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; opacity: 0.85;">
                         <span>👤 ${escapeHtml(hatim.creator_name)}</span>
-                        ${hatim.deadline ? `<span>📅 ${new Date(hatim.deadline).toLocaleDateString('tr-TR')}</span>` : ''}
+                        ${deadlineStatus ? `
+                            <span style="${deadlineStatus === 'passed' ? 'background: #fee2e2; color: #dc2626; padding: 2px 6px; border-radius: 4px; font-weight: 600;' :
+                                          deadlineStatus === 'soon' ? 'background: #fef3c7; color: #d97706; padding: 2px 6px; border-radius: 4px; font-weight: 600;' :
+                                          ''}">
+                                ${deadlineStatus === 'passed' ? '⚠️' : '📅'} ${deadlineMessage}
+                            </span>
+                        ` : ''}
                         <span>🔄 Tur ${hatim.current_round}</span>
                     </div>
+                    ${deadlineStatus === 'passed' ? `
+                    <div style="margin-top: 10px; padding: 8px 12px; background: rgba(220, 38, 38, 0.2); border-radius: 6px; font-size: 12px;">
+                        ⚠️ Son tarih geçti. Yeni katılım kabul edilmiyor.
+                    </div>
+                    ` : ''}
                 </div>
 
                 <!-- CARD 2: Progress -->
@@ -537,11 +647,24 @@ Linke tıklayın ve uygulamayı yükleyin
                         </div>
                         <span style="font-weight: 600; color: #334155; font-size: 14px;">${progressPercent}%</span>
                     </div>
-                    <div style="display: flex; gap: 16px; font-size: 13px; color: #64748b;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #64748b;">
                         <span>✅ ${claimed} alındı</span>
                         <span>⏳ ${available} kaldı</span>
                         ${hatim.current_round > 1 ? `<span style="color: #10b981;">🏆 ${hatim.current_round - 1} tur tamamlandı</span>` : ''}
                     </div>
+                    ${available === 0 ? `
+                    <div style="margin-top: 12px; padding: 12px; background: #dcfce7; border-radius: 8px; border: 1px solid #10b981;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 20px;">🎉</span>
+                            <span style="font-weight: 600; color: #166534;">Bu tur tamamlandı!</span>
+                        </div>
+                        <p style="margin: 0 0 12px; font-size: 13px; color: #166534;">Tüm ${unitLabel}ler alındı. Yeni tur başlatabilirsiniz.</p>
+                        <button onclick="HatimManager.startNewRound('${hatim.id}')"
+                                style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                            🔄 Tur ${hatim.current_round + 1} Başlat
+                        </button>
+                    </div>
+                    ` : ''}
                 </div>
 
                 <!-- CARD 3: My Cüz (if any) - Collapsible -->
@@ -629,15 +752,23 @@ Linke tıklayın ve uygulamayı yükleyin
                     </div>
                 `;
             } else {
-                // Available - clickable
-                html += `
-                    <div onclick="HatimManager.showClaimModal('${hatim.id}', ${hatim.current_round}, ${i}, '${unitLabel}')"
-                         style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: white; border: 2px dashed #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s;"
-                         onmouseover="this.style.borderColor='#667eea'; this.style.background='#eef2ff'; this.style.borderStyle='solid';"
-                         onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='white'; this.style.borderStyle='dashed';">
-                        <span style="font-weight: 700; font-size: 14px; color: #667eea;">${i}</span>
-                    </div>
-                `;
+                // Available - clickable (unless deadline passed)
+                if (deadlineStatus === 'passed') {
+                    html += `
+                        <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 8px; opacity: 0.6; cursor: not-allowed;">
+                            <span style="font-weight: 700; font-size: 14px; color: #94a3b8;">${i}</span>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div onclick="HatimManager.showClaimModal('${hatim.id}', ${hatim.current_round}, ${i}, '${unitLabel}')"
+                             style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: white; border: 2px dashed #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s;"
+                             onmouseover="this.style.borderColor='#667eea'; this.style.background='#eef2ff'; this.style.borderStyle='solid';"
+                             onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='white'; this.style.borderStyle='dashed';">
+                            <span style="font-weight: 700; font-size: 14px; color: #667eea;">${i}</span>
+                        </div>
+                    `;
+                }
             }
         }
 
