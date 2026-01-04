@@ -223,16 +223,15 @@ async function doCreateGroup() {
   const createBtn = document.querySelector('[onclick*="doCreateGroup"]')
   if (createBtn) createBtn.disabled = true
 
-  try {
-    const groupNameInput = document.getElementById('groupNameInput').value || 'Zikir Grubu'
-    const creatorNameInput = document.getElementById('creatorNameInput').value
+  const groupNameInput = document.getElementById('groupNameInput').value || 'Zikir Grubu'
+  const creatorNameInput = document.getElementById('creatorNameInput').value
 
-    // ⚡ FIX: Valider le nom du créateur
-    const creatorValidation = Validators.validateParticipantName(creatorNameInput)
-    if (!creatorValidation.valid) {
-      showCustomAlert(`❌ ${creatorValidation.error}`, 'warning', 2500)
-      return
-    }
+  // ⚡ FIX: Valider le nom du créateur
+  const creatorValidation = Validators.validateParticipantName(creatorNameInput)
+  if (!creatorValidation.valid) {
+    showCustomAlert(`❌ ${creatorValidation.error}`, 'warning', 2500)
+    return
+  }
 
   // ⚡ FIX: Valider le nom du groupe
   const groupValidation = Validators.validateGroupName(groupNameInput)
