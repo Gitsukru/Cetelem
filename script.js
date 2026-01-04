@@ -2250,6 +2250,159 @@ function updateStats() {
                     tbody.appendChild(booksTotalRow);
                 }
             }
+
+            // Ajouter les namazlar au tableau
+            if (typeof NamazManager !== 'undefined') {
+                const namazCategories = NamazManager.getCategories();
+                let namazTotalToday = 0, namazTotalWeek = 0, namazTotalMonth = 0, namazTotalYear = 0;
+
+                namazCategories.forEach(cat => {
+                    const row = document.createElement('tr');
+                    row.style.background = '#f0fdf4'; // Vert clair pour les namazlar
+
+                    const stats = NamazManager.getStatisticsForCategory(cat);
+                    namazTotalToday += stats.day;
+                    namazTotalWeek += stats.week;
+                    namazTotalMonth += stats.month;
+                    namazTotalYear += stats.year;
+
+                    const catCell = document.createElement('td');
+                    catCell.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 4px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>';
+                    catCell.appendChild(document.createTextNode(cat));
+
+                    const dayCell = document.createElement('td');
+                    dayCell.textContent = stats.day;
+
+                    const dayPercentCell = document.createElement('td');
+                    dayPercentCell.style.textAlign = 'center';
+                    dayPercentCell.textContent = '-';
+
+                    const weekCell = document.createElement('td');
+                    weekCell.textContent = stats.week;
+
+                    const weekPercentCell = document.createElement('td');
+                    weekPercentCell.style.textAlign = 'center';
+                    weekPercentCell.textContent = '-';
+
+                    const monthCell = document.createElement('td');
+                    monthCell.textContent = stats.month;
+
+                    const monthPercentCell = document.createElement('td');
+                    monthPercentCell.style.textAlign = 'center';
+                    monthPercentCell.textContent = '-';
+
+                    const yearCell = document.createElement('td');
+                    yearCell.textContent = stats.year;
+
+                    const yearPercentCell = document.createElement('td');
+                    yearPercentCell.style.textAlign = 'center';
+                    yearPercentCell.textContent = '-';
+
+                    const noteCell = document.createElement('td');
+                    noteCell.textContent = '';
+
+                    row.appendChild(catCell);
+                    row.appendChild(dayCell);
+                    row.appendChild(dayPercentCell);
+                    row.appendChild(weekCell);
+                    row.appendChild(weekPercentCell);
+                    row.appendChild(monthCell);
+                    row.appendChild(monthPercentCell);
+                    row.appendChild(yearCell);
+                    row.appendChild(yearPercentCell);
+                    row.appendChild(noteCell);
+
+                    tbody.appendChild(row);
+                });
+
+                // Total namazlar
+                if (namazCategories.length > 0) {
+                    const namazTotalRow = document.createElement('tr');
+                    namazTotalRow.className = 'totals-row';
+                    namazTotalRow.style.background = '#dcfce7';
+
+                    const labelCell = document.createElement('td');
+                    labelCell.innerHTML = '<strong>TOPLAM NAMAZLAR</strong>';
+
+                    const todayCell = document.createElement('td');
+                    todayCell.innerHTML = '<strong>' + namazTotalToday + '</strong>';
+
+                    const cells = [];
+                    for (let i = 0; i < 8; i++) {
+                        const cell = document.createElement('td');
+                        if (i === 0) cell.innerHTML = '<strong>' + namazTotalWeek + '</strong>';
+                        else if (i === 2) cell.innerHTML = '<strong>' + namazTotalMonth + '</strong>';
+                        else if (i === 4) cell.innerHTML = '<strong>' + namazTotalYear + '</strong>';
+                        else cell.textContent = '';
+                        cells.push(cell);
+                    }
+
+                    namazTotalRow.appendChild(labelCell);
+                    namazTotalRow.appendChild(todayCell);
+                    cells.forEach(c => namazTotalRow.appendChild(c));
+
+                    tbody.appendChild(namazTotalRow);
+                }
+            }
+
+            // Ajouter les sohbets au tableau
+            if (typeof SohbetManager !== 'undefined') {
+                const sohbetStats = SohbetManager.getAllStats();
+
+                if (sohbetStats.today > 0 || sohbetStats.week > 0 || sohbetStats.total > 0) {
+                    // Ligne unique pour le total sohbet
+                    const sohbetRow = document.createElement('tr');
+                    sohbetRow.style.background = '#fef3c7'; // Jaune clair pour sohbet
+
+                    const catCell = document.createElement('td');
+                    catCell.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 4px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>';
+                    catCell.appendChild(document.createTextNode('Sohbet (dakika)'));
+
+                    const dayCell = document.createElement('td');
+                    dayCell.textContent = sohbetStats.today + ' dk';
+
+                    const dayPercentCell = document.createElement('td');
+                    dayPercentCell.style.textAlign = 'center';
+                    dayPercentCell.textContent = '-';
+
+                    const weekCell = document.createElement('td');
+                    weekCell.textContent = sohbetStats.week + ' dk';
+
+                    const weekPercentCell = document.createElement('td');
+                    weekPercentCell.style.textAlign = 'center';
+                    weekPercentCell.textContent = '-';
+
+                    const monthCell = document.createElement('td');
+                    monthCell.textContent = sohbetStats.month + ' dk';
+
+                    const monthPercentCell = document.createElement('td');
+                    monthPercentCell.style.textAlign = 'center';
+                    monthPercentCell.textContent = '-';
+
+                    const yearCell = document.createElement('td');
+                    yearCell.textContent = (sohbetStats.year || sohbetStats.total) + ' dk';
+
+                    const yearPercentCell = document.createElement('td');
+                    yearPercentCell.style.textAlign = 'center';
+                    yearPercentCell.textContent = '-';
+
+                    const noteCell = document.createElement('td');
+                    noteCell.textContent = '';
+
+                    sohbetRow.appendChild(catCell);
+                    sohbetRow.appendChild(dayCell);
+                    sohbetRow.appendChild(dayPercentCell);
+                    sohbetRow.appendChild(weekCell);
+                    sohbetRow.appendChild(weekPercentCell);
+                    sohbetRow.appendChild(monthCell);
+                    sohbetRow.appendChild(monthPercentCell);
+                    sohbetRow.appendChild(yearCell);
+                    sohbetRow.appendChild(yearPercentCell);
+                    sohbetRow.appendChild(noteCell);
+
+                    tbody.appendChild(sohbetRow);
+                }
+            }
         }
 
         // Mettre à jour les totaux
