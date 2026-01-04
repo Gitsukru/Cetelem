@@ -195,7 +195,7 @@
                 <!-- Header avec titre et bouton son -->
                 <div class="counter-header-mobile">
                     <h2 class="counter-title">Zikir</h2>
-                    <button class="tavsiye-btn" onclick="showTavsiyeModal()" title="Tavsiye Edilenler">
+                    <button class="tavsiye-btn" onclick="showTavsiyeModal('zikir')" title="Tavsiye Edilenler">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                         </svg>
@@ -272,14 +272,21 @@
         <div id="books" class="tab-content">
             <div class="management-section">
                 <div class="books-header">
-                    <h2 style="display: flex; align-items: center; gap: 10px;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                        </svg>
-                        Kitap Takibi
-                    </h2>
-                    <p style="color: #64748b; margin-top: 8px;">Okuduğunuz kitapları ve günlük sayfa sayınızı takip edin</p>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <h2 style="display: flex; align-items: center; gap: 10px; margin: 0;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            Kitap Takibi
+                        </h2>
+                        <button class="tavsiye-btn" onclick="showTavsiyeModal('kitap')" title="Tavsiye Edilenler">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                    <p style="color: #64748b; margin-top: 8px;">Okudugunuz kitaplari ve gunluk sayfa sayinizi takip edin</p>
                 </div>
 
                 <!-- Buton pour ajouter un nouveau livre -->
@@ -339,7 +346,7 @@
                 <!-- Header avec titre et bouton -->
                 <div class="counter-header-mobile">
                     <h2 class="counter-title">Namaz</h2>
-                    <button class="tavsiye-btn" onclick="showNamazTavsiyeModal()" title="Tavsiye Edilen Namazlar">
+                    <button class="tavsiye-btn" onclick="showTavsiyeModal('namaz')" title="Tavsiye Edilen Namazlar">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                         </svg>

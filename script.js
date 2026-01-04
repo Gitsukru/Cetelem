@@ -1484,7 +1484,12 @@ const TAVSIYE_ITEMS = {
         { name: 'Kitap Okuma', detail: '10 sayfa', dailyGoal: 10 }
     ],
     namaz: [
-        { name: 'Teheccud Namazi', detail: '1 defa' }
+        { name: 'Teheccud Namazi', detail: '1 defa' },
+        { name: 'Evvabin Namazi', detail: '1 defa' },
+        { name: 'Kusluk Namazi', detail: '1 defa' },
+        { name: 'Teravih Namazi', detail: '1 defa' },
+        { name: 'Tesbih Namazi', detail: '1 defa' },
+        { name: 'Hacet Namazi', detail: '1 defa' }
     ],
     kuran: [
         { name: 'Kuran-i Kerim', detail: '3 sayfa', dailyGoal: 3, totalPages: 604 }
@@ -1529,14 +1534,28 @@ function checkTavsiyeItemExists(category, itemName) {
     }
 }
 
+// Mapping des filtres vers les categories TAVSIYE_ITEMS
+const TAVSIYE_FILTER_MAP = {
+    zikir: ['zikir'],
+    kitap: ['kitap', 'kuran', 'cevsen'],
+    namaz: ['namaz'],
+    all: ['zikir', 'kitap', 'namaz', 'kuran', 'cevsen']
+};
+
 // Afficher le modal des recommandations
-function showTavsiyeModal() {
+// filter: 'zikir', 'kitap', 'namaz', ou 'all' (defaut pour premiere utilisation)
+function showTavsiyeModal(filter = 'all') {
+    const categoriesToShow = TAVSIYE_FILTER_MAP[filter] || TAVSIYE_FILTER_MAP.all;
+    const isMultiCategory = categoriesToShow.length > 1;
+
     // Generer le HTML pour chaque categorie
     let allItemsHTML = '';
     let itemIndex = 0;
 
-    Object.keys(TAVSIYE_ITEMS).forEach(category => {
+    categoriesToShow.forEach(category => {
         const items = TAVSIYE_ITEMS[category];
+        if (!items || items.length === 0) return;
+
         const categoryLabel = TAVSIYE_CATEGORY_LABELS[category];
 
         const itemsHTML = items.map(item => {
@@ -1562,19 +1581,37 @@ function showTavsiyeModal() {
             `;
         }).join('');
 
-        allItemsHTML += `
-            <div class="tavsiye-category-section">
-                <div class="tavsiye-category-header">${categoryLabel}</div>
-                ${itemsHTML}
-            </div>
-        `;
+        // Afficher le header de categorie seulement si multi-categories
+        if (isMultiCategory) {
+            allItemsHTML += `
+                <div class="tavsiye-category-section">
+                    <div class="tavsiye-category-header">${categoryLabel}</div>
+                    ${itemsHTML}
+                </div>
+            `;
+        } else {
+            allItemsHTML += `
+                <div class="tavsiye-category-section">
+                    ${itemsHTML}
+                </div>
+            `;
+        }
     });
+
+    // Titre du modal selon le filtre
+    const modalTitles = {
+        zikir: 'Tavsiye Edilen Zikirler',
+        kitap: 'Tavsiye Edilen Kitaplar',
+        namaz: 'Tavsiye Edilen Namazlar',
+        all: 'Tavsiye Edilenler'
+    };
+    const modalTitle = modalTitles[filter] || modalTitles.all;
 
     const modalHTML = `
         <div class="tavsiye-modal-overlay" onclick="if(event.target === this) closeTavsiyeModal()">
-            <div class="tavsiye-modal tavsiye-modal-expanded">
+            <div class="tavsiye-modal ${isMultiCategory ? 'tavsiye-modal-expanded' : ''}">
                 <div class="tavsiye-modal-header">
-                    <h3>Tavsiye Edilenler</h3>
+                    <h3>${modalTitle}</h3>
                     <button class="tavsiye-modal-close" onclick="closeTavsiyeModal()">X</button>
                 </div>
                 <div class="tavsiye-modal-body">
@@ -1597,8 +1634,10 @@ function showTavsiyeModal() {
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-    // Marquer comme vu (pour ne pas reafficher automatiquement)
-    localStorage.setItem('tavsiyeModalShown', 'true');
+    // Marquer comme vu seulement pour le modal 'all' (premiere utilisation)
+    if (filter === 'all') {
+        localStorage.setItem('tavsiyeModalShown', 'true');
+    }
 }
 
 // Fermer le modal tavsiye
