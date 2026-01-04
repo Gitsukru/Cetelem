@@ -1,13 +1,32 @@
 // Variables globales - SYSTÈME SIMPLIFIÉ
 // Test système de mise à jour automatique - Version 3 (TEST FINAL)
-let categories = JSON.parse(localStorage.getItem('categories')) || ['Subhan Allah', 'Elhamdulillah', 'Allahu Ekber'];
-let counters = JSON.parse(localStorage.getItem('counters')) || {};
+
+/**
+ * Helper sécurisé pour JSON.parse avec localStorage
+ * Évite les crashs si les données sont corrompues
+ */
+function safeJSONParse(key, defaultValue = null) {
+    try {
+        const data = localStorage.getItem(key);
+        if (!data) return defaultValue;
+        const parsed = JSON.parse(data);
+        return parsed !== null ? parsed : defaultValue;
+    } catch (error) {
+        console.error(`Erreur parsing localStorage[${key}]:`, error);
+        // Nettoyer la donnée corrompue
+        localStorage.removeItem(key);
+        return defaultValue;
+    }
+}
+
+let categories = safeJSONParse('categories', ['Subhan Allah', 'Elhamdulillah', 'Allahu Ekber']);
+let counters = safeJSONParse('counters', {});
 let currentCategory = '';
 let currentDate = new Date().toDateString();
 let visualOffset = 0; // Décalage visuel pour l'affichage
 
 // Métadonnées et historique
-let categoryMetadata = JSON.parse(localStorage.getItem('categoryMetadata')) || {};
+let categoryMetadata = safeJSONParse('categoryMetadata', {});
 // Historique supprimé - fonctionnalité retirée
 // let deletedHistory = JSON.parse(localStorage.getItem('deletedHistory')) || [];
 

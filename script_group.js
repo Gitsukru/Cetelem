@@ -208,17 +208,29 @@ function showJoinFormUI() {
   // Les sub-tabs sont masqués automatiquement
 }
 
+// Flag pour éviter double-clic
+let _isCreatingGroup = false
+let _isJoiningGroup = false
+
 // Create a new group
 async function doCreateGroup() {
-  const groupNameInput = document.getElementById('groupNameInput').value || 'Zikir Grubu'
-  const creatorNameInput = document.getElementById('creatorNameInput').value
+  // Protection double-clic
+  if (_isCreatingGroup) return
+  _isCreatingGroup = true
 
-  // ⚡ FIX: Valider le nom du créateur
-  const creatorValidation = Validators.validateParticipantName(creatorNameInput)
-  if (!creatorValidation.valid) {
-    showCustomAlert(`❌ ${creatorValidation.error}`, 'warning', 2500)
-    return
-  }
+  const createBtn = document.querySelector('[onclick*="doCreateGroup"]')
+  if (createBtn) createBtn.disabled = true
+
+  try {
+    const groupNameInput = document.getElementById('groupNameInput').value || 'Zikir Grubu'
+    const creatorNameInput = document.getElementById('creatorNameInput').value
+
+    // ⚡ FIX: Valider le nom du créateur
+    const creatorValidation = Validators.validateParticipantName(creatorNameInput)
+    if (!creatorValidation.valid) {
+      showCustomAlert(`❌ ${creatorValidation.error}`, 'warning', 2500)
+      return
+    }
 
   // ⚡ FIX: Valider le nom du groupe
   const groupValidation = Validators.validateGroupName(groupNameInput)
@@ -270,11 +282,24 @@ async function doCreateGroup() {
     console.error('Erreur création groupe:', error)
     showCustomAlert(`Grup oluşturulamadı!<br>${error.message}`, 'error', 4000)
     hideStatus()
+  } finally {
+    // Reset flag et bouton
+    _isCreatingGroup = false
+    const createBtn = document.querySelector('[onclick*="doCreateGroup"]')
+    if (createBtn) createBtn.disabled = false
   }
 }
 
 // Join an existing group
 async function doJoinGroup() {
+  // Protection double-clic
+  if (_isJoiningGroup) return
+  _isJoiningGroup = true
+
+  const joinBtn = document.querySelector('[onclick*="doJoinGroup"]')
+  if (joinBtn) joinBtn.disabled = true
+
+  try {
   const groupCodeInput = document.getElementById('joinCodeInput').value
   const participantNameInput = document.getElementById('participantNameInput').value
 
@@ -335,6 +360,11 @@ async function doJoinGroup() {
     console.error('Erreur rejoindre groupe:', error)
     showCustomAlert(`Gruba katılamadı!<br>${error.message}`, 'error', 4000)
     hideStatus()
+  } finally {
+    // Reset flag et bouton
+    _isJoiningGroup = false
+    const joinBtn = document.querySelector('[onclick*="doJoinGroup"]')
+    if (joinBtn) joinBtn.disabled = false
   }
 }
 
@@ -686,7 +716,15 @@ function shareCode() {
 
 // Sauvegarder un groupe dans l'historique
 function saveGroupToHistory(groupCode, groupName, isCreator) {
-  const history = JSON.parse(localStorage.getItem('groupHistory') || '[]')
+  // Utiliser safeJSONParse si disponible, sinon try-catch local
+  let history = [];
+  try {
+    history = JSON.parse(localStorage.getItem('groupHistory') || '[]');
+    if (!Array.isArray(history)) history = [];
+  } catch (e) {
+    console.error('Erreur parsing groupHistory:', e);
+    history = [];
+  }
 
   // Vérifier si ce groupe existe déjà
   const existingIndex = history.findIndex(item => item.code === groupCode)
@@ -716,37 +754,44 @@ async function displayGroupHistory() {
   const historyContainer = document.getElementById('groupHistory')
   if (!historyContainer) return
 
-  const history = JSON.parse(localStorage.getItem('groupHistory') || '[]')
+  let history = [];
+  try {
+    history = JSON.parse(localStorage.getItem('groupHistory') || '[]');
+    if (!Array.isArray(history)) history = [];
+  } catch (e) {
+    console.error('Erreur parsing groupHistory:', e);
+    history = [];
+  }
 
   if (history.length === 0) {
     historyContainer.innerHTML = ''
     return
   }
 
+  // OPTIMISATION: Une seule requête pour tous les groupes (évite N+1)
+  let activeGroups = new Set()
+  try {
+    if (groupManager?.provider?.supabase) {
+      const codes = history.map(item => item.code)
+      const { data } = await groupManager.provider.supabase
+        .from('groups')
+        .select('code')
+        .in('code', codes)
+
+      if (data) {
+        data.forEach(g => activeGroups.add(g.code))
+      }
+    }
+  } catch (e) {
+    console.error('Erreur vérification groupes:', e)
+  }
+
   let html = '<div class="history-title">Gruplar</div><div class="history-list">'
 
   for (const item of history) {
-    // Vérifier si le groupe existe toujours
-    let statusClass = 'inactive'
-    let statusText = 'Kapalı'
-
-    try {
-      if (groupManager && groupManager.provider && groupManager.provider.supabase) {
-        const { data } = await groupManager.provider.supabase
-          .from('groups')
-          .select('id')
-          .eq('code', item.code)
-          .maybeSingle()
-
-        if (data) {
-          statusClass = 'active'
-          statusText = 'Aktif'
-        }
-      }
-    } catch (e) {
-      // Groupe n'existe plus
-    }
-
+    const isActive = activeGroups.has(item.code)
+    const statusClass = isActive ? 'active' : 'inactive'
+    const statusText = isActive ? 'Aktif' : 'Kapalı'
     const timeAgo = getTimeAgo(item.lastAccess)
 
     html += `
@@ -785,7 +830,14 @@ async function rejoinGroup(code) {
     }
 
     // Récupérer le nom de l'utilisateur depuis l'historique
-    const history = JSON.parse(localStorage.getItem('groupHistory') || '[]')
+    let history = [];
+    try {
+      history = JSON.parse(localStorage.getItem('groupHistory') || '[]');
+      if (!Array.isArray(history)) history = [];
+    } catch (e) {
+      console.error('Erreur parsing groupHistory:', e);
+      history = [];
+    }
     const historyItem = history.find(item => item.code === code)
 
     if (!historyItem) return

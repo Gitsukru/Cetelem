@@ -426,6 +426,12 @@ function showGroupTabs() {
  * Masquer les sub-tabs (quand pas de groupe actif)
  */
 function hideGroupTabs() {
+  // Nettoyer l'interval de sync (évite memory leak)
+  if (window.syncTimeInterval) {
+    clearInterval(window.syncTimeInterval);
+    window.syncTimeInterval = null;
+  }
+
   // Afficher les boutons Créer/Rejoindre
   const modeSelection = document.getElementById('modeSelection');
   if (modeSelection) {

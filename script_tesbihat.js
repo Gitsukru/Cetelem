@@ -16,6 +16,9 @@ class TesbihatSlider {
     this.touchStartY = 0;
     this.touchEndY = 0;
     this.minSwipeDistance = 50;
+
+    // Flag pour éviter memory leak (re-attacher listeners)
+    this._namazButtonsSetup = false;
   }
 
   /**
@@ -81,9 +84,17 @@ class TesbihatSlider {
   }
 
   /**
-   * Setup boutons namaz et langue - appelé à chaque render
+   * Setup boutons namaz et langue - appelé UNE SEULE FOIS (évite memory leak)
    */
   setupNamazButtons() {
+    // Ne pas re-attacher si déjà fait (évite memory leak)
+    if (this._namazButtonsSetup) {
+      // Juste mettre à jour l'apparence des boutons
+      this.updateNamazButtonsUI();
+      this.updateLanguageButtons();
+      return;
+    }
+
     // Setup boutons navbar
     const namazButtons = document.querySelectorAll('.namaz-btn');
     namazButtons.forEach((btn, index) => {
@@ -120,7 +131,23 @@ class TesbihatSlider {
       });
     }
 
+    // Marquer comme configuré
+    this._namazButtonsSetup = true;
     this.updateLanguageButtons();
+  }
+
+  /**
+   * Mettre à jour l'apparence des boutons namaz (sans réattacher listeners)
+   */
+  updateNamazButtonsUI() {
+    const namazButtons = document.querySelectorAll('.namaz-btn');
+    namazButtons.forEach((btn, index) => {
+      if (index === this.currentNamazIndex) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
   }
 
   /**
