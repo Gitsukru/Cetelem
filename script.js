@@ -1469,55 +1469,129 @@ function finalizeAddZikir() {
 // TAVSIYE EDILEN ZIKIRLER (Zikirs Conseillés)
 // ========================================
 
-// Liste des zikirs conseillés (Kuran/Cevşen → Kitap, Teheccüd → Namaz, Kaset/Video → Sohbet)
-const TAVSIYE_ZIKIRLER = [
-    { name: 'Estağfirullah', detail: '100 defa' },
-    { name: 'Ya Baki entel baki', detail: '33 defa' },
-    { name: 'Salavat', detail: '100 defa' },
-    { name: 'La ilahe illa ente sübhaneke inni küntü minezzalimin', detail: '100 defa' },
-    { name: 'Subhanallahi ve bihamdihi Subhanallahil azim', detail: '100 defa' },
-    { name: 'Ya Latif', detail: '129 defa' }
-];
+// Liste des recommandations par categorie
+const TAVSIYE_ITEMS = {
+    zikir: [
+        { name: 'Estagfirullah', detail: '100 defa' },
+        { name: 'Ya Baki entel baki', detail: '33 defa' },
+        { name: 'Salavat', detail: '100 defa' },
+        { name: 'La ilahe illa ente subhaneke inni kuntu minezzalimin', detail: '100 defa' },
+        { name: 'Subhanallahi ve bihamdihi Subhanallahil azim', detail: '100 defa' },
+        { name: 'Ya Latif', detail: '129 defa' }
+    ],
+    kitap: [
+        { name: 'Kitap Okuma', detail: '10 sayfa', dailyGoal: 10 }
+    ],
+    sohbet: [
+        { name: 'Sohbet Kaset', detail: '1 adet' }
+    ],
+    namaz: [
+        { name: 'Teheccud Namazi', detail: '1 defa' }
+    ],
+    kuran: [
+        { name: 'Kuran-i Kerim', detail: '3 sayfa', dailyGoal: 3, totalPages: 604 }
+    ],
+    cevsen: [
+        { name: 'Cevsen', detail: '35 bab', dailyGoal: 35, totalPages: 100 }
+    ]
+};
 
-// Afficher le modal des zikirs conseillés
+// Labels pour les categories
+const TAVSIYE_CATEGORY_LABELS = {
+    zikir: 'Zikirler',
+    kitap: 'Kitap',
+    sohbet: 'Sohbet',
+    namaz: 'Namaz',
+    kuran: 'Kuran',
+    cevsen: 'Cevsen'
+};
+
+// Verifier si un item existe deja
+function checkTavsiyeItemExists(category, itemName) {
+    switch (category) {
+        case 'zikir':
+            return categories.includes(itemName);
+        case 'kitap':
+        case 'kuran':
+        case 'cevsen':
+            if (typeof BooksManager !== 'undefined') {
+                const books = BooksManager.getBooks();
+                return books.some(b => b.name === itemName);
+            }
+            return false;
+        case 'sohbet':
+            return categories.includes(itemName);
+        case 'namaz':
+            if (typeof NamazManager !== 'undefined') {
+                const namazCats = NamazManager.getCategories();
+                return namazCats.includes(itemName);
+            }
+            return false;
+        default:
+            return false;
+    }
+}
+
+// Afficher le modal des recommandations
 function showTavsiyeModal() {
-    // Générer la liste HTML des zikirs
-    const zikirListHTML = TAVSIYE_ZIKIRLER.map((zikir, index) => {
-        const alreadyExists = categories.includes(zikir.name);
-        return `
-            <label class="tavsiye-item ${alreadyExists ? 'already-added' : ''}" ${alreadyExists ? 'title="Bu zikir zaten ekli"' : ''}>
-                <input type="checkbox"
-                       value="${index}"
-                       ${alreadyExists ? 'disabled checked' : ''}
-                       onchange="updateTavsiyeAddButton()">
-                <div class="tavsiye-item-info">
-                    <span class="tavsiye-item-name">${zikir.name}</span>
-                    <span class="tavsiye-item-detail">${zikir.detail}</span>
-                </div>
-                ${alreadyExists ? '<span class="tavsiye-item-badge">Eklendi ✓</span>' : ''}
-            </label>
+    // Generer le HTML pour chaque categorie
+    let allItemsHTML = '';
+    let itemIndex = 0;
+
+    Object.keys(TAVSIYE_ITEMS).forEach(category => {
+        const items = TAVSIYE_ITEMS[category];
+        const categoryLabel = TAVSIYE_CATEGORY_LABELS[category];
+
+        const itemsHTML = items.map(item => {
+            const alreadyExists = checkTavsiyeItemExists(category, item.name);
+            const currentIndex = itemIndex++;
+            return `
+                <label class="tavsiye-item ${alreadyExists ? 'already-added' : ''}" ${alreadyExists ? 'title="Bu zaten ekli"' : ''}>
+                    <input type="checkbox"
+                           value="${currentIndex}"
+                           data-category="${category}"
+                           data-name="${item.name}"
+                           data-detail="${item.detail}"
+                           data-daily-goal="${item.dailyGoal || ''}"
+                           data-total-pages="${item.totalPages || ''}"
+                           ${alreadyExists ? 'disabled checked' : ''}
+                           onchange="updateTavsiyeAddButton()">
+                    <div class="tavsiye-item-info">
+                        <span class="tavsiye-item-name">${item.name}</span>
+                        <span class="tavsiye-item-detail">${item.detail}</span>
+                    </div>
+                    ${alreadyExists ? '<span class="tavsiye-item-badge">Eklendi</span>' : ''}
+                </label>
+            `;
+        }).join('');
+
+        allItemsHTML += `
+            <div class="tavsiye-category-section">
+                <div class="tavsiye-category-header">${categoryLabel}</div>
+                ${itemsHTML}
+            </div>
         `;
-    }).join('');
+    });
 
     const modalHTML = `
         <div class="tavsiye-modal-overlay" onclick="if(event.target === this) closeTavsiyeModal()">
-            <div class="tavsiye-modal">
+            <div class="tavsiye-modal tavsiye-modal-expanded">
                 <div class="tavsiye-modal-header">
-                    <h3>⭐ Tavsiye Edilen Zikirler</h3>
-                    <button class="tavsiye-modal-close" onclick="closeTavsiyeModal()">✕</button>
+                    <h3>Tavsiye Edilenler</h3>
+                    <button class="tavsiye-modal-close" onclick="closeTavsiyeModal()">X</button>
                 </div>
                 <div class="tavsiye-modal-body">
                     <p style="color: #64748b; font-size: 13px; margin-bottom: 16px;">
-                        Eklemek istediğiniz zikirleri seçin:
+                        Eklemek istediginiz ogeleri secin:
                     </p>
                     <div class="tavsiye-list">
-                        ${zikirListHTML}
+                        ${allItemsHTML}
                     </div>
                 </div>
                 <div class="tavsiye-modal-footer">
                     <button class="tavsiye-btn-cancel" onclick="closeTavsiyeModal()">Kapat</button>
                     <button class="tavsiye-btn-add" id="tavsiyeAddBtn" onclick="addSelectedTavsiyeler()" disabled>
-                        Seçilenleri Ekle
+                        Secilenleri Ekle
                     </button>
                 </div>
             </div>
@@ -1526,7 +1600,7 @@ function showTavsiyeModal() {
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-    // Marquer comme vu (pour ne pas réafficher automatiquement)
+    // Marquer comme vu (pour ne pas reafficher automatiquement)
     localStorage.setItem('tavsiyeModalShown', 'true');
 }
 
@@ -1550,48 +1624,110 @@ function updateTavsiyeAddButton() {
     }
 }
 
-// Ajouter les zikirs sélectionnés
+// Ajouter les items selectionnes selon leur categorie
 function addSelectedTavsiyeler() {
     const checkboxes = document.querySelectorAll('.tavsiye-modal-overlay input[type="checkbox"]:not(:disabled):checked');
-    const selectedIndices = Array.from(checkboxes).map(cb => parseInt(cb.value));
 
     let addedCount = 0;
+    let addedByCategory = {
+        zikir: 0,
+        kitap: 0,
+        sohbet: 0,
+        namaz: 0,
+        kuran: 0,
+        cevsen: 0
+    };
 
-    selectedIndices.forEach(index => {
-        const zikir = TAVSIYE_ZIKIRLER[index];
-        if (zikir && !categories.includes(zikir.name)) {
-            // Ajouter la catégorie
-            categories.push(zikir.name);
+    checkboxes.forEach(cb => {
+        const category = cb.dataset.category;
+        const name = cb.dataset.name;
+        const dailyGoal = parseInt(cb.dataset.dailyGoal) || 0;
+        const totalPages = parseInt(cb.dataset.totalPages) || 0;
 
-            // Enregistrer les métadonnées
-            categoryMetadata[zikir.name] = {
-                createdAt: new Date().toISOString(),
-                type: 'zikir',
-                source: 'tavsiye'
-            };
+        switch (category) {
+            case 'zikir':
+            case 'sohbet':
+                // Ajouter comme categorie de zikir/compteur
+                if (!categories.includes(name)) {
+                    categories.push(name);
+                    categoryMetadata[name] = {
+                        createdAt: new Date().toISOString(),
+                        type: category,
+                        source: 'tavsiye'
+                    };
+                    addedCount++;
+                    addedByCategory[category]++;
+                }
+                break;
 
-            addedCount++;
+            case 'kitap':
+                // Ajouter comme livre generique
+                if (typeof BooksManager !== 'undefined') {
+                    const books = BooksManager.getBooks();
+                    if (!books.some(b => b.name === name)) {
+                        const newBook = BooksManager.addBook(name, 0);
+                        if (dailyGoal > 0 && typeof saveBookGoals === 'function') {
+                            saveBookGoals(newBook.id, dailyGoal, dailyGoal * 7);
+                        }
+                        addedCount++;
+                        addedByCategory.kitap++;
+                    }
+                }
+                break;
+
+            case 'kuran':
+            case 'cevsen':
+                // Ajouter comme livre avec pages totales
+                if (typeof BooksManager !== 'undefined') {
+                    const books = BooksManager.getBooks();
+                    if (!books.some(b => b.name === name)) {
+                        const newBook = BooksManager.addBook(name, totalPages);
+                        if (dailyGoal > 0 && typeof saveBookGoals === 'function') {
+                            saveBookGoals(newBook.id, dailyGoal, dailyGoal * 7);
+                        }
+                        addedCount++;
+                        addedByCategory[category]++;
+                    }
+                }
+                break;
+
+            case 'namaz':
+                // Ajouter comme categorie de namaz
+                if (typeof NamazManager !== 'undefined') {
+                    const namazCats = NamazManager.getCategories();
+                    if (!namazCats.includes(name)) {
+                        NamazManager.addCategory(name);
+                        addedCount++;
+                        addedByCategory.namaz++;
+                    }
+                }
+                break;
         }
     });
 
     if (addedCount > 0) {
-        // Sauvegarder
-        saveCategories();
-        localStorage.setItem('categoryMetadata', JSON.stringify(categoryMetadata));
-        initializeCounters();
-        updateCategorySelect();
-        updateCategoriesList();
+        // Sauvegarder les zikirs/sohbet
+        if (addedByCategory.zikir > 0 || addedByCategory.sohbet > 0) {
+            saveCategories();
+            localStorage.setItem('categoryMetadata', JSON.stringify(categoryMetadata));
+            initializeCounters();
+            updateCategorySelect();
+            updateCategoriesList();
+        }
+
         updateStats();
 
-        // Mettre à jour le groupe si actif
+        // Mettre a jour le groupe si actif
         if (typeof groupManager !== 'undefined' && groupManager.hasActiveGroup()) {
             const stats = getCurrentUserStats();
             groupManager.updateMyScore(stats).catch(err => {
-                console.error('Erreur mise à jour groupe après ajout tavsiye:', err);
+                console.error('Erreur mise a jour groupe apres ajout tavsiye:', err);
             });
         }
 
-        showCustomAlert(`${addedCount} zikir başarıyla eklendi! ✓`, 'success', 3000);
+        // Message de confirmation
+        let message = addedCount + ' oge eklendi';
+        showCustomAlert(message, 'success', 3000);
     }
 
     closeTavsiyeModal();

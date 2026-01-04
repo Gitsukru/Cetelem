@@ -288,6 +288,34 @@
     box-shadow: none;
 }
 
+/* Modal etendu avec categories */
+.tavsiye-modal-expanded {
+    max-height: 85vh;
+}
+
+.tavsiye-modal-expanded .tavsiye-modal-body {
+    max-height: 60vh;
+}
+
+.tavsiye-category-section {
+    margin-bottom: 16px;
+}
+
+.tavsiye-category-section:last-child {
+    margin-bottom: 0;
+}
+
+.tavsiye-category-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 0 6px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 8px;
+}
+
 /* ============================================
    STATS CARD MOBILE (en haut)
    ============================================ */
