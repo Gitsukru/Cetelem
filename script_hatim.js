@@ -358,18 +358,26 @@ const HatimManager = {
     },
 
     shareVia(code, type) {
-        const typeLabel = type === 'kuran' ? "Kur'an Hatmi" : 'Cevsen Hatmi';
+        const typeLabel = type === 'kuran' ? "Kur'an Hatmi" : 'Cevşen Hatmi';
         const shareUrl = typeof URLRouter !== 'undefined'
             ? URLRouter.generateShareURL(type, code)
             : `${window.location.origin}${window.location.pathname}#${type}=${code}`;
 
-        const shareText = `${typeLabel}ne katil!
+        const shareText = `📖 ${typeLabel}'ne Davet!
 
-Kod: ${code}
+🔗 Link: ${shareUrl}
 
-Link: ${shareUrl}
+📋 Hatim Kodu: ${code}
 
-Cetelem uygulamasini ac ve bu kodla katil!`;
+━━━━━━━━━━━━━━━━━━
+📱 Uygulama zaten yüklüyse:
+1. Çetelem uygulamasını açın
+2. "Hatim/Dua" sekmesine gidin
+3. "Kod ile Katıl" kısmına bu kodu yapıştırın: ${code}
+
+📲 Uygulama yüklü değilse:
+Linke tıklayın ve uygulamayı yükleyin
+━━━━━━━━━━━━━━━━━━`;
 
         if (navigator.share) {
             navigator.share({

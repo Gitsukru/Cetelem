@@ -68,7 +68,7 @@ const URLRouter = {
                         ✕
                     </button>
                 </div>
-                ${isIOS && code ? `
+                ${code ? `
                 <div style="max-width: 500px; margin: 12px auto 0; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px;">
                     <div style="font-size: 12px; opacity: 0.9; margin-bottom: 8px;">📋 Hatim Kodu:</div>
                     <div style="display: flex; gap: 8px; align-items: center;">
@@ -80,7 +80,9 @@ const URLRouter = {
                         </button>
                     </div>
                     <div style="font-size: 11px; opacity: 0.8; margin-top: 8px; text-align: center;">
-                        👆 Kodu kopyalayın → Uygulamayı açın → "Kod ile Katıl" kısmına yapıştırın
+                        ${isIOS
+                            ? '👆 Kodu kopyalayın → Uygulamayı açın → "Kod ile Katıl"'
+                            : '👆 Uygulama açılmazsa: Kodu kopyalayın → Uygulamayı açın → "Kod ile Katıl"'}
                     </div>
                 </div>
                 ` : ''}
