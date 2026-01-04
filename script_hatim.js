@@ -534,14 +534,17 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                     </div>
                 </div>
 
-                <!-- CARD 3: My Cüz (if any) -->
+                <!-- CARD 3: My Cüz (if any) - Collapsible -->
                 ${myParticipations.length > 0 ? `
-                <div style="${cardStyle} background: #f0fdf4; border-color: #bbf7d0;">
-                    <div style="${cardTitleStyle} color: #166534;">
-                        <span>🙋</span> Benim ${unitLabel}lerim (Bu turda)
+                <details open style="${cardStyle} background: #f0fdf4; border-color: #bbf7d0; padding: 0;">
+                    <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #166534; font-size: 14px;">
+                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        <span>🙋</span> Benim ${unitLabel}lerim (${myParticipations.length})
                         <span style="font-weight: 400; font-size: 11px; color: #64748b; margin-left: auto;">Tıkla → Değiştir</span>
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    </summary>
+                    <div style="padding: 0 16px 16px; display: flex; flex-wrap: wrap; gap: 8px;">
                         ${myParticipations.map(p => `
                             <div onclick="HatimManager.toggleReadStatus('${p.id}', ${p.is_completed}, ${p.unit_number})"
                                  style="display: flex; align-items: center; gap: 6px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 8px 12px; cursor: pointer; transition: all 0.2s;"
@@ -553,7 +556,7 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                             </div>
                         `).join('')}
                     </div>
-                </div>
+                </details>
                 ` : ''}
 
                 <!-- CARD 4: Actions -->
@@ -571,12 +574,16 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                     </button>
                 </div>
 
-                <!-- CARD 5: Cüz Selection Grid -->
-                <div style="${cardStyle}">
-                    <div style="${cardTitleStyle}">
+                <!-- CARD 5: Cüz Selection Grid - Collapsible -->
+                <details open style="${cardStyle} padding: 0;">
+                    <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #334155; font-size: 14px;">
+                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
                         <span>📋</span> ${unitLabel} Seç <span style="font-weight: 400; color: #64748b; font-size: 12px;">(${available} müsait)</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(${isKuran ? 6 : 10}, 1fr); gap: 6px;">
+                    </summary>
+                    <div style="padding: 0 16px 16px;">
+                        <div style="display: grid; grid-template-columns: repeat(${isKuran ? 6 : 10}, 1fr); gap: 6px;">
         `;
 
         // Render units as numbered grid
@@ -609,14 +616,15 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
         }
 
         html += `
+                        </div>
+                        <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #64748b;">
+                            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: white; border: 2px dashed #cbd5e1; border-radius: 3px;"></span> Müsait</span>
+                            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #fef3c7; border: 2px solid #f59e0b; border-radius: 3px;"></span> Alındı</span>
+                            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dcfce7; border: 2px solid #10b981; border-radius: 3px;"></span> Tamamlandı</span>
+                            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dbeafe; border: 2px solid #3b82f6; border-radius: 3px;"></span> Benim</span>
+                        </div>
                     </div>
-                    <div style="margin-top: 12px; display: flex; gap: 12px; font-size: 11px; color: #64748b;">
-                        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: white; border: 2px dashed #cbd5e1; border-radius: 3px;"></span> Müsait</span>
-                        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #fef3c7; border: 2px solid #f59e0b; border-radius: 3px;"></span> Alındı</span>
-                        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dcfce7; border: 2px solid #10b981; border-radius: 3px;"></span> Tamamlandı</span>
-                        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dbeafe; border: 2px solid #3b82f6; border-radius: 3px;"></span> Benim</span>
-                    </div>
-                </div>
+                </details>
 
             </div>
         `;
