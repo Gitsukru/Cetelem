@@ -3969,12 +3969,35 @@ function initializeBackend() {
     if (config.type === 'supabase') {
       provider = new SupabaseProvider(config.url, config.key)
       console.log('✅ Supabase initialisé')
+
+      // Initialiser HatimProvider pour le partage de Hatim
+      if (typeof HatimManager !== 'undefined' && typeof HatimProvider !== 'undefined') {
+        HatimManager.initProvider(provider.supabase)
+        console.log('✅ HatimProvider initialisé')
+      }
     } else if (config.type === 'infomaniak') {
       provider = new InfomaniakProvider(config.apiUrl, config.apiKey)
       console.log('✅ Infomaniak initialisé')
     }
 
     groupManager.initialize(provider)
+
+    // Enregistrer les routes deep link pour Hatim
+    if (typeof URLRouter !== 'undefined') {
+      URLRouter.register('hatim', (code) => {
+        showTab('hatim')
+        if (typeof HatimManager !== 'undefined') {
+          HatimManager.openHatim(code)
+        }
+      })
+      URLRouter.register('cevsen', (code) => {
+        showTab('hatim')
+        if (typeof HatimManager !== 'undefined') {
+          HatimManager.openHatim(code)
+        }
+      })
+      console.log('✅ Deep linking Hatim enregistré')
+    }
 
     // Écouter les mises à jour temps réel
     window.addEventListener('groupUpdate', async (event) => {

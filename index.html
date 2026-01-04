@@ -442,9 +442,35 @@
                     </button>
                 </div>
 
+                <!-- Mes Hatims actifs -->
+                <div id="myHatimsList" style="display: none;">
+                    <!-- Liste des hatims de l'utilisateur - genere dynamiquement -->
+                </div>
+
                 <!-- Contenu dynamique -->
                 <div id="hatimContent">
                     <!-- Le contenu sera genere dynamiquement par HatimManager -->
+                </div>
+
+                <!-- Rejoindre par code -->
+                <div class="hatim-join-section" style="margin-top: 24px; padding: 20px; background: #f8fafc; border-radius: 12px;">
+                    <h4 style="margin: 0 0 12px; color: #334155; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                            <polyline points="10 17 15 12 10 7"></polyline>
+                            <line x1="15" y1="12" x2="3" y2="12"></line>
+                        </svg>
+                        Kod ile Hatime Katil
+                    </h4>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="hatimJoinCode"
+                               style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 15px; text-transform: uppercase;"
+                               placeholder="8 haneli kod" maxlength="8">
+                        <button onclick="HatimManager.joinByCode()"
+                                style="padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Katil
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1456,6 +1482,10 @@
     <script src="script_books.js?v=1762615531742"></script>
     <script src="script_namaz.js?v=1762615531742"></script>
     <script src="script_sohbet.js?v=1762615531742"></script>
+
+    <!-- Hatim Sharing System -->
+    <script src="src/utils/url-router.js?v=1762615531742"></script>
+    <script src="src/services/HatimProvider.js?v=1762615531742"></script>
     <script src="script_hatim.js?v=1762615531742"></script>
 
     <!-- Tesbihat Scripts -->
