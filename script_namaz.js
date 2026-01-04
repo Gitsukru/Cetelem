@@ -360,68 +360,65 @@ const NamazManager = {
         categories.forEach(cat => {
             const stats = this.getStatisticsForCategory(cat);
             const goals = this.getCategoryGoals(cat);
+
             const li = document.createElement('li');
             li.className = 'category-item';
 
-            // Calculer la progression des objectifs
-            let progressHTML = '';
-            if (goals.daily > 0 || goals.weekly > 0) {
-                const dailyPercent = goals.daily > 0 ? Math.min(100, Math.round((stats.day / goals.daily) * 100)) : 0;
-                const weeklyPercent = goals.weekly > 0 ? Math.min(100, Math.round((stats.week / goals.weekly) * 100)) : 0;
-                const dailyComplete = goals.daily > 0 && stats.day >= goals.daily;
-                const weeklyComplete = goals.weekly > 0 && stats.week >= goals.weekly;
+            // Content div (like zikir)
+            const contentDiv = document.createElement('div');
 
-                progressHTML = `
-                    <div class="goal-progress-container" style="margin-top: 8px;">
-                        ${goals.daily > 0 ? `
-                        <div class="goal-row" style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                            <span style="font-size: 11px; color: #64748b; min-width: 50px;">Gunluk:</span>
-                            <div class="progress-bar-mini" style="flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                <div style="width: ${dailyPercent}%; height: 100%; background: ${dailyComplete ? '#10b981' : '#667eea'}; border-radius: 3px; transition: width 0.3s;"></div>
-                            </div>
-                            <span style="font-size: 11px; color: ${dailyComplete ? '#10b981' : '#64748b'}; min-width: 55px; text-align: right;">
-                                ${stats.day}/${goals.daily} ${dailyComplete ? '✓' : ''}
-                            </span>
-                        </div>
-                        ` : ''}
-                        ${goals.weekly > 0 ? `
-                        <div class="goal-row" style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 11px; color: #64748b; min-width: 50px;">Haftalik:</span>
-                            <div class="progress-bar-mini" style="flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                <div style="width: ${weeklyPercent}%; height: 100%; background: ${weeklyComplete ? '#10b981' : '#667eea'}; border-radius: 3px; transition: width 0.3s;"></div>
-                            </div>
-                            <span style="font-size: 11px; color: ${weeklyComplete ? '#10b981' : '#64748b'}; min-width: 55px; text-align: right;">
-                                ${stats.week}/${goals.weekly} ${weeklyComplete ? '✓' : ''}
-                            </span>
-                        </div>
-                        ` : ''}
-                    </div>
-                `;
+            const strongElement = document.createElement('strong');
+            strongElement.textContent = cat;
+
+            const smallElement = document.createElement('small');
+            smallElement.style.color = '#666';
+            smallElement.style.display = 'block';
+            smallElement.textContent = `Toplam: ${stats.total} namaz`;
+
+            // Progress info if goals exist
+            if (goals.daily > 0 || goals.weekly > 0) {
+                const progressText = [];
+                if (goals.daily > 0) {
+                    const dailyDone = stats.day >= goals.daily;
+                    progressText.push(`Gunluk: ${stats.day}/${goals.daily}${dailyDone ? ' ✓' : ''}`);
+                }
+                if (goals.weekly > 0) {
+                    const weeklyDone = stats.week >= goals.weekly;
+                    progressText.push(`Haftalik: ${stats.week}/${goals.weekly}${weeklyDone ? ' ✓' : ''}`);
+                }
+                const progressSmall = document.createElement('small');
+                progressSmall.style.color = '#667eea';
+                progressSmall.style.display = 'block';
+                progressSmall.style.marginTop = '4px';
+                progressSmall.textContent = progressText.join(' | ');
+                contentDiv.appendChild(strongElement);
+                contentDiv.appendChild(smallElement);
+                contentDiv.appendChild(progressSmall);
+            } else {
+                contentDiv.appendChild(strongElement);
+                contentDiv.appendChild(smallElement);
             }
 
-            li.innerHTML = `
-                <div class="category-info" style="flex: 1;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="category-name">${this.escapeHtml(cat)}</span>
-                        <span class="category-count">${stats.total} toplam</span>
-                    </div>
-                    ${progressHTML}
-                </div>
-                <div class="category-actions">
-                    <button class="edit-btn" onclick="NamazManager.showEditModal('${this.escapeHtml(cat)}')" title="Duzenle">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                    </button>
-                    <button class="delete-btn" onclick="NamazManager.confirmDelete('${this.escapeHtml(cat)}')" title="Sil">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                    </button>
-                </div>
-            `;
+            // Buttons div (like zikir)
+            const buttonsDiv = document.createElement('div');
+            buttonsDiv.style.display = 'flex';
+            buttonsDiv.style.gap = '8px';
+
+            const editButton = document.createElement('button');
+            editButton.className = 'edit-button';
+            editButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Duzenle';
+            editButton.onclick = () => this.showEditModal(cat);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-button';
+            deleteButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Sil';
+            deleteButton.onclick = () => this.confirmDelete(cat);
+
+            buttonsDiv.appendChild(editButton);
+            buttonsDiv.appendChild(deleteButton);
+
+            li.appendChild(contentDiv);
+            li.appendChild(buttonsDiv);
             list.appendChild(li);
         });
     },
