@@ -1,5 +1,5 @@
 /**
- * 🎉 Modal de Bienvenue et Transparence
+ * Modal de Bienvenue et Transparence
  * Explique le fonctionnement de l'app aux nouveaux utilisateurs
  */
 
@@ -29,99 +29,99 @@ const WelcomeModal = {
     modal.innerHTML = `
       <div class="welcome-modal">
         <div class="welcome-header">
-          <div class="welcome-icon">🤲</div>
-          <h2>Çetelem'e Hoş Geldiniz</h2>
+          <div class="welcome-icon">*</div>
+          <h2>Cetelem'e Hos Geldiniz</h2>
           <p class="welcome-subtitle">Dijital Tesbih</p>
         </div>
 
         <div class="welcome-content">
           <!-- Auto-scrolling text sections -->
           <div class="welcome-auto-section active" data-section="1">
-            <div class="section-icon">✨</div>
-            <h3>Çetelem Nedir?</h3>
+            <div class="section-icon">*</div>
+            <h3>Cetelem Nedir?</h3>
             <p style="line-height: 1.7;">
-              <strong>Çetelem</strong>, günlük zikirlerinizi kolayca takip etmenizi sağlayan modern bir dijital tesbih uygulamasıdır.
+              <strong>Cetelem</strong>, gunluk zikirlerinizi kolayca takip etmenizi saglayan modern bir dijital tesbih uygulamasidir.
             </p>
             <p style="line-height: 1.7; margin-top: 12px;">
-              📱 Basit kullanım - Ekrana dokunarak sayın<br>
-              📊 Günlük, haftalık ve aylık istatistikler<br>
-              👥 Arkadaşlarınızla hayırda yarışın<br>
-              🎯 Hedeflerinize ulaşın
+              - Basit kullanim - Ekrana dokunarak sayin<br>
+              - Gunluk, haftalik ve aylik istatistikler<br>
+              - Arkadaslarinizla hayirda yarisin<br>
+              - Hedeflerinize ulasin
             </p>
           </div>
 
           <div class="welcome-auto-section" data-section="2">
-            <div class="section-icon">🔒</div>
-            <h3>Verileriniz Sizinle Kalır</h3>
+            <div class="section-icon">*</div>
+            <h3>Verileriniz Sizinle Kalir</h3>
             <p style="line-height: 1.7;">
-              Çetelem'i kullanmak için hiçbir kayıt, giriş veya kişisel bilgi gerekmez.
-              Tüm zikir sayılarınız telefonunuzun hafızasında (tarayıcıda) saklanır.
+              Cetelem'i kullanmak icin hicbir kayit, giris veya kisisel bilgi gerekmez.
+              Tum zikir sayilariniz telefonunuzun hafizasinda (tarayicida) saklanir.
             </p>
             <p style="line-height: 1.7; margin-top: 12px;">
-              🔐 Tamamen özel ve güvenli<br>
-              📶 İnternet gereksiz - çevrim dışı çalışır<br>
-              💾 Verilerinizi dilediğiniz zaman dışa aktarın<br>
-              Dilediğiniz zaman hepsini silebilirsiniz
+              - Tamamen ozel ve guvenli<br>
+              - Internet gereksiz - cevrim disi calisir<br>
+              - Verilerinizi dilediginiz zaman disa aktarin<br>
+              - Dilediginiz zaman hepsini silebilirsiniz
             </p>
           </div>
 
           <div class="welcome-auto-section" data-section="3">
-            <div class="section-icon">🎯</div>
-            <h3>Nasıl Kullanılır?</h3>
+            <div class="section-icon">*</div>
+            <h3>Nasil Kullanilir?</h3>
             <p style="line-height: 1.7;">
-              1. Zikir Sayma: Ana ekrandaki büyük butona her tıkladığınızda sayaç artar.<br>
-              2. Farklı Zikirler: "Yönetim" veya "Sayaç" bölümünden istediğiniz kadar kategori ekleyin.<br>
-              3. Kitap Takibi: "Kitap" sekmesinden okuduğunuz kitapları takip edin.<br>
-              4. Grup Özelliği: Arkadaşlarınızla grup kurup motivasyonunuzu artırın.
+              1. Zikir Sayma: Ana ekrandaki buyuk butona her tikladiginizda sayac artar.<br>
+              2. Farkli Zikirler: "Yonetim" veya "Sayac" bolumunden istediginiz kadar kategori ekleyin.<br>
+              3. Kitap Takibi: "Kitap" sekmesinden okudugunuz kitaplari takip edin.<br>
+              4. Grup Ozelligi: Arkadaslarinizla grup kurup motivasyonunuzu artirin.
             </p>
           </div>
 
           <div class="welcome-auto-section" data-section="4">
-            <div class="section-icon">👥</div>
-            <h3>Grup Özelliği (İsteğe Bağlı)</h3>
+            <div class="section-icon">*</div>
+            <h3>Grup Ozelligi (Istege Bagli)</h3>
             <p style="line-height: 1.7;">
-              Arkadaşlarınızla birlikte zikir çekmek motivasyonunuzu artırır. Grup özelliğini kullandığınızda:
+              Arkadaslarinizla birlikte zikir cekmek motivasyonunuzu artirir. Grup ozelligini kullandiginizda:
             </p>
             <p style="line-height: 1.7; margin-top: 12px;">
-              📊 Grup sıralamasında adınız ve toplam sayınız görünür.<br>
-              🚪 İstediğiniz zaman gruptan ayrılabilirsiniz.<br>
-              Aranizda yaris yapabilirsiniz.<br>
-              💡 Grup kullanmak tamamen isteğe bağlıdır.
+              - Grup siralamasinda adiniz ve toplam sayiniz gorunur.<br>
+              - Istediginiz zaman gruptan ayrilabilirsiniz.<br>
+              - Aranizda yaris yapabilirsiniz.<br>
+              - Grup kullanmak tamamen istege baglidir.
             </p>
           </div>
 
           <div class="welcome-auto-section" data-section="5">
-            <div class="section-icon">⚙️</div>
-            <h3>Teknik Altyapı</h3>
+            <div class="section-icon">*</div>
+            <h3>Teknik Altyapi</h3>
             <p style="line-height: 1.7;">
-              Uygulama modern web teknolojileri kullanılarak geliştirilmiştir:
+              Uygulama modern web teknolojileri kullanilarak gelistirilmistir:
             </p>
             <p style="line-height: 1.7; margin-top: 12px;">
-              🌐 Netlify: Uygulamanın barındırıldığı güvenli platform<br>
-              🗄️ Supabase: Sadece grup özelliği için kullanılan veritabanı servisi
+              - Netlify: Uygulamanin barindirildigi guvenli platform<br>
+              - Supabase: Sadece grup ozelligi icin kullanilan veritabani servisi
             </p>
           </div>
 
           <div class="welcome-auto-section" data-section="6">
-            <div class="section-icon">📧</div>
-            <h3>Bize Ulaşın</h3>
+            <div class="section-icon">*</div>
+            <h3>Bize Ulasin</h3>
             <p style="line-height: 1.7;">
-              Sorularınız, önerileriniz veya geri bildirimleriniz için:
+              Sorulariniz, onerileriniz veya geri bildirimleriniz icin:
             </p>
             <p style="font-size: 16px; margin-top: 12px;">
               <a href="mailto:suisse1022@gmail.com">
-                📧 suisse1022@gmail.com
+                suisse1022@gmail.com
               </a>
             </p>
           </div>
 
           <!-- Navigation arrows -->
           <div class="welcome-nav-arrows">
-            <button class="welcome-nav-arrow" id="prevSlide" onclick="WelcomeModal.prevSlide()" title="Précédent">
-              ◀
+            <button class="welcome-nav-arrow" id="prevSlide" onclick="WelcomeModal.prevSlide()" title="Onceki">
+              &lt;
             </button>
-            <button class="welcome-nav-arrow" id="nextSlide" onclick="WelcomeModal.nextSlide()" title="Suivant">
-              ▶
+            <button class="welcome-nav-arrow" id="nextSlide" onclick="WelcomeModal.nextSlide()" title="Sonraki">
+              &gt;
             </button>
           </div>
 
@@ -139,10 +139,10 @@ const WelcomeModal = {
         <div class="welcome-footer">
           <label class="welcome-checkbox">
             <input type="checkbox" id="dontShowAgain">
-            <span>Bu mesajı bir daha gösterme</span>
+            <span>Bu mesaji bir daha gosterme</span>
           </label>
           <button class="welcome-btn-primary" onclick="WelcomeModal.close()">
-            ✨ Başlayalım
+            Baslayalim
           </button>
         </div>
       </div>
@@ -170,18 +170,16 @@ const WelcomeModal = {
   startAutoScroll() {
     this.currentSection = 1;
     this.totalSections = 6;
-    this.autoScrollCompleted = false; // Flag pour indiquer si auto-scroll a été complété
-    const intervalTime = 6000; // 6 secondes
+    this.autoScrollCompleted = false;
+    const intervalTime = 6000;
 
     this.autoScrollInterval = setInterval(() => {
-      // Passer à la section suivante
       this.currentSection++;
 
       if (this.currentSection > this.totalSections) {
-        // Arrêter à la dernière slide et marquer comme complété
         clearInterval(this.autoScrollInterval);
         this.autoScrollInterval = null;
-        this.autoScrollCompleted = true; // Marquer l'auto-scroll comme terminé
+        this.autoScrollCompleted = true;
         return;
       }
 
@@ -198,8 +196,6 @@ const WelcomeModal = {
       this.currentSection--;
       this.showSection(this.currentSection);
       this.updateArrows();
-
-      // Réinitialiser l'auto-scroll
       this.resetAutoScroll();
     }
   },
@@ -212,8 +208,6 @@ const WelcomeModal = {
       this.currentSection++;
       this.showSection(this.currentSection);
       this.updateArrows();
-
-      // Réinitialiser l'auto-scroll
       this.resetAutoScroll();
     }
   },
@@ -222,18 +216,15 @@ const WelcomeModal = {
    * Réinitialiser le timer auto-scroll après navigation manuelle
    */
   resetAutoScroll() {
-    // Arrêter l'ancien interval
     if (this.autoScrollInterval) {
       clearInterval(this.autoScrollInterval);
       this.autoScrollInterval = null;
     }
 
-    // Ne PAS redémarrer si l'auto-scroll a déjà été complété une fois
     if (this.autoScrollCompleted) {
       return;
     }
 
-    // Ne redémarrer que si on n'est pas à la dernière slide
     if (this.currentSection < this.totalSections) {
       const intervalTime = 6000;
       this.autoScrollInterval = setInterval(() => {
@@ -242,7 +233,7 @@ const WelcomeModal = {
         if (this.currentSection > this.totalSections) {
           clearInterval(this.autoScrollInterval);
           this.autoScrollInterval = null;
-          this.autoScrollCompleted = true; // Marquer comme complété
+          this.autoScrollCompleted = true;
           return;
         }
 
@@ -272,19 +263,16 @@ const WelcomeModal = {
    * Afficher une section spécifique
    */
   showSection(sectionNumber) {
-    // Désactiver toutes les sections
     const sections = document.querySelectorAll('.welcome-auto-section');
     sections.forEach(section => {
       section.classList.remove('active');
     });
 
-    // Activer la section demandée
     const targetSection = document.querySelector(`.welcome-auto-section[data-section="${sectionNumber}"]`);
     if (targetSection) {
       targetSection.classList.add('active');
     }
 
-    // Mettre à jour les dots
     const dots = document.querySelectorAll('.welcome-progress-dots .dot');
     dots.forEach(dot => {
       dot.classList.remove('active');
@@ -302,19 +290,16 @@ const WelcomeModal = {
     const modal = document.querySelector('.welcome-modal-overlay');
     if (!modal) return;
 
-    // Arrêter le défilement automatique
     if (this.autoScrollInterval) {
       clearInterval(this.autoScrollInterval);
       this.autoScrollInterval = null;
     }
 
-    // Vérifier si "ne plus afficher" est coché
     const dontShowAgain = document.getElementById('dontShowAgain');
     if (dontShowAgain && dontShowAgain.checked) {
       this.markAsShown();
     }
 
-    // Animation de sortie
     modal.classList.remove('show');
     setTimeout(() => {
       modal.remove();
@@ -332,7 +317,6 @@ const WelcomeModal = {
    * Initialisation automatique
    */
   init() {
-    // Attendre que le DOM soit chargé
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
         this.checkAndShow();
@@ -346,7 +330,6 @@ const WelcomeModal = {
    * Vérifier et afficher si nécessaire
    */
   checkAndShow() {
-    // Attendre 1 seconde après le chargement pour ne pas être trop intrusif
     setTimeout(() => {
       if (this.shouldShow()) {
         this.show();
@@ -363,7 +346,5 @@ if (typeof module !== 'undefined' && module.exports) {
 // Rendre disponible globalement
 if (typeof window !== 'undefined') {
   window.WelcomeModal = WelcomeModal;
-
-  // Auto-initialisation au chargement
   WelcomeModal.init();
 }
