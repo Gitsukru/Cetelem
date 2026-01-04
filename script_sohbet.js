@@ -6,6 +6,13 @@
 // Liste des sources predefinies
 const SOHBET_SOURCES = [
     {
+        id: 'sohbet-kaset',
+        name: 'Sohbet Kaset',
+        url: '',
+        icon: 'disc',
+        description: 'Ses/Video kasetleri'
+    },
+    {
         id: 'herkul',
         name: 'Herkul.org',
         url: 'https://herkul.org/',

@@ -1470,6 +1470,7 @@ function finalizeAddZikir() {
 // ========================================
 
 // Liste des recommandations par categorie
+// Note: Sohbet utilise des sources predefinies (Herkul.org) et suivi de temps, pas de compteur
 const TAVSIYE_ITEMS = {
     zikir: [
         { name: 'Estagfirullah', detail: '100 defa' },
@@ -1481,9 +1482,6 @@ const TAVSIYE_ITEMS = {
     ],
     kitap: [
         { name: 'Kitap Okuma', detail: '10 sayfa', dailyGoal: 10 }
-    ],
-    sohbet: [
-        { name: 'Sohbet Kaset', detail: '1 adet' }
     ],
     namaz: [
         { name: 'Teheccud Namazi', detail: '1 defa' }
@@ -1500,7 +1498,6 @@ const TAVSIYE_ITEMS = {
 const TAVSIYE_CATEGORY_LABELS = {
     zikir: 'Zikirler',
     kitap: 'Kitap',
-    sohbet: 'Sohbet',
     namaz: 'Namaz',
     kuran: 'Kuran',
     cevsen: 'Cevsen'
