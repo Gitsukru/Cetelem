@@ -539,12 +539,16 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                 <div style="${cardStyle} background: #f0fdf4; border-color: #bbf7d0;">
                     <div style="${cardTitleStyle} color: #166534;">
                         <span>🙋</span> Benim ${unitLabel}lerim (Bu turda)
+                        <span style="font-weight: 400; font-size: 11px; color: #64748b; margin-left: auto;">Tıkla → Okundu işaretle</span>
                     </div>
                     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                         ${myParticipations.map(p => `
-                            <div style="display: flex; align-items: center; gap: 6px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 8px 12px;">
+                            <div onclick="${p.is_completed ? '' : `HatimManager.markAsRead('${p.id}')`}"
+                                 style="display: flex; align-items: center; gap: 6px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 8px 12px; ${p.is_completed ? '' : 'cursor: pointer;'} transition: all 0.2s;"
+                                 ${p.is_completed ? '' : `onmouseover="this.style.background='#fef3c7';" onmouseout="this.style.background='white';"`}>
                                 <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${p.unit_number}</span>
-                                <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Tamamlandı' : 'Devam ediyor'}</span>
+                                <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
+                                ${p.is_completed ? '' : '<span style="font-size: 10px; color: #94a3b8;">→</span>'}
                             </div>
                         `).join('')}
                     </div>
@@ -625,6 +629,27 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
         }
         this.currentHatim = null;
         this.renderContent();
+    },
+
+    // ========================================
+    // MARK AS READ
+    // ========================================
+
+    async markAsRead(participationId) {
+        if (!this.provider) {
+            showCustomAlert('Bağlantı hatası', 'error', 2500);
+            return;
+        }
+
+        try {
+            await this.provider.markComplete(participationId);
+            showCustomAlert('✓ Okundu olarak işaretlendi!', 'success', 2000);
+            // Refresh the view
+            this.refreshCurrentHatim();
+        } catch (error) {
+            console.error('Mark as read error:', error);
+            showCustomAlert('Hata oluştu', 'error', 2500);
+        }
     },
 
     // ========================================
@@ -752,7 +777,8 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                         <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                             <thead>
                                 <tr style="background: #f1f5f9; position: sticky; top: 0;">
-                                    <th style="padding: 8px; text-align: center; font-weight: 600;">#</th>
+                                    <th style="padding: 8px; text-align: center; font-weight: 600;">Cüz</th>
+                                    <th style="padding: 8px; text-align: center; font-weight: 600;">Sayfa</th>
                                     <th style="padding: 8px; text-align: left;">İçerik</th>
                                 </tr>
                             </thead>
@@ -763,6 +789,7 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
             html += `
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                     <td style="padding: 6px 8px; text-align: center; font-weight: 600; color: #667eea;">${cuz.cuz}</td>
+                    <td style="padding: 6px 8px; text-align: center; color: #64748b;">${cuz.sayfa}</td>
                     <td style="padding: 6px 8px; color: #64748b; font-size: 11px;">${cuz.icerik}</td>
                 </tr>
             `;

@@ -2,13 +2,18 @@
   "name": "Çetelem - Zikir Sayacı",
   "short_name": "Çetelem",
   "description": "Günlük zikir ve dualarınızı takip edin - Track your daily dhikr and prayers",
-  "start_url": "./index.html",
+  "id": "/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#667eea",
   "orientation": "portrait",
-  "scope": "./",
+  "scope": "/",
   "lang": "tr",
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "handle_links": "preferred",
   "icons": [
     {
       "src": "/assets/icons/icon-192x192.png",
@@ -29,5 +34,5 @@
     "utilities"
   ],
   "screenshots": [],
-  "version": "3.5.1"
+  "version": "3.5.2"
 }
