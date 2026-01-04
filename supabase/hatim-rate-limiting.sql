@@ -3,9 +3,9 @@
 -- ============================================================================
 --
 -- Protection contre abus:
--- - Limite création hatims par device (3/jour)
--- - Limite participations par device (20/jour par hatim)
--- - Limite globale création hatims (100/heure)
+-- - Limite création hatims par device (5/jour)
+-- - Limite participations par device (150/jour par hatim)
+-- - Limite globale création hatims (100/heure) - anti-spam/bot
 --
 -- À exécuter dans: Supabase Dashboard > SQL Editor
 -- ============================================================================
@@ -17,7 +17,7 @@ ALTER TABLE hatim_participations ENABLE ROW LEVEL SECURITY;
 -- 2. Fonction de vérification rate limit hatims
 CREATE OR REPLACE FUNCTION check_hatim_rate_limit(
     p_device_id TEXT,
-    p_limit INTEGER DEFAULT 3,
+    p_limit INTEGER DEFAULT 5,
     p_period_hours INTEGER DEFAULT 24
 )
 RETURNS BOOLEAN AS $$
@@ -45,7 +45,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION check_participation_rate_limit(
     p_device_id TEXT,
     p_hatim_id UUID,
-    p_limit INTEGER DEFAULT 10,
+    p_limit INTEGER DEFAULT 150,
     p_period_hours INTEGER DEFAULT 24
 )
 RETURNS BOOLEAN AS $$
@@ -89,11 +89,11 @@ CREATE POLICY "hatims_select" ON hatims
 CREATE POLICY "hatims_insert" ON hatims
     FOR INSERT
     WITH CHECK (
-        -- Limite globale (100/heure)
+        -- Limite globale (100/heure) - anti-spam/bot
         (SELECT COUNT(*) FROM hatims WHERE created_at > NOW() - INTERVAL '1 hour') < 100
         AND
-        -- Limite par device (3/jour)
-        (created_by_device IS NULL OR check_hatim_rate_limit(created_by_device, 3, 24))
+        -- Limite par device (5/jour)
+        (created_by_device IS NULL OR check_hatim_rate_limit(created_by_device, 5, 24))
     );
 
 -- UPDATE: Seulement le créateur peut modifier (via device_id)
@@ -122,8 +122,8 @@ CREATE POLICY "participations_select" ON hatim_participations
 CREATE POLICY "participations_insert" ON hatim_participations
     FOR INSERT
     WITH CHECK (
-        -- Limite par device dans ce hatim (10 unités max par personne)
-        check_participation_rate_limit(device_id, hatim_id, 10, 24)
+        -- Limite par device dans ce hatim (150 unités max par jour)
+        check_participation_rate_limit(device_id, hatim_id, 150, 24)
     );
 
 -- UPDATE: Seulement le propriétaire (device_id) peut modifier
@@ -177,12 +177,12 @@ SELECT check_participation_rate_limit('test_device', '00000000-0000-0000-0000-00
 
 /*
 Limites configurées:
-- Hatims: 3 par device/jour + 100 global/heure
-- Participations: 10 par device/hatim/jour
+- Hatims: 5 par device/jour + 100 global/heure (anti-spam)
+- Participations: 150 par device/hatim/jour
 
 Protection:
-- Un utilisateur ne peut pas créer plus de 3 hatims par jour
-- Un utilisateur ne peut pas prendre plus de 10 cüz dans un même hatim
+- Un utilisateur ne peut pas créer plus de 5 hatims par jour
+- Un utilisateur ne peut pas prendre plus de 150 cüz par jour (5 hatims x 30 cüz)
 - Seul le créateur peut modifier son hatim
 - Seul le participant peut modifier/supprimer sa participation
 
