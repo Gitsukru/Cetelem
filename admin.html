@@ -743,6 +743,7 @@
                         <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('namaz')">Namazlar</button>
                         <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('kuran')">Kuran</button>
                         <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('cevsen')">Cevsen</button>
+                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('sohbet')">Sohbet</button>
                     </div>
 
                     <!-- Add New Item -->
@@ -752,30 +753,35 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Kategori</label>
-                                    <select id="tavsiyeNewCategory">
+                                    <select id="tavsiyeNewCategory" onchange="adminDashboard.onCategoryChange()">
                                         <option value="zikir">Zikir</option>
                                         <option value="kitap">Kitap</option>
                                         <option value="namaz">Namaz</option>
                                         <option value="kuran">Kuran</option>
                                         <option value="cevsen">Cevsen</option>
+                                        <option value="sohbet">Sohbet</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Isim</label>
+                                    <label id="tavsiyeNameLabel">Isim</label>
                                     <input type="text" id="tavsiyeNewName" placeholder="ornek: Ya Vedud">
                                 </div>
                                 <div class="form-group">
-                                    <label>Detay</label>
+                                    <label id="tavsiyeDetailLabel">Detay</label>
                                     <input type="text" id="tavsiyeNewDetail" placeholder="ornek: 100 defa">
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group">
-                                    <label>Gunluk Hedef (opsiyonel)</label>
+                                <div class="form-group" id="dailyGoalGroup" style="display: none;">
+                                    <label id="dailyGoalLabel">Gunluk Hedef</label>
                                     <input type="number" id="tavsiyeNewDailyGoal" placeholder="0">
                                 </div>
-                                <div class="form-group">
-                                    <label>Toplam Sayfa (kitaplar icin)</label>
+                                <div class="form-group" id="weeklyGoalGroup">
+                                    <label id="weeklyGoalLabel">Haftalik Hedef</label>
+                                    <input type="number" id="tavsiyeNewWeeklyGoal" placeholder="0">
+                                </div>
+                                <div class="form-group" id="totalPagesGroup" style="display: none;">
+                                    <label id="totalPagesLabel">Toplam Sayfa</label>
                                     <input type="number" id="tavsiyeNewTotalPages" placeholder="0">
                                 </div>
                                 <div class="form-group form-actions">

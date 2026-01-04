@@ -1474,29 +1474,36 @@ function finalizeAddZikir() {
 // Tavsiye items - dynamique, peut etre modifie via admin
 const DEFAULT_TAVSIYE_ITEMS = {
     zikir: [
-        { name: 'Estagfirullah', detail: '100 defa' },
-        { name: 'Ya Baki entel baki', detail: '33 defa' },
-        { name: 'Salavat', detail: '100 defa' },
-        { name: 'La ilahe illa ente subhaneke inni kuntu minezzalimin', detail: '100 defa' },
-        { name: 'Subhanallahi ve bihamdihi Subhanallahil azim', detail: '100 defa' },
-        { name: 'Ya Latif', detail: '129 defa' }
+        { name: 'Estagfirullah', detail: '100 defa', weeklyGoal: 7 },
+        { name: 'Ya Baki entel baki', detail: '33 defa', weeklyGoal: 7 },
+        { name: 'Salavat', detail: '100 defa', weeklyGoal: 7 },
+        { name: 'La ilahe illa ente subhaneke inni kuntu minezzalimin', detail: '100 defa', weeklyGoal: 7 },
+        { name: 'Subhanallahi ve bihamdihi Subhanallahil azim', detail: '100 defa', weeklyGoal: 7 },
+        { name: 'Ya Latif', detail: '129 defa', weeklyGoal: 7 }
     ],
     kitap: [
-        { name: 'Kitap Okuma', detail: '10 sayfa', dailyGoal: 10 }
+        { name: 'Kitap Okuma', detail: 'Gunluk 10 sayfa', dailyGoal: 10, totalPages: 500 }
     ],
     namaz: [
-        { name: 'Teheccud Namazi', detail: '1 defa' },
-        { name: 'Evvabin Namazi', detail: '1 defa' },
-        { name: 'Kusluk Namazi', detail: '1 defa' },
-        { name: 'Teravih Namazi', detail: '1 defa' },
-        { name: 'Tesbih Namazi', detail: '1 defa' },
-        { name: 'Hacet Namazi', detail: '1 defa' }
+        { name: 'Teheccud Namazi', detail: '2 rekat', weeklyGoal: 7 },
+        { name: 'Evvabin Namazi', detail: '6 rekat', weeklyGoal: 7 },
+        { name: 'Kusluk Namazi', detail: '4 rekat', weeklyGoal: 7 },
+        { name: 'Teravih Namazi', detail: '20 rekat', weeklyGoal: 7 },
+        { name: 'Tesbih Namazi', detail: '4 rekat', weeklyGoal: 1 },
+        { name: 'Hacet Namazi', detail: '2 rekat', weeklyGoal: 1 }
     ],
     kuran: [
-        { name: 'Kuran-i Kerim', detail: '3 sayfa', dailyGoal: 3, totalPages: 604 }
+        { name: 'Kuran-i Kerim', detail: 'Gunluk 3 sayfa', dailyGoal: 3, totalPages: 604 }
     ],
     cevsen: [
-        { name: 'Cevsen', detail: '35 bab', dailyGoal: 35, totalPages: 100 }
+        { name: 'Cevsen-ul Kebir', detail: 'Gunluk 10 bab', dailyGoal: 10, totalPages: 100 }
+    ],
+    sohbet: [
+        { name: 'Bamteli', detail: 'Video sohbetler', weeklyGoal: 3 },
+        { name: 'Kirik Testi', detail: 'Yazili sohbetler', weeklyGoal: 3 },
+        { name: 'Herkul Nagme', detail: 'Sesli sohbetler', weeklyGoal: 3 },
+        { name: 'Vuslat Mektubu', detail: 'Mektup okuma', weeklyGoal: 1 },
+        { name: 'Umit Burcu', detail: 'Yazili sohbetler', weeklyGoal: 2 }
     ]
 };
 
@@ -1559,7 +1566,8 @@ const TAVSIYE_FILTER_MAP = {
     zikir: ['zikir'],
     kitap: ['kitap', 'kuran', 'cevsen'],
     namaz: ['namaz'],
-    all: ['zikir', 'kitap', 'namaz', 'kuran', 'cevsen']
+    sohbet: ['sohbet'],
+    all: ['zikir', 'kitap', 'namaz', 'kuran', 'cevsen', 'sohbet']
 };
 
 // Afficher le modal des recommandations

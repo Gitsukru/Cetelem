@@ -1971,29 +1971,36 @@ class AdminDashboard {
     getDefaultTavsiyeItems() {
         return {
             zikir: [
-                { name: 'Estagfirullah', detail: '100 defa' },
-                { name: 'Ya Baki entel baki', detail: '33 defa' },
-                { name: 'Salavat', detail: '100 defa' },
-                { name: 'La ilahe illa ente subhaneke inni kuntu minezzalimin', detail: '100 defa' },
-                { name: 'Subhanallahi ve bihamdihi Subhanallahil azim', detail: '100 defa' },
-                { name: 'Ya Latif', detail: '129 defa' }
+                { name: 'Estagfirullah', detail: '100 defa', weeklyGoal: 7 },
+                { name: 'Ya Baki entel baki', detail: '33 defa', weeklyGoal: 7 },
+                { name: 'Salavat', detail: '100 defa', weeklyGoal: 7 },
+                { name: 'La ilahe illa ente subhaneke inni kuntu minezzalimin', detail: '100 defa', weeklyGoal: 7 },
+                { name: 'Subhanallahi ve bihamdihi Subhanallahil azim', detail: '100 defa', weeklyGoal: 7 },
+                { name: 'Ya Latif', detail: '129 defa', weeklyGoal: 7 }
             ],
             kitap: [
-                { name: 'Kitap Okuma', detail: '10 sayfa', dailyGoal: 10 }
+                { name: 'Kitap Okuma', detail: 'Gunluk 10 sayfa', dailyGoal: 10, totalPages: 500 }
             ],
             namaz: [
-                { name: 'Teheccud Namazi', detail: '1 defa' },
-                { name: 'Evvabin Namazi', detail: '1 defa' },
-                { name: 'Kusluk Namazi', detail: '1 defa' },
-                { name: 'Teravih Namazi', detail: '1 defa' },
-                { name: 'Tesbih Namazi', detail: '1 defa' },
-                { name: 'Hacet Namazi', detail: '1 defa' }
+                { name: 'Teheccud Namazi', detail: '2 rekat', weeklyGoal: 7 },
+                { name: 'Evvabin Namazi', detail: '6 rekat', weeklyGoal: 7 },
+                { name: 'Kusluk Namazi', detail: '4 rekat', weeklyGoal: 7 },
+                { name: 'Teravih Namazi', detail: '20 rekat', weeklyGoal: 7 },
+                { name: 'Tesbih Namazi', detail: '4 rekat', weeklyGoal: 1 },
+                { name: 'Hacet Namazi', detail: '2 rekat', weeklyGoal: 1 }
             ],
             kuran: [
-                { name: 'Kuran-i Kerim', detail: '3 sayfa', dailyGoal: 3, totalPages: 604 }
+                { name: 'Kuran-i Kerim', detail: 'Gunluk 3 sayfa', dailyGoal: 3, totalPages: 604 }
             ],
             cevsen: [
-                { name: 'Cevsen', detail: '35 bab', dailyGoal: 35, totalPages: 100 }
+                { name: 'Cevsen-ul Kebir', detail: 'Gunluk 10 bab', dailyGoal: 10, totalPages: 100 }
+            ],
+            sohbet: [
+                { name: 'Bamteli', detail: 'Video sohbetler', weeklyGoal: 3 },
+                { name: 'Kirik Testi', detail: 'Yazili sohbetler', weeklyGoal: 3 },
+                { name: 'Herkul Nagme', detail: 'Sesli sohbetler', weeklyGoal: 3 },
+                { name: 'Vuslat Mektubu', detail: 'Mektup okuma', weeklyGoal: 1 },
+                { name: 'Umit Burcu', detail: 'Yazili sohbetler', weeklyGoal: 2 }
             ]
         };
     }
@@ -2028,13 +2035,21 @@ class AdminDashboard {
      * Show Tavsiye items by category
      */
     showTavsiyeCategory(category) {
+        // Tab text to category mapping
+        const tabMapping = {
+            'Zikirler': 'zikir',
+            'Kitaplar': 'kitap',
+            'Namazlar': 'namaz',
+            'Kuran': 'kuran',
+            'Cevsen': 'cevsen',
+            'Sohbet': 'sohbet'
+        };
+
         // Update tab active state
         const tabs = document.querySelectorAll('.tavsiye-tab');
         tabs.forEach(tab => {
-            if (tab.textContent.toLowerCase().includes(category) ||
-                (category === 'zikir' && tab.textContent === 'Zikirler') ||
-                (category === 'kitap' && tab.textContent === 'Kitaplar') ||
-                (category === 'namaz' && tab.textContent === 'Namazlar')) {
+            const tabCategory = tabMapping[tab.textContent];
+            if (tabCategory === category) {
                 tab.classList.add('active');
             } else {
                 tab.classList.remove('active');
@@ -2046,6 +2061,9 @@ class AdminDashboard {
         if (categorySelect) {
             categorySelect.value = category;
         }
+
+        // Update form fields visibility based on category
+        this.onCategoryChange();
 
         // Render items
         this.renderTavsiyeItems(category);
@@ -2066,7 +2084,8 @@ class AdminDashboard {
             kitap: 'Kitap',
             namaz: 'Namaz',
             kuran: 'Kuran',
-            cevsen: 'Cevsen'
+            cevsen: 'Cevsen',
+            sohbet: 'Sohbet'
         };
 
         Object.keys(items).forEach(category => {
@@ -2074,8 +2093,18 @@ class AdminDashboard {
 
             items[category].forEach((item, index) => {
                 let meta = '';
-                if (item.dailyGoal) meta += `Gunluk: ${item.dailyGoal}`;
-                if (item.totalPages) meta += ` | Toplam: ${item.totalPages} sayfa`;
+                if (item.weeklyGoal) {
+                    const unit = category === 'sohbet' ? 'adet' : 'defa';
+                    meta += `Haftalik: ${item.weeklyGoal} ${unit}`;
+                }
+                if (item.dailyGoal) {
+                    const unit = category === 'cevsen' ? 'bab' : 'sayfa';
+                    meta += `Gunluk: ${item.dailyGoal} ${unit}`;
+                }
+                if (item.totalPages) {
+                    const unit = category === 'cevsen' ? 'bab' : 'sayfa';
+                    meta += (meta ? ' | ' : '') + `Toplam: ${item.totalPages} ${unit}`;
+                }
 
                 html += `
                     <div class="tavsiye-admin-item" data-category="${category}" data-index="${index}">
@@ -2108,6 +2137,129 @@ class AdminDashboard {
     }
 
     /**
+     * Handle category change - show/hide form fields and update labels based on category
+     */
+    onCategoryChange() {
+        const category = document.getElementById('tavsiyeNewCategory').value;
+        const dailyGoalGroup = document.getElementById('dailyGoalGroup');
+        const weeklyGoalGroup = document.getElementById('weeklyGoalGroup');
+        const totalPagesGroup = document.getElementById('totalPagesGroup');
+
+        // Get label elements
+        const nameLabel = document.getElementById('tavsiyeNameLabel');
+        const detailLabel = document.getElementById('tavsiyeDetailLabel');
+        const dailyGoalLabel = document.getElementById('dailyGoalLabel');
+        const weeklyGoalLabel = document.getElementById('weeklyGoalLabel');
+        const totalPagesLabel = document.getElementById('totalPagesLabel');
+
+        // Get input elements for placeholders
+        const nameInput = document.getElementById('tavsiyeNewName');
+        const detailInput = document.getElementById('tavsiyeNewDetail');
+        const dailyGoalInput = document.getElementById('tavsiyeNewDailyGoal');
+        const weeklyGoalInput = document.getElementById('tavsiyeNewWeeklyGoal');
+        const totalPagesInput = document.getElementById('tavsiyeNewTotalPages');
+
+        // Reset all fields visibility
+        if (dailyGoalGroup) dailyGoalGroup.style.display = 'none';
+        if (weeklyGoalGroup) weeklyGoalGroup.style.display = 'none';
+        if (totalPagesGroup) totalPagesGroup.style.display = 'none';
+
+        // Category-specific configuration
+        const categoryConfig = {
+            zikir: {
+                nameLabel: 'Zikir Ismi',
+                namePlaceholder: 'ornek: Ya Vedud',
+                detailLabel: 'Tekrar Sayisi',
+                detailPlaceholder: 'ornek: 100 defa',
+                showWeekly: true,
+                weeklyLabel: 'Haftalik Hedef (defa)',
+                weeklyPlaceholder: 'ornek: 7'
+            },
+            kitap: {
+                nameLabel: 'Kitap Ismi',
+                namePlaceholder: 'ornek: Risale-i Nur',
+                detailLabel: 'Aciklama',
+                detailPlaceholder: 'ornek: Gunluk 10 sayfa',
+                showDaily: true,
+                showTotal: true,
+                dailyLabel: 'Gunluk Hedef (sayfa)',
+                dailyPlaceholder: 'ornek: 10',
+                totalLabel: 'Toplam Sayfa',
+                totalPlaceholder: 'ornek: 500'
+            },
+            namaz: {
+                nameLabel: 'Namaz Ismi',
+                namePlaceholder: 'ornek: Teheccud Namazi',
+                detailLabel: 'Aciklama',
+                detailPlaceholder: 'ornek: 2 rekat',
+                showWeekly: true,
+                weeklyLabel: 'Haftalik Hedef (defa)',
+                weeklyPlaceholder: 'ornek: 7'
+            },
+            kuran: {
+                nameLabel: 'Kuran Okuma',
+                namePlaceholder: 'ornek: Kuran-i Kerim',
+                detailLabel: 'Aciklama',
+                detailPlaceholder: 'ornek: Gunluk 3 sayfa',
+                showDaily: true,
+                showTotal: true,
+                dailyLabel: 'Gunluk Hedef (sayfa)',
+                dailyPlaceholder: 'ornek: 3',
+                totalLabel: 'Toplam Sayfa',
+                totalPlaceholder: '604'
+            },
+            cevsen: {
+                nameLabel: 'Cevsen',
+                namePlaceholder: 'ornek: Cevsen-ul Kebir',
+                detailLabel: 'Aciklama',
+                detailPlaceholder: 'ornek: Gunluk 10 bab',
+                showDaily: true,
+                showTotal: true,
+                dailyLabel: 'Gunluk Hedef (bab)',
+                dailyPlaceholder: 'ornek: 10',
+                totalLabel: 'Toplam Bab',
+                totalPlaceholder: '100'
+            },
+            sohbet: {
+                nameLabel: 'Sohbet Turu',
+                namePlaceholder: 'ornek: Bamteli',
+                detailLabel: 'Aciklama',
+                detailPlaceholder: 'ornek: Video sohbetler',
+                showWeekly: true,
+                weeklyLabel: 'Haftalik Hedef (adet)',
+                weeklyPlaceholder: 'ornek: 3'
+            }
+        };
+
+        const config = categoryConfig[category] || categoryConfig.zikir;
+
+        // Update labels and placeholders
+        if (nameLabel) nameLabel.textContent = config.nameLabel;
+        if (nameInput) nameInput.placeholder = config.namePlaceholder;
+        if (detailLabel) detailLabel.textContent = config.detailLabel;
+        if (detailInput) detailInput.placeholder = config.detailPlaceholder;
+
+        // Show/hide and configure fields based on category
+        if (config.showWeekly && weeklyGoalGroup) {
+            weeklyGoalGroup.style.display = 'block';
+            if (weeklyGoalLabel) weeklyGoalLabel.textContent = config.weeklyLabel;
+            if (weeklyGoalInput) weeklyGoalInput.placeholder = config.weeklyPlaceholder;
+        }
+
+        if (config.showDaily && dailyGoalGroup) {
+            dailyGoalGroup.style.display = 'block';
+            if (dailyGoalLabel) dailyGoalLabel.textContent = config.dailyLabel;
+            if (dailyGoalInput) dailyGoalInput.placeholder = config.dailyPlaceholder;
+        }
+
+        if (config.showTotal && totalPagesGroup) {
+            totalPagesGroup.style.display = 'block';
+            if (totalPagesLabel) totalPagesLabel.textContent = config.totalLabel;
+            if (totalPagesInput) totalPagesInput.placeholder = config.totalPlaceholder;
+        }
+    }
+
+    /**
      * Add new Tavsiye item
      */
     addTavsiyeItem() {
@@ -2115,6 +2267,7 @@ class AdminDashboard {
         const name = document.getElementById('tavsiyeNewName').value.trim();
         const detail = document.getElementById('tavsiyeNewDetail').value.trim();
         const dailyGoal = parseInt(document.getElementById('tavsiyeNewDailyGoal').value) || 0;
+        const weeklyGoal = parseInt(document.getElementById('tavsiyeNewWeeklyGoal').value) || 0;
         const totalPages = parseInt(document.getElementById('tavsiyeNewTotalPages').value) || 0;
 
         if (!name || !detail) {
@@ -2123,9 +2276,23 @@ class AdminDashboard {
         }
 
         const items = this.getTavsiyeItems();
+
+        // Ensure category exists
+        if (!items[category]) {
+            items[category] = [];
+        }
+
         const newItem = { name, detail };
-        if (dailyGoal > 0) newItem.dailyGoal = dailyGoal;
-        if (totalPages > 0) newItem.totalPages = totalPages;
+
+        // Add appropriate fields based on category
+        if (category === 'zikir' || category === 'namaz' || category === 'sohbet') {
+            // Weekly goal for zikir, namaz, sohbet
+            if (weeklyGoal > 0) newItem.weeklyGoal = weeklyGoal;
+        } else {
+            // Daily goal and total pages for kitap, kuran, cevsen
+            if (dailyGoal > 0) newItem.dailyGoal = dailyGoal;
+            if (totalPages > 0) newItem.totalPages = totalPages;
+        }
 
         items[category].push(newItem);
         this.saveTavsiyeItems(items);
@@ -2134,6 +2301,7 @@ class AdminDashboard {
         document.getElementById('tavsiyeNewName').value = '';
         document.getElementById('tavsiyeNewDetail').value = '';
         document.getElementById('tavsiyeNewDailyGoal').value = '';
+        document.getElementById('tavsiyeNewWeeklyGoal').value = '';
         document.getElementById('tavsiyeNewTotalPages').value = '';
 
         // Refresh list
@@ -2158,14 +2326,47 @@ class AdminDashboard {
         item.name = newName.trim() || item.name;
         item.detail = newDetail.trim() || item.detail;
 
-        if (item.dailyGoal !== undefined) {
-            const newGoal = prompt('Gunluk hedef:', item.dailyGoal);
-            if (newGoal !== null) item.dailyGoal = parseInt(newGoal) || 0;
-        }
+        // For zikir/namaz/sohbet: handle weeklyGoal
+        if (category === 'zikir' || category === 'namaz' || category === 'sohbet') {
+            const weeklyLabel = category === 'sohbet' ? 'Haftalik hedef (adet):' : 'Haftalik hedef (defa):';
+            const currentWeeklyGoal = item.weeklyGoal || 0;
+            const newWeeklyGoal = prompt(weeklyLabel, currentWeeklyGoal);
+            if (newWeeklyGoal !== null) {
+                const parsed = parseInt(newWeeklyGoal) || 0;
+                if (parsed > 0) {
+                    item.weeklyGoal = parsed;
+                } else {
+                    delete item.weeklyGoal;
+                }
+            }
+        } else {
+            // For kitap/kuran/cevsen: handle dailyGoal and totalPages
+            const dailyLabel = category === 'cevsen' ? 'Gunluk hedef (bab):' : 'Gunluk hedef (sayfa):';
+            const totalLabel = category === 'cevsen' ? 'Toplam bab:' : 'Toplam sayfa:';
 
-        if (item.totalPages !== undefined) {
-            const newPages = prompt('Toplam sayfa:', item.totalPages);
-            if (newPages !== null) item.totalPages = parseInt(newPages) || 0;
+            if (item.dailyGoal !== undefined || category === 'kitap' || category === 'kuran' || category === 'cevsen') {
+                const newGoal = prompt(dailyLabel, item.dailyGoal || 0);
+                if (newGoal !== null) {
+                    const parsed = parseInt(newGoal) || 0;
+                    if (parsed > 0) {
+                        item.dailyGoal = parsed;
+                    } else {
+                        delete item.dailyGoal;
+                    }
+                }
+            }
+
+            if (item.totalPages !== undefined || category === 'kitap' || category === 'kuran' || category === 'cevsen') {
+                const newPages = prompt(totalLabel, item.totalPages || 0);
+                if (newPages !== null) {
+                    const parsed = parseInt(newPages) || 0;
+                    if (parsed > 0) {
+                        item.totalPages = parsed;
+                    } else {
+                        delete item.totalPages;
+                    }
+                }
+            }
         }
 
         this.saveTavsiyeItems(items);

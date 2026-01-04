@@ -556,13 +556,13 @@ Linke tıklayın ve uygulamayı yükleyin
         try {
             const newRound = await this.provider.startNewRound(hatimId, expectedRound);
             showCustomAlert(`🎉 Tur ${newRound} başlatıldı!`, 'success', 2500);
-            this.refreshCurrentHatim();
+            await this.refreshCurrentHatim();
         } catch (error) {
             console.error('Start new round error:', error);
             // Si race condition détectée, rafraîchir automatiquement
             if (error.message && error.message.includes('zaten başlatılmış')) {
                 showCustomAlert('ℹ️ Tur zaten başlatılmış. Sayfa güncelleniyor...', 'info', 2500);
-                this.refreshCurrentHatim();
+                await this.refreshCurrentHatim();
             } else {
                 showCustomAlert(error.message || 'Yeni tur başlatılamadı', 'error', 2500);
             }
@@ -900,7 +900,7 @@ Linke tıklayın ve uygulamayı yükleyin
                     try {
                         await this.provider.markIncomplete(participationId);
                         showCustomAlert('↩️ Okunmadı olarak işaretlendi', 'info', 2000);
-                        this.refreshCurrentHatim();
+                        await this.refreshCurrentHatim();
                     } catch (error) {
                         console.error('Mark incomplete error:', error);
                         showCustomAlert('❌ Durum güncellenemedi. İnternet bağlantınızı kontrol edin.', 'error', 3000);
@@ -916,7 +916,7 @@ Linke tıklayın ve uygulamayı yükleyin
                     try {
                         await this.provider.markComplete(participationId);
                         showCustomAlert('✓ Okundu olarak işaretlendi!', 'success', 2000);
-                        this.refreshCurrentHatim();
+                        await this.refreshCurrentHatim();
                     } catch (error) {
                         console.error('Mark complete error:', error);
                         showCustomAlert('❌ Durum güncellenemedi. İnternet bağlantınızı kontrol edin.', 'error', 3000);
@@ -947,7 +947,7 @@ Linke tıklayın ve uygulamayı yükleyin
                 try {
                     await this.provider.releaseUnit(participationId, deviceId);
                     showCustomAlert('✓ Vazgeçildi, başkası alabilir', 'info', 2000);
-                    this.refreshCurrentHatim();
+                    await this.refreshCurrentHatim();
                 } catch (error) {
                     console.error('Release unit error:', error);
                     showCustomAlert('❌ Vazgeçme işlemi başarısız. İnternet bağlantınızı kontrol edin.', 'error', 3000);
@@ -1132,7 +1132,7 @@ Linke tıklayın ve uygulamayı yükleyin
             showCustomAlert('✅ Basariyla secildi!', 'success', 2000);
 
             // Refresh view
-            this.refreshCurrentHatim();
+            await this.refreshCurrentHatim();
 
         } catch (error) {
             console.error('Claim error:', error);
@@ -1142,7 +1142,7 @@ Linke tıklayın ve uygulamayı yükleyin
                 showCustomAlert('⚠️ Bu cüz az önce başkası tarafından alındı! Başka bir cüz seçin.', 'warning', 3500);
                 document.getElementById('claimModal')?.remove();
                 // Auto-refresh to show updated grid
-                this.refreshCurrentHatim();
+                await this.refreshCurrentHatim();
             } else {
                 // Message d'erreur plus informatif
                 let errorMsg = error.message || 'Bilinmeyen hata';

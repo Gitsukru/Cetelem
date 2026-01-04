@@ -161,39 +161,51 @@ class HatimProvider {
     /**
      * Marquer une unite comme terminee
      * @param {string} participationId - ID de la participation
+     * @returns {Promise<Object>} Participation mise a jour
      */
     async markComplete(participationId) {
-        const { error } = await this.supabase
+        const { data, error } = await this.supabase
             .from('hatim_participations')
             .update({
                 is_completed: true,
                 completed_at: new Date().toISOString()
             })
-            .eq('id', participationId);
+            .eq('id', participationId)
+            .select()
+            .single();
 
         if (error) {
             console.error('Erreur mark complete:', error);
             throw new Error(error.message);
         }
+
+        console.log('Marked complete:', participationId, data?.is_completed);
+        return data;
     }
 
     /**
      * Marquer une unite comme non terminee (annuler)
      * @param {string} participationId - ID de la participation
+     * @returns {Promise<Object>} Participation mise a jour
      */
     async markIncomplete(participationId) {
-        const { error } = await this.supabase
+        const { data, error } = await this.supabase
             .from('hatim_participations')
             .update({
                 is_completed: false,
                 completed_at: null
             })
-            .eq('id', participationId);
+            .eq('id', participationId)
+            .select()
+            .single();
 
         if (error) {
             console.error('Erreur mark incomplete:', error);
             throw new Error(error.message);
         }
+
+        console.log('Marked incomplete:', participationId, data?.is_completed);
+        return data;
     }
 
     /**
