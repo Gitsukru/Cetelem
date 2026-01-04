@@ -133,7 +133,7 @@ const HatimManager = {
         let html = `
             <div style="margin-bottom: 12px;">
                 <h4 style="margin: 0 0 8px; color: #334155; font-size: 13px; font-weight: 600;">Hatimlerim</h4>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
         `;
 
         myHatims.slice(0, 5).forEach(h => {
@@ -141,17 +141,12 @@ const HatimManager = {
             const icon = h.isCreator ? '👑' : '📖';
             html += `
                 <div onclick="HatimManager.openHatim('${h.code}')"
-                     style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer;"
-                     onmouseover="this.style.borderColor='#667eea';"
-                     onmouseout="this.style.borderColor='#e2e8f0';">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 16px;">${icon}</span>
-                        <span style="font-weight: 500; color: #1e293b; font-size: 13px;">${typeLabel}</span>
-                        <span style="font-size: 12px; color: #64748b;">${h.code}</span>
-                    </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
+                     style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 20px; cursor: pointer; font-size: 13px;"
+                     onmouseover="this.style.borderColor='#667eea'; this.style.background='#f8fafc';"
+                     onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='white';">
+                    <span>${icon}</span>
+                    <span style="font-weight: 500; color: #1e293b;">${typeLabel}</span>
+                    <span style="color: #64748b; font-size: 11px;">${h.code}</span>
                 </div>
             `;
         });
@@ -713,8 +708,8 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
 
             <!-- Cuz listesi (collapsible) -->
             <details style="margin-top: 12px;">
-                <summary style="cursor: pointer; padding: 10px 14px; background: #f1f5f9; border-radius: 8px; font-weight: 500; color: #334155; display: flex; align-items: center; gap: 8px; list-style: none;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cuz-toggle-icon">
+                <summary style="cursor: pointer; padding: 8px 14px; background: #f1f5f9; border-radius: 20px; font-weight: 500; color: #334155; display: inline-flex; align-items: center; gap: 6px; list-style: none; font-size: 13px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                     30 Cuz Listesi
@@ -764,16 +759,13 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
     renderDua(container) {
         let html = `
             <div class="dua-content" style="margin-top: 8px;">
-                <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 16px; text-align: center;">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0369a1" stroke-width="1.5" style="margin-bottom: 8px;">
+                <div style="display: inline-flex; align-items: center; gap: 10px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 20px; padding: 10px 16px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0369a1" stroke-width="1.5">
                         <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
                         <path d="M2 17l10 5 10-5"></path>
                         <path d="M2 12l10 5 10-5"></path>
                     </svg>
-                    <h4 style="color: #0369a1; margin: 0 0 6px; font-size: 15px;">Dua Paylasimi</h4>
-                    <p style="color: #64748b; font-size: 13px; margin: 0;">
-                        Yakinda eklenecek
-                    </p>
+                    <span style="color: #0369a1; font-size: 13px; font-weight: 500;">Dua Paylasimi - Yakinda</span>
                 </div>
             </div>
         `;
@@ -803,8 +795,8 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
 
             <!-- Bab grid (collapsible) -->
             <details style="margin-top: 12px;">
-                <summary style="cursor: pointer; padding: 10px 14px; background: #f1f5f9; border-radius: 8px; font-weight: 500; color: #334155; display: flex; align-items: center; gap: 8px; list-style: none;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <summary style="cursor: pointer; padding: 8px 14px; background: #f1f5f9; border-radius: 20px; font-weight: 500; color: #334155; display: inline-flex; align-items: center; gap: 6px; list-style: none; font-size: 13px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                     100 Bab Listesi

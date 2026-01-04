@@ -435,14 +435,14 @@
                 <!-- Contenu dynamique -->
                 <div id="hatimContent"></div>
 
-                <!-- Rejoindre par code (compact) -->
-                <div class="hatim-join-section" style="margin-top: 16px; padding: 12px; background: #f8fafc; border-radius: 8px;">
-                    <div style="display: flex; gap: 8px; align-items: center;">
+                <!-- Rejoindre par code (compact inline) -->
+                <div class="hatim-join-section" style="margin-top: 16px;">
+                    <div style="display: inline-flex; gap: 6px; align-items: center; padding: 6px; background: #f8fafc; border-radius: 24px;">
                         <input type="text" id="hatimJoinCode"
-                               style="flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; text-transform: uppercase;"
-                               placeholder="Kod ile katil" maxlength="8">
+                               style="width: 100px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 18px; font-size: 13px; text-transform: uppercase;"
+                               placeholder="Kod gir" maxlength="8">
                         <button onclick="HatimManager.joinByCode()"
-                                style="padding: 10px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">
+                                style="padding: 8px 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 18px; cursor: pointer; font-weight: 600; font-size: 12px;">
                             Katil
                         </button>
                     </div>
