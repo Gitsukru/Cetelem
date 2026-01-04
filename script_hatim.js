@@ -559,6 +559,23 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                 </details>
                 ` : ''}
 
+                <!-- CARD 3b: Previous Rounds History -->
+                ${hatim.current_round > 1 ? `
+                <details style="${cardStyle} background: #fefce8; border-color: #fde047; padding: 0;">
+                    <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #854d0e; font-size: 14px;">
+                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        <span>🏆</span> Önceki Turlar (${hatim.current_round - 1} tamamlandı)
+                        <span style="font-weight: 400; font-size: 11px; color: #a16207; margin-left: auto;">Tıkla → Göster</span>
+                    </summary>
+                    <div id="previousRoundsContainer" style="padding: 0 16px 16px;">
+                        <p style="color: #854d0e; font-size: 13px; margin: 0;">Yükleniyor...</p>
+                    </div>
+                </details>
+                <script>HatimManager.loadPreviousRounds('${hatim.id}', ${hatim.current_round}, ${totalUnits}, '${unitLabel}');</script>
+                ` : ''}
+
                 <!-- CARD 4: Actions -->
                 <div style="display: flex; gap: 8px; margin-bottom: 12px;">
                     <button onclick="HatimManager.shareVia('${hatim.code}', '${hatim.type}')"
@@ -682,6 +699,61 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                     }
                 }
             );
+        }
+    },
+
+    async loadPreviousRounds(hatimId, currentRound, totalUnits, unitLabel) {
+        const container = document.getElementById('previousRoundsContainer');
+        if (!container || !this.provider) return;
+
+        try {
+            let html = '';
+            const myDeviceId = this.provider.getDeviceId();
+
+            // Load each previous round (from most recent to oldest)
+            for (let round = currentRound - 1; round >= 1; round--) {
+                const participations = await this.provider.getParticipationsByRound(hatimId, round);
+                const completedCount = participations.filter(p => p.is_completed).length;
+                const myInThisRound = participations.filter(p => p.device_id === myDeviceId);
+
+                html += `
+                    <div style="margin-bottom: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid #fde047;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-weight: 600; color: #854d0e;">Tur ${round}</span>
+                            <span style="font-size: 12px; color: #a16207;">✅ ${completedCount}/${totalUnits} okundu</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(${totalUnits <= 30 ? 10 : 10}, 1fr); gap: 3px;">
+                `;
+
+                for (let i = 1; i <= totalUnits; i++) {
+                    const p = participations.find(x => x.unit_number === i);
+                    const isMine = p && p.device_id === myDeviceId;
+                    const bgColor = p ? (p.is_completed ? '#dcfce7' : '#fef3c7') : '#f1f5f9';
+                    const borderColor = isMine ? '#3b82f6' : (p ? (p.is_completed ? '#10b981' : '#f59e0b') : '#e2e8f0');
+
+                    html += `
+                        <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: ${bgColor}; border: 1px solid ${borderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #64748b;" title="${p ? p.participant_name : 'Boş'}">
+                            ${i}
+                        </div>
+                    `;
+                }
+
+                html += `
+                        </div>
+                        ${myInThisRound.length > 0 ? `
+                        <div style="margin-top: 8px; font-size: 11px; color: #64748b;">
+                            🙋 Benim: ${myInThisRound.map(p => `${unitLabel} ${p.unit_number}`).join(', ')}
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html || '<p style="color: #854d0e; font-size: 13px; margin: 0;">Önceki tur bulunamadı.</p>';
+
+        } catch (error) {
+            console.error('Load previous rounds error:', error);
+            container.innerHTML = '<p style="color: #dc2626; font-size: 13px; margin: 0;">Yüklenemedi.</p>';
         }
     },
 

@@ -302,6 +302,28 @@ class HatimProvider {
     }
 
     /**
+     * Obtenir toutes les participations d'un round specifique
+     * @param {string} hatimId - ID du hatim
+     * @param {number} roundNumber - Numero du round
+     * @returns {Promise<Array>}
+     */
+    async getParticipationsByRound(hatimId, roundNumber) {
+        const { data, error } = await this.supabase
+            .from('hatim_participations')
+            .select('*')
+            .eq('hatim_id', hatimId)
+            .eq('round_number', roundNumber)
+            .order('unit_number', { ascending: true });
+
+        if (error) {
+            console.error('Erreur get participations by round:', error);
+            return [];
+        }
+
+        return data || [];
+    }
+
+    /**
      * Obtenir les stats d'un Hatim (tous les rounds)
      * @param {string} hatimId - ID du hatim
      * @returns {Promise<Object>}
