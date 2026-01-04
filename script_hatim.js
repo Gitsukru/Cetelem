@@ -131,15 +131,9 @@ const HatimManager = {
 
         container.style.display = 'block';
         let html = `
-            <div style="margin-bottom: 20px;">
-                <h4 style="margin: 0 0 12px; color: #334155; display: flex; align-items: center; gap: 8px;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                        <path d="M2 17l10 5 10-5"></path>
-                    </svg>
-                    Hatimlerim
-                </h4>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="margin-bottom: 12px;">
+                <h4 style="margin: 0 0 8px; color: #334155; font-size: 13px; font-weight: 600;">Hatimlerim</h4>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
         `;
 
         myHatims.slice(0, 5).forEach(h => {
@@ -147,17 +141,15 @@ const HatimManager = {
             const icon = h.isCreator ? '👑' : '📖';
             html += `
                 <div onclick="HatimManager.openHatim('${h.code}')"
-                     style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: all 0.2s;"
-                     onmouseover="this.style.borderColor='#667eea'; this.style.background='#f8fafc';"
-                     onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='white';">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 20px;">${icon}</span>
-                        <div>
-                            <div style="font-weight: 600; color: #1e293b;">${typeLabel} Hatmi</div>
-                            <div style="font-size: 12px; color: #64748b;">Kod: ${h.code}</div>
-                        </div>
+                     style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer;"
+                     onmouseover="this.style.borderColor='#667eea';"
+                     onmouseout="this.style.borderColor='#e2e8f0';">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 16px;">${icon}</span>
+                        <span style="font-weight: 500; color: #1e293b; font-size: 13px;">${typeLabel}</span>
+                        <span style="font-size: 12px; color: #64748b;">${h.code}</span>
                     </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                 </div>
@@ -705,21 +697,12 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
 
     renderKuranHatim(container) {
         let html = `
-            <div class="hatim-header">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-                    <div>
-                        <h3 style="display: flex; align-items: center; gap: 8px; margin: 0 0 4px;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                            </svg>
-                            Kur'an-i Kerim Hatmi
-                        </h3>
-                        <p style="color: #64748b; font-size: 14px; margin: 0;">Hatim olusturun veya mevcut bir hatime katilin</p>
-                    </div>
+            <div class="hatim-header" style="margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <p style="color: #64748b; font-size: 13px; margin: 0;">Hatim olusturun veya katilin</p>
                     <button onclick="HatimManager.showCreateModal('kuran')"
-                            style="padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            style="padding: 10px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
@@ -728,33 +711,42 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                 </div>
             </div>
 
-            <div class="hatim-table-container" style="margin-top: 16px; overflow-x: auto;">
-                <table class="hatim-table" style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                    <thead>
-                        <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                            <th style="padding: 12px 8px; text-align: center; border-radius: 8px 0 0 0;">Cuz</th>
-                            <th style="padding: 12px 8px; text-align: center;">Sayfa</th>
-                            <th style="padding: 12px 8px; text-align: left; border-radius: 0 8px 0 0;">Baslica Sureler ve Bolumler</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <!-- Cuz listesi (collapsible) -->
+            <details style="margin-top: 12px;">
+                <summary style="cursor: pointer; padding: 10px 14px; background: #f1f5f9; border-radius: 8px; font-weight: 500; color: #334155; display: flex; align-items: center; gap: 8px; list-style: none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cuz-toggle-icon">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                    30 Cuz Listesi
+                </summary>
+                <div class="hatim-table-container" style="margin-top: 10px; overflow-x: auto; max-height: 400px; overflow-y: auto;">
+                    <table class="hatim-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #667eea; color: white; position: sticky; top: 0;">
+                                <th style="padding: 8px 6px; text-align: center;">Cuz</th>
+                                <th style="padding: 8px 6px; text-align: center;">Sayfa</th>
+                                <th style="padding: 8px 6px; text-align: left;">Sureler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
         `;
 
         KURAN_CUZLER.forEach((cuz, index) => {
             const bgColor = index % 2 === 0 ? '#f8fafc' : '#ffffff';
             html += `
                 <tr style="background: ${bgColor}; border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 12px 8px; text-align: center; font-weight: 600; color: #667eea;">${cuz.cuz}. Cuz</td>
-                    <td style="padding: 12px 8px; text-align: center; color: #64748b;">${cuz.sayfa}</td>
-                    <td style="padding: 12px 8px; color: #334155;">${cuz.icerik}</td>
+                    <td style="padding: 8px 6px; text-align: center; font-weight: 600; color: #667eea; font-size: 12px;">${cuz.cuz}</td>
+                    <td style="padding: 8px 6px; text-align: center; color: #64748b; font-size: 12px;">${cuz.sayfa}</td>
+                    <td style="padding: 8px 6px; color: #334155; font-size: 12px;">${cuz.icerik}</td>
                 </tr>
             `;
         });
 
         html += `
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
         `;
 
         container.innerHTML = html;
@@ -771,31 +763,16 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
 
     renderDua(container) {
         let html = `
-            <div class="hatim-header">
-                <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="dua-content" style="margin-top: 8px;">
+                <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 16px; text-align: center;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0369a1" stroke-width="1.5" style="margin-bottom: 8px;">
                         <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
                         <path d="M2 17l10 5 10-5"></path>
                         <path d="M2 12l10 5 10-5"></path>
                     </svg>
-                    Dua Paylasimi
-                </h3>
-                <p style="color: #64748b; font-size: 14px;">Dua isteklerinizi paylasin</p>
-            </div>
-
-            <div class="dua-content" style="margin-top: 20px;">
-                <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 24px; text-align: center;">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0369a1" stroke-width="1.5" style="margin-bottom: 12px;">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                        <path d="M2 17l10 5 10-5"></path>
-                        <path d="M2 12l10 5 10-5"></path>
-                    </svg>
-                    <h4 style="color: #0369a1; margin-bottom: 8px;">Dua Paylasimi</h4>
-                    <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">
-                        Yakinlariniz icin dua talep edin veya dua listesine katilin
-                    </p>
-                    <p style="color: #94a3b8; font-size: 13px;">
-                        (Paylasim mekanizmasi yakinda eklenecek)
+                    <h4 style="color: #0369a1; margin: 0 0 6px; font-size: 15px;">Dua Paylasimi</h4>
+                    <p style="color: #64748b; font-size: 13px; margin: 0;">
+                        Yakinda eklenecek
                     </p>
                 </div>
             </div>
@@ -810,21 +787,12 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
 
     renderCevsenHatim(container) {
         let html = `
-            <div class="hatim-header">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-                    <div>
-                        <h3 style="display: flex; align-items: center; gap: 8px; margin: 0 0 4px;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M12 6v6l4 2"></path>
-                            </svg>
-                            Cevsen-i Kebir Hatmi
-                        </h3>
-                        <p style="color: #64748b; font-size: 14px; margin: 0;">100 bab paylasimi</p>
-                    </div>
+            <div class="hatim-header" style="margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <p style="color: #64748b; font-size: 13px; margin: 0;">100 bab paylasimi</p>
                     <button onclick="HatimManager.showCreateModal('cevsen')"
-                            style="padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            style="padding: 10px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
@@ -833,19 +801,28 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                 </div>
             </div>
 
-            <div class="cevsen-grid" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
+            <!-- Bab grid (collapsible) -->
+            <details style="margin-top: 12px;">
+                <summary style="cursor: pointer; padding: 10px 14px; background: #f1f5f9; border-radius: 8px; font-weight: 500; color: #334155; display: flex; align-items: center; gap: 8px; list-style: none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                    100 Bab Listesi
+                </summary>
+                <div class="cevsen-grid" style="margin-top: 10px; display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; max-height: 300px; overflow-y: auto;">
         `;
 
         for (let i = 1; i <= 100; i++) {
             html += `
-                <div style="padding: 12px 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; font-weight: 500; color: #334155;">
-                    ${i}. Bab
+                <div style="padding: 8px 4px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center; font-size: 12px; font-weight: 500; color: #334155;">
+                    ${i}
                 </div>
             `;
         }
 
         html += `
-            </div>
+                </div>
+            </details>
         `;
 
         container.innerHTML = html;
