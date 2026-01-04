@@ -37,8 +37,12 @@ let timerInterval = null;
 // Sound variables
 let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
 let tickSound = null;
-let audioPool = []; // Pool d'instances audio pré-créées pour réduire la latence
+let audioPool = [];
 let poolIndex = 0;
+
+// Web Audio API pour latence minimale sur mobile
+let audioContext = null;
+let audioBuffer = null;
 
 // Group variables
 let currentGroup = null;
@@ -75,60 +79,63 @@ function resetTimer() {
 
 // Sound functions
 function initSound() {
-    // Use the real tesbih sound file
-    try {
-        tickSound = new Audio('./assets/audio/tesbih_variant_1.mp3');
-        tickSound.volume = 0.7;
-        tickSound.preload = 'auto';
-
-        // Test if the audio loads properly
-        tickSound.addEventListener('canplaythrough', function() {
-            console.log('Tesbih sound loaded successfully');
-            // ⚡ Créer un pool d'instances audio pré-chargées pour mobile (latence réduite)
-            createAudioPool();
-        });
-
-        tickSound.addEventListener('error', function(e) {
-            console.log('Error loading tesbih sound:', e);
-            // Fallback to Web Audio if file fails to load
-            createTickSoundWithWebAudio();
-        });
-
-    } catch (e) {
-        console.log('Audio creation failed, using Web Audio fallback');
-        createTickSoundWithWebAudio();
-    }
+    // Pre-charger le buffer audio pour latence minimale
+    preloadAudioBuffer();
 
     // Update button state
     const soundBtn = document.getElementById('soundToggle');
     if (soundBtn) {
-        if (soundEnabled) {
-            soundBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            </svg>`;
-        } else {
-            soundBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <line x1="23" y1="9" x2="17" y2="15"></line>
-                <line x1="17" y1="9" x2="23" y2="15"></line>
-            </svg>`;
-        }
-        soundBtn.classList.toggle('muted', !soundEnabled);
+        updateSoundButtonUI(soundBtn);
     }
 }
 
-// ⚡ Créer un pool d'instances audio pour éliminer la latence sur mobile
-function createAudioPool() {
-    if (!tickSound || tickSound.currentTime === undefined) return;
+// Pre-charger et decoder le fichier audio une seule fois
+async function preloadAudioBuffer() {
+    try {
+        const response = await fetch('./assets/audio/tesbih_variant_1.mp3');
+        const arrayBuffer = await response.arrayBuffer();
 
-    // Créer 5 instances pré-chargées
-    for (let i = 0; i < 5; i++) {
-        const audio = tickSound.cloneNode();
-        audio.volume = tickSound.volume;
-        audioPool.push(audio);
+        // Creer AudioContext au premier clic (requis par mobile)
+        if (!audioContext) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioContextClass();
+        }
+
+        audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        console.log('Audio buffer pre-charge et decode');
+    } catch (e) {
+        console.log('Erreur chargement audio, utilisation fallback');
     }
-    console.log('Audio pool créé: 5 instances prêtes');
+}
+
+// Initialiser AudioContext au premier clic (requis pour mobile)
+function initAudioContext() {
+    if (!audioContext) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioContextClass();
+    }
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+}
+
+function updateSoundButtonUI(soundBtn) {
+    if (!soundBtn) soundBtn = document.getElementById('soundToggle');
+    if (!soundBtn) return;
+
+    if (soundEnabled) {
+        soundBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>`;
+    } else {
+        soundBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>`;
+    }
+    soundBtn.classList.toggle('muted', !soundEnabled);
 }
 
 function createTickSoundWithWebAudio() {
@@ -265,46 +272,33 @@ function createSimpleTickSound() {
 }
 
 function playTickSound() {
-    if (!soundEnabled || !tickSound) return;
+    if (!soundEnabled) return;
 
     try {
-        // ⚡ Pour les fichiers audio - utiliser le pool pour latence minimale
-        if (tickSound.currentTime !== undefined) {
-            let sound;
-
-            // Si le pool est disponible, l'utiliser (BEAUCOUP plus rapide)
-            if (audioPool.length > 0) {
-                sound = audioPool[poolIndex];
-                poolIndex = (poolIndex + 1) % audioPool.length;
-
-                // Si le son est encore en train de jouer, le redémarrer
-                if (sound.currentTime > 0) {
-                    sound.currentTime = 0;
-                }
-            } else {
-                // Fallback: cloner si le pool n'est pas prêt
-                sound = tickSound.cloneNode();
-                sound.volume = tickSound.volume;
+        // Methode 1: Web Audio API avec buffer pre-decode (INSTANTANE)
+        if (audioBuffer && audioContext) {
+            // S'assurer que le contexte est actif
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
             }
 
-            const playPromise = sound.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(e => {
-                    console.log('Sound play failed:', e);
-                    if (!audioEnabled) {
-                        enableAudioOnInteraction();
-                    }
-                });
-            }
+            // Creer une source et jouer immediatement
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+
+            // Volume
+            const gainNode = audioContext.createGain();
+            gainNode.gain.value = 0.7;
+
+            source.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            source.start(0);
+            return;
         }
-        // For Web Audio API generated sounds
-        else if (tickSound.play) {
-            tickSound.play().catch(e => {
-                console.log('Web Audio play failed:', e);
-                if (!audioEnabled) {
-                    enableAudioOnInteraction();
-                }
-            });
+
+        // Methode 2: Fallback Web Audio synthetise
+        if (tickSound && tickSound.play) {
+            tickSound.play().catch(() => {});
         }
     } catch (e) {
         console.log('Sound error:', e);
@@ -351,49 +345,15 @@ function toggleSound() {
     soundEnabled = !soundEnabled;
     localStorage.setItem('soundEnabled', soundEnabled);
 
-    const soundBtn = document.getElementById('soundToggle');
-    if (soundBtn) {
-        if (soundEnabled) {
-            soundBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            </svg>`;
-        } else {
-            soundBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <line x1="23" y1="9" x2="17" y2="15"></line>
-                <line x1="17" y1="9" x2="23" y2="15"></line>
-            </svg>`;
-        }
-        soundBtn.classList.toggle('muted', !soundEnabled);
-    }
+    // Mettre a jour l'UI du bouton
+    updateSoundButtonUI();
 
-    // Show status message and try to enable audio immediately
+    // Initialiser AudioContext au premier clic (requis pour mobile)
     if (soundEnabled) {
-        showCustomAlert('Ses açıldı!', 'success', 2000);
-
-        // Try to enable audio immediately when user clicks sound button
-        if (!audioEnabled && tickSound) {
-            try {
-                if (tickSound.currentTime !== undefined) {
-                    tickSound.play().then(() => {
-                        tickSound.pause();
-                        tickSound.currentTime = 0;
-                        audioEnabled = true;
-                        localStorage.setItem('audioEnabled', 'true'); // ⚡ Sauvegarder
-                        console.log('Audio enabled via sound button');
-                    }).catch(() => {
-                        enableAudioOnInteraction();
-                    });
-                } else {
-                    enableAudioOnInteraction();
-                }
-            } catch (e) {
-                enableAudioOnInteraction();
-            }
-        }
+        initAudioContext();
+        showCustomAlert('Ses acildi!', 'success', 1500);
     } else {
-        showCustomAlert('Ses kapatıldı', 'info', 1500);
+        showCustomAlert('Ses kapatildi', 'info', 1500);
     }
 }
 
