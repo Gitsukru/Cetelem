@@ -176,9 +176,13 @@ const HatimManager = {
             const safeHCode = this.safeCode(h.code);
             html += `
                 <div onclick="HatimManager.openHatim('${safeHCode}')"
-                     style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;"
+                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.openHatim('${safeHCode}');}"
+                     tabindex="0" role="button" aria-label="${typeLabel} - Kod: ${safeHCode}"
+                     style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; outline: none;"
                      onmouseover="this.style.borderColor='#667eea'; this.style.background='#eef2ff';"
-                     onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc';">
+                     onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc';"
+                     onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102,126,234,0.3)';"
+                     onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="font-size: 20px;">${icon}</span>
                         <div>
@@ -509,6 +513,14 @@ Linke tıklayın ve uygulamayı yükleyin
             return;
         }
 
+        // Empêcher les doubles-clics
+        if (this._startingNewRound) {
+            return;
+        }
+
+        // Sauvegarder le round actuel pour la vérification optimiste
+        const expectedRound = this.currentHatim?.current_round;
+
         // Confirmation avant de démarrer
         const confirmed = await new Promise((resolve) => {
             const modal = document.createElement('div');
@@ -545,13 +557,23 @@ Linke tıklayın ve uygulamayı yükleyin
 
         if (!confirmed) return;
 
+        this._startingNewRound = true;
+
         try {
-            const newRound = await this.provider.startNewRound(hatimId);
+            const newRound = await this.provider.startNewRound(hatimId, expectedRound);
             showCustomAlert(`🎉 Tur ${newRound} başlatıldı!`, 'success', 2500);
             this.refreshCurrentHatim();
         } catch (error) {
             console.error('Start new round error:', error);
-            showCustomAlert(error.message || 'Yeni tur başlatılamadı', 'error', 2500);
+            // Si race condition détectée, rafraîchir automatiquement
+            if (error.message && error.message.includes('zaten başlatılmış')) {
+                showCustomAlert('ℹ️ Tur zaten başlatılmış. Sayfa güncelleniyor...', 'info', 2500);
+                this.refreshCurrentHatim();
+            } else {
+                showCustomAlert(error.message || 'Yeni tur başlatılamadı', 'error', 2500);
+            }
+        } finally {
+            this._startingNewRound = false;
         }
     },
 
@@ -729,9 +751,13 @@ Linke tıklayın ve uygulamayı yükleyin
                         ${myParticipations.map(p => `
                             <div style="display: flex; align-items: center; gap: 4px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 6px 8px 6px 12px; transition: all 0.2s;">
                                 <div onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${parseInt(p.unit_number) || 0})"
-                                     style="display: flex; align-items: center; gap: 6px; cursor: pointer; flex: 1;"
+                                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${parseInt(p.unit_number) || 0});}"
+                                     tabindex="0" role="button" aria-label="${unitLabel} ${parseInt(p.unit_number) || 0} - ${p.is_completed ? 'Okundu' : 'Okuyor'}"
+                                     style="display: flex; align-items: center; gap: 6px; cursor: pointer; flex: 1; outline: none; border-radius: 4px;"
                                      onmouseover="this.parentElement.style.background='${p.is_completed ? '#dcfce7' : '#fef3c7'}';"
-                                     onmouseout="this.parentElement.style.background='white';">
+                                     onmouseout="this.parentElement.style.background='white';"
+                                     onfocus="this.parentElement.style.boxShadow='0 0 0 3px rgba(102,126,234,0.3)';"
+                                     onblur="this.parentElement.style.boxShadow='none';">
                                     <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${parseInt(p.unit_number) || 0}</span>
                                     <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
                                 </div>
@@ -814,9 +840,13 @@ Linke tıklayın ve uygulamayı yükleyin
                 } else {
                     html += `
                         <div onclick="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}')"
-                             style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: white; border: 2px dashed #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s;"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}');}"
+                             tabindex="0" role="button" aria-label="${unitLabel} ${i} seç"
+                             style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: white; border: 2px dashed #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s; outline: none;"
                              onmouseover="this.style.borderColor='#667eea'; this.style.background='#eef2ff'; this.style.borderStyle='solid';"
-                             onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='white'; this.style.borderStyle='dashed';">
+                             onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='white'; this.style.borderStyle='dashed';"
+                             onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 2px rgba(102,126,234,0.4)'; this.style.borderStyle='solid';"
+                             onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none'; this.style.borderStyle='dashed';">
                             <span style="font-weight: 700; font-size: 14px; color: #667eea;">${i}</span>
                         </div>
                     `;
@@ -860,7 +890,7 @@ Linke tıklayın ve uygulamayı yükleyin
 
     toggleReadStatus(participationId, isCurrentlyCompleted, unitNumber) {
         if (!this.provider) {
-            showCustomAlert('Bağlantı hatası', 'error', 2500);
+            showCustomAlert('❌ Sunucuya bağlanılamadı. Sayfayı yenileyin.', 'error', 3000);
             return;
         }
 
@@ -879,7 +909,7 @@ Linke tıklayın ve uygulamayı yükleyin
                         this.refreshCurrentHatim();
                     } catch (error) {
                         console.error('Mark incomplete error:', error);
-                        showCustomAlert('Hata oluştu', 'error', 2500);
+                        showCustomAlert('❌ Durum güncellenemedi. İnternet bağlantınızı kontrol edin.', 'error', 3000);
                     }
                 }
             );
@@ -895,7 +925,7 @@ Linke tıklayın ve uygulamayı yükleyin
                         this.refreshCurrentHatim();
                     } catch (error) {
                         console.error('Mark complete error:', error);
-                        showCustomAlert('Hata oluştu', 'error', 2500);
+                        showCustomAlert('❌ Durum güncellenemedi. İnternet bağlantınızı kontrol edin.', 'error', 3000);
                     }
                 }
             );
@@ -909,7 +939,7 @@ Linke tıklayın ve uygulamayı yükleyin
      */
     releaseUnit(participationId, unitNumber) {
         if (!this.provider) {
-            showCustomAlert('Bağlantı hatası', 'error', 2500);
+            showCustomAlert('❌ Sunucuya bağlanılamadı. Sayfayı yenileyin.', 'error', 3000);
             return;
         }
 
@@ -926,7 +956,7 @@ Linke tıklayın ve uygulamayı yükleyin
                     this.refreshCurrentHatim();
                 } catch (error) {
                     console.error('Release unit error:', error);
-                    showCustomAlert('Hata oluştu', 'error', 2500);
+                    showCustomAlert('❌ Vazgeçme işlemi başarısız. İnternet bağlantınızı kontrol edin.', 'error', 3000);
                 }
             }
         );
@@ -1068,7 +1098,7 @@ Linke tıklayın ve uygulamayı yükleyin
 
     async doClaim(hatimId, roundNumber, unitNumber) {
         if (!this.provider) {
-            showCustomAlert('Baglanti hatasi', 'error', 2500);
+            showCustomAlert('❌ Sunucuya bağlanılamadı. Sayfayı yenileyin.', 'error', 3000);
             return;
         }
 
@@ -1120,7 +1150,12 @@ Linke tıklayın ve uygulamayı yükleyin
                 // Auto-refresh to show updated grid
                 this.refreshCurrentHatim();
             } else {
-                showCustomAlert(error.message || 'Bir hata olustu', 'error', 2500);
+                // Message d'erreur plus informatif
+                let errorMsg = error.message || 'Bilinmeyen hata';
+                if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
+                    errorMsg = 'İnternet bağlantınızı kontrol edin';
+                }
+                showCustomAlert(`❌ Seçim başarısız: ${errorMsg}`, 'error', 3500);
                 // Reset button
                 if (claimBtn) {
                     claimBtn.disabled = false;

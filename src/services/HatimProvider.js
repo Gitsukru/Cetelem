@@ -296,16 +296,25 @@ class HatimProvider {
 
     /**
      * Obtenir l'ID du device
+     * Utilise crypto.getRandomValues pour plus de sécurité
      * @returns {string|null}
      */
     getDeviceId() {
         if (typeof window.analytics !== 'undefined' && window.analytics.getDeviceId) {
             return window.analytics.getDeviceId();
         }
-        // Fallback: generer un ID simple
+        // Fallback: generer un ID sécurisé
         let deviceId = localStorage.getItem('hatim_device_id');
         if (!deviceId) {
-            deviceId = 'device_' + Math.random().toString(36).substring(2, 15);
+            // Utiliser crypto.getRandomValues pour un ID cryptographiquement sûr
+            if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+                const array = new Uint8Array(16);
+                crypto.getRandomValues(array);
+                deviceId = 'device_' + Array.from(array, b => b.toString(16).padStart(2, '0')).join('');
+            } else {
+                // Fallback pour navigateurs très anciens
+                deviceId = 'device_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 15);
+            }
             localStorage.setItem('hatim_device_id', deviceId);
         }
         return deviceId;
@@ -313,10 +322,12 @@ class HatimProvider {
 
     /**
      * Demarrer un nouveau tour pour un Hatim
+     * Utilise un verrouillage optimiste pour éviter les race conditions
      * @param {string} hatimId - ID du hatim
+     * @param {number} expectedRound - Round actuel attendu (pour vérification)
      * @returns {Promise<number>} Nouveau numero de tour
      */
-    async startNewRound(hatimId) {
+    async startNewRound(hatimId, expectedRound = null) {
         // D'abord, obtenir le hatim actuel
         const { data: hatim, error: getError } = await this.supabase
             .from('hatims')
@@ -329,20 +340,38 @@ class HatimProvider {
             throw new Error('Hatim bulunamadı');
         }
 
+        // Vérification optimiste: si un round attendu est fourni, vérifier qu'il n'a pas changé
+        if (expectedRound !== null && hatim.current_round !== expectedRound) {
+            console.warn('Race condition detected: round already changed');
+            throw new Error('Bu tur zaten başlatılmış. Sayfa yenileniyor...');
+        }
+
         const newRound = hatim.current_round + 1;
 
-        // Mettre a jour le numero de tour
-        const { error: updateError } = await this.supabase
+        // Mettre a jour avec WHERE sur current_round pour garantir l'atomicité
+        const { data: updated, error: updateError } = await this.supabase
             .from('hatims')
             .update({
                 current_round: newRound,
                 updated_at: new Date().toISOString()
             })
-            .eq('id', hatimId);
+            .eq('id', hatimId)
+            .eq('current_round', hatim.current_round) // Verrouillage optimiste
+            .select('current_round')
+            .single();
 
         if (updateError) {
             console.error('Erreur start new round:', updateError);
+            // Si PGRST116 (no rows returned), c'est une race condition
+            if (updateError.code === 'PGRST116') {
+                throw new Error('Bu tur zaten başlatılmış. Sayfa yenileniyor...');
+            }
             throw new Error('Yeni tur başlatılamadı');
+        }
+
+        // Vérifier que la mise à jour a réussi
+        if (!updated) {
+            throw new Error('Bu tur zaten başlatılmış. Sayfa yenileniyor...');
         }
 
         console.log(`Nouveau tour demarre: ${newRound}`);
