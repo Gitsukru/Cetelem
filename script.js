@@ -3507,16 +3507,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSound();
     startTimer();
 
-    // Initialize Settings Accordion (première section ouverte par défaut)
-    const firstAccordion = document.querySelector('.settings-accordion-item:first-child');
-    if (firstAccordion) {
-        const firstHeader = firstAccordion.querySelector('.settings-accordion-header');
-        const firstContent = firstAccordion.querySelector('.settings-accordion-content');
-        if (firstHeader && firstContent) {
-            firstHeader.classList.add('active');
-            firstContent.classList.add('open');
-        }
-    }
+    // Note: Settings Accordions sont fermés par défaut (CSS: max-height: 0)
 
     // Enable audio on first interaction for mobile
     enableAudioOnInteraction();
