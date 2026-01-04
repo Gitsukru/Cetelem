@@ -1126,7 +1126,17 @@ function deleteBookConfirm(bookId) {
   }
 }
 
-// escapeHtml est défini globalement dans sanitizer.js (window.escapeHtml)
+/**
+ * Escape HTML pour prévenir XSS (fallback si sanitizer.js pas chargé)
+ */
+function escapeHtml(text) {
+  if (window.escapeHtml && window.escapeHtml !== escapeHtml) {
+    return window.escapeHtml(text);
+  }
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 
 /**
  * Afficher une notification

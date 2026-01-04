@@ -481,7 +481,17 @@ function insertDateSeparator(container, label) {
   container.appendChild(separator);
 }
 
-// escapeHtml est défini globalement dans sanitizer.js (window.escapeHtml)
+/**
+ * Escape HTML pour prévenir XSS (fallback si sanitizer.js pas chargé)
+ */
+function escapeHtml(text) {
+  if (window.escapeHtml && window.escapeHtml !== escapeHtml) {
+    return window.escapeHtml(text);
+  }
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 
 /**
  * Se désabonner du chat

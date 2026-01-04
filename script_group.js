@@ -300,7 +300,6 @@ async function doJoinGroup() {
   const joinBtn = document.querySelector('[onclick*="doJoinGroup"]')
   if (joinBtn) joinBtn.disabled = true
 
-  try {
   const groupCodeInput = document.getElementById('joinCodeInput').value
   const participantNameInput = document.getElementById('participantNameInput').value
 
