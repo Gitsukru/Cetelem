@@ -264,6 +264,7 @@ class HatimProvider {
 
         const channel = this.supabase
             .channel(`hatim_${hatimId}`)
+            // Ecouter les changements de participations
             .on(
                 'postgres_changes',
                 {
@@ -273,7 +274,21 @@ class HatimProvider {
                     filter: `hatim_id=eq.${hatimId}`
                 },
                 (payload) => {
-                    console.log('Hatim update:', payload.eventType);
+                    console.log('Hatim participation update:', payload.eventType);
+                    callback(payload);
+                }
+            )
+            // Ecouter aussi les changements du hatim (nouveau tour, etc.)
+            .on(
+                'postgres_changes',
+                {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'hatims',
+                    filter: `id=eq.${hatimId}`
+                },
+                (payload) => {
+                    console.log('Hatim round update:', payload.new?.current_round);
                     callback(payload);
                 }
             )

@@ -489,7 +489,9 @@ Linke tıklayın ve uygulamayı yükleyin
         if (!this.currentHatim || !this.provider) return;
 
         try {
+            console.log('Refreshing hatim, current round was:', this.currentHatim.current_round);
             const hatim = await this.provider.getHatimByCode(this.currentHatim.code);
+            console.log('Fetched hatim, new round:', hatim.current_round, 'participations:', hatim.participations?.length);
             this.currentHatim = hatim;
             this.renderParticipationView(hatim);
         } catch (error) {

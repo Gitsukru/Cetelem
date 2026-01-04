@@ -113,5 +113,6 @@ CREATE POLICY "participations_insert" ON hatim_participations FOR INSERT WITH CH
 CREATE POLICY "participations_update" ON hatim_participations FOR UPDATE USING (true);
 CREATE POLICY "participations_delete" ON hatim_participations FOR DELETE USING (true);
 
--- Activer Realtime pour les participations
+-- Activer Realtime pour les participations ET les hatims (nouveau tour)
 ALTER PUBLICATION supabase_realtime ADD TABLE hatim_participations;
+ALTER PUBLICATION supabase_realtime ADD TABLE hatims;
