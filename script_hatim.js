@@ -539,16 +539,17 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                 <div style="${cardStyle} background: #f0fdf4; border-color: #bbf7d0;">
                     <div style="${cardTitleStyle} color: #166534;">
                         <span>🙋</span> Benim ${unitLabel}lerim (Bu turda)
-                        <span style="font-weight: 400; font-size: 11px; color: #64748b; margin-left: auto;">Tıkla → Okundu işaretle</span>
+                        <span style="font-weight: 400; font-size: 11px; color: #64748b; margin-left: auto;">Tıkla → Değiştir</span>
                     </div>
                     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                         ${myParticipations.map(p => `
-                            <div onclick="${p.is_completed ? '' : `HatimManager.markAsRead('${p.id}')`}"
-                                 style="display: flex; align-items: center; gap: 6px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 8px 12px; ${p.is_completed ? '' : 'cursor: pointer;'} transition: all 0.2s;"
-                                 ${p.is_completed ? '' : `onmouseover="this.style.background='#fef3c7';" onmouseout="this.style.background='white';"`}>
+                            <div onclick="HatimManager.toggleReadStatus('${p.id}', ${p.is_completed}, ${p.unit_number})"
+                                 style="display: flex; align-items: center; gap: 6px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 8px 12px; cursor: pointer; transition: all 0.2s;"
+                                 onmouseover="this.style.background='${p.is_completed ? '#dcfce7' : '#fef3c7'}';"
+                                 onmouseout="this.style.background='white';">
                                 <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${p.unit_number}</span>
                                 <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
-                                ${p.is_completed ? '' : '<span style="font-size: 10px; color: #94a3b8;">→</span>'}
+                                <span style="font-size: 10px; color: #94a3b8;">↔</span>
                             </div>
                         `).join('')}
                     </div>
@@ -632,24 +633,78 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
     },
 
     // ========================================
-    // MARK AS READ
+    // TOGGLE READ STATUS
     // ========================================
 
-    async markAsRead(participationId) {
+    toggleReadStatus(participationId, isCurrentlyCompleted, unitNumber) {
         if (!this.provider) {
             showCustomAlert('Bağlantı hatası', 'error', 2500);
             return;
         }
 
-        try {
-            await this.provider.markComplete(participationId);
-            showCustomAlert('✓ Okundu olarak işaretlendi!', 'success', 2000);
-            // Refresh the view
-            this.refreshCurrentHatim();
-        } catch (error) {
-            console.error('Mark as read error:', error);
-            showCustomAlert('Hata oluştu', 'error', 2500);
+        if (isCurrentlyCompleted) {
+            // Already read - confirm to mark as unread
+            this.showConfirmModal(
+                `${unitNumber}. Cüz'ü "Okunmadı" olarak işaretlemek istiyor musunuz?`,
+                'Geri Al',
+                async () => {
+                    try {
+                        await this.provider.markIncomplete(participationId);
+                        showCustomAlert('↩️ Okunmadı olarak işaretlendi', 'info', 2000);
+                        this.refreshCurrentHatim();
+                    } catch (error) {
+                        console.error('Mark incomplete error:', error);
+                        showCustomAlert('Hata oluştu', 'error', 2500);
+                    }
+                }
+            );
+        } else {
+            // Not read - confirm to mark as read
+            this.showConfirmModal(
+                `${unitNumber}. Cüz'ü "Okundu" olarak işaretlemek istiyor musunuz?`,
+                'Okundu ✓',
+                async () => {
+                    try {
+                        await this.provider.markComplete(participationId);
+                        showCustomAlert('✓ Okundu olarak işaretlendi!', 'success', 2000);
+                        this.refreshCurrentHatim();
+                    } catch (error) {
+                        console.error('Mark complete error:', error);
+                        showCustomAlert('Hata oluştu', 'error', 2500);
+                    }
+                }
+            );
         }
+    },
+
+    showConfirmModal(message, confirmText, onConfirm) {
+        const html = `
+            <div class="custom-modal-overlay" id="confirmModal" onclick="if(event.target===this) this.remove()">
+                <div class="custom-modal modern-modal" style="max-width: 340px;">
+                    <div class="modal-body" style="padding: 24px; text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 12px;">📖</div>
+                        <p style="margin: 0; color: #334155; font-size: 15px;">${message}</p>
+                    </div>
+                    <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: center;">
+                        <button onclick="document.getElementById('confirmModal').remove()"
+                                style="padding: 10px 20px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            İptal
+                        </button>
+                        <button id="confirmModalBtn"
+                                style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            ${confirmText}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', html);
+
+        document.getElementById('confirmModalBtn').onclick = async () => {
+            document.getElementById('confirmModal')?.remove();
+            await onConfirm();
+        };
     },
 
     // ========================================

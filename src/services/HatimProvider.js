@@ -177,6 +177,25 @@ class HatimProvider {
     }
 
     /**
+     * Marquer une unite comme non terminee (annuler)
+     * @param {string} participationId - ID de la participation
+     */
+    async markIncomplete(participationId) {
+        const { error } = await this.supabase
+            .from('hatim_participations')
+            .update({
+                is_completed: false,
+                completed_at: null
+            })
+            .eq('id', participationId);
+
+        if (error) {
+            console.error('Erreur mark incomplete:', error);
+            throw new Error(error.message);
+        }
+    }
+
+    /**
      * Obtenir les Hatims sauvegardes localement
      * @returns {Array}
      */
