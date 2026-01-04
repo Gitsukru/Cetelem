@@ -88,7 +88,9 @@ function switchToGroup(groupId) {
 
     // Mettre à jour l'interface
     const groupInfo = groupManager.getCurrentGroup()
-    showGroupInterface(groupInfo.group.code)
+    if (groupInfo?.group?.code) {
+      showGroupInterface(groupInfo.group.code)
+    }
 
     // Afficher le nouvel UI avec sub-tabs
     if (typeof onGroupJoined === 'function') {
@@ -253,7 +255,7 @@ async function doCreateGroup() {
     return
   }
 
-  showStatus('Grup oluşturuluyor...', 'Lütfen bekleyin...')
+  showCustomAlert('Grup oluşturuluyor...', 'info', 2000)
 
   try {
     const result = await groupManager.createGroup(groupName, creatorName)
@@ -281,7 +283,6 @@ async function doCreateGroup() {
   } catch (error) {
     console.error('Erreur création groupe:', error)
     showCustomAlert(`Grup oluşturulamadı!<br>${error.message}`, 'error', 4000)
-    hideStatus()
   } finally {
     // Reset flag et bouton
     _isCreatingGroup = false
@@ -331,7 +332,7 @@ async function doJoinGroup() {
     return
   }
 
-  showStatus('Grup aranıyor...', 'Kod kontrol ediliyor...')
+  showCustomAlert('Grup aranıyor...', 'info', 2000)
 
   try {
     const result = await groupManager.joinGroup(groupCode, participantName)
@@ -359,7 +360,6 @@ async function doJoinGroup() {
   } catch (error) {
     console.error('Erreur rejoindre groupe:', error)
     showCustomAlert(`Gruba katılamadı!<br>${error.message}`, 'error', 4000)
-    hideStatus()
   } finally {
     // Reset flag et bouton
     _isJoiningGroup = false
@@ -374,6 +374,7 @@ function showGroupInterface(code) {
   // On met juste à jour les infos qui existent encore
 
   const groupInfo = groupManager.getCurrentGroup()
+  if (!groupInfo?.group) return
 
   const statusTitleEl = document.getElementById('statusTitle')
   const statusMessageEl = document.getElementById('statusMessage')
@@ -390,27 +391,12 @@ function showGroupInterface(code) {
 
   // Afficher le code (existe dans tab Settings)
   const codeShareEl = document.getElementById('codeShare')
-  if (codeShareEl && groupInfo.isCreator) {
+  if (codeShareEl && groupInfo?.isCreator) {
     codeShareEl.style.display = 'block'
   }
 
   const displayCodeEl = document.getElementById('displayCode')
   if (displayCodeEl) displayCodeEl.textContent = code
-}
-
-// Show status message (LEGACY - adapté pour nouveau système)
-function showStatus(title, message) {
-  // ✅ Mettre à jour seulement les textes (pas les displays)
-  const statusTitleEl = document.getElementById('statusTitle')
-  const statusMessageEl = document.getElementById('statusMessage')
-
-  if (statusTitleEl) statusTitleEl.textContent = title
-  if (statusMessageEl) statusMessageEl.textContent = message
-}
-
-// Hide status (LEGACY - ne fait plus rien)
-function hideStatus() {
-  // ✅ Ne rien faire - le nouveau système gère l'affichage
 }
 
 // Update leaderboard
@@ -433,7 +419,7 @@ function displayLeaderboard(participants) {
   const container = document.getElementById('leaderboardContent')
   const groupInfo = groupManager.getCurrentGroup()
 
-  if (!container) return
+  if (!container || !groupInfo?.group) return
 
   if (participants.length === 0) {
     container.innerHTML = '<p style="text-align: center; color: #666;">Henüz katılımcı yok</p>'
@@ -684,7 +670,7 @@ function leaveGroup() {
 function shareCode() {
   const groupInfo = groupManager.getCurrentGroup()
 
-  if (!groupInfo.group) {
+  if (!groupInfo?.group) {
     showCustomAlert('Grup bilgisi bulunamadı', 'error', 2000)
     return
   }
@@ -959,15 +945,17 @@ async function doRejoinGroup(code, groupData, historyItem) {
 }
 
 // Calculer le temps écoulé
+// Utilise DateUtils si disponible (évite duplication)
 function getTimeAgo(dateString) {
   const date = new Date(dateString)
-  const now = new Date()
-  const diff = now - date
-
+  if (typeof DateUtils !== 'undefined' && DateUtils.getRelativeTime) {
+    return DateUtils.getRelativeTime(date)
+  }
+  // Fallback simple si DateUtils non chargé
+  const diff = Date.now() - date.getTime()
   const minutes = Math.floor(diff / 60000)
   const hours = Math.floor(diff / 3600000)
   const days = Math.floor(diff / 86400000)
-
   if (minutes < 60) return `${minutes}dk önce`
   if (hours < 24) return `${hours}s önce`
   return `${days}g önce`

@@ -53,6 +53,10 @@ class InfomaniakProvider extends BackendProvider {
 
       const data = await response.json()
 
+      if (!data?.group || !data?.participant) {
+        throw new Error('Réponse API invalide')
+      }
+
       return {
         groupId: data.group.id,
         participantId: data.participant.id,
@@ -94,6 +98,10 @@ class InfomaniakProvider extends BackendProvider {
       }
 
       const data = await response.json()
+
+      if (!data?.group || !data?.participant) {
+        throw new Error('Réponse API invalide')
+      }
 
       return {
         groupId: data.group.id,

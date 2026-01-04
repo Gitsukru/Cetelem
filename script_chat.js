@@ -68,7 +68,7 @@ function initializeChat() {
 async function loadChatMessages() {
   try {
     const groupInfo = groupManager.getCurrentGroup();
-    if (!groupInfo.group) return;
+    if (!groupInfo?.group) return;
 
     const { data, error } = await groupManager.provider.supabase
       .from('group_messages')
@@ -310,7 +310,7 @@ async function sendChatMessage() {
 
   try {
     const groupInfo = groupManager.getCurrentGroup();
-    if (!groupInfo.group || !groupInfo.participant) {
+    if (!groupInfo?.group || !groupInfo?.participant) {
       throw new Error('Grup aktif değil');
     }
 

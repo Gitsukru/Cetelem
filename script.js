@@ -41,8 +41,6 @@ let audioPool = []; // Pool d'instances audio pré-créées pour réduire la lat
 let poolIndex = 0;
 
 // Group variables
-let isHost = false;
-let connections = new Map();
 let currentGroup = null;
 
 // Rate limiter pour syncs groupe (5 syncs max par minute)
@@ -496,8 +494,9 @@ function showCustomAlert(message, type = 'error', duration = 3000) {
     }, duration);
 }
 
-// Utilitaires de date
+// Utilitaires de date - Utilise DateUtils si disponible (évite duplication)
 function getWeekStart(date) {
+    if (typeof DateUtils !== 'undefined') return DateUtils.getWeekStart(date);
     const d = new Date(date);
     const day = d.getDay();
     const diff = d.getDate() - day + (day === 0 ? -6 : 1);
@@ -505,23 +504,28 @@ function getWeekStart(date) {
 }
 
 function getWeekEnd(date) {
+    if (typeof DateUtils !== 'undefined') return DateUtils.getWeekEnd(date);
     const weekStart = getWeekStart(date);
     return new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
 }
 
 function getMonthStart(date) {
+    if (typeof DateUtils !== 'undefined') return DateUtils.getMonthStart(date);
     return new Date(date.getFullYear(), date.getMonth(), 1);
 }
 
 function getMonthEnd(date) {
+    if (typeof DateUtils !== 'undefined') return DateUtils.getMonthEnd(date);
     return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 }
 
 function getYearStart(date) {
+    if (typeof DateUtils !== 'undefined') return DateUtils.getYearStart(date);
     return new Date(date.getFullYear(), 0, 1);
 }
 
 function getYearEnd(date) {
+    if (typeof DateUtils !== 'undefined') return DateUtils.getYearEnd(date);
     return new Date(date.getFullYear(), 11, 31);
 }
 
@@ -787,9 +791,11 @@ function showTab(tabName, event) {
             // Restore group interface if a group is active
             if (groupManager && groupManager.hasActiveGroup()) {
                 const groupInfo = groupManager.getCurrentGroup();
-                console.log('Changement onglet groupe - Restauration:', groupInfo.group.name);
-                showGroupInterface(groupInfo.group.code);
-                updateLeaderboard();
+                if (groupInfo?.group) {
+                    console.log('Changement onglet groupe - Restauration:', groupInfo.group.name);
+                    showGroupInterface(groupInfo.group.code);
+                    updateLeaderboard();
+                }
             } else {
                 // Reset group interface when switching to group tab
                 console.log('Changement onglet groupe - Pas de groupe actif');
@@ -4034,16 +4040,18 @@ function initializeBackend() {
 
       if (groupManager.hasActiveGroup()) {
         const groupInfo = groupManager.getCurrentGroup()
-        console.log('Restauration du groupe:', groupInfo.group.name)
+        if (groupInfo?.group) {
+          console.log('Restauration du groupe:', groupInfo.group.name)
 
-        // Si on est sur l'onglet groupe, afficher l'interface
-        if (isGroupTabActive) {
-          showGroupInterface(groupInfo.group.code)
-          updateLeaderboard()
+          // Si on est sur l'onglet groupe, afficher l'interface
+          if (isGroupTabActive) {
+            showGroupInterface(groupInfo.group.code)
+            updateLeaderboard()
 
-          // 💬 Initialiser le chat
-          if (typeof initializeChat === 'function') {
-            initializeChat()
+            // 💬 Initialiser le chat
+            if (typeof initializeChat === 'function') {
+              initializeChat()
+            }
           }
         }
       } else {
@@ -4121,7 +4129,6 @@ function createLocalGroup(groupName, creatorName, groupCode) {
     } catch (error) {
         console.error('Local group creation failed:', error);
         showCustomAlert('Grup oluşturulamadı', 'error', 3000);
-        hideStatus();
     }
 }
 
