@@ -575,7 +575,6 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
                         <p style="color: #854d0e; font-size: 13px; margin: 0;">Yükleniyor...</p>
                     </div>
                 </details>
-                <script>HatimManager.loadPreviousRounds('${hatim.id}', ${hatim.current_round}, ${totalUnits}, '${unitLabel}');</script>
                 ` : ''}
 
                 <!-- CARD 4: Actions -->
@@ -649,6 +648,11 @@ Cetelem uygulamasini ac ve bu kodla katil!`;
         `;
 
         container.innerHTML = html;
+
+        // Load previous rounds if any (after DOM is ready)
+        if (hatim.current_round > 1) {
+            this.loadPreviousRounds(hatim.id, hatim.current_round, totalUnits, unitLabel);
+        }
     },
 
     backToList() {
