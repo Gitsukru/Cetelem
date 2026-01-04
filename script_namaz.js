@@ -359,12 +359,53 @@ const NamazManager = {
         list.innerHTML = '';
         categories.forEach(cat => {
             const stats = this.getStatisticsForCategory(cat);
+            const goals = this.getCategoryGoals(cat);
             const li = document.createElement('li');
             li.className = 'category-item';
+
+            // Calculer la progression des objectifs
+            let progressHTML = '';
+            if (goals.daily > 0 || goals.weekly > 0) {
+                const dailyPercent = goals.daily > 0 ? Math.min(100, Math.round((stats.day / goals.daily) * 100)) : 0;
+                const weeklyPercent = goals.weekly > 0 ? Math.min(100, Math.round((stats.week / goals.weekly) * 100)) : 0;
+                const dailyComplete = goals.daily > 0 && stats.day >= goals.daily;
+                const weeklyComplete = goals.weekly > 0 && stats.week >= goals.weekly;
+
+                progressHTML = `
+                    <div class="goal-progress-container" style="margin-top: 8px;">
+                        ${goals.daily > 0 ? `
+                        <div class="goal-row" style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span style="font-size: 11px; color: #64748b; min-width: 50px;">Gunluk:</span>
+                            <div class="progress-bar-mini" style="flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                                <div style="width: ${dailyPercent}%; height: 100%; background: ${dailyComplete ? '#10b981' : '#667eea'}; border-radius: 3px; transition: width 0.3s;"></div>
+                            </div>
+                            <span style="font-size: 11px; color: ${dailyComplete ? '#10b981' : '#64748b'}; min-width: 55px; text-align: right;">
+                                ${stats.day}/${goals.daily} ${dailyComplete ? '✓' : ''}
+                            </span>
+                        </div>
+                        ` : ''}
+                        ${goals.weekly > 0 ? `
+                        <div class="goal-row" style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 11px; color: #64748b; min-width: 50px;">Haftalik:</span>
+                            <div class="progress-bar-mini" style="flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                                <div style="width: ${weeklyPercent}%; height: 100%; background: ${weeklyComplete ? '#10b981' : '#667eea'}; border-radius: 3px; transition: width 0.3s;"></div>
+                            </div>
+                            <span style="font-size: 11px; color: ${weeklyComplete ? '#10b981' : '#64748b'}; min-width: 55px; text-align: right;">
+                                ${stats.week}/${goals.weekly} ${weeklyComplete ? '✓' : ''}
+                            </span>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
             li.innerHTML = `
-                <div class="category-info">
-                    <span class="category-name">${this.escapeHtml(cat)}</span>
-                    <span class="category-count">${stats.total} toplam</span>
+                <div class="category-info" style="flex: 1;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="category-name">${this.escapeHtml(cat)}</span>
+                        <span class="category-count">${stats.total} toplam</span>
+                    </div>
+                    ${progressHTML}
                 </div>
                 <div class="category-actions">
                     <button class="edit-btn" onclick="NamazManager.showEditModal('${this.escapeHtml(cat)}')" title="Duzenle">
@@ -728,7 +769,220 @@ function incrementNamazCounter() {
 }
 
 function showQuickAddNamaz() {
-    NamazManager.showAddModal();
+    const existingCategories = NamazManager.getCategories();
+
+    // Generer les options du select
+    const optionsHTML = TAVSIYE_NAMAZLAR
+        .filter(n => !existingCategories.includes(n.name))
+        .map(n => `<option value="${n.name}">${n.name}</option>`)
+        .join('');
+
+    const modalHTML = `
+        <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+            <div class="custom-modal" style="min-height: 280px;">
+                <div class="modal-header">
+                    <h3 id="namaz-modal-title">Yeni Namaz Ekle</h3>
+                    <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">X</button>
+                </div>
+
+                <!-- Indicateur de progression -->
+                <div style="display: flex; gap: 8px; padding: 0 24px 16px; justify-content: center;">
+                    <div id="namaz-step-indicator-1" class="step-indicator active"></div>
+                    <div id="namaz-step-indicator-2" class="step-indicator"></div>
+                </div>
+
+                <div class="modal-body" id="namaz-modal-body-content">
+                    <!-- Etape 1: Selection du namaz -->
+                    <div id="namaz-step-1" class="modal-step">
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Namaz Seciniz</label>
+                            ${optionsHTML.length > 0 ? `
+                            <select id="namazSelectInput" class="form-input" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 16px; background: white;">
+                                <option value="">-- Listeden Seciniz --</option>
+                                ${optionsHTML}
+                                <option value="__custom__">Baska (Elle Yazin)</option>
+                            </select>
+                            ` : `
+                            <p style="color: #64748b; font-size: 14px; margin-bottom: 12px;">Tum tavsiye edilen namazlar zaten eklenmis. Yeni bir namaz yazabilirsiniz:</p>
+                            `}
+                            <input type="text" id="namazCustomInput" class="form-input" placeholder="Ornegin: Israk Namazi" style="margin-top: 12px; ${optionsHTML.length > 0 ? 'display: none;' : ''}">
+                        </div>
+                    </div>
+
+                    <!-- Etape 2: Objectifs -->
+                    <div id="namaz-step-2" class="modal-step" style="display: none;">
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Gunluk Hedef</label>
+                            <input type="number" id="namazDailyGoalInput" class="form-input" placeholder="Ornegin: 1" min="0" value="1">
+                            <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                                Her gun bu sayiya ulasmayi hedefleyin
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 16px; margin-bottom: 12px;">Haftalik Hedef</label>
+                            <input type="number" id="namazWeeklyGoalInput" class="form-input" placeholder="Ornegin: 7" min="0" value="7">
+                            <small style="color: #64748b; font-size: 12px; margin-top: 8px; display: block;">
+                                Her hafta bu sayiya ulasmayi hedefleyin
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="namaz-btn-back" onclick="previousStepAddNamaz()" style="display: none;">
+                        Geri
+                    </button>
+                    <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
+                        Iptal
+                    </button>
+                    <button class="btn-primary" id="namaz-btn-next" onclick="nextStepAddNamaz()">
+                        Devam
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Variables pour le formulaire
+    window.namazFormData = {
+        currentStep: 1,
+        totalSteps: 2,
+        name: '',
+        dailyGoal: 1,
+        weeklyGoal: 7
+    };
+
+    // Listener pour le select
+    const selectEl = document.getElementById('namazSelectInput');
+    const customInput = document.getElementById('namazCustomInput');
+    if (selectEl) {
+        selectEl.addEventListener('change', function() {
+            if (this.value === '__custom__') {
+                customInput.style.display = 'block';
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+            }
+        });
+    }
+
+    // Gestion Enter
+    const modalOverlay = document.querySelector('.custom-modal-overlay:last-of-type');
+    modalOverlay.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            nextStepAddNamaz();
+        }
+    });
+}
+
+function nextStepAddNamaz() {
+    const currentStep = window.namazFormData.currentStep;
+
+    // Validation etape 1: nom du namaz
+    if (currentStep === 1) {
+        const selectEl = document.getElementById('namazSelectInput');
+        const customInput = document.getElementById('namazCustomInput');
+        let namazName = '';
+
+        if (selectEl && selectEl.value && selectEl.value !== '__custom__') {
+            namazName = selectEl.value;
+        } else if (customInput && customInput.value.trim()) {
+            namazName = customInput.value.trim();
+        }
+
+        if (!namazName) {
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert('Lutfen bir namaz seciniz veya yaziniz!', 'warning', 2500);
+            }
+            return;
+        }
+
+        const existingCategories = NamazManager.getCategories();
+        if (existingCategories.includes(namazName)) {
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert('Bu namaz zaten mevcut!', 'warning', 2500);
+            }
+            return;
+        }
+
+        window.namazFormData.name = namazName;
+    }
+
+    // Validation etape 2: objectifs et finalisation
+    if (currentStep === 2) {
+        const dailyGoal = parseInt(document.getElementById('namazDailyGoalInput').value) || 0;
+        const weeklyGoal = parseInt(document.getElementById('namazWeeklyGoalInput').value) || 0;
+
+        window.namazFormData.dailyGoal = dailyGoal;
+        window.namazFormData.weeklyGoal = weeklyGoal;
+
+        // Finaliser
+        finalizeAddNamaz();
+        return;
+    }
+
+    // Passer a l'etape suivante
+    if (currentStep < window.namazFormData.totalSteps) {
+        document.getElementById(`namaz-step-${currentStep}`).style.display = 'none';
+        document.getElementById(`namaz-step-indicator-${currentStep}`).classList.remove('active');
+
+        window.namazFormData.currentStep++;
+        document.getElementById(`namaz-step-${window.namazFormData.currentStep}`).style.display = 'block';
+        document.getElementById(`namaz-step-indicator-${window.namazFormData.currentStep}`).classList.add('active');
+
+        document.getElementById('namaz-btn-back').style.display = 'inline-block';
+
+        if (window.namazFormData.currentStep === window.namazFormData.totalSteps) {
+            document.getElementById('namaz-btn-next').textContent = 'Ekle';
+        }
+
+        // Focus sur le premier input de l'etape
+        const firstInput = document.getElementById('namazDailyGoalInput');
+        if (firstInput) firstInput.focus();
+    }
+}
+
+function previousStepAddNamaz() {
+    const currentStep = window.namazFormData.currentStep;
+
+    if (currentStep > 1) {
+        document.getElementById(`namaz-step-${currentStep}`).style.display = 'none';
+        document.getElementById(`namaz-step-indicator-${currentStep}`).classList.remove('active');
+
+        window.namazFormData.currentStep--;
+        document.getElementById(`namaz-step-${window.namazFormData.currentStep}`).style.display = 'block';
+        document.getElementById(`namaz-step-indicator-${window.namazFormData.currentStep}`).classList.add('active');
+
+        if (window.namazFormData.currentStep === 1) {
+            document.getElementById('namaz-btn-back').style.display = 'none';
+        }
+
+        document.getElementById('namaz-btn-next').textContent = 'Devam';
+    }
+}
+
+function finalizeAddNamaz() {
+    const data = window.namazFormData;
+
+    // Ajouter la categorie
+    NamazManager.addCategory(data.name);
+
+    // Definir les objectifs
+    if (data.dailyGoal > 0 || data.weeklyGoal > 0) {
+        NamazManager.setCategoryGoals(data.name, data.dailyGoal, data.weeklyGoal);
+    }
+
+    // Fermer le modal
+    const modal = document.querySelector('.custom-modal-overlay');
+    if (modal) modal.remove();
+
+    // Notification
+    if (typeof showCustomAlert === 'function') {
+        showCustomAlert(`"${data.name}" eklendi!`, 'success', 2500);
+    }
 }
 
 function showNamazTavsiyeModal() {
