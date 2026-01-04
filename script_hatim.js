@@ -221,11 +221,11 @@ const HatimManager = {
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
                         <button onclick="document.getElementById('createHatimModal').remove()"
-                                style="padding: 10px 20px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                                style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Iptal
                         </button>
                         <button onclick="HatimManager.doCreateHatim('${type}')"
-                                style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                                style="padding: 12px 20px; min-height: 44px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Olustur ve Paylas
                         </button>
                     </div>
@@ -679,13 +679,17 @@ Linke tıklayın ve uygulamayı yükleyin
                     </summary>
                     <div style="padding: 0 16px 16px; display: flex; flex-wrap: wrap; gap: 8px;">
                         ${myParticipations.map(p => `
-                            <div onclick="HatimManager.toggleReadStatus('${p.id}', ${p.is_completed}, ${p.unit_number})"
-                                 style="display: flex; align-items: center; gap: 6px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 8px 12px; cursor: pointer; transition: all 0.2s;"
-                                 onmouseover="this.style.background='${p.is_completed ? '#dcfce7' : '#fef3c7'}';"
-                                 onmouseout="this.style.background='white';">
-                                <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${p.unit_number}</span>
-                                <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
-                                <span style="font-size: 10px; color: #94a3b8;">↔</span>
+                            <div style="display: flex; align-items: center; gap: 4px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 6px 8px 6px 12px; transition: all 0.2s;">
+                                <div onclick="HatimManager.toggleReadStatus('${p.id}', ${p.is_completed}, ${p.unit_number})"
+                                     style="display: flex; align-items: center; gap: 6px; cursor: pointer; flex: 1;"
+                                     onmouseover="this.parentElement.style.background='${p.is_completed ? '#dcfce7' : '#fef3c7'}';"
+                                     onmouseout="this.parentElement.style.background='white';">
+                                    <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${p.unit_number}</span>
+                                    <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
+                                </div>
+                                <button onclick="event.stopPropagation(); HatimManager.releaseUnit('${p.id}', ${p.unit_number})"
+                                        style="width: 24px; height: 24px; border: none; background: #fee2e2; color: #dc2626; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;"
+                                        title="Vazgeç">✕</button>
                             </div>
                         `).join('')}
                     </div>
@@ -812,10 +816,13 @@ Linke tıklayın ve uygulamayı yükleyin
             return;
         }
 
+        // Déterminer le label correct (Cüz ou Bab)
+        const unitLabel = this.currentHatim?.type === 'cevsen' ? 'Bab' : 'Cüz';
+
         if (isCurrentlyCompleted) {
             // Already read - confirm to mark as unread
             this.showConfirmModal(
-                `${unitNumber}. Cüz'ü "Okunmadı" olarak işaretlemek istiyor musunuz?`,
+                `${unitNumber}. ${unitLabel}'ü "Okunmadı" olarak işaretlemek istiyor musunuz?`,
                 'Geri Al',
                 async () => {
                     try {
@@ -831,7 +838,7 @@ Linke tıklayın ve uygulamayı yükleyin
         } else {
             // Not read - confirm to mark as read
             this.showConfirmModal(
-                `${unitNumber}. Cüz'ü "Okundu" olarak işaretlemek istiyor musunuz?`,
+                `${unitNumber}. ${unitLabel}'ü "Okundu" olarak işaretlemek istiyor musunuz?`,
                 'Okundu ✓',
                 async () => {
                     try {
@@ -845,6 +852,36 @@ Linke tıklayın ve uygulamayı yükleyin
                 }
             );
         }
+    },
+
+    /**
+     * Libérer une unité prise par erreur
+     * @param {string} participationId - ID de la participation
+     * @param {number} unitNumber - Numéro de l'unité
+     */
+    releaseUnit(participationId, unitNumber) {
+        if (!this.provider) {
+            showCustomAlert('Bağlantı hatası', 'error', 2500);
+            return;
+        }
+
+        const unitLabel = this.currentHatim?.type === 'cevsen' ? 'Bab' : 'Cüz';
+        const deviceId = this.provider.getDeviceId();
+
+        this.showConfirmModal(
+            `${unitNumber}. ${unitLabel}'den vazgeçmek istiyor musunuz?`,
+            'Evet, Vazgeç',
+            async () => {
+                try {
+                    await this.provider.releaseUnit(participationId, deviceId);
+                    showCustomAlert('✓ Vazgeçildi, başkası alabilir', 'info', 2000);
+                    this.refreshCurrentHatim();
+                } catch (error) {
+                    console.error('Release unit error:', error);
+                    showCustomAlert('Hata oluştu', 'error', 2500);
+                }
+            }
+        );
     },
 
     async loadPreviousRounds(hatimId, currentRound, totalUnits, unitLabel) {
@@ -912,11 +949,11 @@ Linke tıklayın ve uygulamayı yükleyin
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: center;">
                         <button onclick="document.getElementById('confirmModal').remove()"
-                                style="padding: 10px 20px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                                style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             İptal
                         </button>
                         <button id="confirmModalBtn"
-                                style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                                style="padding: 12px 20px; min-height: 44px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             ${confirmText}
                         </button>
                     </div>
@@ -957,11 +994,11 @@ Linke tıklayın ve uygulamayı yükleyin
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
                         <button onclick="document.getElementById('claimModal').remove()"
-                                style="padding: 10px 20px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                                style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Iptal
                         </button>
                         <button onclick="HatimManager.doClaim('${hatimId}', ${roundNumber}, ${unitNumber})"
-                                style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                                style="padding: 12px 20px; min-height: 44px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Sec
                         </button>
                     </div>
