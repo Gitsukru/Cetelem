@@ -49,6 +49,33 @@ const HatimManager = {
     currentHatim: null,
 
     // ========================================
+    // UTILITAIRES DE SÉCURITÉ
+    // ========================================
+
+    // Valider code hatim (alphanumérique seulement)
+    safeCode(code) {
+        if (!code) return '';
+        return String(code).replace(/[^A-Z0-9]/gi, '').substring(0, 8);
+    },
+
+    // Valider ID (UUID format)
+    safeId(id) {
+        if (!id) return '';
+        return String(id).replace(/[^a-f0-9-]/gi, '').substring(0, 36);
+    },
+
+    // Échapper HTML (inclut apostrophes)
+    escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    },
+
+    // ========================================
     // INITIALIZATION
     // ========================================
 
@@ -146,8 +173,9 @@ const HatimManager = {
             const typeLabel = h.type === 'kuran' ? "Kur'an Hatmi" : 'Cevşen Hatmi';
             const icon = h.type === 'kuran' ? '📖' : '🌙';
             const roleLabel = h.isCreator ? '👑 Oluşturan' : '👤 Katılımcı';
+            const safeHCode = this.safeCode(h.code);
             html += `
-                <div onclick="HatimManager.openHatim('${h.code}')"
+                <div onclick="HatimManager.openHatim('${safeHCode}')"
                      style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;"
                      onmouseover="this.style.borderColor='#667eea'; this.style.background='#eef2ff';"
                      onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc';">
@@ -155,7 +183,7 @@ const HatimManager = {
                         <span style="font-size: 20px;">${icon}</span>
                         <div>
                             <div style="font-weight: 600; color: #1e293b; font-size: 14px;">${typeLabel}</div>
-                            <div style="font-size: 11px; color: #64748b;">${roleLabel} • Kod: ${h.code}</div>
+                            <div style="font-size: 11px; color: #64748b;">${roleLabel} • Kod: ${safeHCode}</div>
                         </div>
                     </div>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
@@ -308,10 +336,13 @@ const HatimManager = {
     // ========================================
 
     showShareDialog(code, type) {
-        const typeLabel = type === 'kuran' ? "Kur'an Hatmi" : 'Cevsen Hatmi';
+        // Valider les inputs
+        const safeCodeVal = this.safeCode(code);
+        const safeType = type === 'cevsen' ? 'cevsen' : 'kuran';
+        const typeLabel = safeType === 'kuran' ? "Kur'an Hatmi" : 'Cevsen Hatmi';
         const shareUrl = typeof URLRouter !== 'undefined'
-            ? URLRouter.generateShareURL(type, code)
-            : `${window.location.origin}${window.location.pathname}#${type}=${code}`;
+            ? URLRouter.generateShareURL(safeType, safeCodeVal)
+            : `${window.location.origin}${window.location.pathname}#${safeType}=${safeCodeVal}`;
 
         const html = `
             <div class="custom-modal-overlay" id="shareHatimModal">
@@ -323,14 +354,14 @@ const HatimManager = {
                     <div class="modal-body" style="padding: 24px; text-align: center;">
                         <p style="color: #64748b; margin: 0 0 16px;">Paylasim kodu:</p>
                         <div style="font-size: 28px; font-weight: 700; color: #1e293b; letter-spacing: 4px; font-family: monospace; background: #f8fafc; padding: 16px; border-radius: 10px; margin-bottom: 16px;">
-                            ${code}
+                            ${safeCodeVal}
                         </div>
                         <p style="font-size: 13px; color: #94a3b8; margin: 0;">
                             Bu kodu veya linki paylasarak digerlerini davet edin
                         </p>
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px;">
-                        <button onclick="HatimManager.shareVia('${code}', '${type}')"
+                        <button onclick="HatimManager.shareVia('${safeCodeVal}', '${safeType}')"
                                 style="width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="18" cy="5" r="3"></circle>
@@ -341,11 +372,11 @@ const HatimManager = {
                             </svg>
                             Paylas (WhatsApp, SMS...)
                         </button>
-                        <button onclick="HatimManager.copyShareLink('${shareUrl}')"
+                        <button onclick="HatimManager.copyShareLink('${this.escapeHtml(shareUrl)}')"
                                 style="width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Linki Kopyala
                         </button>
-                        <button onclick="document.getElementById('shareHatimModal').remove(); HatimManager.openHatim('${code}')"
+                        <button onclick="document.getElementById('shareHatimModal').remove(); HatimManager.openHatim('${safeCodeVal}')"
                                 style="width: 100%; padding: 12px; background: white; color: #667eea; border: 1px solid #667eea; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Hatimi Ac
                         </button>
@@ -592,10 +623,27 @@ Linke tıklayın ve uygulamayı yükleyin
             }
         }
 
-        // Escape HTML helper
+        // Escape HTML helper (inclut apostrophes pour attributs onclick)
         const escapeHtml = (text) => {
             if (!text) return '';
-            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        };
+
+        // Valider code hatim (alphanumérique seulement)
+        const safeCode = (code) => {
+            if (!code) return '';
+            return String(code).replace(/[^A-Z0-9]/gi, '').substring(0, 8);
+        };
+
+        // Valider ID (UUID format)
+        const safeId = (id) => {
+            if (!id) return '';
+            return String(id).replace(/[^a-f0-9-]/gi, '').substring(0, 36);
         };
 
         // Card style
@@ -659,7 +707,7 @@ Linke tıklayın ve uygulamayı yükleyin
                             <span style="font-weight: 600; color: #166534;">Bu tur tamamlandı!</span>
                         </div>
                         <p style="margin: 0 0 12px; font-size: 13px; color: #166534;">Tüm ${unitLabel}ler alındı. Yeni tur başlatabilirsiniz.</p>
-                        <button onclick="HatimManager.startNewRound('${hatim.id}')"
+                        <button onclick="HatimManager.startNewRound('${safeId(hatim.id)}')"
                                 style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
                             🔄 Tur ${hatim.current_round + 1} Başlat
                         </button>
@@ -680,14 +728,14 @@ Linke tıklayın ve uygulamayı yükleyin
                     <div style="padding: 0 16px 16px; display: flex; flex-wrap: wrap; gap: 8px;">
                         ${myParticipations.map(p => `
                             <div style="display: flex; align-items: center; gap: 4px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 6px 8px 6px 12px; transition: all 0.2s;">
-                                <div onclick="HatimManager.toggleReadStatus('${p.id}', ${p.is_completed}, ${p.unit_number})"
+                                <div onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${parseInt(p.unit_number) || 0})"
                                      style="display: flex; align-items: center; gap: 6px; cursor: pointer; flex: 1;"
                                      onmouseover="this.parentElement.style.background='${p.is_completed ? '#dcfce7' : '#fef3c7'}';"
                                      onmouseout="this.parentElement.style.background='white';">
-                                    <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${p.unit_number}</span>
+                                    <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${parseInt(p.unit_number) || 0}</span>
                                     <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
                                 </div>
-                                <button onclick="event.stopPropagation(); HatimManager.releaseUnit('${p.id}', ${p.unit_number})"
+                                <button onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(p.id)}', ${parseInt(p.unit_number) || 0})"
                                         style="width: 24px; height: 24px; border: none; background: #fee2e2; color: #dc2626; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;"
                                         title="Vazgeç">✕</button>
                             </div>
@@ -714,7 +762,7 @@ Linke tıklayın ve uygulamayı yükleyin
 
                 <!-- CARD 4: Actions -->
                 <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                    <button onclick="HatimManager.shareVia('${hatim.code}', '${hatim.type}')"
+                    <button onclick="HatimManager.shareVia('${safeCode(hatim.code)}', '${hatim.type === 'cevsen' ? 'cevsen' : 'kuran'}')"
                             style="flex: 1; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="18" cy="5" r="3"></circle>
@@ -765,7 +813,7 @@ Linke tıklayın ve uygulamayı yükleyin
                     `;
                 } else {
                     html += `
-                        <div onclick="HatimManager.showClaimModal('${hatim.id}', ${hatim.current_round}, ${i}, '${unitLabel}')"
+                        <div onclick="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}')"
                              style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: white; border: 2px dashed #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s;"
                              onmouseover="this.style.borderColor='#667eea'; this.style.background='#eef2ff'; this.style.borderStyle='solid';"
                              onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='white'; this.style.borderStyle='dashed';">
@@ -889,12 +937,20 @@ Linke tıklayın ve uygulamayı yükleyin
         if (!container || !this.provider) return;
 
         try {
-            let html = '';
             const myDeviceId = this.provider.getDeviceId();
 
-            // Load each previous round (from most recent to oldest)
-            for (let round = currentRound - 1; round >= 1; round--) {
-                const participations = await this.provider.getParticipationsByRound(hatimId, round);
+            // Optimisé: une seule requête pour tous les rounds précédents
+            const roundsMap = await this.provider.getAllPreviousRoundsParticipations(hatimId, currentRound);
+            const roundNumbers = Object.keys(roundsMap).map(Number).sort((a, b) => b - a);
+
+            if (roundNumbers.length === 0) {
+                container.innerHTML = '<p style="color: #854d0e; font-size: 13px; margin: 0;">Önceki tur bulunamadı.</p>';
+                return;
+            }
+
+            let html = '';
+            for (const round of roundNumbers) {
+                const participations = roundsMap[round] || [];
                 const completedCount = participations.filter(p => p.is_completed).length;
                 const myInThisRound = participations.filter(p => p.device_id === myDeviceId);
 
@@ -914,7 +970,7 @@ Linke tıklayın ve uygulamayı yükleyin
                     const borderColor = isMine ? '#3b82f6' : (p ? (p.is_completed ? '#10b981' : '#f59e0b') : '#e2e8f0');
 
                     html += `
-                        <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: ${bgColor}; border: 1px solid ${borderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #64748b;" title="${p ? p.participant_name : 'Boş'}">
+                        <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: ${bgColor}; border: 1px solid ${borderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #64748b;" title="${p ? this.escapeHtml(p.participant_name) : 'Boş'}">
                             ${i}
                         </div>
                     `;
@@ -931,7 +987,7 @@ Linke tıklayın ve uygulamayı yükleyin
                 `;
             }
 
-            container.innerHTML = html || '<p style="color: #854d0e; font-size: 13px; margin: 0;">Önceki tur bulunamadı.</p>';
+            container.innerHTML = html;
 
         } catch (error) {
             console.error('Load previous rounds error:', error);

@@ -201,8 +201,17 @@ class HatimProvider {
      * @returns {Array}
      */
     getMyHatims() {
-        const saved = localStorage.getItem('myHatims');
-        return saved ? JSON.parse(saved) : [];
+        try {
+            const saved = localStorage.getItem('myHatims');
+            if (!saved) return [];
+            const parsed = JSON.parse(saved);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            console.error('Erreur parsing myHatims:', error);
+            // Nettoyer le localStorage corrompu
+            localStorage.removeItem('myHatims');
+            return [];
+        }
     }
 
     /**
@@ -360,6 +369,38 @@ class HatimProvider {
         }
 
         return data || [];
+    }
+
+    /**
+     * Obtenir toutes les participations des rounds précédents (optimisé - 1 requête)
+     * @param {string} hatimId - ID du hatim
+     * @param {number} currentRound - Round actuel (on charge tout sauf celui-ci)
+     * @returns {Promise<Object>} Map des rounds avec leurs participations
+     */
+    async getAllPreviousRoundsParticipations(hatimId, currentRound) {
+        const { data, error } = await this.supabase
+            .from('hatim_participations')
+            .select('*')
+            .eq('hatim_id', hatimId)
+            .lt('round_number', currentRound)
+            .order('round_number', { ascending: false })
+            .order('unit_number', { ascending: true });
+
+        if (error) {
+            console.error('Erreur get all previous rounds:', error);
+            return {};
+        }
+
+        // Grouper par round
+        const roundsMap = {};
+        (data || []).forEach(p => {
+            if (!roundsMap[p.round_number]) {
+                roundsMap[p.round_number] = [];
+            }
+            roundsMap[p.round_number].push(p);
+        });
+
+        return roundsMap;
     }
 
     /**
