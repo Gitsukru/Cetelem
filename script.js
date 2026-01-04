@@ -759,6 +759,11 @@ function showTab(tabName, event) {
             if (typeof SohbetManager !== 'undefined') {
                 SohbetManager.renderSohbetList();
             }
+        } else if (tabName === 'hatim') {
+            // Initialiser l'affichage Hatim
+            if (typeof HatimManager !== 'undefined') {
+                HatimManager.renderContent();
+            }
         } else if (tabName === 'group') {
             // Restore group interface if a group is active
             if (groupManager && groupManager.hasActiveGroup()) {
@@ -4411,7 +4416,7 @@ window.addEventListener('load', function() {
 // SWIPE NAVIGATION ENTRE ONGLETS
 // ============================================
 
-const SWIPE_TABS = ['counter', 'books', 'namaz', 'sohbet'];
+const SWIPE_TABS = ['counter', 'books', 'namaz', 'sohbet', 'hatim'];
 let swipeTouchStartX = 0;
 let swipeTouchEndX = 0;
 let swipeCurrentTab = 'counter';
