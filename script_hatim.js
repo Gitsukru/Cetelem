@@ -130,14 +130,16 @@ const HatimManager = {
         }
 
         container.style.display = 'block';
-        const cardStyle = 'background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px;';
 
         let html = `
-            <div style="max-width: 500px; ${cardStyle}">
-                <h4 style="margin: 0 0 12px; color: #334155; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                    <span>📚</span> Katıldığım Hatimler
-                </h4>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
+            <details open style="max-width: 500px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px;">
+                <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #334155; font-size: 14px;">
+                    <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                    <span>📚</span> Katıldığım Hatimler (${myHatims.length})
+                </summary>
+                <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 8px;">
         `;
 
         myHatims.slice(0, 5).forEach(h => {
@@ -165,7 +167,7 @@ const HatimManager = {
 
         html += `
                 </div>
-            </div>
+            </details>
         `;
 
         container.innerHTML = html;
