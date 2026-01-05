@@ -1020,6 +1020,12 @@ Linke tıklayın ve uygulamayı yükleyin
                             <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dcfce7; border: 2px solid #10b981; border-radius: 3px;"></span> Tamamlandı</span>
                             <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dbeafe; border: 2px solid #3b82f6; border-radius: 3px;"></span> Benim</span>
                         </div>
+                        ${availableCount > 1 && deadlineStatus !== 'passed' ? `
+                        <button onclick="HatimManager.showMultiClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${totalUnits}, '${unitLabel}')"
+                                style="margin-top: 12px; width: 100%; padding: 10px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <span>☑️</span> Çoklu Seçim (${availableCount} müsait)
+                        </button>
+                        ` : ''}
                     </div>
                 </details>
 
@@ -1334,6 +1340,215 @@ Linke tıklayın ve uygulamayı yükleyin
                 }
             }
         }
+    },
+
+    // ========================================
+    // MULTI-SELECT CLAIM
+    // ========================================
+
+    _selectedUnits: [],
+
+    showMultiClaimModal(hatimId, roundNumber, totalUnits, unitLabel) {
+        if (!this.currentHatim || !this.provider) {
+            showCustomAlert('Bağlantı hatası', 'error', 2500);
+            return;
+        }
+
+        // Get current participations to find available units
+        const participations = this.currentHatim.participations || [];
+        const takenUnits = new Set(participations.map(p => p.unit_number));
+
+        // Build available units list
+        const availableUnits = [];
+        for (let i = 1; i <= totalUnits; i++) {
+            if (!takenUnits.has(i)) {
+                availableUnits.push(i);
+            }
+        }
+
+        if (availableUnits.length === 0) {
+            showCustomAlert('Müsait birim yok!', 'warning', 2500);
+            return;
+        }
+
+        this._selectedUnits = [];
+
+        const gridHtml = availableUnits.map(unit => `
+            <div class="multi-claim-unit" data-unit="${unit}"
+                 onclick="HatimManager.toggleUnitSelection(${unit}, this)"
+                 style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: white; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 700; font-size: 14px; color: #667eea; min-width: 40px;">
+                ${unit}
+            </div>
+        `).join('');
+
+        const html = `
+            <div class="custom-modal-overlay" id="multiClaimModal" onclick="if(event.target===this) this.remove()">
+                <div class="custom-modal modern-modal" style="max-width: 450px;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">☑️</span>
+                            Çoklu ${unitLabel} Seç
+                        </h3>
+                        <p style="margin: 8px 0 0; font-size: 13px; opacity: 0.9;">${availableUnits.length} müsait ${unitLabel.toLowerCase()} - birden fazla seçebilirsiniz</p>
+                    </div>
+                    <div class="modal-body" style="padding: 20px;">
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #334155;">İsminiz *</label>
+                            <input type="text" id="multiClaimParticipantName"
+                                   style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 15px;"
+                                   placeholder="Adınızı girin" maxlength="30"
+                                   value="${localStorage.getItem('lastHatimName') || ''}">
+                        </div>
+
+                        <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                            <label style="font-weight: 500; color: #334155;">${unitLabel} Seçin:</label>
+                            <div style="display: flex; gap: 8px;">
+                                <button onclick="HatimManager.selectAllUnits()" style="padding: 4px 10px; font-size: 11px; background: #e0e7ff; color: #4f46e5; border: none; border-radius: 4px; cursor: pointer;">Tümünü Seç</button>
+                                <button onclick="HatimManager.clearUnitSelection()" style="padding: 4px 10px; font-size: 11px; background: #f1f5f9; color: #64748b; border: none; border-radius: 4px; cursor: pointer;">Temizle</button>
+                            </div>
+                        </div>
+
+                        <div id="multiClaimGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 6px; max-height: 250px; overflow-y: auto; padding: 4px;">
+                            ${gridHtml}
+                        </div>
+
+                        <div id="selectedCount" style="margin-top: 12px; padding: 8px 12px; background: #f8fafc; border-radius: 6px; font-size: 13px; color: #64748b; text-align: center;">
+                            Seçilen: <span id="selectedCountNum">0</span> ${unitLabel.toLowerCase()}
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
+                        <button onclick="document.getElementById('multiClaimModal').remove()"
+                                style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            İptal
+                        </button>
+                        <button id="multiClaimBtn" onclick="HatimManager.doMultiClaim('${hatimId}', ${roundNumber}, '${unitLabel}')"
+                                style="padding: 12px 20px; min-height: 44px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            Seç
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', html);
+        document.getElementById('multiClaimParticipantName').focus();
+    },
+
+    toggleUnitSelection(unit, element) {
+        const index = this._selectedUnits.indexOf(unit);
+        if (index === -1) {
+            this._selectedUnits.push(unit);
+            element.style.background = '#8b5cf6';
+            element.style.color = 'white';
+            element.style.borderColor = '#8b5cf6';
+        } else {
+            this._selectedUnits.splice(index, 1);
+            element.style.background = 'white';
+            element.style.color = '#667eea';
+            element.style.borderColor = '#e2e8f0';
+        }
+        this.updateSelectedCount();
+    },
+
+    selectAllUnits() {
+        const grid = document.getElementById('multiClaimGrid');
+        if (!grid) return;
+
+        this._selectedUnits = [];
+        grid.querySelectorAll('.multi-claim-unit').forEach(el => {
+            const unit = parseInt(el.dataset.unit);
+            this._selectedUnits.push(unit);
+            el.style.background = '#8b5cf6';
+            el.style.color = 'white';
+            el.style.borderColor = '#8b5cf6';
+        });
+        this.updateSelectedCount();
+    },
+
+    clearUnitSelection() {
+        const grid = document.getElementById('multiClaimGrid');
+        if (!grid) return;
+
+        this._selectedUnits = [];
+        grid.querySelectorAll('.multi-claim-unit').forEach(el => {
+            el.style.background = 'white';
+            el.style.color = '#667eea';
+            el.style.borderColor = '#e2e8f0';
+        });
+        this.updateSelectedCount();
+    },
+
+    updateSelectedCount() {
+        const countEl = document.getElementById('selectedCountNum');
+        if (countEl) {
+            countEl.textContent = this._selectedUnits.length;
+        }
+    },
+
+    async doMultiClaim(hatimId, roundNumber, unitLabel) {
+        if (!this.provider) {
+            showCustomAlert('❌ Sunucuya bağlanılamadı.', 'error', 3000);
+            return;
+        }
+
+        const participantName = document.getElementById('multiClaimParticipantName')?.value?.trim();
+        const claimBtn = document.getElementById('multiClaimBtn');
+
+        // Validation
+        if (!participantName || participantName.length < 2) {
+            showCustomAlert('Lütfen geçerli bir isim girin (min 2 karakter)', 'warning', 2500);
+            return;
+        }
+
+        if (this._selectedUnits.length === 0) {
+            showCustomAlert(`En az bir ${unitLabel.toLowerCase()} seçin`, 'warning', 2500);
+            return;
+        }
+
+        // Save name
+        localStorage.setItem('lastHatimName', participantName);
+
+        // Show loading state
+        if (claimBtn) {
+            claimBtn.disabled = true;
+            claimBtn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⏳</span> Seçiliyor...';
+            claimBtn.style.opacity = '0.7';
+        }
+
+        let successCount = 0;
+        let failedUnits = [];
+
+        // Sort units for better UX
+        const sortedUnits = [...this._selectedUnits].sort((a, b) => a - b);
+
+        for (const unitNumber of sortedUnits) {
+            try {
+                await this.provider.claimUnit({
+                    hatimId,
+                    roundNumber,
+                    unitNumber,
+                    participantName
+                });
+                successCount++;
+            } catch (error) {
+                console.error(`Claim unit ${unitNumber} failed:`, error);
+                failedUnits.push(unitNumber);
+            }
+        }
+
+        document.getElementById('multiClaimModal')?.remove();
+
+        // Show result
+        if (failedUnits.length === 0) {
+            showCustomAlert(`✅ ${successCount} ${unitLabel.toLowerCase()} başarıyla seçildi!`, 'success', 2500);
+        } else if (successCount > 0) {
+            showCustomAlert(`✅ ${successCount} seçildi, ⚠️ ${failedUnits.length} başarısız (${failedUnits.join(', ')})`, 'warning', 4000);
+        } else {
+            showCustomAlert('❌ Seçim başarısız. Birimler başkası tarafından alınmış olabilir.', 'error', 3500);
+        }
+
+        // Refresh view
+        await this.refreshCurrentHatim();
     },
 
     // ========================================
