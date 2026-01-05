@@ -164,6 +164,12 @@ class HatimProvider {
      * @returns {Promise<Object>} Participation mise a jour
      */
     async markComplete(participationId) {
+        // Validate participationId
+        if (!participationId || typeof participationId !== 'string') {
+            console.error('Invalid participationId:', participationId);
+            throw new Error('Geçersiz katılım ID');
+        }
+
         const { data, error } = await this.supabase
             .from('hatim_participations')
             .update({
@@ -171,16 +177,20 @@ class HatimProvider {
                 completed_at: new Date().toISOString()
             })
             .eq('id', participationId)
-            .select()
-            .single();
+            .select();
 
         if (error) {
             console.error('Erreur mark complete:', error);
             throw new Error(error.message);
         }
 
-        console.log('Marked complete:', participationId, data?.is_completed);
-        return data;
+        if (!data || data.length === 0) {
+            console.error('No participation found with id:', participationId);
+            throw new Error('Katılım bulunamadı');
+        }
+
+        console.log('Marked complete:', participationId, data[0]?.is_completed);
+        return data[0];
     }
 
     /**
@@ -189,6 +199,12 @@ class HatimProvider {
      * @returns {Promise<Object>} Participation mise a jour
      */
     async markIncomplete(participationId) {
+        // Validate participationId
+        if (!participationId || typeof participationId !== 'string') {
+            console.error('Invalid participationId:', participationId);
+            throw new Error('Geçersiz katılım ID');
+        }
+
         const { data, error } = await this.supabase
             .from('hatim_participations')
             .update({
@@ -196,16 +212,20 @@ class HatimProvider {
                 completed_at: null
             })
             .eq('id', participationId)
-            .select()
-            .single();
+            .select();
 
         if (error) {
             console.error('Erreur mark incomplete:', error);
             throw new Error(error.message);
         }
 
-        console.log('Marked incomplete:', participationId, data?.is_completed);
-        return data;
+        if (!data || data.length === 0) {
+            console.error('No participation found with id:', participationId);
+            throw new Error('Katılım bulunamadı');
+        }
+
+        console.log('Marked incomplete:', participationId, data[0]?.is_completed);
+        return data[0];
     }
 
     /**
