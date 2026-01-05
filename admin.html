@@ -77,6 +77,10 @@
                     <span class="nav-icon">🤲</span>
                     <span class="nav-text">Hatim Dua Yonetimi</span>
                 </a>
+                <a href="#hatimadmin" class="nav-item" data-section="hatimadmin">
+                    <span class="nav-icon">📖</span>
+                    <span class="nav-text">Hatim Yonetimi</span>
+                </a>
                 <a href="#performance" class="nav-item" data-section="performance">
                     <span class="nav-icon">⚡</span>
                     <span class="nav-text">Performance</span>
@@ -889,7 +893,37 @@
                     </div>
                 </section>
 
-                <!-- SECTION 9: PERFORMANCE -->
+                <!-- SECTION 9: HATIM YONETIMI (ADMIN) -->
+                <section id="hatimadmin" class="content-section">
+                    <div class="section-header">
+                        <h2>📖 Hatim Yonetimi (Admin)</h2>
+                        <p>Tum hatimleri goruntule ve yonet. Dikkat: Bu islemler geri alinamaz!</p>
+                    </div>
+
+                    <!-- Refresh Button -->
+                    <div class="chart-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3>📋 Aktif Hatimler</h3>
+                            <button class="tool-btn" onclick="adminDashboard.loadAllHatims()">
+                                🔄 Yenile
+                            </button>
+                        </div>
+                        <div id="adminHatimsList" class="tavsiye-items-list">
+                            <p style="color: #64748b; text-align: center; padding: 20px;">Yuklemek icin "Yenile" butonuna tiklayin.</p>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="chart-container" style="border: 2px solid #fecaca;">
+                        <h3 style="color: #dc2626;">⚠️ Tehlikeli Bolge</h3>
+                        <p style="color: #64748b; margin-bottom: 16px;">Bu islemler geri alinamaz!</p>
+                        <button class="tool-btn" style="background: #dc2626;" onclick="adminDashboard.deleteAllHatims()">
+                            🗑️ Tum Hatimleri Sil
+                        </button>
+                    </div>
+                </section>
+
+                <!-- SECTION 10: PERFORMANCE -->
                 <section id="performance" class="content-section">
                     <div class="section-header">
                         <h2>⚡ Performance & Santé App</h2>

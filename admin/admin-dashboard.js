@@ -2644,6 +2644,172 @@ class AdminDashboard {
     initHatimDuaSection() {
         this.renderHatimDuaItems('kuran'); // Default to kuran category
     }
+
+    // ========================================
+    // HATIM ADMIN MANAGEMENT
+    // ========================================
+
+    /**
+     * Load all hatims from Supabase (admin view)
+     */
+    async loadAllHatims() {
+        const container = document.getElementById('adminHatimsList');
+        if (!container) return;
+
+        container.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;">Yukleniyor...</p>';
+
+        try {
+            // Get supabase client
+            if (!window.supabase) {
+                container.innerHTML = '<p style="color: #dc2626; text-align: center; padding: 20px;">Supabase baglantisi bulunamadi.</p>';
+                return;
+            }
+
+            const { data: hatims, error } = await window.supabase
+                .from('hatims')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading hatims:', error);
+                container.innerHTML = `<p style="color: #dc2626; text-align: center; padding: 20px;">Hata: ${error.message}</p>`;
+                return;
+            }
+
+            if (!hatims || hatims.length === 0) {
+                container.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;">Henuz hatim bulunmuyor.</p>';
+                return;
+            }
+
+            // Render hatims list
+            let html = '';
+            for (const h of hatims) {
+                const typeLabel = h.type === 'kuran' ? "Kur'an Hatmi" : 'Cevsen Hatmi';
+                const icon = h.type === 'kuran' ? '📖' : '🌙';
+                const createdAt = new Date(h.created_at).toLocaleDateString('tr-TR');
+
+                // Get participation count
+                const { count } = await window.supabase
+                    .from('hatim_participations')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('hatim_id', h.id);
+
+                html += `
+                    <div class="tavsiye-admin-item" data-hatim-id="${h.id}">
+                        <div class="tavsiye-item-info">
+                            <div>
+                                <span style="font-size: 18px; margin-right: 6px;">${icon}</span>
+                                <span class="tavsiye-item-name">${typeLabel}</span>
+                                <span class="tavsiye-category-badge">Tur ${h.current_round}</span>
+                            </div>
+                            <span class="tavsiye-item-detail">
+                                Kod: <strong>${h.code}</strong> •
+                                Olusturan: ${h.creator_name || 'Bilinmiyor'} •
+                                ${count || 0} katilim
+                            </span>
+                            <span class="tavsiye-item-meta">
+                                ${createdAt} •
+                                Device: ${h.created_by_device ? h.created_by_device.substring(0, 20) + '...' : 'Bilinmiyor'}
+                            </span>
+                        </div>
+                        <div class="tavsiye-item-actions">
+                            <button class="tavsiye-action-btn delete" onclick="adminDashboard.adminDeleteHatim('${h.id}', '${h.code}')">
+                                🗑️ Sil
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+
+        } catch (error) {
+            console.error('Load hatims error:', error);
+            container.innerHTML = `<p style="color: #dc2626; text-align: center; padding: 20px;">Hata: ${error.message}</p>`;
+        }
+    }
+
+    /**
+     * Delete a hatim (admin - no device_id check)
+     */
+    async adminDeleteHatim(hatimId, code) {
+        if (!confirm(`"${code}" kodlu hatimi silmek istediginize emin misiniz?\n\nBu islem geri alinamaz!`)) {
+            return;
+        }
+
+        try {
+            if (!window.supabase) {
+                alert('Supabase baglantisi bulunamadi.');
+                return;
+            }
+
+            // Delete hatim (CASCADE will delete participations)
+            const { error } = await window.supabase
+                .from('hatims')
+                .delete()
+                .eq('id', hatimId);
+
+            if (error) {
+                console.error('Delete hatim error:', error);
+                alert(`Silme hatasi: ${error.message}`);
+                return;
+            }
+
+            alert(`"${code}" basariyla silindi!`);
+            this.loadAllHatims(); // Refresh list
+
+        } catch (error) {
+            console.error('Admin delete hatim error:', error);
+            alert(`Hata: ${error.message}`);
+        }
+    }
+
+    /**
+     * Delete ALL hatims (dangerous!)
+     */
+    async deleteAllHatims() {
+        const confirmText = prompt('TUM HATIMLERI SILMEK ICIN "ONAYLA" yazin:');
+        if (confirmText !== 'ONAYLA') {
+            alert('Islem iptal edildi.');
+            return;
+        }
+
+        try {
+            if (!window.supabase) {
+                alert('Supabase baglantisi bulunamadi.');
+                return;
+            }
+
+            // First get count
+            const { count } = await window.supabase
+                .from('hatims')
+                .select('*', { count: 'exact', head: true });
+
+            if (!count || count === 0) {
+                alert('Silinecek hatim bulunamadi.');
+                return;
+            }
+
+            // Delete all hatims
+            const { error } = await window.supabase
+                .from('hatims')
+                .delete()
+                .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all (neq trick)
+
+            if (error) {
+                console.error('Delete all hatims error:', error);
+                alert(`Silme hatasi: ${error.message}`);
+                return;
+            }
+
+            alert(`${count} hatim basariyla silindi!`);
+            this.loadAllHatims(); // Refresh list
+
+        } catch (error) {
+            console.error('Delete all hatims error:', error);
+            alert(`Hata: ${error.message}`);
+        }
+    }
 }
 
 // Instance globale
