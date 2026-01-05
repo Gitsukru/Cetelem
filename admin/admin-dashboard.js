@@ -2660,12 +2660,12 @@ class AdminDashboard {
 
         try {
             // Get supabase client
-            if (!window.supabase) {
+            if (!this.supabase) {
                 container.innerHTML = '<p style="color: #dc2626; text-align: center; padding: 20px;">Supabase baglantisi bulunamadi.</p>';
                 return;
             }
 
-            const { data: hatims, error } = await window.supabase
+            const { data: hatims, error } = await this.supabase
                 .from('hatims')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -2689,7 +2689,7 @@ class AdminDashboard {
                 const createdAt = new Date(h.created_at).toLocaleDateString('tr-TR');
 
                 // Get participation count
-                const { count } = await window.supabase
+                const { count } = await this.supabase
                     .from('hatim_participations')
                     .select('*', { count: 'exact', head: true })
                     .eq('hatim_id', h.id);
@@ -2738,13 +2738,13 @@ class AdminDashboard {
         }
 
         try {
-            if (!window.supabase) {
+            if (!this.supabase) {
                 alert('Supabase baglantisi bulunamadi.');
                 return;
             }
 
             // Delete hatim (CASCADE will delete participations)
-            const { error } = await window.supabase
+            const { error } = await this.supabase
                 .from('hatims')
                 .delete()
                 .eq('id', hatimId);
@@ -2775,13 +2775,13 @@ class AdminDashboard {
         }
 
         try {
-            if (!window.supabase) {
+            if (!this.supabase) {
                 alert('Supabase baglantisi bulunamadi.');
                 return;
             }
 
             // First get count
-            const { count } = await window.supabase
+            const { count } = await this.supabase
                 .from('hatims')
                 .select('*', { count: 'exact', head: true });
 
@@ -2791,7 +2791,7 @@ class AdminDashboard {
             }
 
             // Delete all hatims
-            const { error } = await window.supabase
+            const { error } = await this.supabase
                 .from('hatims')
                 .delete()
                 .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all (neq trick)
