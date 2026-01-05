@@ -2887,6 +2887,610 @@ class AdminDashboard {
             alert(`Hata: ${error.message}`);
         }
     }
+
+    // ========================================
+    // ZIKIRLER YONETIMI
+    // ========================================
+
+    getDefaultZikirItems() {
+        return [
+            { name: 'Estagfirullah', target: 100, description: 'Tovbe zikri', weeklyGoal: 7 },
+            { name: 'Subhanallah', target: 33, description: 'Tesbih', weeklyGoal: 7 },
+            { name: 'Elhamdulillah', target: 33, description: 'Hamd', weeklyGoal: 7 },
+            { name: 'Allahuekber', target: 33, description: 'Tekbir', weeklyGoal: 7 },
+            { name: 'La ilahe illallah', target: 100, description: 'Tevhid', weeklyGoal: 7 },
+            { name: 'Salavat', target: 100, description: 'Peygamberimize salavat', weeklyGoal: 7 }
+        ];
+    }
+
+    getZikirItems() {
+        const stored = localStorage.getItem('adminZikirItems');
+        if (stored) {
+            try { return JSON.parse(stored); } catch (e) { console.error(e); }
+        }
+        return this.getDefaultZikirItems();
+    }
+
+    saveZikirItems(items) {
+        localStorage.setItem('adminZikirItems', JSON.stringify(items));
+    }
+
+    renderZikirItems() {
+        const container = document.getElementById('zikirItemsList');
+        if (!container) return;
+
+        const items = this.getZikirItems();
+        let html = '';
+
+        items.forEach((item, index) => {
+            html += `
+                <div class="tavsiye-admin-item">
+                    <div class="tavsiye-item-info">
+                        <div>
+                            <span class="tavsiye-item-name">${item.name}</span>
+                            <span class="tavsiye-category-badge">Hedef: ${item.target}</span>
+                        </div>
+                        <span class="tavsiye-item-detail">${item.description || ''} - Haftalik: ${item.weeklyGoal || 0}</span>
+                    </div>
+                    <div class="tavsiye-item-actions">
+                        <button class="tavsiye-action-btn edit" onclick="adminDashboard.editZikirItem(${index})">Duzenle</button>
+                        <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteZikirItem(${index})">Sil</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html || '<p style="color: #64748b; text-align: center; padding: 20px;">Henuz zikir eklenmemis.</p>';
+    }
+
+    addZikirCategory() {
+        const name = document.getElementById('zikirNewName').value.trim();
+        const target = parseInt(document.getElementById('zikirNewTarget').value) || 100;
+        const description = document.getElementById('zikirNewDescription').value.trim();
+        const weeklyGoal = parseInt(document.getElementById('zikirNewWeeklyGoal').value) || 7;
+
+        if (!name) { alert('Zikir ismi zorunludur!'); return; }
+
+        const items = this.getZikirItems();
+        items.push({ name, target, description, weeklyGoal });
+        this.saveZikirItems(items);
+
+        document.getElementById('zikirNewName').value = '';
+        document.getElementById('zikirNewTarget').value = '';
+        document.getElementById('zikirNewDescription').value = '';
+        document.getElementById('zikirNewWeeklyGoal').value = '';
+
+        this.renderZikirItems();
+        alert(`"${name}" basariyla eklendi!`);
+    }
+
+    editZikirItem(index) {
+        const items = this.getZikirItems();
+        const item = items[index];
+
+        const newName = prompt('Zikir Ismi:', item.name);
+        if (newName === null) return;
+        const newTarget = prompt('Hedef Sayi:', item.target);
+        if (newTarget === null) return;
+        const newDesc = prompt('Aciklama:', item.description || '');
+        if (newDesc === null) return;
+        const newWeekly = prompt('Haftalik Hedef:', item.weeklyGoal || 7);
+        if (newWeekly === null) return;
+
+        item.name = newName.trim() || item.name;
+        item.target = parseInt(newTarget) || item.target;
+        item.description = newDesc.trim();
+        item.weeklyGoal = parseInt(newWeekly) || 7;
+
+        this.saveZikirItems(items);
+        this.renderZikirItems();
+    }
+
+    deleteZikirItem(index) {
+        const items = this.getZikirItems();
+        if (!confirm(`"${items[index].name}" silinecek. Emin misiniz?`)) return;
+        items.splice(index, 1);
+        this.saveZikirItems(items);
+        this.renderZikirItems();
+    }
+
+    resetZikirToDefaults() {
+        if (!confirm('Tum zikirler varsayilan degerlere sifirlanacak. Emin misiniz?')) return;
+        localStorage.removeItem('adminZikirItems');
+        this.renderZikirItems();
+        alert('Zikirler varsayilan degerlere sifirlandi!');
+    }
+
+    // ========================================
+    // KITAPLAR YONETIMI
+    // ========================================
+
+    getDefaultKitapItems() {
+        return [
+            { name: 'Sozler', author: 'Bediuzzaman', totalPages: 800, dailyGoal: 10, category: 'risale' },
+            { name: 'Mektubat', author: 'Bediuzzaman', totalPages: 600, dailyGoal: 10, category: 'risale' },
+            { name: 'Lemalar', author: 'Bediuzzaman', totalPages: 400, dailyGoal: 10, category: 'risale' },
+            { name: 'Sualar', author: 'Bediuzzaman', totalPages: 700, dailyGoal: 10, category: 'risale' }
+        ];
+    }
+
+    getKitapItems() {
+        const stored = localStorage.getItem('adminKitapItems');
+        if (stored) {
+            try { return JSON.parse(stored); } catch (e) { console.error(e); }
+        }
+        return this.getDefaultKitapItems();
+    }
+
+    saveKitapItems(items) {
+        localStorage.setItem('adminKitapItems', JSON.stringify(items));
+    }
+
+    renderKitapItems() {
+        const container = document.getElementById('kitapItemsList');
+        if (!container) return;
+
+        const items = this.getKitapItems();
+        const categoryLabels = { risale: 'Risale-i Nur', siyer: 'Siyer', tefsir: 'Tefsir', hadis: 'Hadis', diger: 'Diger' };
+        let html = '';
+
+        items.forEach((item, index) => {
+            html += `
+                <div class="tavsiye-admin-item">
+                    <div class="tavsiye-item-info">
+                        <div>
+                            <span class="tavsiye-item-name">${item.name}</span>
+                            <span class="tavsiye-category-badge">${categoryLabels[item.category] || item.category}</span>
+                        </div>
+                        <span class="tavsiye-item-detail">${item.author} - ${item.totalPages} sayfa - Gunluk: ${item.dailyGoal} sayfa</span>
+                    </div>
+                    <div class="tavsiye-item-actions">
+                        <button class="tavsiye-action-btn edit" onclick="adminDashboard.editKitapItem(${index})">Duzenle</button>
+                        <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteKitapItem(${index})">Sil</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html || '<p style="color: #64748b; text-align: center; padding: 20px;">Henuz kitap eklenmemis.</p>';
+    }
+
+    addKitapItem() {
+        const name = document.getElementById('kitapNewName').value.trim();
+        const author = document.getElementById('kitapNewAuthor').value.trim();
+        const totalPages = parseInt(document.getElementById('kitapNewTotalPages').value) || 0;
+        const dailyGoal = parseInt(document.getElementById('kitapNewDailyGoal').value) || 10;
+        const category = document.getElementById('kitapNewCategory').value;
+
+        if (!name) { alert('Kitap ismi zorunludur!'); return; }
+
+        const items = this.getKitapItems();
+        items.push({ name, author, totalPages, dailyGoal, category });
+        this.saveKitapItems(items);
+
+        document.getElementById('kitapNewName').value = '';
+        document.getElementById('kitapNewAuthor').value = '';
+        document.getElementById('kitapNewTotalPages').value = '';
+        document.getElementById('kitapNewDailyGoal').value = '';
+
+        this.renderKitapItems();
+        alert(`"${name}" basariyla eklendi!`);
+    }
+
+    editKitapItem(index) {
+        const items = this.getKitapItems();
+        const item = items[index];
+
+        const newName = prompt('Kitap Ismi:', item.name);
+        if (newName === null) return;
+        const newAuthor = prompt('Yazar:', item.author || '');
+        if (newAuthor === null) return;
+        const newPages = prompt('Toplam Sayfa:', item.totalPages);
+        if (newPages === null) return;
+        const newDaily = prompt('Gunluk Hedef:', item.dailyGoal);
+        if (newDaily === null) return;
+
+        item.name = newName.trim() || item.name;
+        item.author = newAuthor.trim();
+        item.totalPages = parseInt(newPages) || item.totalPages;
+        item.dailyGoal = parseInt(newDaily) || item.dailyGoal;
+
+        this.saveKitapItems(items);
+        this.renderKitapItems();
+    }
+
+    deleteKitapItem(index) {
+        const items = this.getKitapItems();
+        if (!confirm(`"${items[index].name}" silinecek. Emin misiniz?`)) return;
+        items.splice(index, 1);
+        this.saveKitapItems(items);
+        this.renderKitapItems();
+    }
+
+    resetKitapToDefaults() {
+        if (!confirm('Tum kitaplar varsayilan degerlere sifirlanacak. Emin misiniz?')) return;
+        localStorage.removeItem('adminKitapItems');
+        this.renderKitapItems();
+        alert('Kitaplar varsayilan degerlere sifirlandi!');
+    }
+
+    // ========================================
+    // NAMAZLAR YONETIMI
+    // ========================================
+
+    getDefaultNamazItems() {
+        return [
+            { name: 'Teheccud', rakat: 8, description: 'Gece namazi', weeklyGoal: 7, time: 'gece' },
+            { name: 'Duha', rakat: 4, description: 'Kusuk namazi', weeklyGoal: 7, time: 'sabah' },
+            { name: 'Evvabin', rakat: 6, description: 'Aksam sonrasi', weeklyGoal: 7, time: 'aksam' },
+            { name: 'Israk', rakat: 2, description: 'Gunes dogunca', weeklyGoal: 7, time: 'sabah' }
+        ];
+    }
+
+    getNamazItems() {
+        const stored = localStorage.getItem('adminNamazItems');
+        if (stored) {
+            try { return JSON.parse(stored); } catch (e) { console.error(e); }
+        }
+        return this.getDefaultNamazItems();
+    }
+
+    saveNamazItems(items) {
+        localStorage.setItem('adminNamazItems', JSON.stringify(items));
+    }
+
+    renderNamazItems() {
+        const container = document.getElementById('namazItemsList');
+        if (!container) return;
+
+        const items = this.getNamazItems();
+        const timeLabels = { sabah: 'Sabah', ogle: 'Ogle', ikindi: 'Ikindi', aksam: 'Aksam', yatsi: 'Yatsi', gece: 'Gece' };
+        let html = '';
+
+        items.forEach((item, index) => {
+            html += `
+                <div class="tavsiye-admin-item">
+                    <div class="tavsiye-item-info">
+                        <div>
+                            <span class="tavsiye-item-name">${item.name}</span>
+                            <span class="tavsiye-category-badge">${item.rakat} Rekat - ${timeLabels[item.time] || item.time}</span>
+                        </div>
+                        <span class="tavsiye-item-detail">${item.description || ''} - Haftalik: ${item.weeklyGoal || 0}</span>
+                    </div>
+                    <div class="tavsiye-item-actions">
+                        <button class="tavsiye-action-btn edit" onclick="adminDashboard.editNamazItem(${index})">Duzenle</button>
+                        <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteNamazItem(${index})">Sil</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html || '<p style="color: #64748b; text-align: center; padding: 20px;">Henuz namaz eklenmemis.</p>';
+    }
+
+    addNamazCategory() {
+        const name = document.getElementById('namazNewName').value.trim();
+        const rakat = parseInt(document.getElementById('namazNewRakat').value) || 2;
+        const description = document.getElementById('namazNewDescription').value.trim();
+        const weeklyGoal = parseInt(document.getElementById('namazNewWeeklyGoal').value) || 7;
+        const time = document.getElementById('namazNewTime').value;
+
+        if (!name) { alert('Namaz ismi zorunludur!'); return; }
+
+        const items = this.getNamazItems();
+        items.push({ name, rakat, description, weeklyGoal, time });
+        this.saveNamazItems(items);
+
+        document.getElementById('namazNewName').value = '';
+        document.getElementById('namazNewRakat').value = '';
+        document.getElementById('namazNewDescription').value = '';
+        document.getElementById('namazNewWeeklyGoal').value = '';
+
+        this.renderNamazItems();
+        alert(`"${name}" basariyla eklendi!`);
+    }
+
+    editNamazItem(index) {
+        const items = this.getNamazItems();
+        const item = items[index];
+
+        const newName = prompt('Namaz Ismi:', item.name);
+        if (newName === null) return;
+        const newRakat = prompt('Rekat Sayisi:', item.rakat);
+        if (newRakat === null) return;
+        const newDesc = prompt('Aciklama:', item.description || '');
+        if (newDesc === null) return;
+        const newWeekly = prompt('Haftalik Hedef:', item.weeklyGoal || 7);
+        if (newWeekly === null) return;
+
+        item.name = newName.trim() || item.name;
+        item.rakat = parseInt(newRakat) || item.rakat;
+        item.description = newDesc.trim();
+        item.weeklyGoal = parseInt(newWeekly) || 7;
+
+        this.saveNamazItems(items);
+        this.renderNamazItems();
+    }
+
+    deleteNamazItem(index) {
+        const items = this.getNamazItems();
+        if (!confirm(`"${items[index].name}" silinecek. Emin misiniz?`)) return;
+        items.splice(index, 1);
+        this.saveNamazItems(items);
+        this.renderNamazItems();
+    }
+
+    resetNamazToDefaults() {
+        if (!confirm('Tum namazlar varsayilan degerlere sifirlanacak. Emin misiniz?')) return;
+        localStorage.removeItem('adminNamazItems');
+        this.renderNamazItems();
+        alert('Namazlar varsayilan degerlere sifirlandi!');
+    }
+
+    // ========================================
+    // TESBIHAT YONETIMI
+    // ========================================
+
+    getDefaultTesbihatItems() {
+        return {
+            sabah: [
+                { name: 'Ayetel Kursi', arabic: 'Allahu la ilahe illa huvel hayyul kayyum...', turkish: 'Allah, Ondan baska ilah yoktur...', count: 1 },
+                { name: 'Subhanallah', arabic: 'Subhanallah', turkish: 'Allah her turlu eksiklikten uzaktir', count: 33 }
+            ],
+            ogle: [
+                { name: 'Subhanallah', arabic: 'Subhanallah', turkish: 'Allah her turlu eksiklikten uzaktir', count: 33 }
+            ],
+            ikindi: [
+                { name: 'Subhanallah', arabic: 'Subhanallah', turkish: 'Allah her turlu eksiklikten uzaktir', count: 33 }
+            ],
+            aksam: [
+                { name: 'Subhanallah', arabic: 'Subhanallah', turkish: 'Allah her turlu eksiklikten uzaktir', count: 33 }
+            ],
+            yatsi: [
+                { name: 'Subhanallah', arabic: 'Subhanallah', turkish: 'Allah her turlu eksiklikten uzaktir', count: 33 }
+            ]
+        };
+    }
+
+    getTesbihatItems() {
+        const stored = localStorage.getItem('adminTesbihatItems');
+        if (stored) {
+            try { return JSON.parse(stored); } catch (e) { console.error(e); }
+        }
+        return this.getDefaultTesbihatItems();
+    }
+
+    saveTesbihatItems(items) {
+        localStorage.setItem('adminTesbihatItems', JSON.stringify(items));
+    }
+
+    showTesbihatCategory(category) {
+        const tabs = document.querySelectorAll('.tesbihat-tab');
+        tabs.forEach(tab => {
+            const tabCat = tab.textContent.toLowerCase();
+            tab.classList.toggle('active', tabCat === category);
+        });
+
+        const categorySelect = document.getElementById('tesbihatNewCategory');
+        if (categorySelect) categorySelect.value = category;
+
+        this.renderTesbihatItems(category);
+    }
+
+    renderTesbihatItems(filterCategory = null) {
+        const container = document.getElementById('tesbihatItemsList');
+        if (!container) return;
+
+        const items = this.getTesbihatItems();
+        const categoryLabels = { sabah: 'Sabah', ogle: 'Ogle', ikindi: 'Ikindi', aksam: 'Aksam', yatsi: 'Yatsi' };
+        let html = '';
+
+        Object.keys(items).forEach(category => {
+            if (filterCategory && category !== filterCategory) return;
+
+            items[category].forEach((item, index) => {
+                html += `
+                    <div class="tavsiye-admin-item">
+                        <div class="tavsiye-item-info">
+                            <div>
+                                <span class="tavsiye-item-name">${item.name}</span>
+                                <span class="tavsiye-category-badge">${categoryLabels[category]} - ${item.count}x</span>
+                            </div>
+                            <span class="tavsiye-item-detail" style="direction: rtl;">${(item.arabic || '').substring(0, 50)}${(item.arabic || '').length > 50 ? '...' : ''}</span>
+                            <span class="tavsiye-item-meta">${item.turkish || ''}</span>
+                        </div>
+                        <div class="tavsiye-item-actions">
+                            <button class="tavsiye-action-btn edit" onclick="adminDashboard.editTesbihatItem('${category}', ${index})">Duzenle</button>
+                            <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteTesbihatItem('${category}', ${index})">Sil</button>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        container.innerHTML = html || '<p style="color: #64748b; text-align: center; padding: 20px;">Bu kategoride tesbihat bulunmuyor.</p>';
+    }
+
+    addTesbihatItem() {
+        const category = document.getElementById('tesbihatNewCategory').value;
+        const name = document.getElementById('tesbihatNewName').value.trim();
+        const arabic = document.getElementById('tesbihatNewArabic').value.trim();
+        const turkish = document.getElementById('tesbihatNewTurkish').value.trim();
+        const count = parseInt(document.getElementById('tesbihatNewCount').value) || 1;
+
+        if (!name) { alert('Dua ismi zorunludur!'); return; }
+
+        const items = this.getTesbihatItems();
+        if (!items[category]) items[category] = [];
+        items[category].push({ name, arabic, turkish, count });
+        this.saveTesbihatItems(items);
+
+        document.getElementById('tesbihatNewName').value = '';
+        document.getElementById('tesbihatNewArabic').value = '';
+        document.getElementById('tesbihatNewTurkish').value = '';
+        document.getElementById('tesbihatNewCount').value = '';
+
+        this.renderTesbihatItems(category);
+        alert(`"${name}" basariyla eklendi!`);
+    }
+
+    editTesbihatItem(category, index) {
+        const items = this.getTesbihatItems();
+        const item = items[category][index];
+
+        const newName = prompt('Dua Ismi:', item.name);
+        if (newName === null) return;
+        const newArabic = prompt('Arapca Metin:', item.arabic || '');
+        if (newArabic === null) return;
+        const newTurkish = prompt('Turkce Anlami:', item.turkish || '');
+        if (newTurkish === null) return;
+        const newCount = prompt('Tekrar Sayisi:', item.count || 1);
+        if (newCount === null) return;
+
+        item.name = newName.trim() || item.name;
+        item.arabic = newArabic.trim();
+        item.turkish = newTurkish.trim();
+        item.count = parseInt(newCount) || 1;
+
+        this.saveTesbihatItems(items);
+        this.renderTesbihatItems(category);
+    }
+
+    deleteTesbihatItem(category, index) {
+        const items = this.getTesbihatItems();
+        if (!confirm(`"${items[category][index].name}" silinecek. Emin misiniz?`)) return;
+        items[category].splice(index, 1);
+        this.saveTesbihatItems(items);
+        this.renderTesbihatItems(category);
+    }
+
+    resetTesbihatToDefaults() {
+        if (!confirm('Tum tesbihatlar varsayilan degerlere sifirlanacak. Emin misiniz?')) return;
+        localStorage.removeItem('adminTesbihatItems');
+        this.renderTesbihatItems();
+        alert('Tesbihatlar varsayilan degerlere sifirlandi!');
+    }
+
+    // ========================================
+    // SOHBET YONETIMI
+    // ========================================
+
+    getDefaultSohbetSources() {
+        return [
+            { name: 'Sohbet Kaset', description: 'Ses/Video kasetleri', url: '', icon: '🎬' },
+            { name: 'Bamteli', description: 'Video sohbetler', url: '', icon: '🎬' },
+            { name: 'Kirik Testi', description: 'Yazilar', url: '', icon: '📝' },
+            { name: 'Herkul Nagme', description: 'Ses kayitlari', url: '', icon: '🎧' },
+            { name: 'Besinci Kat', description: 'Ozel icerikler', url: '', icon: '🎬' },
+            { name: 'Vaazlar', description: 'Vaaz arsivi', url: '', icon: '🎬' },
+            { name: 'Herkul Radyo', description: 'Canli radyo', url: '', icon: '📻' }
+        ];
+    }
+
+    getSohbetSources() {
+        const stored = localStorage.getItem('adminSohbetSources');
+        if (stored) {
+            try { return JSON.parse(stored); } catch (e) { console.error(e); }
+        }
+        return this.getDefaultSohbetSources();
+    }
+
+    saveSohbetSources(items) {
+        localStorage.setItem('adminSohbetSources', JSON.stringify(items));
+    }
+
+    renderSohbetItems() {
+        const container = document.getElementById('sohbetItemsList');
+        if (!container) return;
+
+        const items = this.getSohbetSources();
+        let html = '';
+
+        items.forEach((item, index) => {
+            html += `
+                <div class="tavsiye-admin-item">
+                    <div class="tavsiye-item-info">
+                        <div>
+                            <span style="font-size: 18px; margin-right: 6px;">${item.icon || '🎬'}</span>
+                            <span class="tavsiye-item-name">${item.name}</span>
+                        </div>
+                        <span class="tavsiye-item-detail">${item.description || ''}</span>
+                        ${item.url ? `<span class="tavsiye-item-meta">${item.url}</span>` : ''}
+                    </div>
+                    <div class="tavsiye-item-actions">
+                        <button class="tavsiye-action-btn edit" onclick="adminDashboard.editSohbetSource(${index})">Duzenle</button>
+                        <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteSohbetSource(${index})">Sil</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html || '<p style="color: #64748b; text-align: center; padding: 20px;">Henuz kaynak eklenmemis.</p>';
+    }
+
+    addSohbetSource() {
+        const name = document.getElementById('sohbetNewName').value.trim();
+        const description = document.getElementById('sohbetNewDescription').value.trim();
+        const url = document.getElementById('sohbetNewUrl').value.trim();
+        const icon = document.getElementById('sohbetNewIcon').value;
+
+        if (!name) { alert('Kaynak ismi zorunludur!'); return; }
+
+        const items = this.getSohbetSources();
+        items.push({ name, description, url, icon });
+        this.saveSohbetSources(items);
+
+        document.getElementById('sohbetNewName').value = '';
+        document.getElementById('sohbetNewDescription').value = '';
+        document.getElementById('sohbetNewUrl').value = '';
+
+        this.renderSohbetItems();
+        alert(`"${name}" basariyla eklendi!`);
+    }
+
+    editSohbetSource(index) {
+        const items = this.getSohbetSources();
+        const item = items[index];
+
+        const newName = prompt('Kaynak Ismi:', item.name);
+        if (newName === null) return;
+        const newDesc = prompt('Aciklama:', item.description || '');
+        if (newDesc === null) return;
+        const newUrl = prompt('URL:', item.url || '');
+        if (newUrl === null) return;
+
+        item.name = newName.trim() || item.name;
+        item.description = newDesc.trim();
+        item.url = newUrl.trim();
+
+        this.saveSohbetSources(items);
+        this.renderSohbetItems();
+    }
+
+    deleteSohbetSource(index) {
+        const items = this.getSohbetSources();
+        if (!confirm(`"${items[index].name}" silinecek. Emin misiniz?`)) return;
+        items.splice(index, 1);
+        this.saveSohbetSources(items);
+        this.renderSohbetItems();
+    }
+
+    resetSohbetToDefaults() {
+        if (!confirm('Tum sohbet kaynaklari varsayilan degerlere sifirlanacak. Emin misiniz?')) return;
+        localStorage.removeItem('adminSohbetSources');
+        this.renderSohbetItems();
+        alert('Sohbet kaynaklari varsayilan degerlere sifirlandi!');
+    }
+
+    // ========================================
+    // INIT RENDER FUNCTIONS
+    // ========================================
+
+    initZikirSection() { this.renderZikirItems(); }
+    initKitapSection() { this.renderKitapItems(); }
+    initNamazSection() { this.renderNamazItems(); }
+    initTesbihatSection() { this.renderTesbihatItems('sabah'); }
+    initSohbetSection() { this.renderSohbetItems(); }
 }
 
 // Instance globale
