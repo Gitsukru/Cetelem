@@ -98,10 +98,12 @@ ALTER TABLE hatim_participations ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "hatims_select" ON hatims;
 DROP POLICY IF EXISTS "hatims_insert" ON hatims;
 DROP POLICY IF EXISTS "hatims_update" ON hatims;
+DROP POLICY IF EXISTS "hatims_delete" ON hatims;
 
 CREATE POLICY "hatims_select" ON hatims FOR SELECT USING (true);
 CREATE POLICY "hatims_insert" ON hatims FOR INSERT WITH CHECK (true);
 CREATE POLICY "hatims_update" ON hatims FOR UPDATE USING (true);
+CREATE POLICY "hatims_delete" ON hatims FOR DELETE USING (true);
 
 DROP POLICY IF EXISTS "participations_select" ON hatim_participations;
 DROP POLICY IF EXISTS "participations_insert" ON hatim_participations;
