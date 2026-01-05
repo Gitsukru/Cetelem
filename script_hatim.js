@@ -1025,10 +1025,10 @@ Linke tıklayın ve uygulamayı yükleyin
                             <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dcfce7; border: 2px solid #10b981; border-radius: 3px;"></span> Tamamlandı</span>
                             <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dbeafe; border: 2px solid #3b82f6; border-radius: 3px;"></span> Benim</span>
                         </div>
-                        ${availableCount > 1 && deadlineStatus !== 'passed' ? `
+                        ${available > 1 && deadlineStatus !== 'passed' ? `
                         <button onclick="HatimManager.showMultiClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${totalUnits}, '${unitLabel}')"
                                 style="margin-top: 12px; width: 100%; padding: 10px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                            <span>☑️</span> Çoklu Seçim (${availableCount} müsait)
+                            <span>☑️</span> Çoklu Seçim (${available} müsait)
                         </button>
                         ` : ''}
                     </div>
