@@ -2404,6 +2404,246 @@ class AdminDashboard {
     initTavsiyeSection() {
         this.renderTavsiyeItems('zikir'); // Default to zikir category
     }
+
+    // ========================================
+    // HATIM DUA MANAGEMENT
+    // ========================================
+
+    /**
+     * Default Hatim Dua items (fallback)
+     */
+    getDefaultHatimDuaItems() {
+        return {
+            kuran: [
+                { name: 'Fatiha Suresi', text: 'Elhamdulillahi rabbil alemin...', count: 3, description: 'Hatim sonrasi okunur' },
+                { name: 'Ihlas Suresi', text: 'Kul huvallahu ehad...', count: 3, description: 'Hatim sonrasi okunur' },
+                { name: 'Hatim Duasi', text: 'Allahümme innî es\'elüke...', count: 1, description: 'Hatim tamamlandiginda' }
+            ],
+            cevsen: [
+                { name: 'Cevsen Duasi', text: 'Ya Allah, Ya Rahman, Ya Rahim...', count: 1, description: 'Cevsen sonrasi okunur' },
+                { name: 'Fatiha Suresi', text: 'Elhamdulillahi rabbil alemin...', count: 1, description: 'Cevsen sonrasi okunur' }
+            ],
+            genel: [
+                { name: 'Salavat', text: 'Allahumme salli ala Muhammed...', count: 10, description: 'Her zaman okunabilir' },
+                { name: 'Estagfirullah', text: 'Estagfirullah el-azim...', count: 100, description: 'Tovbe duasi' },
+                { name: 'Tesbih', text: 'Subhanallah, Elhamdulillah, Allahuekber', count: 33, description: 'Tesbih duasi' }
+            ]
+        };
+    }
+
+    /**
+     * Get Hatim Dua items from localStorage or defaults
+     */
+    getHatimDuaItems() {
+        const stored = localStorage.getItem('adminHatimDuaItems');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                console.error('Error parsing hatim dua items:', e);
+            }
+        }
+        return this.getDefaultHatimDuaItems();
+    }
+
+    /**
+     * Save Hatim Dua items to localStorage
+     */
+    saveHatimDuaItems(items) {
+        localStorage.setItem('adminHatimDuaItems', JSON.stringify(items));
+    }
+
+    /**
+     * Show Hatim Dua items by category
+     */
+    showHatimDuaCategory(category) {
+        // Tab text to category mapping
+        const tabMapping = {
+            'Kuran Hatimleri': 'kuran',
+            'Cevsen Hatimleri': 'cevsen',
+            'Genel Dualar': 'genel'
+        };
+
+        // Update tab active state
+        const tabs = document.querySelectorAll('.hatimdua-tab');
+        tabs.forEach(tab => {
+            const tabCategory = tabMapping[tab.textContent];
+            if (tabCategory === category) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+
+        // Update category select
+        const categorySelect = document.getElementById('hatimDuaNewCategory');
+        if (categorySelect) {
+            categorySelect.value = category;
+        }
+
+        // Render items
+        this.renderHatimDuaItems(category);
+    }
+
+    /**
+     * Render Hatim Dua items list
+     */
+    renderHatimDuaItems(filterCategory = null) {
+        const container = document.getElementById('hatimDuaItemsList');
+        if (!container) return;
+
+        const items = this.getHatimDuaItems();
+        let html = '';
+
+        const categoryLabels = {
+            kuran: 'Kuran Hatmi',
+            cevsen: 'Cevsen Hatmi',
+            genel: 'Genel'
+        };
+
+        Object.keys(items).forEach(category => {
+            if (filterCategory && category !== filterCategory) return;
+
+            items[category].forEach((item, index) => {
+                html += `
+                    <div class="tavsiye-admin-item" data-category="${category}" data-index="${index}">
+                        <div class="tavsiye-item-info">
+                            <div>
+                                <span class="tavsiye-item-name">${item.name}</span>
+                                <span class="tavsiye-category-badge">${categoryLabels[category]}</span>
+                            </div>
+                            <span class="tavsiye-item-detail">${item.count}x - ${item.description || 'Aciklama yok'}</span>
+                            ${item.text ? `<span class="tavsiye-item-meta" style="font-style: italic; direction: rtl;">${item.text.substring(0, 50)}${item.text.length > 50 ? '...' : ''}</span>` : ''}
+                        </div>
+                        <div class="tavsiye-item-actions">
+                            <button class="tavsiye-action-btn edit" onclick="adminDashboard.editHatimDuaItem('${category}', ${index})">
+                                Duzenle
+                            </button>
+                            <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteHatimDuaItem('${category}', ${index})">
+                                Sil
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        if (!html) {
+            html = '<p style="color: #64748b; text-align: center; padding: 20px;">Bu kategoride dua bulunmuyor.</p>';
+        }
+
+        container.innerHTML = html;
+    }
+
+    /**
+     * Handle Hatim Dua category change
+     */
+    onHatimDuaCategoryChange() {
+        // Currently no special logic needed, but kept for consistency
+    }
+
+    /**
+     * Add new Hatim Dua item
+     */
+    addHatimDuaItem() {
+        const category = document.getElementById('hatimDuaNewCategory').value;
+        const name = document.getElementById('hatimDuaNewName').value.trim();
+        const text = document.getElementById('hatimDuaNewText').value.trim();
+        const count = parseInt(document.getElementById('hatimDuaNewCount').value) || 1;
+        const description = document.getElementById('hatimDuaNewDescription').value.trim();
+
+        if (!name) {
+            alert('Dua ismi zorunludur!');
+            return;
+        }
+
+        const items = this.getHatimDuaItems();
+
+        // Ensure category exists
+        if (!items[category]) {
+            items[category] = [];
+        }
+
+        items[category].push({
+            name,
+            text,
+            count,
+            description
+        });
+
+        this.saveHatimDuaItems(items);
+
+        // Clear form
+        document.getElementById('hatimDuaNewName').value = '';
+        document.getElementById('hatimDuaNewText').value = '';
+        document.getElementById('hatimDuaNewCount').value = '';
+        document.getElementById('hatimDuaNewDescription').value = '';
+
+        // Refresh list
+        this.renderHatimDuaItems(category);
+
+        alert(`"${name}" basariyla eklendi!`);
+    }
+
+    /**
+     * Edit Hatim Dua item
+     */
+    editHatimDuaItem(category, index) {
+        const items = this.getHatimDuaItems();
+        const item = items[category][index];
+
+        const newName = prompt('Dua Ismi:', item.name);
+        if (newName === null) return;
+
+        const newText = prompt('Dua Metni:', item.text || '');
+        if (newText === null) return;
+
+        const newCount = prompt('Tekrar Sayisi:', item.count || 1);
+        if (newCount === null) return;
+
+        const newDescription = prompt('Aciklama:', item.description || '');
+        if (newDescription === null) return;
+
+        item.name = newName.trim() || item.name;
+        item.text = newText.trim();
+        item.count = parseInt(newCount) || 1;
+        item.description = newDescription.trim();
+
+        this.saveHatimDuaItems(items);
+        this.renderHatimDuaItems(category);
+    }
+
+    /**
+     * Delete Hatim Dua item
+     */
+    deleteHatimDuaItem(category, index) {
+        const items = this.getHatimDuaItems();
+        const item = items[category][index];
+
+        if (!confirm(`"${item.name}" silinecek. Emin misiniz?`)) return;
+
+        items[category].splice(index, 1);
+        this.saveHatimDuaItems(items);
+        this.renderHatimDuaItems(category);
+    }
+
+    /**
+     * Reset Hatim Dua items to defaults
+     */
+    resetHatimDuaToDefaults() {
+        if (!confirm('Tum hatim dualari varsayilan degerlere sifirlanacak. Emin misiniz?')) return;
+
+        localStorage.removeItem('adminHatimDuaItems');
+        this.renderHatimDuaItems();
+        alert('Hatim dualari varsayilan degerlere sifirlandi!');
+    }
+
+    /**
+     * Initialize Hatim Dua section when shown
+     */
+    initHatimDuaSection() {
+        this.renderHatimDuaItems('kuran'); // Default to kuran category
+    }
 }
 
 // Instance globale

@@ -1422,6 +1422,27 @@ canvas {
     color: white;
 }
 
+/* Hatim Dua Tabs */
+.hatimdua-tab {
+    padding: 10px 20px;
+    border: none;
+    background: #e2e8f0;
+    color: #475569;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.hatimdua-tab:hover {
+    background: #cbd5e1;
+}
+
+.hatimdua-tab.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
 .tavsiye-add-form {
     display: flex;
     flex-direction: column;

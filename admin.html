@@ -73,6 +73,10 @@
                     <span class="nav-icon">⭐</span>
                     <span class="nav-text">Tavsiye Yonetimi</span>
                 </a>
+                <a href="#hatimdua" class="nav-item" data-section="hatimdua">
+                    <span class="nav-icon">🤲</span>
+                    <span class="nav-text">Hatim Dua Yonetimi</span>
+                </a>
                 <a href="#performance" class="nav-item" data-section="performance">
                     <span class="nav-icon">⚡</span>
                     <span class="nav-text">Performance</span>
@@ -811,7 +815,81 @@
                     </div>
                 </section>
 
-                <!-- SECTION 8: PERFORMANCE -->
+                <!-- SECTION 8: HATIM DUA YONETIMI -->
+                <section id="hatimdua" class="content-section">
+                    <div class="section-header">
+                        <h2>🤲 Hatim Dua Yonetimi</h2>
+                        <p>Hatim tamamlandiginda okunacak tavsiye edilen dualari yonetin</p>
+                    </div>
+
+                    <!-- Category Tabs -->
+                    <div class="tavsiye-admin-tabs">
+                        <button class="hatimdua-tab active" onclick="adminDashboard.showHatimDuaCategory('kuran')">Kuran Hatimleri</button>
+                        <button class="hatimdua-tab" onclick="adminDashboard.showHatimDuaCategory('cevsen')">Cevsen Hatimleri</button>
+                        <button class="hatimdua-tab" onclick="adminDashboard.showHatimDuaCategory('genel')">Genel Dualar</button>
+                    </div>
+
+                    <!-- Add New Item -->
+                    <div class="chart-container">
+                        <h3>➕ Yeni Dua Ekle</h3>
+                        <div class="tavsiye-add-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Kategori</label>
+                                    <select id="hatimDuaNewCategory" onchange="adminDashboard.onHatimDuaCategoryChange()">
+                                        <option value="kuran">Kuran Hatimleri</option>
+                                        <option value="cevsen">Cevsen Hatimleri</option>
+                                        <option value="genel">Genel Dualar</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label id="hatimDuaNameLabel">Dua Ismi</label>
+                                    <input type="text" id="hatimDuaNewName" placeholder="ornek: Fatiha Suresi">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group" style="flex: 2;">
+                                    <label id="hatimDuaTextLabel">Dua Metni (Arapca/Turkce)</label>
+                                    <textarea id="hatimDuaNewText" placeholder="Dua metnini girin..." rows="3" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; resize: vertical;"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Tekrar Sayisi</label>
+                                    <input type="number" id="hatimDuaNewCount" placeholder="ornek: 3" min="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Aciklama (Opsiyonel)</label>
+                                    <input type="text" id="hatimDuaNewDescription" placeholder="ornek: Hatim sonrasi okunur">
+                                </div>
+                                <div class="form-group form-actions">
+                                    <button class="tool-btn" onclick="adminDashboard.addHatimDuaItem()">
+                                        Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Items List -->
+                    <div class="chart-container">
+                        <h3>📋 Mevcut Dualar</h3>
+                        <div id="hatimDuaItemsList" class="tavsiye-items-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Reset to Defaults -->
+                    <div class="chart-container">
+                        <h3>🔄 Varsayilanlara Sifirla</h3>
+                        <p style="color: #64748b; margin-bottom: 16px;">Tum hatim dualarini varsayilan degerlere sifirlar.</p>
+                        <button class="tool-btn" style="background: #dc2626;" onclick="adminDashboard.resetHatimDuaToDefaults()">
+                            Sifirla
+                        </button>
+                    </div>
+                </section>
+
+                <!-- SECTION 9: PERFORMANCE -->
                 <section id="performance" class="content-section">
                     <div class="section-header">
                         <h2>⚡ Performance & Santé App</h2>
