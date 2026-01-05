@@ -1478,8 +1478,8 @@ class AdminDashboard {
             // Engagement metrics
             this.calculateEngagementMetrics(events);
 
-            // Retention (estimation simple)
-            this.calculateRetentionMetrics();
+            // Retention (calcul réel basé sur cohortes)
+            this.calculateRetentionMetrics(events);
 
             // Growth chart
             this.createGrowthChart(events);
@@ -1595,21 +1595,98 @@ class AdminDashboard {
         this.updateMetric('powerUsers', this.formatNumber(powerUsers));
     }
 
-    calculateRetentionMetrics() {
-        // Estimation simple de rétention
-        // Pour une vraie rétention, il faudrait tracker les cohortes
-        // TODO: Implémenter calcul réel avec cohortes
+    calculateRetentionMetrics(events) {
+        // Calcul réel de rétention basé sur cohortes
+        if (!events || events.length === 0) {
+            this.updateMetric('retention1d', 'N/A');
+            this.updateMetric('retention7d', 'N/A');
+            this.updateMetric('retention30d', 'N/A');
+            this.updateMetric('churnRate', 'N/A');
+            return;
+        }
 
-        // Mock values pour l'instant
-        const retention1d = '35'; // Mock - besoin de vraies cohortes
-        const retention7d = '25';
-        const retention30d = '15';
-        const churnRate = '10';
+        const day = 24 * 60 * 60 * 1000;
+        const now = Date.now();
+
+        // Créer map: deviceId -> array de dates d'activité (jours uniques)
+        const deviceActivity = new Map();
+
+        events.forEach(e => {
+            const deviceId = e.event_data?.deviceId;
+            if (!deviceId) return;
+
+            const eventDate = new Date(e.created_at);
+            const dayKey = eventDate.toISOString().split('T')[0]; // YYYY-MM-DD
+
+            if (!deviceActivity.has(deviceId)) {
+                deviceActivity.set(deviceId, new Set());
+            }
+            deviceActivity.get(deviceId).add(dayKey);
+        });
+
+        // Pour chaque device, trouver la première visite et vérifier le retour
+        let totalDevices = 0;
+        let returned1d = 0;
+        let returned7d = 0;
+        let returned30d = 0;
+        let churned = 0;
+
+        deviceActivity.forEach((activityDays) => {
+            const sortedDays = Array.from(activityDays).sort();
+            if (sortedDays.length === 0) return;
+
+            const firstVisit = new Date(sortedDays[0]);
+            const firstVisitTime = firstVisit.getTime();
+
+            // Ne compter que les devices avec première visite > 30 jours
+            // pour avoir assez de recul sur la rétention
+            if ((now - firstVisitTime) < 30 * day) return;
+
+            totalDevices++;
+
+            // Vérifier retour J+1
+            const day1 = new Date(firstVisitTime + day).toISOString().split('T')[0];
+            if (activityDays.has(day1)) returned1d++;
+
+            // Vérifier retour dans les 7 jours (J+2 à J+7)
+            let hasReturned7d = false;
+            for (let i = 2; i <= 7; i++) {
+                const dayN = new Date(firstVisitTime + i * day).toISOString().split('T')[0];
+                if (activityDays.has(dayN)) {
+                    hasReturned7d = true;
+                    break;
+                }
+            }
+            if (hasReturned7d) returned7d++;
+
+            // Vérifier retour dans les 30 jours (J+8 à J+30)
+            let hasReturned30d = false;
+            for (let i = 8; i <= 30; i++) {
+                const dayN = new Date(firstVisitTime + i * day).toISOString().split('T')[0];
+                if (activityDays.has(dayN)) {
+                    hasReturned30d = true;
+                    break;
+                }
+            }
+            if (hasReturned30d) returned30d++;
+
+            // Churn: pas d'activité dans les 30 derniers jours
+            const lastActivity = new Date(sortedDays[sortedDays.length - 1]).getTime();
+            if ((now - lastActivity) > 30 * day) churned++;
+        });
+
+        // Calculer pourcentages
+        const retention1d = totalDevices > 0 ? Math.round((returned1d / totalDevices) * 100) : 0;
+        const retention7d = totalDevices > 0 ? Math.round((returned7d / totalDevices) * 100) : 0;
+        const retention30d = totalDevices > 0 ? Math.round((returned30d / totalDevices) * 100) : 0;
+        const churnRate = totalDevices > 0 ? Math.round((churned / totalDevices) * 100) : 0;
 
         this.updateMetric('retention1d', retention1d + '%');
         this.updateMetric('retention7d', retention7d + '%');
         this.updateMetric('retention30d', retention30d + '%');
         this.updateMetric('churnRate', churnRate + '%');
+
+        console.log(`📊 Rétention calculée sur ${totalDevices} devices (>30j): J1=${retention1d}%, J7=${retention7d}%, J30=${retention30d}%, Churn=${churnRate}%`);
     }
 
     createFeatureAdoptionChart(events) {
