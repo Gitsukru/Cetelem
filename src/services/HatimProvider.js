@@ -410,16 +410,16 @@ class HatimProvider {
 
     /**
      * Demarrer un nouveau tour pour un Hatim
-     * Utilise un verrouillage optimiste pour éviter les race conditions
+     * Note: Le trigger check_hatim_round_completion peut deja avoir incremente le round
      * @param {string} hatimId - ID du hatim
      * @param {number} expectedRound - Round actuel attendu (pour vérification)
-     * @returns {Promise<number>} Nouveau numero de tour
+     * @returns {Promise<number>} Numero du tour actuel (peut etre deja incremente)
      */
     async startNewRound(hatimId, expectedRound = null) {
         // D'abord, obtenir le hatim actuel
         const { data: hatim, error: getError } = await this.supabase
             .from('hatims')
-            .select('current_round')
+            .select('current_round, total_units')
             .eq('id', hatimId)
             .single();
 
@@ -428,10 +428,23 @@ class HatimProvider {
             throw new Error('Hatim bulunamadı');
         }
 
-        // Vérification optimiste: si un round attendu est fourni, vérifier qu'il n'a pas changé
-        if (expectedRound !== null && hatim.current_round !== expectedRound) {
-            console.warn('Race condition detected: round already changed');
-            throw new Error('Bu tur zaten başlatılmış. Sayfa yenileniyor...');
+        // Si le round a deja ete incremente par le trigger (ou un autre utilisateur)
+        // Retourner simplement le round actuel sans erreur
+        if (expectedRound !== null && hatim.current_round > expectedRound) {
+            console.log('Round already incremented by trigger:', hatim.current_round);
+            return hatim.current_round;
+        }
+
+        // Verifier si toutes les unites sont prises dans le round actuel
+        const { count: claimedCount } = await this.supabase
+            .from('hatim_participations')
+            .select('*', { count: 'exact', head: true })
+            .eq('hatim_id', hatimId)
+            .eq('round_number', hatim.current_round);
+
+        // Si pas toutes les unites sont prises, on ne peut pas demarrer un nouveau round
+        if (claimedCount < hatim.total_units) {
+            throw new Error(`Yeni tur başlatılamaz. ${hatim.total_units - claimedCount} birim hâlâ boş.`);
         }
 
         const newRound = hatim.current_round + 1;
@@ -445,25 +458,31 @@ class HatimProvider {
             })
             .eq('id', hatimId)
             .eq('current_round', hatim.current_round) // Verrouillage optimiste
-            .select('current_round')
-            .single();
+            .select('current_round');
 
         if (updateError) {
             console.error('Erreur start new round:', updateError);
-            // Si PGRST116 (no rows returned), c'est une race condition
-            if (updateError.code === 'PGRST116') {
-                throw new Error('Bu tur zaten başlatılmış. Sayfa yenileniyor...');
+            throw new Error('Yeni tur başlatılamadı');
+        }
+
+        // Si aucune ligne mise a jour (race condition - trigger l'a deja fait)
+        if (!updated || updated.length === 0) {
+            // Re-fetch le round actuel
+            const { data: refreshed } = await this.supabase
+                .from('hatims')
+                .select('current_round')
+                .eq('id', hatimId)
+                .single();
+
+            if (refreshed && refreshed.current_round > hatim.current_round) {
+                console.log('Round was already incremented:', refreshed.current_round);
+                return refreshed.current_round;
             }
             throw new Error('Yeni tur başlatılamadı');
         }
 
-        // Vérifier que la mise à jour a réussi
-        if (!updated) {
-            throw new Error('Bu tur zaten başlatılmış. Sayfa yenileniyor...');
-        }
-
-        console.log(`Nouveau tour demarre: ${newRound}`);
-        return newRound;
+        console.log(`Nouveau tour demarre: ${updated[0].current_round}`);
+        return updated[0].current_round;
     }
 
     /**
