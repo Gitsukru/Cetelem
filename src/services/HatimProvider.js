@@ -116,6 +116,22 @@ class HatimProvider {
     async claimUnit({ hatimId, roundNumber, unitNumber, participantName }) {
         const deviceId = this.getDeviceId();
 
+        // Verifier que le round est toujours actif (pas obsolete)
+        const { data: hatim, error: hatimError } = await this.supabase
+            .from('hatims')
+            .select('current_round')
+            .eq('id', hatimId)
+            .single();
+
+        if (hatimError) {
+            console.error('Erreur verification round:', hatimError);
+            throw new Error('Hatim dogrulanamadi');
+        }
+
+        if (hatim.current_round !== roundNumber) {
+            throw new Error(`Bu tur artik aktif degil. Mevcut tur: ${hatim.current_round}`);
+        }
+
         const { data, error } = await this.supabase
             .from('hatim_participations')
             .insert({
@@ -146,15 +162,21 @@ class HatimProvider {
      * @param {string} deviceId - ID du device (verification)
      */
     async releaseUnit(participationId, deviceId) {
-        const { error } = await this.supabase
+        const { data, error } = await this.supabase
             .from('hatim_participations')
             .delete()
             .eq('id', participationId)
-            .eq('device_id', deviceId);
+            .eq('device_id', deviceId)
+            .select();
 
         if (error) {
             console.error('Erreur release unit:', error);
             throw new Error(error.message);
+        }
+
+        // Verifier qu'une ligne a ete supprimee
+        if (!data || data.length === 0) {
+            throw new Error('Bu birimi sadece sahibi birakabilir');
         }
     }
 
@@ -276,6 +298,7 @@ class HatimProvider {
     /**
      * Supprimer un Hatim completement (Supabase + local)
      * Seul le createur peut supprimer
+     * Note: Les participations sont supprimees automatiquement via ON DELETE CASCADE
      * @param {string} hatimId - ID du hatim
      * @param {string} code - Code du hatim
      * @returns {Promise<boolean>}
@@ -283,26 +306,22 @@ class HatimProvider {
     async deleteHatim(hatimId, code) {
         const deviceId = this.getDeviceId();
 
-        // D'abord supprimer toutes les participations
-        const { error: partError } = await this.supabase
-            .from('hatim_participations')
-            .delete()
-            .eq('hatim_id', hatimId);
-
-        if (partError) {
-            console.error('Erreur suppression participations:', partError);
-            // Continuer quand meme pour supprimer le hatim
-        }
-
-        // Ensuite supprimer le hatim (seulement si createur)
-        const { error: hatimError } = await this.supabase
+        // Supprimer le hatim (seulement si createur)
+        // Les participations sont supprimees automatiquement via CASCADE
+        const { data, error: hatimError } = await this.supabase
             .from('hatims')
             .delete()
             .eq('id', hatimId)
-            .eq('created_by_device', deviceId);
+            .eq('created_by_device', deviceId)
+            .select();
 
         if (hatimError) {
             console.error('Erreur suppression hatim:', hatimError);
+            throw new Error('Hatim silinemedi. Sadece olusturan silebilir.');
+        }
+
+        // Verifier qu'une ligne a ete supprimee
+        if (!data || data.length === 0) {
             throw new Error('Hatim silinemedi. Sadece olusturan silebilir.');
         }
 

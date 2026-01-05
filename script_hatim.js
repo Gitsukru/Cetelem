@@ -47,6 +47,7 @@ const HatimManager = {
     currentView: 'kuran', // 'kuran', 'dua', 'cevsen'
     provider: null,
     currentHatim: null,
+    _refreshTimeout: null, // Pour debouncing
 
     // ========================================
     // UTILITAIRES DE SÉCURITÉ
@@ -83,7 +84,25 @@ const HatimManager = {
     init() {
         this.renderContent();
         this.renderMyHatimsList();
+
+        // Cleanup subscriptions on page unload
+        window.addEventListener('beforeunload', () => {
+            if (this.provider) {
+                this.provider.unsubscribeAll();
+            }
+        });
+
         console.log('HatimManager initialise');
+    },
+
+    // Debounced refresh (max 1 refresh per 500ms)
+    debouncedRefresh() {
+        if (this._refreshTimeout) {
+            clearTimeout(this._refreshTimeout);
+        }
+        this._refreshTimeout = setTimeout(() => {
+            this.refreshCurrentHatim();
+        }, 500);
     },
 
     // ========================================
@@ -610,9 +629,9 @@ Linke tıklayın ve uygulamayı yükleyin
                 isCreator: false
             });
 
-            // Subscribe to real-time updates
+            // Subscribe to real-time updates (with debouncing)
             this.provider.subscribeToHatim(hatim.id, () => {
-                this.refreshCurrentHatim();
+                this.debouncedRefresh();
             });
 
             // Switch to hatim view
