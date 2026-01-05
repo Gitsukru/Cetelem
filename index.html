@@ -443,16 +443,14 @@
                 <div id="hatimContent"></div>
 
                 <!-- Card: Join by Code -->
-                <div class="hatim-join-section" style="margin-top: 0; max-width: 500px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;">
-                    <h4 style="margin: 0 0 12px; color: #334155; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                <div class="hatim-join-section">
+                    <h4 class="hatim-join-title">
                         <span>🔗</span> Kod ile Hatime Katıl
                     </h4>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="hatimJoinCode"
-                               style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; text-transform: uppercase;"
+                    <div class="hatim-join-form">
+                        <input type="text" id="hatimJoinCode" class="hatim-join-input"
                                placeholder="8 haneli kodu girin" maxlength="8">
-                        <button onclick="HatimManager.joinByCode()"
-                                style="padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                        <button onclick="HatimManager.joinByCode()" class="hatim-join-btn">
                             Katıl
                         </button>
                     </div>

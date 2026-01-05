@@ -1,0 +1,925 @@
+/**
+ * HATIM - Styles pour l'onglet Hatim/Dua/Cevsen
+ * Design moderne, centré et bien structuré
+ */
+
+/* ===== SECTION PRINCIPALE ===== */
+.hatim-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* ===== NAVIGATION HATIM ===== */
+.hatim-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hatim-nav-btn {
+    padding: 14px 24px;
+    background: #f1f5f9;
+    color: #334155;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    min-height: 44px;
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: 100px;
+    max-width: 200px;
+}
+
+.hatim-nav-btn:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.hatim-nav-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ===== MES HATIMS LIST ===== */
+#myHatimsList {
+    margin-bottom: 20px;
+}
+
+.hatim-my-list {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.hatim-my-list summary {
+    cursor: pointer;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    font-weight: 600;
+    color: #334155;
+    font-size: 15px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.hatim-my-list summary::-webkit-details-marker {
+    display: none;
+}
+
+.hatim-my-list[open] summary {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.hatim-my-list-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hatim-my-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hatim-my-item:hover,
+.hatim-my-item:focus {
+    border-color: #667eea;
+    background: #eef2ff;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+/* ===== VUE PARTICIPATION (DETAIL HATIM) ===== */
+.hatim-participation-view {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* ===== CARDS HATIM ===== */
+.hatim-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.hatim-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.hatim-card-title {
+    margin: 0 0 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ===== PROGRESS SECTION ===== */
+.hatim-progress {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.hatim-progress-bar {
+    flex: 1;
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.hatim-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+    border-radius: 5px;
+}
+
+.hatim-progress-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.hatim-progress-stats span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ===== MES CUZ SECTION ===== */
+.hatim-my-cuz {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.hatim-my-cuz summary {
+    cursor: pointer;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    font-weight: 600;
+    color: #166534;
+    font-size: 14px;
+}
+
+.hatim-my-cuz summary::-webkit-details-marker {
+    display: none;
+}
+
+.hatim-my-cuz-content {
+    padding: 0 20px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.hatim-cuz-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 2px solid #10b981;
+    border-radius: 10px;
+    padding: 8px 10px 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.hatim-cuz-badge.reading {
+    border-color: #f59e0b;
+}
+
+.hatim-cuz-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+/* ===== GRID DE SELECTION CUZ ===== */
+.hatim-grid-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.hatim-grid-section summary {
+    cursor: pointer;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    font-weight: 600;
+    color: #334155;
+    font-size: 14px;
+    background: #f8fafc;
+}
+
+.hatim-grid-section summary::-webkit-details-marker {
+    display: none;
+}
+
+.hatim-grid-content {
+    padding: 20px;
+}
+
+.hatim-cuz-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.hatim-cuz-grid.cevsen {
+    grid-template-columns: repeat(10, 1fr);
+}
+
+@media (max-width: 480px) {
+    .hatim-cuz-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+    }
+
+    .hatim-cuz-grid.cevsen {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.hatim-cuz-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.hatim-cuz-cell.available {
+    background: white;
+    border: 2px dashed #cbd5e1;
+}
+
+.hatim-cuz-cell.available:hover,
+.hatim-cuz-cell.available:focus {
+    border-color: #667eea;
+    background: #eef2ff;
+    border-style: solid;
+    transform: scale(1.05);
+}
+
+.hatim-cuz-cell.taken {
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    cursor: default;
+}
+
+.hatim-cuz-cell.completed {
+    background: #dcfce7;
+    border: 2px solid #10b981;
+    cursor: default;
+}
+
+.hatim-cuz-cell.mine {
+    background: #dbeafe;
+    border: 2px solid #3b82f6;
+}
+
+.hatim-cuz-number {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.hatim-cuz-name {
+    color: #64748b;
+    font-size: 9px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 2px;
+}
+
+/* ===== LEGEND ===== */
+.hatim-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.hatim-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hatim-legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+}
+
+.hatim-legend-color.available {
+    background: white;
+    border: 2px dashed #cbd5e1;
+}
+
+.hatim-legend-color.taken {
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+}
+
+.hatim-legend-color.completed {
+    background: #dcfce7;
+    border: 2px solid #10b981;
+}
+
+.hatim-legend-color.mine {
+    background: #dbeafe;
+    border: 2px solid #3b82f6;
+}
+
+/* ===== ACTIONS ===== */
+.hatim-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.hatim-btn {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.hatim-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.hatim-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.hatim-btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.hatim-btn-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.hatim-btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.hatim-btn-secondary:hover {
+    background: #e2e8f0;
+}
+
+.hatim-btn-multi {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    color: white;
+    margin-top: 16px;
+}
+
+.hatim-btn-multi:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+/* ===== JOIN SECTION ===== */
+.hatim-join-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hatim-join-title {
+    margin: 0 0 16px;
+    color: #334155;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hatim-join-form {
+    display: flex;
+    gap: 10px;
+}
+
+.hatim-join-input {
+    flex: 1;
+    padding: 14px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: border-color 0.2s ease;
+}
+
+.hatim-join-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.hatim-join-btn {
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.hatim-join-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ===== PREVIOUS ROUNDS ===== */
+.hatim-previous-rounds {
+    background: #fefce8;
+    border: 1px solid #fde047;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.hatim-previous-rounds summary {
+    cursor: pointer;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    font-weight: 600;
+    color: #854d0e;
+    font-size: 14px;
+}
+
+.hatim-previous-rounds summary::-webkit-details-marker {
+    display: none;
+}
+
+.hatim-round-item {
+    margin-bottom: 16px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #fde047;
+}
+
+.hatim-round-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.hatim-round-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+}
+
+.hatim-round-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dcfce7;
+    border: 1px solid #10b981;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* ===== DETAILS ARROW ANIMATION ===== */
+details[open] > summary .details-arrow {
+    transform: rotate(90deg);
+}
+
+.details-arrow {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 768px) {
+    .hatim-section {
+        padding: 0 24px;
+    }
+
+    .hatim-participation-view {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    /* Two columns for larger screens */
+    @media (min-width: 1024px) {
+        .hatim-two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .hatim-section {
+        padding: 0 8px;
+    }
+
+    .hatim-card,
+    .hatim-card-header,
+    .hatim-progress,
+    .hatim-join-section {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .hatim-nav-btn {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+
+    .hatim-join-form {
+        flex-direction: column;
+    }
+
+    .hatim-join-btn {
+        width: 100%;
+    }
+}
+
+/* ===== CREATE/SHOW HATIM BUTTONS ===== */
+.hatim-create-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.hatim-create-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.2s ease;
+}
+
+.hatim-create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.hatim-create-btn svg {
+    flex-shrink: 0;
+}
+
+/* ===== EMPTY STATE ===== */
+.hatim-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+}
+
+.hatim-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.hatim-empty-text {
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.hatim-empty-hint {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+/* ===== SECTION PRINCIPALE KURAN/CEVSEN/DUA ===== */
+.hatim-main-view {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ===== CREATE HATIM CARD ===== */
+.hatim-create-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.hatim-create-card.kuran {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.hatim-create-card.cevsen {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%);
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+.hatim-create-card.dua {
+    background: #f0f9ff;
+    border-color: #bae6fd;
+}
+
+.hatim-create-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.hatim-create-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+}
+
+.hatim-create-icon.kuran {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.hatim-create-icon.cevsen {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.hatim-create-icon.dua {
+    background: #0369a1;
+}
+
+.hatim-create-title {
+    margin: 0 0 4px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.hatim-create-subtitle {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.hatim-create-action {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.hatim-create-action.kuran {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.hatim-create-action.cevsen {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.hatim-create-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== REFERENCE TABLES (CÜZ/BAB LIST) ===== */
+.hatim-reference-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.hatim-reference-card summary {
+    cursor: pointer;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    font-weight: 600;
+    color: #334155;
+    font-size: 14px;
+    background: #f8fafc;
+    transition: background 0.2s ease;
+}
+
+.hatim-reference-card summary:hover {
+    background: #f1f5f9;
+}
+
+.hatim-reference-card summary::-webkit-details-marker {
+    display: none;
+}
+
+.hatim-reference-content {
+    padding: 16px 20px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.hatim-cuz-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.hatim-cuz-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.hatim-cuz-table th {
+    padding: 10px 12px;
+    text-align: center;
+    font-weight: 600;
+    color: #334155;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.hatim-cuz-table th:last-child {
+    text-align: left;
+}
+
+.hatim-cuz-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.hatim-cuz-table td:first-child {
+    text-align: center;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.hatim-cuz-table td:nth-child(2) {
+    text-align: center;
+    color: #64748b;
+}
+
+.hatim-cuz-table td:last-child {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.hatim-cuz-table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.05);
+}
+
+/* ===== BAB GRID (CEVSEN REFERENCE) ===== */
+.hatim-bab-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+}
+
+@media (max-width: 480px) {
+    .hatim-bab-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.hatim-bab-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #92400e;
+    transition: all 0.2s ease;
+}
+
+.hatim-bab-cell:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+/* ===== MESSAGE/ALERT STYLES ===== */
+.hatim-message {
+    padding: 16px 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.hatim-message.error {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.hatim-message.info {
+    background: #f8fafc;
+    color: #64748b;
+}

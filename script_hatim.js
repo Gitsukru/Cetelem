@@ -172,19 +172,19 @@ const HatimManager = {
         container.style.display = 'block';
 
         let html = `
-            <details open style="max-width: 500px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px;">
-                <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #334155; font-size: 14px;">
-                    <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+            <details open class="hatim-my-list">
+                <summary>
+                    <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                     <span>📚</span> Katıldığım Hatimler (${myHatims.length})
                     <button onclick="event.stopPropagation(); HatimManager.showManageHatimsModal()"
-                            style="margin-left: auto; padding: 4px 8px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 11px; cursor: pointer; color: #64748b;"
+                            style="margin-left: auto; padding: 6px 12px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; cursor: pointer; color: #64748b;"
                             title="Hatimleri Yönet">
                         ⚙️ Yönet
                     </button>
                 </summary>
-                <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 8px;">
+                <div class="hatim-my-list-content">
         `;
 
         myHatims.slice(0, 5).forEach(h => {
@@ -193,19 +193,15 @@ const HatimManager = {
             const roleLabel = h.isCreator ? '👑 Oluşturan' : '👤 Katılımcı';
             const safeHCode = this.safeCode(h.code);
             html += `
-                <div onclick="HatimManager.openHatim('${safeHCode}')"
+                <div class="hatim-my-item"
+                     onclick="HatimManager.openHatim('${safeHCode}')"
                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.openHatim('${safeHCode}');}"
-                     tabindex="0" role="button" aria-label="${typeLabel} - Kod: ${safeHCode}"
-                     style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; outline: none;"
-                     onmouseover="this.style.borderColor='#667eea'; this.style.background='#eef2ff';"
-                     onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc';"
-                     onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102,126,234,0.3)';"
-                     onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 20px;">${icon}</span>
+                     tabindex="0" role="button" aria-label="${typeLabel} - Kod: ${safeHCode}">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 24px;">${icon}</span>
                         <div>
-                            <div style="font-weight: 600; color: #1e293b; font-size: 14px;">${typeLabel}</div>
-                            <div style="font-size: 11px; color: #64748b;">${roleLabel} • Kod: ${safeHCode}</div>
+                            <div style="font-weight: 600; color: #1e293b; font-size: 15px;">${typeLabel}</div>
+                            <div style="font-size: 12px; color: #64748b;">${roleLabel} • Kod: ${safeHCode}</div>
                         </div>
                     </div>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
@@ -831,22 +827,20 @@ Linke tıklayın ve uygulamayı yükleyin
             return String(id).replace(/[^a-f0-9-]/gi, '').substring(0, 36);
         };
 
-        // Card style
-        const cardStyle = 'background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px;';
-        const cardTitleStyle = 'margin: 0 0 12px; font-size: 14px; font-weight: 600; color: #334155; display: flex; align-items: center; gap: 8px;';
+        // Card style - now using CSS classes from hatim.css
+        const cardClass = 'hatim-card';
 
         let html = `
-            <div class="hatim-participation-view" style="max-width: 500px;">
+            <div class="hatim-participation-view">
 
                 <!-- CARD 1: Hatim Info -->
-                <div style="${cardStyle} background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                <div class="hatim-card-header">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
                         <div>
                             <h3 style="margin: 0 0 4px; font-size: 18px; font-weight: 600;">📖 ${typeLabel}</h3>
                             <p style="margin: 0; opacity: 0.9; font-size: 13px;">Kod: <strong style="letter-spacing: 2px; font-size: 15px;">${hatim.code}</strong></p>
                         </div>
-                        <button onclick="HatimManager.backToList()"
-                                style="padding: 6px 12px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                        <button onclick="HatimManager.backToList()" class="hatim-btn hatim-btn-secondary" style="padding: 8px 14px;">
                             ← Geri
                         </button>
                     </div>
@@ -870,12 +864,12 @@ Linke tıklayın ve uygulamayı yükleyin
                 </div>
 
                 <!-- CARD 2: Progress -->
-                <div style="${cardStyle}">
-                    <div style="${cardTitleStyle}">
+                <div class="hatim-progress">
+                    <div class="hatim-card-title">
                         <span>📊</span> İlerleme
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                        <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                        <div class="hatim-progress-bar">
                             <div style="width: ${progressPercent}%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s;"></div>
                         </div>
                         <span style="font-weight: 600; color: #334155; font-size: 14px;">${progressPercent}%</span>
@@ -902,30 +896,26 @@ Linke tıklayın ve uygulamayı yükleyin
 
                 <!-- CARD 3: My Cüz (if any) - Collapsible -->
                 ${myParticipations.length > 0 ? `
-                <details open style="${cardStyle} background: #f0fdf4; border-color: #bbf7d0; padding: 0;">
-                    <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #166534; font-size: 14px;">
-                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                <details open class="hatim-my-cuz">
+                    <summary>
+                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                         <span>🙋</span> Benim ${unitLabel}lerim (${myParticipations.length})
                         <span style="font-weight: 400; font-size: 11px; color: #64748b; margin-left: auto;">Tıkla → Değiştir</span>
                     </summary>
-                    <div style="padding: 0 16px 16px; display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="hatim-my-cuz-content">
                         ${myParticipations.map(p => `
-                            <div style="display: flex; align-items: center; gap: 4px; background: white; border: 2px solid ${p.is_completed ? '#10b981' : '#f59e0b'}; border-radius: 8px; padding: 6px 8px 6px 12px; transition: all 0.2s;">
+                            <div class="hatim-cuz-badge ${p.is_completed ? '' : 'reading'}">
                                 <div onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${parseInt(p.unit_number) || 0})"
                                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${parseInt(p.unit_number) || 0});}"
                                      tabindex="0" role="button" aria-label="${unitLabel} ${parseInt(p.unit_number) || 0} - ${p.is_completed ? 'Okundu' : 'Okuyor'}"
-                                     style="display: flex; align-items: center; gap: 6px; cursor: pointer; flex: 1; outline: none; border-radius: 4px;"
-                                     onmouseover="this.parentElement.style.background='${p.is_completed ? '#dcfce7' : '#fef3c7'}';"
-                                     onmouseout="this.parentElement.style.background='white';"
-                                     onfocus="this.parentElement.style.boxShadow='0 0 0 3px rgba(102,126,234,0.3)';"
-                                     onblur="this.parentElement.style.boxShadow='none';">
+                                     style="display: flex; align-items: center; gap: 6px; cursor: pointer; flex: 1; outline: none; border-radius: 4px;">
                                     <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${parseInt(p.unit_number) || 0}</span>
                                     <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
                                 </div>
                                 <button onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(p.id)}', ${parseInt(p.unit_number) || 0})"
-                                        style="width: 24px; height: 24px; border: none; background: #fee2e2; color: #dc2626; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;"
+                                        style="width: 26px; height: 26px; border: none; background: #fee2e2; color: #dc2626; border-radius: 6px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;"
                                         title="Vazgeç">✕</button>
                             </div>
                         `).join('')}
@@ -935,24 +925,24 @@ Linke tıklayın ve uygulamayı yükleyin
 
                 <!-- CARD 3b: Previous Rounds History -->
                 ${hatim.current_round > 1 ? `
-                <details style="${cardStyle} background: #fefce8; border-color: #fde047; padding: 0;">
-                    <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #854d0e; font-size: 14px;">
-                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                <details class="hatim-previous-rounds">
+                    <summary>
+                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                         <span>🏆</span> Önceki Turlar (${hatim.current_round - 1} tamamlandı)
                         <span style="font-weight: 400; font-size: 11px; color: #a16207; margin-left: auto;">Tıkla → Göster</span>
                     </summary>
-                    <div id="previousRoundsContainer" style="padding: 0 16px 16px;">
+                    <div id="previousRoundsContainer" style="padding: 16px;">
                         <p style="color: #854d0e; font-size: 13px; margin: 0;">Yükleniyor...</p>
                     </div>
                 </details>
                 ` : ''}
 
                 <!-- CARD 4: Actions -->
-                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <div class="hatim-actions">
                     <button onclick="HatimManager.shareVia('${safeCode(hatim.code)}', '${hatim.type === 'cevsen' ? 'cevsen' : 'kuran'}')"
-                            style="flex: 1; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            class="hatim-btn hatim-btn-success">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="18" cy="5" r="3"></circle>
                             <circle cx="6" cy="12" r="3"></circle>
@@ -965,15 +955,15 @@ Linke tıklayın ve uygulamayı yükleyin
                 </div>
 
                 <!-- CARD 5: Cüz Selection Grid - Collapsible -->
-                <details open style="${cardStyle} padding: 0;">
-                    <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #334155; font-size: 14px;">
-                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                <details open class="hatim-grid-section">
+                    <summary>
+                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                         <span>📋</span> ${unitLabel} Seç <span style="font-weight: 400; color: #64748b; font-size: 12px;">(${available} müsait)</span>
                     </summary>
-                    <div style="padding: 0 16px 16px;">
-                        <div style="display: grid; grid-template-columns: repeat(${isKuran ? 6 : 10}, 1fr); gap: 6px;">
+                    <div class="hatim-grid-content">
+                        <div class="hatim-cuz-grid ${isKuran ? '' : 'cevsen'}">
         `;
 
         // Render units as numbered grid
@@ -983,12 +973,11 @@ Linke tıklayın ve uygulamayı yükleyin
 
             if (participation) {
                 // Taken - show with name
-                const bgColor = isMine ? '#dbeafe' : (participation.is_completed ? '#dcfce7' : '#fef3c7');
-                const borderColor = isMine ? '#3b82f6' : (participation.is_completed ? '#10b981' : '#f59e0b');
+                const cellClass = isMine ? 'mine' : (participation.is_completed ? 'completed' : 'taken');
                 html += `
-                    <div style="aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: ${bgColor}; border: 2px solid ${borderColor}; border-radius: 8px; font-size: 11px; position: relative;" title="${escapeHtml(participation.participant_name)}">
-                        <span style="font-weight: 700; font-size: 14px; color: #1e293b;">${i}</span>
-                        <span style="color: #64748b; font-size: 9px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px;">${escapeHtml(participation.participant_name).substring(0, 6)}</span>
+                    <div class="hatim-cuz-cell ${cellClass}" title="${escapeHtml(participation.participant_name)}">
+                        <span class="hatim-cuz-number">${i}</span>
+                        <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 6)}</span>
                         ${isMine ? '<span style="position: absolute; top: 2px; right: 2px; font-size: 8px;">🙋</span>' : ''}
                     </div>
                 `;
@@ -996,21 +985,17 @@ Linke tıklayın ve uygulamayı yükleyin
                 // Available - clickable (unless deadline passed)
                 if (deadlineStatus === 'passed') {
                     html += `
-                        <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 8px; opacity: 0.6; cursor: not-allowed;">
-                            <span style="font-weight: 700; font-size: 14px; color: #94a3b8;">${i}</span>
+                        <div class="hatim-cuz-cell" style="opacity: 0.6; cursor: not-allowed; border-style: dashed;">
+                            <span class="hatim-cuz-number" style="color: #94a3b8;">${i}</span>
                         </div>
                     `;
                 } else {
                     html += `
-                        <div onclick="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}')"
+                        <div class="hatim-cuz-cell available"
+                             onclick="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}')"
                              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}');}"
-                             tabindex="0" role="button" aria-label="${unitLabel} ${i} seç"
-                             style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: white; border: 2px dashed #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s; outline: none;"
-                             onmouseover="this.style.borderColor='#667eea'; this.style.background='#eef2ff'; this.style.borderStyle='solid';"
-                             onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='white'; this.style.borderStyle='dashed';"
-                             onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 2px rgba(102,126,234,0.4)'; this.style.borderStyle='solid';"
-                             onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none'; this.style.borderStyle='dashed';">
-                            <span style="font-weight: 700; font-size: 14px; color: #667eea;">${i}</span>
+                             tabindex="0" role="button" aria-label="${unitLabel} ${i} seç">
+                            <span class="hatim-cuz-number" style="color: #667eea;">${i}</span>
                         </div>
                     `;
                 }
@@ -1019,15 +1004,15 @@ Linke tıklayın ve uygulamayı yükleyin
 
         html += `
                         </div>
-                        <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #64748b;">
-                            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: white; border: 2px dashed #cbd5e1; border-radius: 3px;"></span> Müsait</span>
-                            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #fef3c7; border: 2px solid #f59e0b; border-radius: 3px;"></span> Alındı</span>
-                            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dcfce7; border: 2px solid #10b981; border-radius: 3px;"></span> Tamamlandı</span>
-                            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #dbeafe; border: 2px solid #3b82f6; border-radius: 3px;"></span> Benim</span>
+                        <div class="hatim-legend">
+                            <span class="hatim-legend-item"><span class="hatim-legend-color available"></span> Müsait</span>
+                            <span class="hatim-legend-item"><span class="hatim-legend-color taken"></span> Alındı</span>
+                            <span class="hatim-legend-item"><span class="hatim-legend-color completed"></span> Tamamlandı</span>
+                            <span class="hatim-legend-item"><span class="hatim-legend-color mine"></span> Benim</span>
                         </div>
                         ${available > 1 && deadlineStatus !== 'passed' ? `
                         <button onclick="HatimManager.showMultiClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${totalUnits}, '${unitLabel}')"
-                                style="margin-top: 12px; width: 100%; padding: 10px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                class="hatim-btn hatim-btn-multi" style="width: 100%;">
                             <span>☑️</span> Çoklu Seçim (${available} müsait)
                         </button>
                         ` : ''}
@@ -1561,23 +1546,20 @@ Linke tıklayın ve uygulamayı yükleyin
     // ========================================
 
     renderKuranHatim(container) {
-        const cardStyle = 'background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px;';
-
         let html = `
-            <div style="max-width: 500px;">
+            <div class="hatim-main-view">
                 <!-- Card: Create New Hatim -->
-                <div style="${cardStyle}">
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 24px;">📖</span>
+                <div class="hatim-create-card kuran">
+                    <div class="hatim-create-card-header">
+                        <div class="hatim-create-icon kuran">
+                            <span>📖</span>
                         </div>
                         <div>
-                            <h3 style="margin: 0 0 4px; font-size: 16px; color: #1e293b;">Kur'an Hatmi Paylaş</h3>
-                            <p style="margin: 0; font-size: 13px; color: #64748b;">30 cüz'ü paylaşarak birlikte hatim yapın</p>
+                            <h3 class="hatim-create-title">Kur'an Hatmi Paylaş</h3>
+                            <p class="hatim-create-subtitle">30 cüz'ü paylaşarak birlikte hatim yapın</p>
                         </div>
                     </div>
-                    <button onclick="HatimManager.showCreateModal('kuran')"
-                            style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <button onclick="HatimManager.showCreateModal('kuran')" class="hatim-create-action kuran">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -1587,31 +1569,31 @@ Linke tıklayın ve uygulamayı yükleyin
                 </div>
 
                 <!-- Card: Cüz Reference (collapsible) -->
-                <details style="${cardStyle} padding: 0;">
-                    <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #334155;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                <details class="hatim-reference-card">
+                    <summary>
+                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                         📚 30 Cüz Listesi (Referans)
                     </summary>
-                    <div style="padding: 0 16px 16px; max-height: 300px; overflow-y: auto;">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                    <div class="hatim-reference-content">
+                        <table class="hatim-cuz-table">
                             <thead>
-                                <tr style="background: #f1f5f9; position: sticky; top: 0;">
-                                    <th style="padding: 8px; text-align: center; font-weight: 600;">Cüz</th>
-                                    <th style="padding: 8px; text-align: center; font-weight: 600;">Sayfa</th>
-                                    <th style="padding: 8px; text-align: left;">İçerik</th>
+                                <tr>
+                                    <th>Cüz</th>
+                                    <th>Sayfa</th>
+                                    <th>İçerik</th>
                                 </tr>
                             </thead>
                             <tbody>
         `;
 
-        KURAN_CUZLER.forEach((cuz, index) => {
+        KURAN_CUZLER.forEach((cuz) => {
             html += `
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 6px 8px; text-align: center; font-weight: 600; color: #667eea;">${cuz.cuz}</td>
-                    <td style="padding: 6px 8px; text-align: center; color: #64748b;">${cuz.sayfa}</td>
-                    <td style="padding: 6px 8px; color: #64748b; font-size: 11px;">${cuz.icerik}</td>
+                <tr>
+                    <td>${cuz.cuz}</td>
+                    <td>${cuz.sayfa}</td>
+                    <td>${cuz.icerik}</td>
                 </tr>
             `;
         });
@@ -1637,18 +1619,16 @@ Linke tıklayın ve uygulamayı yükleyin
     // ========================================
 
     renderDua(container) {
-        const cardStyle = 'background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px;';
-
         let html = `
-            <div style="max-width: 500px;">
-                <div style="${cardStyle} background: #f0f9ff; border-color: #bae6fd;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 48px; height: 48px; background: #0369a1; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 24px;">🤲</span>
+            <div class="hatim-main-view">
+                <div class="hatim-create-card dua">
+                    <div class="hatim-create-card-header">
+                        <div class="hatim-create-icon dua">
+                            <span>🤲</span>
                         </div>
                         <div>
-                            <h3 style="margin: 0 0 4px; font-size: 16px; color: #0369a1;">Dua Paylaşımı</h3>
-                            <p style="margin: 0; font-size: 13px; color: #64748b;">Yakında eklenecek...</p>
+                            <h3 class="hatim-create-title" style="color: #0369a1;">Dua Paylaşımı</h3>
+                            <p class="hatim-create-subtitle">Yakında eklenecek...</p>
                         </div>
                     </div>
                 </div>
@@ -1663,23 +1643,20 @@ Linke tıklayın ve uygulamayı yükleyin
     // ========================================
 
     renderCevsenHatim(container) {
-        const cardStyle = 'background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px;';
-
         let html = `
-            <div style="max-width: 500px;">
+            <div class="hatim-main-view">
                 <!-- Card: Create Cevsen Hatim -->
-                <div style="${cardStyle}">
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 24px;">🌙</span>
+                <div class="hatim-create-card cevsen">
+                    <div class="hatim-create-card-header">
+                        <div class="hatim-create-icon cevsen">
+                            <span>🌙</span>
                         </div>
                         <div>
-                            <h3 style="margin: 0 0 4px; font-size: 16px; color: #1e293b;">Cevşen Hatmi Paylaş</h3>
-                            <p style="margin: 0; font-size: 13px; color: #64748b;">100 bab'ı paylaşarak birlikte okuyun</p>
+                            <h3 class="hatim-create-title">Cevşen Hatmi Paylaş</h3>
+                            <p class="hatim-create-subtitle">100 bab'ı paylaşarak birlikte okuyun</p>
                         </div>
                     </div>
-                    <button onclick="HatimManager.showCreateModal('cevsen')"
-                            style="width: 100%; padding: 12px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <button onclick="HatimManager.showCreateModal('cevsen')" class="hatim-create-action cevsen">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -1689,23 +1666,19 @@ Linke tıklayın ve uygulamayı yükleyin
                 </div>
 
                 <!-- Card: 100 Bab Reference (collapsible) -->
-                <details style="${cardStyle} padding: 0;">
-                    <summary style="cursor: pointer; padding: 16px; display: flex; align-items: center; gap: 8px; list-style: none; font-weight: 600; color: #334155;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <details class="hatim-reference-card">
+                    <summary>
+                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                         📜 100 Bab Listesi (Referans)
                     </summary>
-                    <div style="padding: 0 16px 16px;">
-                        <div style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px;">
+                    <div class="hatim-reference-content">
+                        <div class="hatim-bab-grid">
         `;
 
         for (let i = 1; i <= 100; i++) {
-            html += `
-                <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 4px; font-size: 11px; font-weight: 600; color: #92400e;">
-                    ${i}
-                </div>
-            `;
+            html += `<div class="hatim-bab-cell">${i}</div>`;
         }
 
         html += `
