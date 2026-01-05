@@ -254,6 +254,67 @@ class HatimProvider {
     }
 
     /**
+     * Supprimer un Hatim completement (Supabase + local)
+     * Seul le createur peut supprimer
+     * @param {string} hatimId - ID du hatim
+     * @param {string} code - Code du hatim
+     * @returns {Promise<boolean>}
+     */
+    async deleteHatim(hatimId, code) {
+        const deviceId = this.getDeviceId();
+
+        // D'abord supprimer toutes les participations
+        const { error: partError } = await this.supabase
+            .from('hatim_participations')
+            .delete()
+            .eq('hatim_id', hatimId);
+
+        if (partError) {
+            console.error('Erreur suppression participations:', partError);
+            // Continuer quand meme pour supprimer le hatim
+        }
+
+        // Ensuite supprimer le hatim (seulement si createur)
+        const { error: hatimError } = await this.supabase
+            .from('hatims')
+            .delete()
+            .eq('id', hatimId)
+            .eq('created_by_device', deviceId);
+
+        if (hatimError) {
+            console.error('Erreur suppression hatim:', hatimError);
+            throw new Error('Hatim silinemedi. Sadece olusturan silebilir.');
+        }
+
+        // Supprimer localement aussi
+        this.removeHatimLocally(code);
+
+        console.log('Hatim supprime:', code);
+        return true;
+    }
+
+    /**
+     * Obtenir tous les hatims crees par ce device (depuis Supabase)
+     * @returns {Promise<Array>}
+     */
+    async getMyCreatedHatims() {
+        const deviceId = this.getDeviceId();
+
+        const { data, error } = await this.supabase
+            .from('hatims')
+            .select('*')
+            .eq('created_by_device', deviceId)
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Erreur get my created hatims:', error);
+            return [];
+        }
+
+        return data || [];
+    }
+
+    /**
      * S'abonner aux mises a jour temps reel d'un Hatim
      * @param {string} hatimId - ID du hatim
      * @param {Function} callback - Callback pour les mises a jour

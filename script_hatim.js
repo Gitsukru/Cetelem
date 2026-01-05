@@ -159,6 +159,11 @@ const HatimManager = {
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                     <span>📚</span> Katıldığım Hatimler (${myHatims.length})
+                    <button onclick="event.stopPropagation(); HatimManager.showManageHatimsModal()"
+                            style="margin-left: auto; padding: 4px 8px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 11px; cursor: pointer; color: #64748b;"
+                            title="Hatimleri Yönet">
+                        ⚙️ Yönet
+                    </button>
                 </summary>
                 <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 8px;">
         `;
@@ -197,6 +202,144 @@ const HatimManager = {
         `;
 
         container.innerHTML = html;
+    },
+
+    // ========================================
+    // HATIM MANAGEMENT MODAL
+    // ========================================
+
+    async showManageHatimsModal() {
+        if (!this.provider) {
+            showCustomAlert('Bağlantı hatası', 'error', 2500);
+            return;
+        }
+
+        const localHatims = this.provider.getMyHatims();
+        let createdHatims = [];
+
+        try {
+            createdHatims = await this.provider.getMyCreatedHatims();
+        } catch (error) {
+            console.error('Error fetching created hatims:', error);
+        }
+
+        // Merge: show all from Supabase + local ones not in Supabase
+        const allHatims = [...createdHatims];
+        localHatims.forEach(local => {
+            if (!allHatims.find(h => h.code === local.code)) {
+                allHatims.push({ ...local, localOnly: true });
+            }
+        });
+
+        let listHtml = '';
+        if (allHatims.length === 0) {
+            listHtml = '<p style="color: #64748b; text-align: center; padding: 20px;">Henüz hatim bulunmuyor.</p>';
+        } else {
+            allHatims.forEach(h => {
+                const typeLabel = h.type === 'kuran' ? "Kur'an Hatmi" : 'Cevşen Hatmi';
+                const icon = h.type === 'kuran' ? '📖' : '🌙';
+                const isCreator = h.created_by_device || h.isCreator;
+                const safeHCode = this.safeCode(h.code);
+                const safeHId = this.safeId(h.id);
+
+                listHtml += `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 20px;">${icon}</span>
+                            <div>
+                                <div style="font-weight: 600; color: #1e293b; font-size: 14px;">${typeLabel}</div>
+                                <div style="font-size: 11px; color: #64748b;">
+                                    Kod: ${safeHCode}
+                                    ${h.description ? ` • ${this.escapeHtml(h.description).substring(0, 30)}...` : ''}
+                                </div>
+                                ${h.localOnly ? '<span style="font-size: 10px; color: #f59e0b;">⚠️ Sadece yerel</span>' : ''}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 6px;">
+                            ${isCreator ? `
+                                <button onclick="HatimManager.confirmDeleteHatim('${safeHId}', '${safeHCode}')"
+                                        style="padding: 6px 10px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                    🗑️ Sil
+                                </button>
+                            ` : `
+                                <button onclick="HatimManager.removeFromLocal('${safeHCode}')"
+                                        style="padding: 6px 10px; background: #f1f5f9; color: #64748b; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                    ✕ Listeden Çıkar
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        const html = `
+            <div class="custom-modal-overlay" id="manageHatimsModal" onclick="if(event.target===this) this.remove()">
+                <div class="custom-modal modern-modal" style="max-width: 500px;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">⚙️</span>
+                            Hatim Yönetimi
+                        </h3>
+                    </div>
+                    <div class="modal-body" style="padding: 20px; max-height: 60vh; overflow-y: auto;">
+                        <p style="color: #64748b; margin-bottom: 16px; font-size: 13px;">
+                            Oluşturduğunuz hatimleri silebilir veya katıldığınız hatimleri listeden çıkarabilirsiniz.
+                        </p>
+                        ${listHtml}
+                    </div>
+                    <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end;">
+                        <button onclick="document.getElementById('manageHatimsModal').remove()"
+                                style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            Kapat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', html);
+    },
+
+    confirmDeleteHatim(hatimId, code) {
+        if (!confirm(`"${code}" kodlu hatimi silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz ve tüm katılımcıların verileri silinecektir.`)) {
+            return;
+        }
+
+        this.deleteHatim(hatimId, code);
+    },
+
+    async deleteHatim(hatimId, code) {
+        if (!this.provider) {
+            showCustomAlert('Bağlantı hatası', 'error', 2500);
+            return;
+        }
+
+        try {
+            showCustomAlert('Hatim siliniyor...', 'info', 1500);
+            await this.provider.deleteHatim(hatimId, code);
+            showCustomAlert('Hatim başarıyla silindi!', 'success', 2000);
+
+            // Refresh modal and list
+            document.getElementById('manageHatimsModal')?.remove();
+            this.showManageHatimsModal();
+            this.renderMyHatimsList();
+        } catch (error) {
+            console.error('Delete hatim error:', error);
+            showCustomAlert(error.message || 'Hatim silinemedi', 'error', 3000);
+        }
+    },
+
+    removeFromLocal(code) {
+        if (!this.provider) return;
+
+        this.provider.removeHatimLocally(code);
+        showCustomAlert('Hatim listeden çıkarıldı', 'info', 2000);
+
+        // Refresh modal and list
+        document.getElementById('manageHatimsModal')?.remove();
+        this.showManageHatimsModal();
+        this.renderMyHatimsList();
     },
 
     // ========================================
