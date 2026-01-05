@@ -1048,7 +1048,13 @@ Linke tıklayın ve uygulamayı yükleyin
                         await this.refreshCurrentHatim();
                     } catch (error) {
                         console.error('Mark incomplete error:', error);
-                        showCustomAlert('❌ Durum güncellenemedi. İnternet bağlantınızı kontrol edin.', 'error', 3000);
+                        // If participation not found, refresh automatically
+                        if (error.message === 'Katılım bulunamadı') {
+                            showCustomAlert('⚠️ Katılım bulunamadı. Veriler güncelleniyor...', 'warning', 2500);
+                            await this.refreshCurrentHatim();
+                        } else {
+                            showCustomAlert('❌ Durum güncellenemedi. İnternet bağlantınızı kontrol edin.', 'error', 3000);
+                        }
                     }
                 }
             );
@@ -1064,7 +1070,13 @@ Linke tıklayın ve uygulamayı yükleyin
                         await this.refreshCurrentHatim();
                     } catch (error) {
                         console.error('Mark complete error:', error);
-                        showCustomAlert('❌ Durum güncellenemedi. İnternet bağlantınızı kontrol edin.', 'error', 3000);
+                        // If participation not found, refresh automatically
+                        if (error.message === 'Katılım bulunamadı') {
+                            showCustomAlert('⚠️ Katılım bulunamadı. Veriler güncelleniyor...', 'warning', 2500);
+                            await this.refreshCurrentHatim();
+                        } else {
+                            showCustomAlert('❌ Durum güncellenemedi. İnternet bağlantınızı kontrol edin.', 'error', 3000);
+                        }
                     }
                 }
             );
