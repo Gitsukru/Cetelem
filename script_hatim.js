@@ -233,6 +233,7 @@ const HatimManager = {
             return;
         }
 
+        const myDeviceId = this.provider.getDeviceId();
         const localHatims = this.provider.getMyHatims();
         let createdHatims = [];
 
@@ -241,6 +242,9 @@ const HatimManager = {
         } catch (error) {
             console.error('Error fetching created hatims:', error);
         }
+
+        // Create a set of hatim codes that are confirmed as mine (from Supabase)
+        const myCreatedCodes = new Set(createdHatims.map(h => h.code));
 
         // Merge: show all from Supabase + local ones not in Supabase
         const allHatims = [...createdHatims];
@@ -257,7 +261,8 @@ const HatimManager = {
             allHatims.forEach(h => {
                 const typeLabel = h.type === 'kuran' ? "Kur'an Hatmi" : 'Cevşen Hatmi';
                 const icon = h.type === 'kuran' ? '📖' : '🌙';
-                const isCreator = h.created_by_device || h.isCreator;
+                // Only show delete button if we can confirm ownership via device_id match
+                const isCreator = h.created_by_device === myDeviceId || myCreatedCodes.has(h.code);
                 const safeHCode = this.safeCode(h.code);
                 const safeHId = this.safeId(h.id);
 
