@@ -118,3 +118,10 @@ CREATE POLICY "participations_delete" ON hatim_participations FOR DELETE USING (
 -- Activer Realtime pour les participations ET les hatims (nouveau tour)
 ALTER PUBLICATION supabase_realtime ADD TABLE hatim_participations;
 ALTER PUBLICATION supabase_realtime ADD TABLE hatims;
+
+-- IMPORTANT: Donner les permissions aux roles anon et authenticated
+-- (Les policies RLS ne suffisent pas, il faut aussi les GRANT)
+GRANT SELECT, INSERT, UPDATE, DELETE ON hatims TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON hatims TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON hatim_participations TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON hatim_participations TO authenticated;
