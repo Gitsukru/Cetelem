@@ -4021,14 +4021,21 @@ if ('serviceWorker' in navigator) {
     const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
                   window.navigator.standalone === true;
 
+    // ⚡ FIX iOS: Détecter iOS (iPhone, iPad, iPod)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
     if (isPWA) {
         console.log('📱 Mode PWA standalone détecté - Optimisations MAJ activées');
+        if (isIOS) {
+            console.log('🍎 iOS détecté - Mécanisme MAJ renforcé activé');
+        }
     } else {
         console.log('🌐 Mode navigateur normal');
     }
 
-    // ⚡ FIX PWA: Nettoyer l'URL ?updated= après le chargement pour PWA
-    if (isPWA && window.location.search.includes('updated=')) {
+    // ⚡ FIX PWA: Nettoyer l'URL ?updated= ou ?iosupdate= après le chargement pour PWA
+    if (isPWA && (window.location.search.includes('updated=') || window.location.search.includes('iosupdate='))) {
         console.log('🧹 PWA: Nettoyage URL après MAJ');
         // Attendre 2s puis nettoyer l'URL sans recharger
         setTimeout(() => {
@@ -4048,8 +4055,8 @@ if ('serviceWorker' in navigator) {
             return false;
         }
 
-        // ⚡ FIX CHROME: Vérifier si on vient de mettre à jour via l'URL (sauf PWA)
-        if (!isPWA && window.location.search.includes('updated=')) {
+        // ⚡ FIX CHROME/iOS: Vérifier si on vient de mettre à jour via l'URL (sauf PWA standard)
+        if (!isPWA && (window.location.search.includes('updated=') || window.location.search.includes('iosupdate='))) {
             console.log('⏳ Page rechargée après MAJ, pas de nouvelle vérification');
             return false;
         }
@@ -4132,6 +4139,108 @@ if ('serviceWorker' in navigator) {
                 });
             }
         }, 6000); // 5s délai de grâce + 1s de sécurité
+    }
+
+    // ⚡ FIX iOS: Mécanisme de MAJ renforcé pour iOS (contourne le cache agressif de Safari)
+    if (isPWA && isIOS) {
+        console.log('🍎 iOS PWA: Activation du mécanisme de MAJ renforcé');
+
+        // Fonction pour vérifier la version du SW directement depuis le serveur
+        async function checkIOSUpdate() {
+            if (!canCheckForUpdates()) return;
+
+            try {
+                console.log('🍎 iOS: Vérification version serveur...');
+
+                // Fetch sw.js avec no-cache pour contourner le cache iOS
+                const response = await fetch('./sw.js?nocache=' + Date.now(), {
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache'
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error('🍎 iOS: Erreur fetch sw.js', response.status);
+                    return;
+                }
+
+                const swContent = await response.text();
+
+                // Extraire la version du SW téléchargé
+                const versionMatch = swContent.match(/CACHE_VERSION\s*=\s*['"]([^'"]+)['"]/);
+                if (!versionMatch) {
+                    console.log('🍎 iOS: Version non trouvée dans sw.js');
+                    return;
+                }
+
+                const serverVersion = versionMatch[1];
+                const currentVersion = localStorage.getItem('sw_version_ios') || '';
+
+                console.log(`🍎 iOS: Version serveur=${serverVersion}, locale=${currentVersion || 'non définie'}`);
+
+                // Si c'est la première exécution, juste enregistrer la version sans recharger
+                if (!currentVersion) {
+                    console.log('🍎 iOS: Première exécution - enregistrement version initiale');
+                    localStorage.setItem('sw_version_ios', serverVersion);
+                    return;
+                }
+
+                if (serverVersion !== currentVersion) {
+                    console.log('🍎 iOS: Nouvelle version détectée! Forçage MAJ...');
+
+                    // Sauvegarder la nouvelle version
+                    localStorage.setItem('sw_version_ios', serverVersion);
+
+                    // Forcer la ré-inscription du SW
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        // Désinscrire l'ancien SW
+                        await registration.unregister();
+                        console.log('🍎 iOS: Ancien SW désinscrit');
+
+                        // Vider tous les caches
+                        const cacheNames = await caches.keys();
+                        await Promise.all(cacheNames.map(name => caches.delete(name)));
+                        console.log('🍎 iOS: Caches vidés');
+
+                        // Sauvegarder les données
+                        try {
+                            autoSave();
+                        } catch (e) {
+                            console.error('🍎 iOS: Erreur sauvegarde', e);
+                        }
+
+                        // Afficher notification et recharger
+                        showCustomAlert('🍎 Yeni sürüm yükleniyor...', 'info', 2000);
+
+                        setTimeout(() => {
+                            // Recharger avec cache-busting
+                            window.location.href = window.location.pathname + '?iosupdate=' + Date.now();
+                        }, 1500);
+                    }
+                } else {
+                    console.log('🍎 iOS: App à jour');
+                }
+            } catch (error) {
+                console.error('🍎 iOS: Erreur vérification MAJ:', error);
+            }
+        }
+
+        // Vérifier au démarrage après délai de grâce
+        setTimeout(checkIOSUpdate, 8000);
+
+        // Vérifier quand l'app revient au premier plan (plus fiable que visibilitychange sur iOS)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                console.log('🍎 iOS: App revenue au premier plan');
+                setTimeout(checkIOSUpdate, 3000);
+            }
+        });
+
+        // Vérifier toutes les 10 minutes sur iOS (plus fréquent car moins fiable)
+        setInterval(checkIOSUpdate, 10 * 60 * 1000);
     }
 }
 
