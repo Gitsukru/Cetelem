@@ -92,6 +92,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     padding: 14px 16px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -105,6 +106,11 @@
     border-color: #667eea;
     background: #eef2ff;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+/* Item content overflow handling */
+.hatim-my-item > div:first-child {
+    overflow: hidden;
 }
 
 /* ===== VUE PARTICIPATION (DETAIL HATIM) ===== */

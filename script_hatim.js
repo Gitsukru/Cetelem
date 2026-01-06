@@ -192,19 +192,37 @@ const HatimManager = {
             const icon = h.type === 'kuran' ? '📖' : '🌙';
             const roleLabel = h.isCreator ? '👑 Oluşturan' : '👤 Katılımcı';
             const safeHCode = this.safeCode(h.code);
+            const creatorName = h.creatorName ? this.escapeHtml(h.creatorName) : '';
+            const description = h.description ? this.escapeHtml(h.description).substring(0, 40) : '';
+            const currentRound = h.currentRound || 1;
+
+            // Format deadline
+            let deadlineStr = '';
+            if (h.deadline) {
+                const deadlineDate = new Date(h.deadline);
+                deadlineStr = deadlineDate.toLocaleDateString('tr-TR');
+            }
+
             html += `
                 <div class="hatim-my-item"
                      onclick="HatimManager.openHatim('${safeHCode}')"
                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.openHatim('${safeHCode}');}"
                      tabindex="0" role="button" aria-label="${typeLabel} - Kod: ${safeHCode}">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <span style="font-size: 24px;">${icon}</span>
-                        <div>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                            <span style="font-size: 20px;">${icon}</span>
                             <div style="font-weight: 600; color: #1e293b; font-size: 15px;">${typeLabel}</div>
-                            <div style="font-size: 12px; color: #64748b;">${roleLabel} • Kod: ${safeHCode}</div>
+                        </div>
+                        ${description ? `<div style="font-size: 12px; color: #475569; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${description}</div>` : ''}
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 11px; color: #64748b;">
+                            <span>${roleLabel}</span>
+                            <span>• Kod: <strong>${safeHCode}</strong></span>
+                            ${creatorName ? `<span>• 👤 ${creatorName}</span>` : ''}
+                            ${deadlineStr ? `<span>• 📅 ${deadlineStr}</span>` : ''}
+                            <span>• 🔄 Tur ${currentRound}</span>
                         </div>
                     </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="flex-shrink: 0;">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                 </div>
@@ -466,12 +484,15 @@ const HatimManager = {
                 deadline
             });
 
-            // Save locally
+            // Save locally with full data
             this.provider.saveHatimLocally({
                 id: result.id,
                 code: result.code,
                 type,
                 creatorName,
+                description,
+                deadline,
+                currentRound: 1,
                 isCreator: true
             });
 
@@ -622,11 +643,15 @@ Linke tıklayın ve uygulamayı yükleyin
             const hatim = await this.provider.getHatimByCode(code);
             this.currentHatim = hatim;
 
-            // Save locally
+            // Save locally with full data
             this.provider.saveHatimLocally({
                 id: hatim.id,
                 code: hatim.code,
                 type: hatim.type,
+                creatorName: hatim.creator_name,
+                description: hatim.description,
+                deadline: hatim.deadline,
+                currentRound: hatim.current_round,
                 isCreator: false
             });
 
