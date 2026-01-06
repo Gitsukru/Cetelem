@@ -1,22 +1,287 @@
 /**
  * HATIM - Styles pour l'onglet Hatim/Dua/Cevsen
- * Design moderne, centré et bien structuré
+ * Design moderne avec sidebar et contenu principal
  */
 
-/* ===== SECTION PRINCIPALE ===== */
+/* ===== LAYOUT PRINCIPAL (2 COLONNES) ===== */
+.hatim-layout {
+    display: flex;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 16px;
+    min-height: calc(100vh - 200px);
+}
+
+/* ===== SIDEBAR GAUCHE ===== */
+.hatim-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Navigation verticale Kur'an/Dua/Cevşen */
+.hatim-nav-vertical {
+    display: flex;
+    gap: 6px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.hatim-nav-vertical .hatim-nav-btn {
+    flex: 1;
+    padding: 10px 8px;
+    background: #f8fafc;
+    color: #64748b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.hatim-nav-vertical .hatim-nav-btn:hover {
+    background: #e2e8f0;
+}
+
+.hatim-nav-vertical .hatim-nav-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+/* Actions sidebar (créer/rejoindre) */
+.hatim-sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hatim-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.hatim-action-btn.create {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.hatim-action-btn.create:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.hatim-action-btn.join {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.hatim-action-btn.join:hover {
+    background: #e2e8f0;
+}
+
+/* Input expandable pour rejoindre */
+.hatim-join-expandable {
+    position: relative;
+}
+
+.hatim-join-input-container {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hatim-join-input-container input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hatim-join-input-container input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.hatim-join-input-container button {
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+/* Liste des hatims dans sidebar */
+.hatim-sidebar-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.hatim-sidebar-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    font-size: 13px;
+    color: #334155;
+}
+
+.hatim-sidebar-list-header button {
+    padding: 4px 10px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    color: #64748b;
+}
+
+.hatim-sidebar-list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+}
+
+/* Item hatim enrichi dans sidebar */
+.hatim-sidebar-item {
+    padding: 14px;
+    background: white;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hatim-sidebar-item:last-child {
+    border-bottom: none;
+}
+
+.hatim-sidebar-item:hover {
+    background: #f8fafc;
+}
+
+.hatim-sidebar-item.active {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-left: 3px solid #667eea;
+}
+
+.hatim-sidebar-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.hatim-sidebar-item-icon {
+    font-size: 20px;
+}
+
+.hatim-sidebar-item-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.hatim-sidebar-item-code {
+    font-size: 11px;
+    color: #667eea;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-left: auto;
+}
+
+.hatim-sidebar-item-desc {
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.hatim-sidebar-item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.hatim-sidebar-item-meta span {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+/* ===== CONTENU PRINCIPAL ===== */
+.hatim-main {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .hatim-layout {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .hatim-sidebar {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .hatim-nav-vertical {
+        flex-direction: row;
+    }
+
+    .hatim-sidebar-list {
+        max-height: 300px;
+    }
+}
+
+/* ===== LEGACY - Garder pour compatibilité ===== */
 .hatim-section {
     max-width: 800px;
     margin: 0 auto;
     padding: 0 16px;
 }
 
-/* ===== NAVIGATION HATIM ===== */
 .hatim-nav {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
+    display: none; /* Remplacé par hatim-nav-vertical */
 }
 
 .hatim-nav-btn {
@@ -30,14 +295,6 @@
     font-size: 14px;
     min-height: 44px;
     transition: all 0.3s ease;
-    flex: 1;
-    min-width: 100px;
-    max-width: 200px;
-}
-
-.hatim-nav-btn:hover {
-    background: #e2e8f0;
-    transform: translateY(-1px);
 }
 
 .hatim-nav-btn.active {
@@ -46,9 +303,9 @@
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-/* ===== MES HATIMS LIST ===== */
+/* ===== MES HATIMS LIST (Legacy) ===== */
 #myHatimsList {
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
 .hatim-my-list {

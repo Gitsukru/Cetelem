@@ -164,59 +164,40 @@ const HatimManager = {
         const myHatims = this.provider ? this.provider.getMyHatims() : [];
 
         if (myHatims.length === 0) {
-            container.innerHTML = '';
-            container.style.display = 'none';
+            container.innerHTML = `
+                <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 13px;">
+                    Henüz hatim yok
+                </div>
+            `;
             return;
         }
 
-        container.style.display = 'block';
-
         let html = `
-            <details open class="hatim-my-list">
-                <summary>
-                    <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                    <span>📚</span> Katıldığım Hatimler (${myHatims.length})
-                    <button onclick="event.stopPropagation(); HatimManager.showManageHatimsModal()"
-                            style="margin-left: auto; padding: 6px 12px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; cursor: pointer; color: #64748b;"
-                            title="Hatimleri Yönet">
-                        ⚙️ Yönet
-                    </button>
-                </summary>
-                <div class="hatim-my-list-content">
+            <div class="hatim-sidebar-list-header">
+                <span>📚 Hatimlerim (${myHatims.length})</span>
+                <button onclick="HatimManager.showManageHatimsModal()">⚙️</button>
+            </div>
+            <div class="hatim-sidebar-list-content">
         `;
 
-        myHatims.slice(0, 5).forEach(h => {
-            const typeLabel = h.type === 'kuran' ? "Kur'an Hatmi" : 'Cevşen Hatmi';
+        myHatims.forEach(h => {
             const icon = h.type === 'kuran' ? '📖' : '🌙';
             const roleIcon = h.isCreator ? '👑' : '👤';
             const safeHCode = this.safeCode(h.code);
+            const isActive = this.currentHatim && this.currentHatim.code === h.code;
 
             html += `
-                <div class="hatim-my-item"
-                     onclick="HatimManager.openHatim('${safeHCode}')"
-                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.openHatim('${safeHCode}');}"
-                     tabindex="0" role="button" aria-label="${typeLabel} - Kod: ${safeHCode}">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <span style="font-size: 24px;">${icon}</span>
-                        <div>
-                            <div style="font-weight: 600; color: #1e293b; font-size: 15px;">${typeLabel}</div>
-                            <div style="font-size: 12px; color: #64748b;">${roleIcon} ${safeHCode}</div>
-                        </div>
+                <div class="hatim-sidebar-item ${isActive ? 'active' : ''}"
+                     onclick="HatimManager.openHatim('${safeHCode}')" tabindex="0">
+                    <div class="hatim-sidebar-item-header">
+                        <span class="hatim-sidebar-item-icon">${icon}</span>
+                        <span class="hatim-sidebar-item-code">${roleIcon} ${safeHCode}</span>
                     </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
                 </div>
             `;
         });
 
-        html += `
-                </div>
-            </details>
-        `;
-
+        html += `</div>`;
         container.innerHTML = html;
     },
 
@@ -368,21 +349,23 @@ const HatimManager = {
     // ========================================
 
     showCreateModal(type = 'kuran') {
-        const typeLabel = type === 'kuran' ? "Kur'an Hatmi" : 'Cevsen Hatmi';
+        const typeLabel = type === 'kuran' ? "Kur'an Hatmi" : 'Cevşen Hatmi';
         const totalUnits = type === 'kuran' ? 30 : 100;
-        const unitLabel = type === 'kuran' ? 'Cuz' : 'Bab';
+        const unitLabel = type === 'kuran' ? 'Cüz' : 'Bab';
+        const subtitle = type === 'kuran'
+            ? "30 cüz'ü paylaşarak birlikte hatim yapın"
+            : "100 bab'ı paylaşarak birlikte okuyun";
+        const icon = type === 'kuran' ? '📖' : '🌙';
 
         const html = `
             <div class="custom-modal-overlay" id="createHatimModal" onclick="if(event.target===this) this.remove()">
                 <div class="custom-modal modern-modal" style="max-width: 450px;">
                     <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                            </svg>
-                            ${typeLabel} Olustur
+                        <h3 style="margin: 0 0 6px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">${icon}</span>
+                            ${typeLabel} Oluştur
                         </h3>
+                        <p style="margin: 0; font-size: 13px; opacity: 0.9;">${subtitle}</p>
                     </div>
                     <div class="modal-body" style="padding: 20px;">
                         <div style="margin-bottom: 16px;">
@@ -601,6 +584,21 @@ Linke tıklayın ve uygulamayı yükleyin
     // ========================================
     // REJOINDRE UN HATIM
     // ========================================
+
+    toggleJoinInput() {
+        const container = document.getElementById('hatimJoinInputContainer');
+        if (container) {
+            const isVisible = container.style.display !== 'none';
+            container.style.display = isVisible ? 'none' : 'flex';
+            if (!isVisible) {
+                const input = container.querySelector('input');
+                if (input) {
+                    input.focus();
+                    input.value = '';
+                }
+            }
+        }
+    },
 
     joinByCode() {
         const codeInput = document.getElementById('hatimJoinCode');

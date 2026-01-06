@@ -422,38 +422,54 @@
 
         <!-- Hatim Sekmesi -->
         <div id="hatim" class="tab-content">
-            <div class="hatim-section">
-                <!-- Navigation compacte -->
-                <div class="hatim-nav" style="display: flex; gap: 8px; margin-bottom: 16px;">
-                    <button class="hatim-nav-btn active" data-view="kuran" onclick="HatimManager.showView('kuran')" style="padding: 14px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; min-height: 44px;">
-                        Kur'an
-                    </button>
-                    <button class="hatim-nav-btn" data-view="dua" onclick="HatimManager.showView('dua')" style="padding: 14px 20px; background: #f1f5f9; color: #334155; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; min-height: 44px;">
-                        Dua
-                    </button>
-                    <button class="hatim-nav-btn" data-view="cevsen" onclick="HatimManager.showView('cevsen')" style="padding: 14px 20px; background: #f1f5f9; color: #334155; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; min-height: 44px;">
-                        Cevşen
-                    </button>
-                </div>
-
-                <!-- Mes Hatims actifs -->
-                <div id="myHatimsList" style="display: none;"></div>
-
-                <!-- Contenu dynamique -->
-                <div id="hatimContent"></div>
-
-                <!-- Card: Join by Code -->
-                <div class="hatim-join-section">
-                    <h4 class="hatim-join-title">
-                        <span>🔗</span> Kod ile Hatime Katıl
-                    </h4>
-                    <div class="hatim-join-form">
-                        <input type="text" id="hatimJoinCode" class="hatim-join-input"
-                               placeholder="8 haneli kodu girin" maxlength="8">
-                        <button onclick="HatimManager.joinByCode()" class="hatim-join-btn">
-                            Katıl
+            <div class="hatim-layout">
+                <!-- SIDEBAR GAUCHE -->
+                <div class="hatim-sidebar">
+                    <!-- Navigation Kur'an / Dua / Cevşen -->
+                    <div class="hatim-nav-vertical">
+                        <button class="hatim-nav-btn active" data-view="kuran" onclick="HatimManager.showView('kuran')">
+                            📖 Kur'an
+                        </button>
+                        <button class="hatim-nav-btn" data-view="dua" onclick="HatimManager.showView('dua')">
+                            🤲 Dua
+                        </button>
+                        <button class="hatim-nav-btn" data-view="cevsen" onclick="HatimManager.showView('cevsen')">
+                            🌙 Cevşen
                         </button>
                     </div>
+
+                    <!-- Actions: Créer / Rejoindre -->
+                    <div class="hatim-sidebar-actions">
+                        <button class="hatim-action-btn create" onclick="HatimManager.showCreateModal('kuran')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Yeni Hatim Oluştur
+                        </button>
+                        <div class="hatim-join-expandable">
+                            <button class="hatim-action-btn join" onclick="HatimManager.toggleJoinInput()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                                    <polyline points="10 17 15 12 10 7"></polyline>
+                                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                                </svg>
+                                Hatime Katıl
+                            </button>
+                            <div id="hatimJoinInputContainer" class="hatim-join-input-container" style="display: none;">
+                                <input type="text" id="hatimJoinCode" placeholder="Kod girin" maxlength="8">
+                                <button onclick="HatimManager.joinByCode()">→</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Liste des Hatims -->
+                    <div id="myHatimsList" class="hatim-sidebar-list"></div>
+                </div>
+
+                <!-- CONTENU PRINCIPAL -->
+                <div class="hatim-main">
+                    <div id="hatimContent"></div>
                 </div>
             </div>
         </div>
