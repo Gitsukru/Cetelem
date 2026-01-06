@@ -108,11 +108,6 @@
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
 
-/* Item content overflow handling */
-.hatim-my-item > div:first-child {
-    overflow: hidden;
-}
-
 /* ===== VUE PARTICIPATION (DETAIL HATIM) ===== */
 .hatim-participation-view {
     width: 100%;
