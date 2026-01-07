@@ -903,20 +903,26 @@ Linke tıklayın ve uygulamayı yükleyin
                         <span style="font-weight: 400; font-size: 11px; color: #64748b; margin-left: auto;">Tıkla → Değiştir</span>
                     </summary>
                     <div class="hatim-my-cuz-content">
-                        ${myParticipations.map(p => `
+                        ${myParticipations.map(p => {
+                            const unitNum = parseInt(p.unit_number) || 0;
+                            const cuzInfo = isKuran && unitNum > 0 && unitNum <= 30 ? KURAN_CUZLER[unitNum - 1] : null;
+                            return `
                             <div class="hatim-cuz-badge ${p.is_completed ? '' : 'reading'}">
-                                <div onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${parseInt(p.unit_number) || 0})"
-                                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${parseInt(p.unit_number) || 0});}"
-                                     tabindex="0" role="button" aria-label="${unitLabel} ${parseInt(p.unit_number) || 0} - ${p.is_completed ? 'Okundu' : 'Okuyor'}"
-                                     style="display: flex; align-items: center; gap: 6px; cursor: pointer; flex: 1; outline: none; border-radius: 4px;">
-                                    <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${parseInt(p.unit_number) || 0}</span>
-                                    <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
+                                <div onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${unitNum})"
+                                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${unitNum});}"
+                                     tabindex="0" role="button" aria-label="${unitLabel} ${unitNum} - ${p.is_completed ? 'Okundu' : 'Okuyor'}"
+                                     style="display: flex; flex-direction: column; gap: 4px; cursor: pointer; flex: 1; outline: none; border-radius: 4px;">
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${unitNum}</span>
+                                        <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
+                                    </div>
+                                    ${cuzInfo ? `<span style="font-size: 11px; color: #64748b; line-height: 1.3;">${cuzInfo.icerik}</span>` : ''}
                                 </div>
-                                <button onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(p.id)}', ${parseInt(p.unit_number) || 0})"
-                                        style="width: 26px; height: 26px; border: none; background: #fee2e2; color: #dc2626; border-radius: 6px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;"
+                                <button onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(p.id)}', ${unitNum})"
+                                        style="width: 26px; height: 26px; border: none; background: #fee2e2; color: #dc2626; border-radius: 6px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; align-self: flex-start;"
                                         title="Vazgeç">✕</button>
                             </div>
-                        `).join('')}
+                        `;}).join('')}
                     </div>
                 </details>
                 ` : ''}
@@ -968,12 +974,16 @@ Linke tıklayın ve uygulamayı yükleyin
         for (let i = 1; i <= totalUnits; i++) {
             const participation = claimedMap.get(i);
             const isMine = participation && participation.device_id === myDeviceId;
+            // Get cüz content info for tooltip (only for kuran)
+            const cuzInfo = isKuran && i <= 30 ? KURAN_CUZLER[i - 1] : null;
+            const contentTooltip = cuzInfo ? `${cuzInfo.icerik} (s.${cuzInfo.sayfa})` : '';
 
             if (participation) {
                 // Taken - show with name
                 const cellClass = isMine ? 'mine' : (participation.is_completed ? 'completed' : 'taken');
+                const tooltip = contentTooltip ? `${escapeHtml(participation.participant_name)} - ${contentTooltip}` : escapeHtml(participation.participant_name);
                 html += `
-                    <div class="hatim-cuz-cell ${cellClass}" title="${escapeHtml(participation.participant_name)}">
+                    <div class="hatim-cuz-cell ${cellClass}" title="${tooltip}">
                         <span class="hatim-cuz-number">${i}</span>
                         <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 6)}</span>
                         ${isMine ? '<span style="position: absolute; top: 2px; right: 2px; font-size: 8px;">🙋</span>' : ''}
@@ -983,7 +993,7 @@ Linke tıklayın ve uygulamayı yükleyin
                 // Available - clickable (unless deadline passed)
                 if (deadlineStatus === 'passed') {
                     html += `
-                        <div class="hatim-cuz-cell" style="opacity: 0.6; cursor: not-allowed; border-style: dashed;">
+                        <div class="hatim-cuz-cell" style="opacity: 0.6; cursor: not-allowed; border-style: dashed;" title="${contentTooltip}">
                             <span class="hatim-cuz-number" style="color: #94a3b8;">${i}</span>
                         </div>
                     `;
@@ -992,7 +1002,8 @@ Linke tıklayın ve uygulamayı yükleyin
                         <div class="hatim-cuz-cell available"
                              onclick="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}')"
                              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}');}"
-                             tabindex="0" role="button" aria-label="${unitLabel} ${i} seç">
+                             tabindex="0" role="button" aria-label="${unitLabel} ${i} seç"
+                             title="${contentTooltip}">
                             <span class="hatim-cuz-number" style="color: #667eea;">${i}</span>
                         </div>
                     `;
@@ -1544,47 +1555,15 @@ Linke tıklayın ve uygulamayı yükleyin
     // ========================================
 
     renderKuranHatim(container) {
-        let html = `
+        // Empty view - user should create or join a hatim via sidebar buttons
+        container.innerHTML = `
             <div class="hatim-main-view">
-                <!-- Card: Cüz Reference (collapsible) -->
-                <details class="hatim-reference-card">
-                    <summary>
-                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                        📚 30 Cüz Listesi (Referans)
-                    </summary>
-                    <div class="hatim-reference-content">
-                        <table class="hatim-cuz-table">
-                            <thead>
-                                <tr>
-                                    <th>Cüz</th>
-                                    <th>Sayfa</th>
-                                    <th>İçerik</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-        `;
-
-        KURAN_CUZLER.forEach((cuz) => {
-            html += `
-                <tr>
-                    <td>${cuz.cuz}</td>
-                    <td>${cuz.sayfa}</td>
-                    <td>${cuz.icerik}</td>
-                </tr>
-            `;
-        });
-
-        html += `
-                            </tbody>
-                        </table>
-                    </div>
-                </details>
+                <div style="text-align: center; padding: 40px 20px; color: #64748b;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📖</div>
+                    <p style="margin: 0; font-size: 14px;">Kur'an hatmi başlatmak veya katılmak için soldaki butonları kullanın.</p>
+                </div>
             </div>
         `;
-
-        container.innerHTML = html;
     },
 
     selectCuz(cuzNo) {
@@ -1621,32 +1600,15 @@ Linke tıklayın ve uygulamayı yükleyin
     // ========================================
 
     renderCevsenHatim(container) {
-        let html = `
+        // Empty view - user should create or join a hatim via sidebar buttons
+        container.innerHTML = `
             <div class="hatim-main-view">
-                <!-- Card: 100 Bab Reference (collapsible) -->
-                <details class="hatim-reference-card">
-                    <summary>
-                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                        📜 100 Bab Listesi (Referans)
-                    </summary>
-                    <div class="hatim-reference-content">
-                        <div class="hatim-bab-grid">
-        `;
-
-        for (let i = 1; i <= 100; i++) {
-            html += `<div class="hatim-bab-cell">${i}</div>`;
-        }
-
-        html += `
-                        </div>
-                    </div>
-                </details>
+                <div style="text-align: center; padding: 40px 20px; color: #64748b;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🌙</div>
+                    <p style="margin: 0; font-size: 14px;">Cevşen hatmi başlatmak veya katılmak için soldaki butonları kullanın.</p>
+                </div>
             </div>
         `;
-
-        container.innerHTML = html;
     },
 
     selectBab(babNo) {
