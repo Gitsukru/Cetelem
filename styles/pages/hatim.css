@@ -526,35 +526,47 @@
 
 .hatim-cuz-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
 }
 
 .hatim-cuz-grid.cevsen {
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+}
+
+@media (min-width: 768px) {
+    .hatim-cuz-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .hatim-cuz-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }
 
 @media (max-width: 480px) {
     .hatim-cuz-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 
     .hatim-cuz-grid.cevsen {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
 .hatim-cuz-cell {
-    aspect-ratio: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    padding: 10px;
     border-radius: 10px;
     font-size: 12px;
     transition: all 0.2s ease;
     cursor: pointer;
+    min-height: 80px;
+    position: relative;
 }
 
 .hatim-cuz-cell.available {
@@ -587,20 +599,55 @@
     border: 2px solid #3b82f6;
 }
 
+.hatim-cuz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
 .hatim-cuz-number {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 16px;
     color: #1e293b;
+}
+
+.hatim-cuz-mine {
+    font-size: 10px;
+}
+
+.hatim-cuz-content {
+    flex: 1;
+    font-size: 10px;
+    color: #475569;
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-bottom: 4px;
+}
+
+.hatim-cuz-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
 }
 
 .hatim-cuz-name {
     color: #64748b;
     font-size: 9px;
-    max-width: 100%;
+    max-width: 70%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding: 0 2px;
+}
+
+.hatim-cuz-page {
+    font-size: 9px;
+    color: #94a3b8;
+    font-weight: 500;
 }
 
 /* ===== LEGEND ===== */

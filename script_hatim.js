@@ -974,27 +974,37 @@ Linke tıklayın ve uygulamayı yükleyin
         for (let i = 1; i <= totalUnits; i++) {
             const participation = claimedMap.get(i);
             const isMine = participation && participation.device_id === myDeviceId;
-            // Get cüz content info for tooltip (only for kuran)
+            // Get cüz content info (only for kuran)
             const cuzInfo = isKuran && i <= 30 ? KURAN_CUZLER[i - 1] : null;
-            const contentTooltip = cuzInfo ? `${cuzInfo.icerik} (s.${cuzInfo.sayfa})` : '';
+            const contentText = cuzInfo ? cuzInfo.icerik : '';
+            const pageText = cuzInfo ? `s.${cuzInfo.sayfa}` : '';
 
             if (participation) {
-                // Taken - show with name
+                // Taken - show with name and content
                 const cellClass = isMine ? 'mine' : (participation.is_completed ? 'completed' : 'taken');
-                const tooltip = contentTooltip ? `${escapeHtml(participation.participant_name)} - ${contentTooltip}` : escapeHtml(participation.participant_name);
                 html += `
-                    <div class="hatim-cuz-cell ${cellClass}" title="${tooltip}">
-                        <span class="hatim-cuz-number">${i}</span>
-                        <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 6)}</span>
-                        ${isMine ? '<span style="position: absolute; top: 2px; right: 2px; font-size: 8px;">🙋</span>' : ''}
+                    <div class="hatim-cuz-cell ${cellClass}" title="${escapeHtml(participation.participant_name)}">
+                        <div class="hatim-cuz-header">
+                            <span class="hatim-cuz-number">${i}</span>
+                            ${isMine ? '<span class="hatim-cuz-mine">🙋</span>' : ''}
+                        </div>
+                        ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                        <div class="hatim-cuz-footer">
+                            <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 8)}</span>
+                            ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                        </div>
                     </div>
                 `;
             } else {
                 // Available - clickable (unless deadline passed)
                 if (deadlineStatus === 'passed') {
                     html += `
-                        <div class="hatim-cuz-cell" style="opacity: 0.6; cursor: not-allowed; border-style: dashed;" title="${contentTooltip}">
-                            <span class="hatim-cuz-number" style="color: #94a3b8;">${i}</span>
+                        <div class="hatim-cuz-cell" style="opacity: 0.6; cursor: not-allowed; border-style: dashed;">
+                            <div class="hatim-cuz-header">
+                                <span class="hatim-cuz-number" style="color: #94a3b8;">${i}</span>
+                            </div>
+                            ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                            ${pageText ? `<div class="hatim-cuz-footer"><span class="hatim-cuz-page">${pageText}</span></div>` : ''}
                         </div>
                     `;
                 } else {
@@ -1002,9 +1012,12 @@ Linke tıklayın ve uygulamayı yükleyin
                         <div class="hatim-cuz-cell available"
                              onclick="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}')"
                              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}');}"
-                             tabindex="0" role="button" aria-label="${unitLabel} ${i} seç"
-                             title="${contentTooltip}">
-                            <span class="hatim-cuz-number" style="color: #667eea;">${i}</span>
+                             tabindex="0" role="button" aria-label="${unitLabel} ${i} seç">
+                            <div class="hatim-cuz-header">
+                                <span class="hatim-cuz-number" style="color: #667eea;">${i}</span>
+                            </div>
+                            ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                            ${pageText ? `<div class="hatim-cuz-footer"><span class="hatim-cuz-page">${pageText}</span></div>` : ''}
                         </div>
                     `;
                 }
