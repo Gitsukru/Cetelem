@@ -928,7 +928,7 @@ Linke tıklayın ve uygulamayı yükleyin
                         <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
-                        <span>📋</span> ${unitLabel} Seç <span style="font-weight: 400; color: #64748b; font-size: 12px;">(${available} müsait)</span>
+                        <span>📋</span> ${unitLabel} Seç ${hatim.current_round > 1 ? `<span style="font-weight: 600; color: #667eea; font-size: 11px; background: rgba(102,126,234,0.1); padding: 2px 6px; border-radius: 4px; margin-left: 4px;">Tur ${hatim.current_round}</span>` : ''}<span style="font-weight: 400; color: #64748b; font-size: 12px; margin-left: 6px;">(${available} müsait)</span>
                     </summary>
                     <div class="hatim-grid-content">
                         <div class="hatim-cuz-grid ${isKuran ? '' : 'cevsen'}">
@@ -1057,27 +1057,8 @@ Linke tıklayın ve uygulamayı yükleyin
         const unitLabel = this.currentHatim?.type === 'cevsen' ? 'Bab' : 'Cüz';
 
         if (isCurrentlyCompleted) {
-            // Already read - confirm to mark as unread
-            this.showConfirmModal(
-                `${unitNumber}. ${unitLabel}'ü "Okunmadı" olarak işaretlemek istiyor musunuz?`,
-                'Geri Al',
-                async () => {
-                    try {
-                        await this.provider.markIncomplete(participationId);
-                        showCustomAlert('↩️ Okunmadı olarak işaretlendi', 'info', 2000);
-                        await this.refreshCurrentHatim();
-                    } catch (error) {
-                        console.error('Mark incomplete error:', error);
-                        // If participation not found, refresh automatically
-                        if (error.message === 'Katılım bulunamadı') {
-                            showCustomAlert('⚠️ Katılım bulunamadı. Veriler güncelleniyor...', 'warning', 2500);
-                            await this.refreshCurrentHatim();
-                        } else {
-                            showCustomAlert('❌ Durum güncellenemedi. İnternet bağlantınızı kontrol edin.', 'error', 3000);
-                        }
-                    }
-                }
-            );
+            // Already read - show options: mark as unread OR release
+            this.showUnreadOptionsModal(participationId, unitNumber, unitLabel);
         } else {
             // Not read - confirm to mark as read
             this.showConfirmModal(
@@ -1223,6 +1204,70 @@ Linke tıklayın ve uygulamayı yükleyin
         document.getElementById('confirmModalBtn').onclick = async () => {
             document.getElementById('confirmModal')?.remove();
             await onConfirm();
+        };
+    },
+
+    /**
+     * Show modal with options: mark as unread OR release unit
+     */
+    showUnreadOptionsModal(participationId, unitNumber, unitLabel) {
+        const html = `
+            <div class="custom-modal-overlay" id="unreadOptionsModal" onclick="if(event.target===this) this.remove()">
+                <div class="custom-modal modern-modal" style="max-width: 360px;">
+                    <div class="modal-body" style="padding: 24px; text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 12px;">📖</div>
+                        <p style="margin: 0 0 8px; color: #334155; font-size: 15px; font-weight: 600;">${unitNumber}. ${unitLabel}</p>
+                        <p style="margin: 0; color: #64748b; font-size: 13px;">Ne yapmak istiyorsunuz?</p>
+                    </div>
+                    <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px;">
+                        <button id="markUnreadBtn"
+                                style="padding: 14px 20px; min-height: 48px; background: #fef3c7; color: #92400e; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            ↩️ Okunmadı olarak işaretle
+                        </button>
+                        <button id="releaseUnitBtn"
+                                style="padding: 14px 20px; min-height: 48px; background: #fee2e2; color: #dc2626; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            ✕ Vazgeç (başkalarına aç)
+                        </button>
+                        <button onclick="document.getElementById('unreadOptionsModal').remove()"
+                                style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; margin-top: 4px;">
+                            İptal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', html);
+
+        // Mark as unread
+        document.getElementById('markUnreadBtn').onclick = async () => {
+            document.getElementById('unreadOptionsModal')?.remove();
+            try {
+                await this.provider.markIncomplete(participationId);
+                showCustomAlert('↩️ Okunmadı olarak işaretlendi', 'info', 2000);
+                await this.refreshCurrentHatim();
+            } catch (error) {
+                console.error('Mark incomplete error:', error);
+                if (error.message === 'Katılım bulunamadı') {
+                    showCustomAlert('⚠️ Katılım bulunamadı. Veriler güncelleniyor...', 'warning', 2500);
+                    await this.refreshCurrentHatim();
+                } else {
+                    showCustomAlert('❌ Durum güncellenemedi.', 'error', 3000);
+                }
+            }
+        };
+
+        // Release unit
+        document.getElementById('releaseUnitBtn').onclick = async () => {
+            document.getElementById('unreadOptionsModal')?.remove();
+            try {
+                await this.provider.releaseUnit(participationId);
+                showCustomAlert('✓ Birim serbest bırakıldı', 'success', 2000);
+                await this.refreshCurrentHatim();
+            } catch (error) {
+                console.error('Release unit error:', error);
+                showCustomAlert('❌ ' + (error.message || 'Serbest bırakılamadı'), 'error', 3000);
+            }
         };
     },
 

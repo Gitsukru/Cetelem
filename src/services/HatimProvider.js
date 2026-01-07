@@ -521,6 +521,8 @@ class HatimProvider {
         const newRound = hatim.current_round + 1;
 
         // Mettre a jour avec WHERE sur current_round pour garantir l'atomicité
+        console.log(`Starting new round: ${hatim.current_round} -> ${newRound} for hatim ${hatimId}`);
+
         const { data: updated, error: updateError } = await this.supabase
             .from('hatims')
             .update({
@@ -533,23 +535,37 @@ class HatimProvider {
 
         if (updateError) {
             console.error('Erreur start new round:', updateError);
-            throw new Error('Yeni tur başlatılamadı');
+            // Check if it's an RLS error
+            if (updateError.code === '42501' || updateError.message?.includes('policy')) {
+                throw new Error('Sadece hatim sahibi yeni tur başlatabilir');
+            }
+            throw new Error('Yeni tur başlatılamadı: ' + (updateError.message || 'Bilinmeyen hata'));
         }
 
         // Si aucune ligne mise a jour (race condition - trigger l'a deja fait)
         if (!updated || updated.length === 0) {
+            console.log('No rows updated, checking current state...');
+
             // Re-fetch le round actuel
-            const { data: refreshed } = await this.supabase
+            const { data: refreshed, error: refreshError } = await this.supabase
                 .from('hatims')
                 .select('current_round')
                 .eq('id', hatimId)
                 .single();
 
+            console.log('Refreshed hatim state:', refreshed, 'error:', refreshError);
+
             if (refreshed && refreshed.current_round > hatim.current_round) {
                 console.log('Round was already incremented:', refreshed.current_round);
                 return refreshed.current_round;
             }
-            throw new Error('Yeni tur başlatılamadı');
+
+            // RLS might be blocking the update - check if we can read but not write
+            if (refreshed && refreshed.current_round === hatim.current_round) {
+                throw new Error('Yeni tur başlatma yetkisi yok. Sadece hatim sahibi başlatabilir.');
+            }
+
+            throw new Error('Yeni tur başlatılamadı: Güncelleme başarısız');
         }
 
         console.log(`Nouveau tour demarre: ${updated[0].current_round}`);
