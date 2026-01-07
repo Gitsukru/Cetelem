@@ -162,6 +162,8 @@ class HatimProvider {
      * @param {string} deviceId - ID du device (verification)
      */
     async releaseUnit(participationId, deviceId) {
+        console.log('Release unit:', { participationId, deviceId });
+
         const { data, error } = await this.supabase
             .from('hatim_participations')
             .delete()
@@ -176,8 +178,23 @@ class HatimProvider {
 
         // Verifier qu'une ligne a ete supprimee
         if (!data || data.length === 0) {
+            // Debug: vérifier si la participation existe avec un autre deviceId
+            const { data: existing } = await this.supabase
+                .from('hatim_participations')
+                .select('device_id')
+                .eq('id', participationId)
+                .single();
+
+            if (existing) {
+                console.error('DeviceId mismatch:', {
+                    expected: deviceId,
+                    actual: existing.device_id
+                });
+            }
             throw new Error('Bu birimi sadece sahibi birakabilir');
         }
+
+        console.log('Unite liberee avec succes');
     }
 
     /**
@@ -423,27 +440,42 @@ class HatimProvider {
 
     /**
      * Obtenir l'ID du device
-     * Utilise crypto.getRandomValues pour plus de sécurité
-     * @returns {string|null}
+     * IMPORTANT: Utilise TOUJOURS 'analytics_device_id' pour cohérence avec analytics.js
+     * Inclut migration depuis l'ancien hatim_device_id
+     * @returns {string}
      */
     getDeviceId() {
-        if (typeof window.analytics !== 'undefined' && window.analytics.getDeviceId) {
-            return window.analytics.getDeviceId();
+        // Clé principale (partagée avec analytics.js)
+        const DEVICE_ID_KEY = 'analytics_device_id';
+        const OLD_KEY = 'hatim_device_id';
+
+        let deviceId = localStorage.getItem(DEVICE_ID_KEY);
+        const oldHatimId = localStorage.getItem(OLD_KEY);
+
+        // Migration: si ancien ID existe mais pas le nouveau, migrer
+        if (!deviceId && oldHatimId) {
+            deviceId = oldHatimId;
+            localStorage.setItem(DEVICE_ID_KEY, deviceId);
+            console.log('DeviceId migré de hatim_device_id vers analytics_device_id');
         }
-        // Fallback: generer un ID sécurisé
-        let deviceId = localStorage.getItem('hatim_device_id');
+
+        // Si toujours pas d'ID, en générer un nouveau
         if (!deviceId) {
-            // Utiliser crypto.getRandomValues pour un ID cryptographiquement sûr
             if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
                 const array = new Uint8Array(16);
                 crypto.getRandomValues(array);
                 deviceId = 'device_' + Array.from(array, b => b.toString(16).padStart(2, '0')).join('');
             } else {
-                // Fallback pour navigateurs très anciens
                 deviceId = 'device_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 15);
             }
-            localStorage.setItem('hatim_device_id', deviceId);
+            localStorage.setItem(DEVICE_ID_KEY, deviceId);
         }
+
+        // Synchroniser l'ancien key aussi (pour compatibilité)
+        if (oldHatimId !== deviceId) {
+            localStorage.setItem(OLD_KEY, deviceId);
+        }
+
         return deviceId;
     }
 
