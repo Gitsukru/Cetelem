@@ -181,17 +181,47 @@ const HatimManager = {
         `;
 
         myHatims.forEach(h => {
+            const typeLabel = h.type === 'kuran' ? "Kur'an Hatmi" : 'Cevşen Hatmi';
             const icon = h.type === 'kuran' ? '📖' : '🌙';
-            const roleIcon = h.isCreator ? '👑' : '👤';
             const safeHCode = this.safeCode(h.code);
             const isActive = this.currentHatim && this.currentHatim.code === h.code;
+
+            // Données enrichies
+            const creatorName = h.creatorName ? this.escapeHtml(h.creatorName) : 'Anonim';
+            const description = h.description ? this.escapeHtml(h.description) : '';
+            const currentRound = h.currentRound || 1;
+
+            // Deadline
+            let deadlineHtml = '';
+            if (h.deadline) {
+                const deadlineDate = new Date(h.deadline);
+                deadlineDate.setHours(23, 59, 59, 999);
+                const now = new Date();
+                const daysLeft = Math.ceil((deadlineDate - now) / (1000 * 60 * 60 * 24));
+
+                if (daysLeft < 0) {
+                    deadlineHtml = `<span style="background: #fee2e2; color: #dc2626; padding: 2px 6px; border-radius: 4px; font-weight: 600;">⚠️ Süre doldu</span>`;
+                } else if (daysLeft === 0) {
+                    deadlineHtml = `<span style="background: #fef3c7; color: #d97706; padding: 2px 6px; border-radius: 4px; font-weight: 600;">📅 Bugün son!</span>`;
+                } else if (daysLeft <= 3) {
+                    deadlineHtml = `<span style="background: #fef3c7; color: #d97706; padding: 2px 6px; border-radius: 4px; font-weight: 600;">📅 ${daysLeft} gün</span>`;
+                } else {
+                    deadlineHtml = `<span>📅 ${deadlineDate.toLocaleDateString('tr-TR')}</span>`;
+                }
+            }
 
             html += `
                 <div class="hatim-sidebar-item ${isActive ? 'active' : ''}"
                      onclick="HatimManager.openHatim('${safeHCode}')" tabindex="0">
                     <div class="hatim-sidebar-item-header">
-                        <span class="hatim-sidebar-item-icon">${icon}</span>
-                        <span class="hatim-sidebar-item-code">${roleIcon} ${safeHCode}</span>
+                        <h4 style="margin: 0 0 4px; font-size: 15px; font-weight: 600;">${icon} ${typeLabel}</h4>
+                        <span class="hatim-sidebar-item-code">${safeHCode}</span>
+                    </div>
+                    ${description ? `<p style="margin: 0 0 8px; font-size: 12px; color: #475569;">${description}</p>` : ''}
+                    <div class="hatim-sidebar-item-meta">
+                        <span>👤 ${creatorName}</span>
+                        ${deadlineHtml}
+                        <span>🔄 Tur ${currentRound}</span>
                     </div>
                 </div>
             `;
@@ -775,7 +805,6 @@ Linke tıklayın ve uygulamayı yükleyin
         const isKuran = hatim.type === 'kuran';
         const totalUnits = isKuran ? 30 : 100;
         const unitLabel = isKuran ? 'Cüz' : 'Bab';
-        const typeLabel = isKuran ? "Kur'an Hatmi" : 'Cevşen Hatmi';
 
         // Progress
         const claimed = participations.length;
@@ -786,27 +815,16 @@ Linke tıklayın ve uygulamayı yükleyin
         const myDeviceId = this.provider.getDeviceId();
         const myParticipations = participations.filter(p => p.device_id === myDeviceId);
 
-        // Deadline status
-        let deadlineStatus = null; // null, 'ok', 'soon', 'passed'
-        let deadlineMessage = '';
+        // Deadline status (only need 'passed' for warning)
+        let deadlineStatus = null;
         if (hatim.deadline) {
             const deadlineDate = new Date(hatim.deadline);
-            deadlineDate.setHours(23, 59, 59, 999); // Fin de la journée
+            deadlineDate.setHours(23, 59, 59, 999);
             const now = new Date();
             const daysLeft = Math.ceil((deadlineDate - now) / (1000 * 60 * 60 * 24));
 
             if (daysLeft < 0) {
                 deadlineStatus = 'passed';
-                deadlineMessage = 'Süre doldu!';
-            } else if (daysLeft === 0) {
-                deadlineStatus = 'soon';
-                deadlineMessage = 'Bugün son gün!';
-            } else if (daysLeft <= 3) {
-                deadlineStatus = 'soon';
-                deadlineMessage = `${daysLeft} gün kaldı`;
-            } else {
-                deadlineStatus = 'ok';
-                deadlineMessage = new Date(hatim.deadline).toLocaleDateString('tr-TR');
             }
         }
 
@@ -833,43 +851,17 @@ Linke tıklayın ve uygulamayı yükleyin
             return String(id).replace(/[^a-f0-9-]/gi, '').substring(0, 36);
         };
 
-        // Card style - now using CSS classes from hatim.css
-        const cardClass = 'hatim-card';
-
         let html = `
             <div class="hatim-participation-view">
 
-                <!-- CARD 1: Hatim Info -->
-                <div class="hatim-card-header">
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                        <div>
-                            <h3 style="margin: 0 0 4px; font-size: 18px; font-weight: 600;">📖 ${typeLabel}</h3>
-                            <p style="margin: 0; opacity: 0.9; font-size: 13px;">Kod: <strong style="letter-spacing: 2px; font-size: 15px;">${hatim.code}</strong></p>
-                        </div>
-                        <button onclick="HatimManager.backToList()" class="hatim-btn hatim-btn-secondary" style="padding: 8px 14px;">
-                            ← Geri
-                        </button>
-                    </div>
-                    ${hatim.description ? `<p style="margin: 0 0 8px; font-size: 13px; opacity: 0.9;">${escapeHtml(hatim.description)}</p>` : ''}
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; opacity: 0.85;">
-                        <span>👤 ${escapeHtml(hatim.creator_name)}</span>
-                        ${deadlineStatus ? `
-                            <span style="${deadlineStatus === 'passed' ? 'background: #fee2e2; color: #dc2626; padding: 2px 6px; border-radius: 4px; font-weight: 600;' :
-                                          deadlineStatus === 'soon' ? 'background: #fef3c7; color: #d97706; padding: 2px 6px; border-radius: 4px; font-weight: 600;' :
-                                          ''}">
-                                ${deadlineStatus === 'passed' ? '⚠️' : '📅'} ${deadlineMessage}
-                            </span>
-                        ` : ''}
-                        <span>🔄 Tur ${hatim.current_round}</span>
-                    </div>
-                    ${deadlineStatus === 'passed' ? `
-                    <div style="margin-top: 10px; padding: 8px 12px; background: rgba(220, 38, 38, 0.2); border-radius: 6px; font-size: 12px;">
-                        ⚠️ Son tarih geçti. Yeni katılım kabul edilmiyor.
-                    </div>
-                    ` : ''}
+                <!-- Deadline warning -->
+                ${deadlineStatus === 'passed' ? `
+                <div style="padding: 12px 16px; background: #fee2e2; border: 1px solid #fecaca; border-radius: 10px; margin-bottom: 16px;">
+                    <span style="color: #dc2626; font-weight: 600;">⚠️ Son tarih geçti. Yeni katılım kabul edilmiyor.</span>
                 </div>
+                ` : ''}
 
-                <!-- CARD 2: Progress -->
+                <!-- Progress -->
                 <div class="hatim-progress">
                     <div class="hatim-card-title">
                         <span>📊</span> İlerleme
