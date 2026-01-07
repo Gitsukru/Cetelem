@@ -1546,26 +1546,6 @@ Linke tıklayın ve uygulamayı yükleyin
     renderKuranHatim(container) {
         let html = `
             <div class="hatim-main-view">
-                <!-- Card: Create New Hatim -->
-                <div class="hatim-create-card kuran">
-                    <div class="hatim-create-card-header">
-                        <div class="hatim-create-icon kuran">
-                            <span>📖</span>
-                        </div>
-                        <div>
-                            <h3 class="hatim-create-title">Kur'an Hatmi Paylaş</h3>
-                            <p class="hatim-create-subtitle">30 cüz'ü paylaşarak birlikte hatim yapın</p>
-                        </div>
-                    </div>
-                    <button onclick="HatimManager.showCreateModal('kuran')" class="hatim-create-action kuran">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        Yeni Hatim Oluştur
-                    </button>
-                </div>
-
                 <!-- Card: Cüz Reference (collapsible) -->
                 <details class="hatim-reference-card">
                     <summary>
@@ -1643,26 +1623,6 @@ Linke tıklayın ve uygulamayı yükleyin
     renderCevsenHatim(container) {
         let html = `
             <div class="hatim-main-view">
-                <!-- Card: Create Cevsen Hatim -->
-                <div class="hatim-create-card cevsen">
-                    <div class="hatim-create-card-header">
-                        <div class="hatim-create-icon cevsen">
-                            <span>🌙</span>
-                        </div>
-                        <div>
-                            <h3 class="hatim-create-title">Cevşen Hatmi Paylaş</h3>
-                            <p class="hatim-create-subtitle">100 bab'ı paylaşarak birlikte okuyun</p>
-                        </div>
-                    </div>
-                    <button onclick="HatimManager.showCreateModal('cevsen')" class="hatim-create-action cevsen">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        Yeni Hatim Oluştur
-                    </button>
-                </div>
-
                 <!-- Card: 100 Bab Reference (collapsible) -->
                 <details class="hatim-reference-card">
                     <summary>
