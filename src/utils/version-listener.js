@@ -7,6 +7,8 @@
  * We detect foreground return and reconnect + check for missed updates.
  */
 
+console.log('📦 version-listener.js chargé');
+
 const VersionListener = {
     subscription: null,
     currentVersion: null,

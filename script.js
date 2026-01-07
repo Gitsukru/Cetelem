@@ -4137,9 +4137,12 @@ function initializeBackend() {
       }
 
       // Initialiser VersionListener pour les MAJ via WebSocket (pas de polling!)
+      console.log('🔍 VersionListener check:', typeof VersionListener);
       if (typeof VersionListener !== 'undefined') {
         VersionListener.init(provider.supabase)
         console.log('✅ VersionListener initialisé (WebSocket)')
+      } else {
+        console.warn('⚠️ VersionListener non trouvé - MAJ WebSocket désactivé');
       }
     } else if (config.type === 'infomaniak') {
       provider = new InfomaniakProvider(config.apiUrl, config.apiKey)
