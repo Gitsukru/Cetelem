@@ -813,7 +813,6 @@ Linke tıklayın ve uygulamayı yükleyin
 
         // Current user's device ID
         const myDeviceId = this.provider.getDeviceId();
-        const myParticipations = participations.filter(p => p.device_id === myDeviceId);
 
         // Deadline status (only need 'passed' for warning)
         let deadlineStatus = null;
@@ -892,41 +891,6 @@ Linke tıklayın ve uygulamayı yükleyin
                     ` : ''}
                 </div>
 
-                <!-- CARD 3: My Cüz (if any) - Collapsible -->
-                ${myParticipations.length > 0 ? `
-                <details open class="hatim-my-cuz">
-                    <summary>
-                        <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                        <span>🙋</span> Benim ${unitLabel}lerim (${myParticipations.length})
-                        <span style="font-weight: 400; font-size: 11px; color: #64748b; margin-left: auto;">Tıkla → Değiştir</span>
-                    </summary>
-                    <div class="hatim-my-cuz-content">
-                        ${myParticipations.map(p => {
-                            const unitNum = parseInt(p.unit_number) || 0;
-                            const cuzInfo = isKuran && unitNum > 0 && unitNum <= 30 ? KURAN_CUZLER[unitNum - 1] : null;
-                            return `
-                            <div class="hatim-cuz-badge ${p.is_completed ? '' : 'reading'}">
-                                <div onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${unitNum})"
-                                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!p.is_completed}, ${unitNum});}"
-                                     tabindex="0" role="button" aria-label="${unitLabel} ${unitNum} - ${p.is_completed ? 'Okundu' : 'Okuyor'}"
-                                     style="display: flex; flex-direction: column; gap: 4px; cursor: pointer; flex: 1; outline: none; border-radius: 4px;">
-                                    <div style="display: flex; align-items: center; gap: 6px;">
-                                        <span style="font-weight: 700; color: #1e293b; font-size: 15px;">${unitNum}</span>
-                                        <span style="font-size: 12px; color: ${p.is_completed ? '#10b981' : '#f59e0b'};">${p.is_completed ? '✓ Okundu' : '📖 Okuyor...'}</span>
-                                    </div>
-                                    ${cuzInfo ? `<span style="font-size: 11px; color: #64748b; line-height: 1.3;">${cuzInfo.icerik}</span>` : ''}
-                                </div>
-                                <button onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(p.id)}', ${unitNum})"
-                                        style="width: 26px; height: 26px; border: none; background: #fee2e2; color: #dc2626; border-radius: 6px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; align-self: flex-start;"
-                                        title="Vazgeç">✕</button>
-                            </div>
-                        `;}).join('')}
-                    </div>
-                </details>
-                ` : ''}
-
                 <!-- CARD 3b: Previous Rounds History -->
                 ${hatim.current_round > 1 ? `
                 <details class="hatim-previous-rounds">
@@ -979,14 +943,33 @@ Linke tıklayın ve uygulamayı yükleyin
             const contentText = cuzInfo ? cuzInfo.icerik : '';
             const pageText = cuzInfo ? `s.${cuzInfo.sayfa}` : '';
 
-            if (participation) {
-                // Taken - show with name and content
-                const cellClass = isMine ? 'mine' : (participation.is_completed ? 'completed' : 'taken');
+            if (isMine) {
+                // MINE - Interactive cell with toggle and release
+                const isCompleted = participation.is_completed;
+                const statusClass = isCompleted ? 'read' : 'reading';
+                html += `
+                    <div class="hatim-cuz-cell mine ${statusClass}"
+                         onclick="HatimManager.toggleReadStatus('${safeId(participation.id)}', ${!!isCompleted}, ${i})"
+                         tabindex="0" role="button"
+                         aria-label="${unitLabel} ${i} - ${isCompleted ? 'Okundu' : 'Okuyor'}">
+                        <div class="hatim-cuz-header">
+                            <span class="hatim-cuz-number">${i}</span>
+                            <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${isCompleted ? '✓' : '📖'}</span>
+                        </div>
+                        ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                        <div class="hatim-cuz-footer">
+                            ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                            <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(participation.id)}', ${i})" title="Vazgeç">✕</button>
+                        </div>
+                    </div>
+                `;
+            } else if (participation) {
+                // Taken by others - show with name and content
+                const cellClass = participation.is_completed ? 'completed' : 'taken';
                 html += `
                     <div class="hatim-cuz-cell ${cellClass}" title="${escapeHtml(participation.participant_name)}">
                         <div class="hatim-cuz-header">
                             <span class="hatim-cuz-number">${i}</span>
-                            ${isMine ? '<span class="hatim-cuz-mine">🙋</span>' : ''}
                         </div>
                         ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
                         <div class="hatim-cuz-footer">
