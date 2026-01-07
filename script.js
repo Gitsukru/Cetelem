@@ -4045,203 +4045,10 @@ if ('serviceWorker' in navigator) {
         }, 2000);
     }
 
-    // Fonction helper: Vérifier si on peut checker les MAJ (évite boucle infinie)
-    function canCheckForUpdates() {
-        // ⚡ FIX PWA: Pour les PWA installées, délai de grâce réduit à 5s
-        const graceTime = isPWA ? 5000 : 10000;
-        const timeSincePageLoad = Date.now() - pageLoadTime;
-        if (timeSincePageLoad < graceTime) {
-            console.log(`⏳ Délai de grâce après chargement (${Math.ceil((graceTime - timeSincePageLoad) / 1000)}s restantes)`);
-            return false;
-        }
-
-        // ⚡ FIX CHROME/iOS: Vérifier si on vient de mettre à jour via l'URL (sauf PWA standard)
-        if (!isPWA && (window.location.search.includes('updated=') || window.location.search.includes('iosupdate='))) {
-            console.log('⏳ Page rechargée après MAJ, pas de nouvelle vérification');
-            return false;
-        }
-
-        const justUpdated = sessionStorage.getItem('justUpdated');
-        if (justUpdated) {
-            const timeSinceUpdate = Date.now() - parseInt(justUpdated);
-            const COOLDOWN = 5 * 60 * 1000; // 5 minutes de cooldown après MAJ
-
-            if (timeSinceUpdate < COOLDOWN) {
-                const remainingMinutes = Math.ceil((COOLDOWN - timeSinceUpdate) / 60000);
-                console.log(`⏳ Cooldown MAJ actif (${remainingMinutes}min restantes)`);
-                return false;
-            } else {
-                // Cooldown terminé, effacer le flag
-                sessionStorage.removeItem('justUpdated');
-            }
-        }
-        return true;
-    }
-
-    // ✅ Vérification périodique automatique des mises à jour (toutes les heures)
-    setInterval(() => {
-        if (navigator.serviceWorker.controller && canCheckForUpdates()) {
-            console.log('🔄 Vérification automatique des mises à jour...');
-            navigator.serviceWorker.getRegistration().then(registration => {
-                if (registration) {
-                    registration.update().catch(error => {
-                        console.error('❌ Erreur vérification mise à jour:', error);
-                    });
-                }
-            });
-        }
-    }, isPWA ? 15 * 60 * 1000 : 60 * 60 * 1000); // PWA: 15 min, Browser: 1 heure
-
-    // ✅ Vérification quand l'app revient au premier plan (mobile PWA)
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && navigator.serviceWorker.controller && canCheckForUpdates()) {
-            console.log('📱 App revenue au premier plan - Vérification MAJ...');
-            navigator.serviceWorker.getRegistration().then(registration => {
-                if (registration) {
-                    registration.update().catch(error => {
-                        console.error('❌ Erreur vérification MAJ:', error);
-                    });
-                }
-            });
-        }
-    });
-
-    // ✅ Vérification au focus de la fenêtre (desktop)
-    window.addEventListener('focus', () => {
-        if (navigator.serviceWorker.controller && canCheckForUpdates()) {
-            console.log('🖥️ Fenêtre focus - Vérification MAJ...');
-            navigator.serviceWorker.getRegistration().then(registration => {
-                if (registration) {
-                    registration.update().catch(error => {
-                        console.error('❌ Erreur vérification MAJ:', error);
-                    });
-                }
-            });
-        }
-    });
-
-    // ⚡ FIX PWA: Vérification forcée au démarrage pour les PWA installées
-    if (isPWA) {
-        console.log('📱 Mode PWA détecté - Vérification MAJ au démarrage activée');
-
-        // Attendre le délai de grâce (5s pour PWA) + 1s de sécurité
-        setTimeout(() => {
-            if (navigator.serviceWorker.controller) {
-                console.log('🔄 PWA: Vérification MAJ au démarrage...');
-                navigator.serviceWorker.getRegistration().then(registration => {
-                    if (registration) {
-                        registration.update()
-                            .then(() => console.log('✅ PWA: Vérification MAJ terminée'))
-                            .catch(error => {
-                                console.error('❌ PWA: Erreur vérification MAJ:', error);
-                            });
-                    }
-                });
-            }
-        }, 6000); // 5s délai de grâce + 1s de sécurité
-    }
-
-    // ⚡ FIX iOS: Mécanisme de MAJ renforcé pour iOS (contourne le cache agressif de Safari)
-    if (isPWA && isIOS) {
-        console.log('🍎 iOS PWA: Activation du mécanisme de MAJ renforcé');
-
-        // Fonction pour vérifier la version du SW directement depuis le serveur
-        async function checkIOSUpdate() {
-            if (!canCheckForUpdates()) return;
-
-            try {
-                console.log('🍎 iOS: Vérification version serveur...');
-
-                // Fetch sw.js avec no-cache pour contourner le cache iOS
-                const response = await fetch('./sw.js?nocache=' + Date.now(), {
-                    cache: 'no-store',
-                    headers: {
-                        'Cache-Control': 'no-cache, no-store, must-revalidate',
-                        'Pragma': 'no-cache'
-                    }
-                });
-
-                if (!response.ok) {
-                    console.error('🍎 iOS: Erreur fetch sw.js', response.status);
-                    return;
-                }
-
-                const swContent = await response.text();
-
-                // Extraire la version du SW téléchargé
-                const versionMatch = swContent.match(/CACHE_VERSION\s*=\s*['"]([^'"]+)['"]/);
-                if (!versionMatch) {
-                    console.log('🍎 iOS: Version non trouvée dans sw.js');
-                    return;
-                }
-
-                const serverVersion = versionMatch[1];
-                const currentVersion = localStorage.getItem('sw_version_ios') || '';
-
-                console.log(`🍎 iOS: Version serveur=${serverVersion}, locale=${currentVersion || 'non définie'}`);
-
-                // Si c'est la première exécution, juste enregistrer la version sans recharger
-                if (!currentVersion) {
-                    console.log('🍎 iOS: Première exécution - enregistrement version initiale');
-                    localStorage.setItem('sw_version_ios', serverVersion);
-                    return;
-                }
-
-                if (serverVersion !== currentVersion) {
-                    console.log('🍎 iOS: Nouvelle version détectée! Forçage MAJ...');
-
-                    // Sauvegarder la nouvelle version
-                    localStorage.setItem('sw_version_ios', serverVersion);
-
-                    // Forcer la ré-inscription du SW
-                    const registration = await navigator.serviceWorker.getRegistration();
-                    if (registration) {
-                        // Désinscrire l'ancien SW
-                        await registration.unregister();
-                        console.log('🍎 iOS: Ancien SW désinscrit');
-
-                        // Vider tous les caches
-                        const cacheNames = await caches.keys();
-                        await Promise.all(cacheNames.map(name => caches.delete(name)));
-                        console.log('🍎 iOS: Caches vidés');
-
-                        // Sauvegarder les données
-                        try {
-                            autoSave();
-                        } catch (e) {
-                            console.error('🍎 iOS: Erreur sauvegarde', e);
-                        }
-
-                        // Afficher notification et recharger
-                        showCustomAlert('🍎 Yeni sürüm yükleniyor...', 'info', 2000);
-
-                        setTimeout(() => {
-                            // Recharger avec cache-busting
-                            window.location.href = window.location.pathname + '?iosupdate=' + Date.now();
-                        }, 1500);
-                    }
-                } else {
-                    console.log('🍎 iOS: App à jour');
-                }
-            } catch (error) {
-                console.error('🍎 iOS: Erreur vérification MAJ:', error);
-            }
-        }
-
-        // Vérifier au démarrage après délai de grâce
-        setTimeout(checkIOSUpdate, 8000);
-
-        // Vérifier quand l'app revient au premier plan (plus fiable que visibilitychange sur iOS)
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                console.log('🍎 iOS: App revenue au premier plan');
-                setTimeout(checkIOSUpdate, 3000);
-            }
-        });
-
-        // Vérifier toutes les 10 minutes sur iOS (plus fréquent car moins fiable)
-        setInterval(checkIOSUpdate, 10 * 60 * 1000);
-    }
+    // 🔌 WEBSOCKET UPDATE: Les MAJ sont maintenant gérées via VersionListener (WebSocket)
+    // Plus de polling! Les notifications sont poussées par le serveur via Supabase Realtime.
+    // Voir: src/utils/version-listener.js
+    console.log('🔌 MAJ via WebSocket activé - Plus de polling');
 }
 
 // Détection installation PWA
@@ -4327,6 +4134,12 @@ function initializeBackend() {
       if (typeof HatimManager !== 'undefined' && typeof HatimProvider !== 'undefined') {
         HatimManager.initProvider(provider.supabase)
         console.log('✅ HatimProvider initialisé')
+      }
+
+      // Initialiser VersionListener pour les MAJ via WebSocket (pas de polling!)
+      if (typeof VersionListener !== 'undefined') {
+        VersionListener.init(provider.supabase)
+        console.log('✅ VersionListener initialisé (WebSocket)')
       }
     } else if (config.type === 'infomaniak') {
       provider = new InfomaniakProvider(config.apiUrl, config.apiKey)
@@ -4743,29 +4556,6 @@ function showBackupReminder() {
 // Marquer qu'une sauvegarde a été faite (appelé après export réussi)
 function markBackupDone() {
     localStorage.setItem('lastBackupReminder', new Date().getTime().toString());
-}
-
-// ============================================
-// VÉRIFICATION AUTOMATIQUE DES MISES À JOUR
-// ============================================
-
-// Variables globales pour le throttling
-let lastUpdateCheck = 0;
-let updatePromptShown = false;
-const UPDATE_CHECK_COOLDOWN = 5 * 60 * 1000; // 5 minutes minimum entre les vérifications
-
-// Vérifier les mises à jour - DÉSACTIVÉE
-function checkForAppUpdates() {
-    // Fonction désactivée pour éviter les popups en boucle
-    console.log('⏸️ Vérification mises à jour désactivée');
-    return;
-}
-
-// Afficher le prompt de mise à jour - DÉSACTIVÉE
-function showUpdatePrompt(_newVersion) {
-    // Fonction désactivée pour éviter les popups en boucle
-    console.log('⏸️ Popup mise à jour désactivé');
-    return;
 }
 
 // ============================================
