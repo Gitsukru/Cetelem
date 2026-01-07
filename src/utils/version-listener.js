@@ -2,12 +2,17 @@
  * Version Listener - WebSocket-based update notifications
  * Uses Supabase Realtime to receive push notifications when new version is deployed
  * NO POLLING - Zero energy waste!
+ *
+ * iOS FIX: iOS kills WebSocket after ~90s in background.
+ * We detect foreground return and reconnect + check for missed updates.
  */
 
 const VersionListener = {
     subscription: null,
     currentVersion: null,
     supabase: null,
+    isReconnecting: false,
+    visibilityHandler: null,
 
     /**
      * Initialize the version listener with Supabase client
@@ -21,7 +26,122 @@ const VersionListener = {
 
         this.supabase = supabaseClient;
         this.subscribeToVersionUpdates();
+        this.setupVisibilityHandler();
         console.log('🔌 VersionListener: WebSocket initialisé');
+    },
+
+    /**
+     * iOS FIX: Setup visibility change handler to reconnect when app returns to foreground
+     * iOS kills WebSocket connections after ~90 seconds in background
+     */
+    setupVisibilityHandler() {
+        // Remove existing handler if any
+        if (this.visibilityHandler) {
+            document.removeEventListener('visibilitychange', this.visibilityHandler);
+        }
+
+        this.visibilityHandler = () => {
+            if (document.visibilityState === 'visible') {
+                console.log('🔌 VersionListener: App revenue au premier plan - Vérification MAJ...');
+                this.handleForegroundReturn();
+            }
+        };
+
+        document.addEventListener('visibilitychange', this.visibilityHandler);
+
+        // iOS PWA: Also listen for pageshow (fired when navigating back to cached page)
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                console.log('🔌 VersionListener: Page restaurée depuis bfcache - Reconnexion...');
+                this.handleForegroundReturn();
+            }
+        });
+
+        // iOS PWA: Focus event as additional safeguard
+        window.addEventListener('focus', () => {
+            // Debounce: only if we haven't checked in the last 5 seconds
+            const now = Date.now();
+            if (!this._lastFocusCheck || now - this._lastFocusCheck > 5000) {
+                this._lastFocusCheck = now;
+                this.handleForegroundReturn();
+            }
+        });
+    },
+
+    /**
+     * Handle app returning to foreground (iOS fix)
+     * Re-fetch version and reconnect WebSocket if needed
+     */
+    async handleForegroundReturn() {
+        if (this.isReconnecting || !this.supabase) return;
+        this.isReconnecting = true;
+
+        try {
+            // 1. Check current version from database (catches updates missed while in background)
+            const { data, error } = await this.supabase
+                .from('app_config')
+                .select('value')
+                .eq('key', 'app_version')
+                .single();
+
+            if (!error && data?.value && data.value !== this.currentVersion) {
+                console.log('🚀 VersionListener: MAJ détectée au retour!', {
+                    old: this.currentVersion,
+                    new: data.value
+                });
+                this.currentVersion = data.value;
+                this.showUpdateNotification(data.value);
+                this.isReconnecting = false;
+                return;
+            }
+
+            // 2. Reconnect WebSocket channel if it was disconnected
+            await this.reconnectChannel();
+
+        } catch (err) {
+            console.error('VersionListener: Foreground return error:', err);
+        }
+
+        this.isReconnecting = false;
+    },
+
+    /**
+     * Reconnect the Supabase Realtime channel
+     */
+    async reconnectChannel() {
+        if (!this.supabase) return;
+
+        try {
+            // Remove old subscription cleanly
+            if (this.subscription) {
+                await this.supabase.removeChannel(this.subscription);
+                this.subscription = null;
+            }
+
+            // Re-subscribe
+            this.subscription = this.supabase
+                .channel('app_version_updates_' + Date.now()) // Unique channel name to avoid conflicts
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'app_config',
+                        filter: 'key=eq.app_version'
+                    },
+                    (payload) => this.handleVersionUpdate(payload)
+                )
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        console.log('🔌 VersionListener: WebSocket reconnecté');
+                    } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+                        console.warn('🔌 VersionListener: Channel status:', status);
+                    }
+                });
+
+        } catch (err) {
+            console.error('VersionListener: Reconnect error:', err);
+        }
     },
 
     /**
@@ -226,12 +346,19 @@ const VersionListener = {
     },
 
     /**
-     * Cleanup subscription
+     * Cleanup subscription and event listeners
      */
     destroy() {
+        // Remove WebSocket subscription
         if (this.subscription) {
             this.supabase?.removeChannel(this.subscription);
             this.subscription = null;
+        }
+
+        // Remove visibility handler
+        if (this.visibilityHandler) {
+            document.removeEventListener('visibilitychange', this.visibilityHandler);
+            this.visibilityHandler = null;
         }
     }
 };
