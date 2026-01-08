@@ -993,6 +993,7 @@ Linke tıklayın ve uygulamayı yükleyin
                         </div>
                         ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
                         <div class="hatim-cuz-footer">
+                            <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 8)}</span>
                             ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
                             <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(participation.id)}', ${i})" title="Vazgeç">✕</button>
                         </div>
