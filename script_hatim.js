@@ -808,8 +808,10 @@ Linke tıklayın ve uygulamayı yükleyin
 
         // Progress
         const claimed = participations.length;
+        const completed = participations.filter(p => p.is_completed).length;
         const available = totalUnits - claimed;
         const progressPercent = Math.round((claimed / totalUnits) * 100);
+        const allCompleted = completed === totalUnits; // All units READ, not just claimed
 
         // Current user's device ID
         const myDeviceId = this.provider.getDeviceId();
@@ -909,17 +911,18 @@ Linke tıklayın ve uygulamayı yükleyin
                             <span style="font-weight: 600; color: #334155; font-size: 14px;">${progressPercent}%</span>
                         </div>
                         <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #64748b;">
-                            <span>✅ ${claimed} alındı</span>
-                            <span>⏳ ${available} kaldı</span>
+                            <span>📋 ${claimed} alındı</span>
+                            <span>✅ ${completed} okundu</span>
+                            <span>⏳ ${available} müsait</span>
                             ${hatim.current_round > 1 ? `<span style="color: #10b981;">🏆 ${hatim.current_round - 1} tur tamamlandı</span>` : ''}
                         </div>
-                        ${available === 0 ? `
+                        ${allCompleted ? `
                         <div style="margin-top: 12px; padding: 12px; background: #dcfce7; border-radius: 8px; border: 1px solid #10b981;">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                                 <span style="font-size: 20px;">🎉</span>
                                 <span style="font-weight: 600; color: #166534;">Bu tur tamamlandı!</span>
                             </div>
-                            <p style="margin: 0 0 12px; font-size: 13px; color: #166534;">Tüm ${unitLabel}ler alındı. Yeni tur başlatabilirsiniz.</p>
+                            <p style="margin: 0 0 12px; font-size: 13px; color: #166534;">Tüm ${unitLabel}ler okundu. Yeni tur başlatabilirsiniz.</p>
                             <button onclick="HatimManager.startNewRound('${safeId(hatim.id)}')"
                                     style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
                                 🔄 Tur ${hatim.current_round + 1} Başlat
