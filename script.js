@@ -3922,35 +3922,24 @@ function checkForUpdates() {
 
         // Vérifier s'il y a déjà une mise à jour en attente
         if (registration.waiting) {
-            console.log('⚡ Mise à jour déjà disponible - activation immédiate');
-            // Envoyer le message SKIP_WAITING au SW en attente
             registration.waiting.postMessage({ type: 'SKIP_WAITING' });
             showCustomAlert('🔄 Mise à jour en cours...', 'info', 1000);
-
-            // Le controllerchange va déclencher le reload automatique
             return;
         }
 
         // Forcer la vérification de mise à jour
         registration.update()
             .then(() => {
-                console.log('✅ Vérification mise à jour effectuée');
-
-                // Attendre 3 secondes pour voir si une mise à jour est détectée
                 setTimeout(() => {
                     if (registration.waiting) {
-                        // Nouvelle version détectée
-                        console.log('🆕 Nouvelle version détectée - activation');
                         registration.waiting.postMessage({ type: 'SKIP_WAITING' });
                         showCustomAlert('🔄 Mise à jour en cours...', 'info', 1000);
                     } else if (!pendingServiceWorker) {
                         showCustomAlert('✅ Uygulama güncel!', 'success', 2000);
                     }
-                    // Sinon la bannière s'affichera automatiquement
                 }, 3000);
             })
-            .catch(error => {
-                console.error('❌ Erreur vérification:', error);
+            .catch(() => {
                 showCustomAlert('❌ Güncelleme kontrol hatası', 'error', 2000);
             });
     });
@@ -4045,10 +4034,6 @@ if ('serviceWorker' in navigator) {
         }, 2000);
     }
 
-    // 🔌 WEBSOCKET UPDATE: Les MAJ sont maintenant gérées via VersionListener (WebSocket)
-    // Plus de polling! Les notifications sont poussées par le serveur via Supabase Realtime.
-    // Voir: src/utils/version-listener.js
-    console.log('🔌 MAJ via WebSocket activé - Plus de polling');
 }
 
 // Détection installation PWA
@@ -4136,13 +4121,9 @@ function initializeBackend() {
         console.log('✅ HatimProvider initialisé')
       }
 
-      // Initialiser VersionListener pour les MAJ via WebSocket (pas de polling!)
-      console.log('🔍 VersionListener check:', typeof VersionListener);
+      // Initialiser VersionListener pour les MAJ via WebSocket
       if (typeof VersionListener !== 'undefined') {
         VersionListener.init(provider.supabase)
-        console.log('✅ VersionListener initialisé (WebSocket)')
-      } else {
-        console.warn('⚠️ VersionListener non trouvé - MAJ WebSocket désactivé');
       }
     } else if (config.type === 'infomaniak') {
       provider = new InfomaniakProvider(config.apiUrl, config.apiKey)

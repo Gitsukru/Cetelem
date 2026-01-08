@@ -7,8 +7,6 @@
  * We detect foreground return and reconnect + check for missed updates.
  */
 
-console.log('📦 version-listener.js chargé');
-
 const VersionListener = {
     subscription: null,
     currentVersion: null,
@@ -29,7 +27,6 @@ const VersionListener = {
         this.supabase = supabaseClient;
         this.subscribeToVersionUpdates();
         this.setupVisibilityHandler();
-        console.log('🔌 VersionListener: WebSocket initialisé');
     },
 
     /**
@@ -44,7 +41,6 @@ const VersionListener = {
 
         this.visibilityHandler = () => {
             if (document.visibilityState === 'visible') {
-                console.log('🔌 VersionListener: App revenue au premier plan - Vérification MAJ...');
                 this.handleForegroundReturn();
             }
         };
@@ -54,7 +50,6 @@ const VersionListener = {
         // iOS PWA: Also listen for pageshow (fired when navigating back to cached page)
         window.addEventListener('pageshow', (event) => {
             if (event.persisted) {
-                console.log('🔌 VersionListener: Page restaurée depuis bfcache - Reconnexion...');
                 this.handleForegroundReturn();
             }
         });
@@ -87,10 +82,6 @@ const VersionListener = {
                 .single();
 
             if (!error && data?.value && data.value !== this.currentVersion) {
-                console.log('🚀 VersionListener: MAJ détectée au retour!', {
-                    old: this.currentVersion,
-                    new: data.value
-                });
                 this.currentVersion = data.value;
                 this.showUpdateNotification(data.value);
                 this.isReconnecting = false;
@@ -133,13 +124,7 @@ const VersionListener = {
                     },
                     (payload) => this.handleVersionUpdate(payload)
                 )
-                .subscribe((status) => {
-                    if (status === 'SUBSCRIBED') {
-                        console.log('🔌 VersionListener: WebSocket reconnecté');
-                    } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
-                        console.warn('🔌 VersionListener: Channel status:', status);
-                    }
-                });
+                .subscribe();
 
         } catch (err) {
             console.error('VersionListener: Reconnect error:', err);
@@ -160,17 +145,8 @@ const VersionListener = {
                 .eq('key', 'app_version')
                 .single();
 
-            if (error) {
-                // Table doesn't exist yet - that's OK, still subscribe
-                if (error.code === 'PGRST116' || error.code === '42P01') {
-                    console.log('🔌 VersionListener: Table app_config non trouvée (normal si pas encore créée)');
-                } else {
-                    console.error('VersionListener: Error fetching version:', error);
-                }
-                // DON'T return - continue to subscribe anyway!
-            } else {
-                this.currentVersion = data?.value;
-                console.log('🔌 VersionListener: Version actuelle =', this.currentVersion);
+            if (!error && data?.value) {
+                this.currentVersion = data.value;
             }
 
             // ALWAYS subscribe to changes (even if initial fetch failed)
@@ -186,13 +162,7 @@ const VersionListener = {
                     },
                     (payload) => this.handleVersionUpdate(payload)
                 )
-                .subscribe((status) => {
-                    if (status === 'SUBSCRIBED') {
-                        console.log('🔌 VersionListener: WebSocket connecté - En attente de MAJ');
-                    } else if (status === 'CHANNEL_ERROR') {
-                        console.error('🔌 VersionListener: Erreur WebSocket channel');
-                    }
-                });
+                .subscribe();
 
         } catch (error) {
             console.error('VersionListener: Subscription error:', error);
@@ -209,11 +179,6 @@ const VersionListener = {
         if (!newVersion || newVersion === this.currentVersion) {
             return;
         }
-
-        console.log('🚀 VersionListener: NOUVELLE VERSION DÉTECTÉE!', {
-            old: this.currentVersion,
-            new: newVersion
-        });
 
         this.currentVersion = newVersion;
         this.showUpdateNotification(newVersion);
@@ -301,9 +266,7 @@ const VersionListener = {
     /**
      * Apply the update - clear caches and reload
      */
-    async applyUpdate(newVersion) {
-        console.log('🔄 Applying update to version:', newVersion);
-
+    async applyUpdate(_newVersion) {
         // Remove banner
         document.getElementById('versionUpdateBanner')?.remove();
 
@@ -322,7 +285,6 @@ const VersionListener = {
             if ('caches' in window) {
                 const cacheNames = await caches.keys();
                 await Promise.all(cacheNames.map(name => caches.delete(name)));
-                console.log('🧹 Caches cleared');
             }
 
             // Unregister service worker to force fresh install
@@ -330,7 +292,6 @@ const VersionListener = {
                 const registration = await navigator.serviceWorker.getRegistration();
                 if (registration) {
                     await registration.unregister();
-                    console.log('🧹 Service Worker unregistered');
                 }
             }
 
