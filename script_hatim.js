@@ -1261,7 +1261,8 @@ Linke tıklayın ve uygulamayı yükleyin
         document.getElementById('releaseUnitBtn').onclick = async () => {
             document.getElementById('unreadOptionsModal')?.remove();
             try {
-                await this.provider.releaseUnit(participationId);
+                const deviceId = this.provider.getDeviceId();
+                await this.provider.releaseUnit(participationId, deviceId);
                 showCustomAlert('✓ Birim serbest bırakıldı', 'success', 2000);
                 await this.refreshCurrentHatim();
             } catch (error) {
