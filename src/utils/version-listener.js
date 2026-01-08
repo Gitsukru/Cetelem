@@ -153,7 +153,7 @@ const VersionListener = {
         if (!this.supabase) return;
 
         try {
-            // Get current version first
+            // Get current version first (but don't block subscription if this fails)
             const { data, error } = await this.supabase
                 .from('app_config')
                 .select('value')
@@ -161,19 +161,19 @@ const VersionListener = {
                 .single();
 
             if (error) {
-                // Table doesn't exist yet - that's OK
+                // Table doesn't exist yet - that's OK, still subscribe
                 if (error.code === 'PGRST116' || error.code === '42P01') {
                     console.log('🔌 VersionListener: Table app_config non trouvée (normal si pas encore créée)');
-                    return;
+                } else {
+                    console.error('VersionListener: Error fetching version:', error);
                 }
-                console.error('VersionListener: Error fetching version:', error);
-                return;
+                // DON'T return - continue to subscribe anyway!
+            } else {
+                this.currentVersion = data?.value;
+                console.log('🔌 VersionListener: Version actuelle =', this.currentVersion);
             }
 
-            this.currentVersion = data?.value;
-            console.log('🔌 VersionListener: Version actuelle =', this.currentVersion);
-
-            // Subscribe to changes
+            // ALWAYS subscribe to changes (even if initial fetch failed)
             this.subscription = this.supabase
                 .channel('app_version_updates')
                 .on(
@@ -189,6 +189,8 @@ const VersionListener = {
                 .subscribe((status) => {
                     if (status === 'SUBSCRIBED') {
                         console.log('🔌 VersionListener: WebSocket connecté - En attente de MAJ');
+                    } else if (status === 'CHANNEL_ERROR') {
+                        console.error('🔌 VersionListener: Erreur WebSocket channel');
                     }
                 });
 
