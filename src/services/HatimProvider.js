@@ -162,8 +162,6 @@ class HatimProvider {
      * @param {string} deviceId - ID du device (verification)
      */
     async releaseUnit(participationId, deviceId) {
-        console.log('Release unit:', { participationId, deviceId });
-
         const { data, error } = await this.supabase
             .from('hatim_participations')
             .delete()
@@ -178,23 +176,8 @@ class HatimProvider {
 
         // Verifier qu'une ligne a ete supprimee
         if (!data || data.length === 0) {
-            // Debug: vérifier si la participation existe avec un autre deviceId
-            const { data: existing } = await this.supabase
-                .from('hatim_participations')
-                .select('device_id')
-                .eq('id', participationId)
-                .single();
-
-            if (existing) {
-                console.error('DeviceId mismatch:', {
-                    expected: deviceId,
-                    actual: existing.device_id
-                });
-            }
             throw new Error('Bu birimi sadece sahibi birakabilir');
         }
-
-        console.log('Unite liberee avec succes');
     }
 
     /**
