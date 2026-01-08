@@ -1638,9 +1638,9 @@ Linke tıklayın ve uygulamayı yükleyin
         // Empty view - user should create or join a hatim via sidebar buttons
         container.innerHTML = `
             <div class="hatim-main-view">
-                <div style="text-align: center; padding: 40px 20px; color: #64748b;">
-                    <div style="font-size: 48px; margin-bottom: 16px;">📖</div>
-                    <p style="margin: 0; font-size: 14px;">Kur'an hatmi başlatmak veya katılmak için soldaki butonları kullanın.</p>
+                <div style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; margin: 20px;">
+                    <div style="font-size: 72px; margin-bottom: 20px;">📖</div>
+                    <p style="margin: 0; font-size: 18px; color: white; font-weight: 500;">Kur'an hatmi başlatmak veya katılmak için soldaki butonları kullanın.</p>
                 </div>
             </div>
         `;
