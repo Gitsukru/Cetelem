@@ -772,6 +772,31 @@ Linke tıklayın ve uygulamayı yükleyin
         }
     },
 
+    /**
+     * Mark hatim as finished (no more rounds)
+     */
+    async finishHatim(hatimId) {
+        // Just show a confirmation that the hatim is finished
+        // The hatim stays on current round, people can still mark as read
+        const modal = document.createElement('div');
+        modal.innerHTML = `
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                <div style="background: white; padding: 24px; border-radius: 16px; max-width: 320px; margin: 20px; text-align: center;">
+                    <div style="font-size: 40px; margin-bottom: 12px;">✅</div>
+                    <h3 style="margin: 0 0 12px; color: #1f2937;">Hatim Paylaşımı Tamamlandı</h3>
+                    <p style="margin: 0 0 20px; color: #6b7280; font-size: 14px;">
+                        Yeni tur açılmayacak. Katılımcılar okuma durumlarını güncellemeye devam edebilir.
+                    </p>
+                    <button onclick="this.closest('div[style*=fixed]').remove()" style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        Tamam
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        showCustomAlert('✅ Hatim paylaşımı tamamlandı', 'success', 2500);
+    },
+
     // ========================================
     // VUE DE PARTICIPATION
     // ========================================
@@ -815,6 +840,9 @@ Linke tıklayın ve uygulamayı yükleyin
 
         // Current user's device ID
         const myDeviceId = this.provider.getDeviceId();
+
+        // Check if current user is the creator
+        const isCreator = hatim.created_by_device === myDeviceId;
 
         // Deadline status (only need 'passed' for warning)
         let deadlineStatus = null;
@@ -916,17 +944,23 @@ Linke tıklayın ve uygulamayı yükleyin
                             <span>⏳ ${available} müsait</span>
                             ${hatim.current_round > 1 ? `<span style="color: #10b981;">🏆 ${hatim.current_round - 1} tur tamamlandı</span>` : ''}
                         </div>
-                        ${allCompleted ? `
-                        <div style="margin-top: 12px; padding: 12px; background: #dcfce7; border-radius: 8px; border: 1px solid #10b981;">
+                        ${available === 0 && isCreator ? `
+                        <div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-radius: 8px; border: 1px solid #3b82f6;">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <span style="font-size: 20px;">🎉</span>
-                                <span style="font-weight: 600; color: #166534;">Bu tur tamamlandı!</span>
+                                <span style="font-size: 20px;">📋</span>
+                                <span style="font-weight: 600; color: #1e40af;">Tüm ${unitLabel}ler dağıtıldı!</span>
                             </div>
-                            <p style="margin: 0 0 12px; font-size: 13px; color: #166534;">Tüm ${unitLabel}ler okundu. Yeni tur başlatabilirsiniz.</p>
-                            <button onclick="HatimManager.startNewRound('${safeId(hatim.id)}')"
-                                    style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
-                                🔄 Tur ${hatim.current_round + 1} Başlat
-                            </button>
+                            <p style="margin: 0 0 12px; font-size: 13px; color: #1e40af;">${completed}/${totalUnits} okundu. Paylaşıma devam etmek ister misiniz?</p>
+                            <div style="display: flex; gap: 8px;">
+                                <button onclick="HatimManager.startNewRound('${safeId(hatim.id)}')"
+                                        style="flex: 1; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                    🔄 Devam (Tur ${hatim.current_round + 1})
+                                </button>
+                                <button onclick="HatimManager.finishHatim('${safeId(hatim.id)}')"
+                                        style="flex: 1; padding: 12px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                    ✓ Bitti
+                                </button>
+                            </div>
                         </div>
                         ` : ''}
                     </div>

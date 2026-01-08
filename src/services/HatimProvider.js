@@ -489,18 +489,17 @@ class HatimProvider {
             return hatim.current_round;
         }
 
-        // Verifier si toutes les unites sont LUES (is_completed = true) dans le round actuel
-        const { count: completedCount } = await this.supabase
+        // Verifier si toutes les unites sont DISTRIBUÉES dans le round actuel
+        const { count: claimedCount } = await this.supabase
             .from('hatim_participations')
             .select('*', { count: 'exact', head: true })
             .eq('hatim_id', hatimId)
-            .eq('round_number', hatim.current_round)
-            .eq('is_completed', true);
+            .eq('round_number', hatim.current_round);
 
-        // Si pas toutes les unites sont lues, on ne peut pas demarrer un nouveau round
-        if (completedCount < hatim.total_units) {
-            const remaining = hatim.total_units - completedCount;
-            throw new Error(`Yeni tur başlatılamaz. ${remaining} birim henüz okunmadı.`);
+        // Si pas toutes les unites sont distribuées, on ne peut pas demarrer un nouveau round
+        if (claimedCount < hatim.total_units) {
+            const remaining = hatim.total_units - claimedCount;
+            throw new Error(`Yeni tur başlatılamaz. ${remaining} birim henüz dağıtılmadı.`);
         }
 
         const newRound = hatim.current_round + 1;
