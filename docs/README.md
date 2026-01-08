@@ -18,6 +18,7 @@ Guides pratiques pour différents aspects du projet.
 - `NETLIFY_SETUP.md` - Déploiement sur Netlify
 - `SUPABASE_QUICKSTART.md` - Démarrage rapide avec Supabase
 - `SUPABASE_COSTS_ANALYSIS.md` - Analyse des coûts Supabase
+- `WEBSOCKET_UPDATE_SYSTEM.md` - Système de MAJ automatique via WebSocket
 - `VITE_MIGRATION.md` - Migration vers Vite
 - `REACT_MIGRATION_GUIDE.md` - Guide de migration React (futur)
 - `REFACTORING_CSS.md` - Plan de refactorisation CSS
@@ -56,4 +57,4 @@ Documentation sur la sécurité de l'application.
 
 ## 🔄 Mise à jour
 
-Cette documentation est mise à jour à chaque version majeure. Date de dernière mise à jour : **14 octobre 2025**.
+Cette documentation est mise à jour à chaque version majeure. Date de dernière mise à jour : **8 janvier 2026**.
