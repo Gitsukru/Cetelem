@@ -976,7 +976,7 @@ Linke tıklayın ve uygulamayı yükleyin
             // Get cüz content info (only for kuran)
             const cuzInfo = isKuran && i <= 30 ? KURAN_CUZLER[i - 1] : null;
             const contentText = cuzInfo ? cuzInfo.icerik : '';
-            const pageText = cuzInfo ? `s.${cuzInfo.sayfa}` : '';
+            const pageText = cuzInfo ? `Sayfa ${cuzInfo.sayfa}` : '';
 
             if (isMine) {
                 // MINE - Interactive cell with toggle and release
@@ -989,11 +989,11 @@ Linke tıklayın ve uygulamayı yükleyin
                          aria-label="${unitLabel} ${i} - ${isCompleted ? 'Okundu' : 'Okuyor'}">
                         <div class="hatim-cuz-header">
                             <span class="hatim-cuz-number">${i}</span>
-                            <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${isCompleted ? '✓' : '📖'}</span>
+                            <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 10)}</span>
+                            <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${isCompleted ? '✓' : 'Okunuyor..'}</span>
                         </div>
                         ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
                         <div class="hatim-cuz-footer">
-                            <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 8)}</span>
                             ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
                             <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(participation.id)}', ${i})" title="Vazgeç">✕</button>
                         </div>
@@ -1002,14 +1002,16 @@ Linke tıklayın ve uygulamayı yükleyin
             } else if (participation) {
                 // Taken by others - show with name and content
                 const cellClass = participation.is_completed ? 'completed' : 'taken';
+                const statusText = participation.is_completed ? '✓' : 'Okunuyor..';
                 html += `
                     <div class="hatim-cuz-cell ${cellClass}" title="${escapeHtml(participation.participant_name)}">
                         <div class="hatim-cuz-header">
                             <span class="hatim-cuz-number">${i}</span>
+                            <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 10)}</span>
+                            <span class="hatim-cuz-status ${participation.is_completed ? 'completed' : 'reading'}">${statusText}</span>
                         </div>
                         ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
                         <div class="hatim-cuz-footer">
-                            <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 8)}</span>
                             ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
                         </div>
                     </div>
