@@ -186,7 +186,9 @@
     background: white;
     border-bottom: 1px solid #f1f5f9;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 .hatim-sidebar-item:last-child {
@@ -197,22 +199,23 @@
     background: #f8fafc;
 }
 
-.hatim-sidebar-item.active,
-.hatim-sidebar-item.active:hover,
-.hatim-sidebar-item.active:active,
-.hatim-sidebar-item.active:focus {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.18) 0%, rgba(118, 75, 162, 0.15) 100%) !important;
-    border-left: 3px solid #667eea;
-    box-shadow: inset 0 0 0 1px rgba(102, 126, 234, 0.15);
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    user-select: none;
+.hatim-sidebar-item:active {
+    background: #f1f5f9;
 }
 
-/* Fix for all sidebar items tap highlight */
-.hatim-sidebar-item {
-    -webkit-tap-highlight-color: transparent;
+.hatim-sidebar-item.active {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.20) 100%) !important;
+    border-left: 3px solid #667eea !important;
+    box-shadow: inset 0 0 0 1px rgba(102, 126, 234, 0.15) !important;
+}
+
+.hatim-sidebar-item.active:hover,
+.hatim-sidebar-item.active:active,
+.hatim-sidebar-item.active:focus,
+.hatim-sidebar-item.active:focus-visible {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.20) 100%) !important;
+    border-left: 3px solid #667eea !important;
+    outline: none !important;
 }
 
 .hatim-sidebar-item-header {
