@@ -860,37 +860,6 @@ Linke tıklayın ve uygulamayı yükleyin
                 </div>
                 ` : ''}
 
-                <!-- Progress -->
-                <div class="hatim-progress">
-                    <div class="hatim-card-title">
-                        <span>📊</span> İlerleme
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                        <div class="hatim-progress-bar">
-                            <div style="width: ${progressPercent}%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s;"></div>
-                        </div>
-                        <span style="font-weight: 600; color: #334155; font-size: 14px;">${progressPercent}%</span>
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #64748b;">
-                        <span>✅ ${claimed} alındı</span>
-                        <span>⏳ ${available} kaldı</span>
-                        ${hatim.current_round > 1 ? `<span style="color: #10b981;">🏆 ${hatim.current_round - 1} tur tamamlandı</span>` : ''}
-                    </div>
-                    ${available === 0 ? `
-                    <div style="margin-top: 12px; padding: 12px; background: #dcfce7; border-radius: 8px; border: 1px solid #10b981;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <span style="font-size: 20px;">🎉</span>
-                            <span style="font-weight: 600; color: #166534;">Bu tur tamamlandı!</span>
-                        </div>
-                        <p style="margin: 0 0 12px; font-size: 13px; color: #166534;">Tüm ${unitLabel}ler alındı. Yeni tur başlatabilirsiniz.</p>
-                        <button onclick="HatimManager.startNewRound('${safeId(hatim.id)}')"
-                                style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
-                            🔄 Tur ${hatim.current_round + 1} Başlat
-                        </button>
-                    </div>
-                    ` : ''}
-                </div>
-
                 <!-- CARD 3b: Previous Rounds History -->
                 ${hatim.current_round > 1 ? `
                 <details class="hatim-previous-rounds">
@@ -930,6 +899,35 @@ Linke tıklayın ve uygulamayı yükleyin
                         </svg>
                         <span>📋</span> ${unitLabel} Seç ${hatim.current_round > 1 ? `<span style="font-weight: 600; color: #667eea; font-size: 11px; background: rgba(102,126,234,0.1); padding: 2px 6px; border-radius: 4px; margin-left: 4px;">Tur ${hatim.current_round}</span>` : ''}<span style="font-weight: 400; color: #64748b; font-size: 12px; margin-left: 6px;">(${available} müsait)</span>
                     </summary>
+
+                    <!-- Progress -->
+                    <div class="hatim-progress">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                            <div class="hatim-progress-bar">
+                                <div style="width: ${progressPercent}%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s;"></div>
+                            </div>
+                            <span style="font-weight: 600; color: #334155; font-size: 14px;">${progressPercent}%</span>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #64748b;">
+                            <span>✅ ${claimed} alındı</span>
+                            <span>⏳ ${available} kaldı</span>
+                            ${hatim.current_round > 1 ? `<span style="color: #10b981;">🏆 ${hatim.current_round - 1} tur tamamlandı</span>` : ''}
+                        </div>
+                        ${available === 0 ? `
+                        <div style="margin-top: 12px; padding: 12px; background: #dcfce7; border-radius: 8px; border: 1px solid #10b981;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <span style="font-size: 20px;">🎉</span>
+                                <span style="font-weight: 600; color: #166534;">Bu tur tamamlandı!</span>
+                            </div>
+                            <p style="margin: 0 0 12px; font-size: 13px; color: #166534;">Tüm ${unitLabel}ler alındı. Yeni tur başlatabilirsiniz.</p>
+                            <button onclick="HatimManager.startNewRound('${safeId(hatim.id)}')"
+                                    style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                🔄 Tur ${hatim.current_round + 1} Başlat
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
+
                     <div class="hatim-grid-content">
                         <div class="hatim-cuz-grid ${isKuran ? '' : 'cevsen'}">
         `;

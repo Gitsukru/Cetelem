@@ -404,13 +404,10 @@
     gap: 10px;
 }
 
-/* ===== PROGRESS SECTION ===== */
+/* ===== PROGRESS SECTION (inside Cüz Seç card) ===== */
 .hatim-progress {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .hatim-progress-bar {
