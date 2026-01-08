@@ -1,0 +1,32 @@
+name: Notify App Update
+
+  on:
+    push:
+      branches:
+        - main
+    workflow_dispatch:
+
+  jobs:
+    notify-users:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Wait for Netlify deployment
+          run: sleep 60
+
+        - name: Generate version string
+          id: version
+          run: |
+            VERSION="$(date +'%Y.%m.%d')-${GITHUB_SHA::7}"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+        - name: Update app_config in Supabase
+          env:
+            SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+            SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          run: |
+            curl -X PATCH \
+              "${SUPABASE_URL}/rest/v1/app_config?key=eq.app_version" \
+              -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+              -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
+              -H "Content-Type: application/json" \
+              -d '{"value": "${{ steps.version.outputs.version }}", "updated_at": "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"}'
