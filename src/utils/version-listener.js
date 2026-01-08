@@ -189,17 +189,8 @@ const VersionListener = {
      * @param {string} newVersion - New version string
      */
     showUpdateNotification(newVersion) {
-        // Check if we're in PWA mode
-        const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
-                      window.navigator.standalone === true;
-
-        if (isPWA) {
-            // PWA: Show persistent banner
-            this.showPWAUpdateBanner(newVersion);
-        } else {
-            // Browser: Auto-apply update
-            this.applyUpdate(newVersion);
-        }
+        // Show banner for all users (PWA and desktop)
+        this.showPWAUpdateBanner(newVersion);
     },
 
     /**
