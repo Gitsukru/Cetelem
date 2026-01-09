@@ -374,34 +374,21 @@ class HatimProvider {
 
         const channel = this.supabase
             .channel(`hatim_${hatimId}`)
-            // Ecouter INSERT et UPDATE avec filtre
+            // Ecouter les changements de participations (INSERT, UPDATE)
             .on(
                 'postgres_changes',
                 {
-                    event: 'INSERT',
+                    event: '*',
                     schema: 'public',
                     table: 'hatim_participations',
                     filter: `hatim_id=eq.${hatimId}`
                 },
                 (payload) => {
-                    console.log('Hatim participation INSERT:', payload.eventType);
+                    console.log('Hatim participation update:', payload.eventType);
                     callback(payload);
                 }
             )
-            .on(
-                'postgres_changes',
-                {
-                    event: 'UPDATE',
-                    schema: 'public',
-                    table: 'hatim_participations',
-                    filter: `hatim_id=eq.${hatimId}`
-                },
-                (payload) => {
-                    console.log('Hatim participation UPDATE:', payload.eventType);
-                    callback(payload);
-                }
-            )
-            // Broadcast pour les DELETE (plus fiable)
+            // Broadcast pour les DELETE (plus fiable que postgres_changes)
             .on(
                 'broadcast',
                 { event: 'unit_released' },
