@@ -17,7 +17,7 @@ if [ -n "$CHANGED_FILES" ]; then
 
     # Exécuter le script de mise à jour
     if command -v node &> /dev/null; then
-        node scripts/update-sw-version.js
+        node scripts/update-sw-version.cjs
     else
         echo "⚠️ Node.js non trouvé, mise à jour manuelle du sw.js nécessaire"
     fi

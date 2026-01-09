@@ -681,7 +681,7 @@
   - Script Node.js qui génère la version: date + hash git
 
   Fichiers :
-  - scripts/update-sw-version.js - Script de mise à jour
+  - scripts/update-sw-version.cjs - Script de mise à jour (CommonJS)
   - .githooks/pre-commit - Hook git automatique
 
   Installation (une seule fois) :
@@ -700,7 +700,7 @@
     Exemple: 2026-01-09-97ee81f
 
   Test Manuel :
-    node scripts/update-sw-version.js
+    node scripts/update-sw-version.cjs
 
   8.2 Mode Offline
 
