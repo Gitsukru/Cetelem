@@ -43,6 +43,40 @@ for (let i = 1; i <= 100; i++) {
     CEVSEN_BABLAR.push({ bab: i });
 }
 
+/**
+ * Helper function to get page range for a cüz
+ * @param {number} cuzNumber - Cuz number (1-30)
+ * @param {number|null} halfPosition - null=full, 1=first half, 2=second half
+ * @returns {Object} {start, end} page numbers
+ */
+function getCuzPageRange(cuzNumber, halfPosition = null) {
+    if (cuzNumber < 1 || cuzNumber > 30) {
+        return { start: 0, end: 0 };
+    }
+
+    const cuzInfo = KURAN_CUZLER[cuzNumber - 1];
+    const startPage = cuzInfo.sayfa;
+
+    // Calculate end page (next cuz start - 1, or 604 for last cuz)
+    const nextCuzStart = cuzNumber < 30 ? KURAN_CUZLER[cuzNumber].sayfa : 605;
+    const endPage = nextCuzStart - 1;
+
+    // Calculate total pages and midpoint
+    const totalPages = endPage - startPage + 1;
+    const midPage = startPage + Math.floor(totalPages / 2) - 1;
+
+    if (halfPosition === 1) {
+        // First half: start to mid
+        return { start: startPage, end: midPage };
+    } else if (halfPosition === 2) {
+        // Second half: mid+1 to end
+        return { start: midPage + 1, end: endPage };
+    }
+
+    // Full cuz
+    return { start: startPage, end: endPage };
+}
+
 const HatimManager = {
     currentView: 'kuran', // 'kuran', 'dua', 'cevsen'
     provider: null,
@@ -825,16 +859,33 @@ Linke tıklayın ve uygulamayı yükleyin
             }
         }
 
-        const claimedMap = new Map(participations.map(p => [p.unit_number, p]));
+        // Map unit_number to array of participations (for half cüz support)
+        const claimedMap = new Map();
+        participations.forEach(p => {
+            if (!claimedMap.has(p.unit_number)) {
+                claimedMap.set(p.unit_number, []);
+            }
+            claimedMap.get(p.unit_number).push(p);
+        });
+
+        // Store for use by showClaimModal
+        this.currentParticipations = participations;
 
         const isKuran = hatim.type === 'kuran';
         const totalUnits = isKuran ? 30 : 100;
         const unitLabel = isKuran ? 'Cüz' : 'Bab';
 
-        // Progress
-        const claimed = participations.length;
-        const completed = participations.filter(p => p.is_completed).length;
-        const available = totalUnits - claimed;
+        // Progress - count full units as 1, halves as 0.5
+        let claimedUnits = 0;
+        let completedUnits = 0;
+        participations.forEach(p => {
+            const weight = p.half_position ? 0.5 : 1;
+            claimedUnits += weight;
+            if (p.is_completed) completedUnits += weight;
+        });
+        const claimed = Math.floor(claimedUnits);
+        const completed = Math.floor(completedUnits);
+        const available = totalUnits - Math.ceil(claimedUnits);
         const progressPercent = Math.round((claimed / totalUnits) * 100);
         const allCompleted = completed === totalUnits; // All units READ, not just claimed
 
@@ -971,50 +1022,118 @@ Linke tıklayın ve uygulamayı yükleyin
                         <div class="hatim-cuz-grid ${isKuran ? '' : 'cevsen'}">
         `;
 
+        // Helper to render a half cell
+        const renderHalfCell = (p, halfNum, unitNum, pageRange, isMine) => {
+            const halfLabel = halfNum === 1 ? 'İlk' : 'Son';
+            if (p) {
+                const isCompleted = p.is_completed;
+                const cellClass = isMine ? `mine ${isCompleted ? 'read' : 'reading'}` : (isCompleted ? 'completed' : 'taken');
+                return `
+                    <div class="hatim-half-cell ${cellClass}"
+                         ${isMine ? `onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!isCompleted}, ${unitNum})"` : ''}
+                         title="${escapeHtml(p.participant_name)}">
+                        <div class="hatim-half-label">${halfLabel} 10</div>
+                        <div class="hatim-half-pages">S. ${pageRange.start}-${pageRange.end}</div>
+                        <div class="hatim-half-name">${escapeHtml(p.participant_name).substring(0, 8)}</div>
+                        <div class="hatim-half-status ${isCompleted ? 'completed' : ''}">${isCompleted ? '✓' : '...'}</div>
+                        ${isMine ? `<button class="hatim-half-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(p.id)}', ${unitNum})" title="Vazgeç">✕</button>` : ''}
+                    </div>
+                `;
+            } else {
+                // Available half
+                if (deadlineStatus === 'passed') {
+                    return `
+                        <div class="hatim-half-cell" style="opacity: 0.5; cursor: not-allowed;">
+                            <div class="hatim-half-label">${halfLabel} 10</div>
+                            <div class="hatim-half-pages">S. ${pageRange.start}-${pageRange.end}</div>
+                            <div class="hatim-half-status">-</div>
+                        </div>
+                    `;
+                }
+                return `
+                    <div class="hatim-half-cell available"
+                         onclick="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${unitNum}, '${unitLabel}')"
+                         tabindex="0" role="button">
+                        <div class="hatim-half-label">${halfLabel} 10</div>
+                        <div class="hatim-half-pages">S. ${pageRange.start}-${pageRange.end}</div>
+                        <div class="hatim-half-status available-text">Müsait</div>
+                    </div>
+                `;
+            }
+        };
+
         // Render units as numbered grid
         for (let i = 1; i <= totalUnits; i++) {
-            const participation = claimedMap.get(i);
-            const isMine = participation && participation.device_id === myDeviceId;
+            const unitParticipations = claimedMap.get(i) || [];
             // Get cüz content info (only for kuran)
             const cuzInfo = isKuran && i <= 30 ? KURAN_CUZLER[i - 1] : null;
             const contentText = cuzInfo ? cuzInfo.icerik : '';
-            const pageText = cuzInfo ? `Sayfa ${cuzInfo.sayfa}` : '';
+            const fullPageRange = getCuzPageRange(i, null);
+            const pageText = cuzInfo ? `Sayfa ${fullPageRange.start}-${fullPageRange.end}` : '';
 
-            if (isMine) {
-                // MINE - Interactive cell with toggle and release
-                const isCompleted = participation.is_completed;
-                const statusClass = isCompleted ? 'read' : 'reading';
+            // Check if any participation is a full claim (half_position = null)
+            const fullClaim = unitParticipations.find(p => p.half_position === null);
+            const firstHalf = unitParticipations.find(p => p.half_position === 1);
+            const secondHalf = unitParticipations.find(p => p.half_position === 2);
+            const hasHalfClaims = firstHalf || secondHalf;
+
+            if (fullClaim) {
+                // Full cüz taken - render as single cell
+                const isMine = fullClaim.device_id === myDeviceId;
+                const isCompleted = fullClaim.is_completed;
+
+                if (isMine) {
+                    const statusClass = isCompleted ? 'read' : 'reading';
+                    html += `
+                        <div class="hatim-cuz-cell mine ${statusClass}"
+                             onclick="HatimManager.toggleReadStatus('${safeId(fullClaim.id)}', ${!!isCompleted}, ${i})"
+                             tabindex="0" role="button"
+                             aria-label="${unitLabel} ${i} - ${isCompleted ? 'Okundu' : 'Okuyor'}">
+                            <div class="hatim-cuz-header">
+                                <span class="hatim-cuz-number">${i}</span>
+                                <span class="hatim-cuz-name">${escapeHtml(fullClaim.participant_name).substring(0, 10)}</span>
+                                <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${isCompleted ? '✓' : 'Okunuyor..'}</span>
+                            </div>
+                            ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                            <div class="hatim-cuz-footer">
+                                ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                                <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(fullClaim.id)}', ${i})" title="Vazgeç">✕</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const cellClass = isCompleted ? 'completed' : 'taken';
+                    const statusText = isCompleted ? '✓' : 'Okunuyor..';
+                    html += `
+                        <div class="hatim-cuz-cell ${cellClass}" title="${escapeHtml(fullClaim.participant_name)}">
+                            <div class="hatim-cuz-header">
+                                <span class="hatim-cuz-number">${i}</span>
+                                <span class="hatim-cuz-name">${escapeHtml(fullClaim.participant_name).substring(0, 10)}</span>
+                                <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${statusText}</span>
+                            </div>
+                            ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                            <div class="hatim-cuz-footer">
+                                ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+            } else if (hasHalfClaims) {
+                // Split cell - at least one half is claimed
+                const firstHalfRange = getCuzPageRange(i, 1);
+                const secondHalfRange = getCuzPageRange(i, 2);
+                const isFirstMine = firstHalf && firstHalf.device_id === myDeviceId;
+                const isSecondMine = secondHalf && secondHalf.device_id === myDeviceId;
+
                 html += `
-                    <div class="hatim-cuz-cell mine ${statusClass}"
-                         onclick="HatimManager.toggleReadStatus('${safeId(participation.id)}', ${!!isCompleted}, ${i})"
-                         tabindex="0" role="button"
-                         aria-label="${unitLabel} ${i} - ${isCompleted ? 'Okundu' : 'Okuyor'}">
+                    <div class="hatim-cuz-cell split">
                         <div class="hatim-cuz-header">
                             <span class="hatim-cuz-number">${i}</span>
-                            <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 10)}</span>
-                            <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${isCompleted ? '✓' : 'Okunuyor..'}</span>
+                            <span class="hatim-cuz-name">${contentText || unitLabel}</span>
                         </div>
-                        ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
-                        <div class="hatim-cuz-footer">
-                            ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
-                            <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(participation.id)}', ${i})" title="Vazgeç">✕</button>
-                        </div>
-                    </div>
-                `;
-            } else if (participation) {
-                // Taken by others - show with name and content
-                const cellClass = participation.is_completed ? 'completed' : 'taken';
-                const statusText = participation.is_completed ? '✓' : 'Okunuyor..';
-                html += `
-                    <div class="hatim-cuz-cell ${cellClass}" title="${escapeHtml(participation.participant_name)}">
-                        <div class="hatim-cuz-header">
-                            <span class="hatim-cuz-number">${i}</span>
-                            <span class="hatim-cuz-name">${escapeHtml(participation.participant_name).substring(0, 10)}</span>
-                            <span class="hatim-cuz-status ${participation.is_completed ? 'completed' : 'reading'}">${statusText}</span>
-                        </div>
-                        ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
-                        <div class="hatim-cuz-footer">
-                            ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                        <div class="hatim-split-container">
+                            ${renderHalfCell(firstHalf, 1, i, firstHalfRange, isFirstMine)}
+                            ${renderHalfCell(secondHalf, 2, i, secondHalfRange, isSecondMine)}
                         </div>
                     </div>
                 `;
@@ -1200,10 +1319,26 @@ Linke tıklayın ve uygulamayı yükleyin
             // Render ACTIVE rounds as full grid sections (like current round)
             let activeHtml = '';
             for (const { round, participations } of activeRounds) {
-                const claimedMap = new Map(participations.map(p => [p.unit_number, p]));
-                const claimed = participations.length;
-                const completed = participations.filter(p => p.is_completed).length;
-                const available = totalUnits - claimed;
+                // Map unit_number to array of participations (for half cüz support)
+                const claimedMap = new Map();
+                participations.forEach(p => {
+                    if (!claimedMap.has(p.unit_number)) {
+                        claimedMap.set(p.unit_number, []);
+                    }
+                    claimedMap.get(p.unit_number).push(p);
+                });
+
+                // Count units (half = 0.5)
+                let claimedUnits = 0;
+                let completedUnits = 0;
+                participations.forEach(p => {
+                    const weight = p.half_position ? 0.5 : 1;
+                    claimedUnits += weight;
+                    if (p.is_completed) completedUnits += weight;
+                });
+                const claimed = Math.floor(claimedUnits);
+                const completed = Math.floor(completedUnits);
+                const available = totalUnits - Math.ceil(claimedUnits);
                 const progressPercent = Math.round((claimed / totalUnits) * 100);
 
                 activeHtml += `
@@ -1235,47 +1370,98 @@ Linke tıklayın ve uygulamayı yükleyin
                             <div class="hatim-cuz-grid ${isKuran ? '' : 'cevsen'}">
                 `;
 
-                // Render each cell
+                // Render each cell (with half cüz support)
                 for (let i = 1; i <= totalUnits; i++) {
-                    const participation = claimedMap.get(i);
-                    const isMine = participation && participation.device_id === myDeviceId;
+                    const unitParticipations = claimedMap.get(i) || [];
                     const cuzInfo = isKuran && i <= 30 ? KURAN_CUZLER[i - 1] : null;
                     const contentText = cuzInfo ? cuzInfo.icerik : '';
-                    const pageText = cuzInfo ? `Sayfa ${cuzInfo.sayfa}` : '';
+                    const fullPageRange = getCuzPageRange(i, null);
+                    const pageText = cuzInfo ? `Sayfa ${fullPageRange.start}-${fullPageRange.end}` : '';
 
-                    if (isMine) {
-                        const isCompleted = participation.is_completed;
-                        const statusClass = isCompleted ? 'read' : 'reading';
+                    const fullClaim = unitParticipations.find(p => p.half_position === null);
+                    const firstHalf = unitParticipations.find(p => p.half_position === 1);
+                    const secondHalf = unitParticipations.find(p => p.half_position === 2);
+                    const hasHalfClaims = firstHalf || secondHalf;
+
+                    if (fullClaim) {
+                        const isMine = fullClaim.device_id === myDeviceId;
+                        const isCompleted = fullClaim.is_completed;
+
+                        if (isMine) {
+                            const statusClass = isCompleted ? 'read' : 'reading';
+                            activeHtml += `
+                                <div class="hatim-cuz-cell mine ${statusClass}"
+                                     onclick="HatimManager.toggleReadStatus('${safeId(fullClaim.id)}', ${!!isCompleted}, ${i})"
+                                     tabindex="0" role="button"
+                                     aria-label="${unitLabel} ${i} - ${isCompleted ? 'Okundu' : 'Okuyor'}">
+                                    <div class="hatim-cuz-header">
+                                        <span class="hatim-cuz-number">${i}</span>
+                                        <span class="hatim-cuz-name">${this.escapeHtml(fullClaim.participant_name).substring(0, 10)}</span>
+                                        <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${isCompleted ? '✓' : 'Okunuyor..'}</span>
+                                    </div>
+                                    ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                                    <div class="hatim-cuz-footer">
+                                        ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                                        <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(fullClaim.id)}', ${i})" title="Vazgeç">✕</button>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            const cellClass = isCompleted ? 'completed' : 'taken';
+                            const statusText = isCompleted ? '✓' : 'Okunuyor..';
+                            activeHtml += `
+                                <div class="hatim-cuz-cell ${cellClass}" title="${this.escapeHtml(fullClaim.participant_name)}">
+                                    <div class="hatim-cuz-header">
+                                        <span class="hatim-cuz-number">${i}</span>
+                                        <span class="hatim-cuz-name">${this.escapeHtml(fullClaim.participant_name).substring(0, 10)}</span>
+                                        <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${statusText}</span>
+                                    </div>
+                                    ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                                    <div class="hatim-cuz-footer">
+                                        ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    } else if (hasHalfClaims) {
+                        // Split cell for previous rounds - simplified view
+                        const renderPrevHalf = (p, halfNum) => {
+                            const halfLabel = halfNum === 1 ? 'İlk' : 'Son';
+                            const halfRange = getCuzPageRange(i, halfNum);
+                            if (p) {
+                                const isMine = p.device_id === myDeviceId;
+                                const isCompleted = p.is_completed;
+                                const cellClass = isMine ? `mine ${isCompleted ? 'read' : 'reading'}` : (isCompleted ? 'completed' : 'taken');
+                                return `
+                                    <div class="hatim-half-cell ${cellClass}"
+                                         ${isMine ? `onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!isCompleted}, ${i})"` : ''}
+                                         title="${this.escapeHtml(p.participant_name)}">
+                                        <div class="hatim-half-label">${halfLabel}</div>
+                                        <div class="hatim-half-pages">S.${halfRange.start}-${halfRange.end}</div>
+                                        <div class="hatim-half-name">${this.escapeHtml(p.participant_name).substring(0, 8)}</div>
+                                        <div class="hatim-half-status ${isCompleted ? 'completed' : ''}">${isCompleted ? '✓' : '...'}</div>
+                                        ${isMine ? `<button class="hatim-half-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(p.id)}', ${i})" title="Vazgeç">✕</button>` : ''}
+                                    </div>
+                                `;
+                            }
+                            return `
+                                <div class="hatim-half-cell" style="opacity: 0.5;">
+                                    <div class="hatim-half-label">${halfLabel}</div>
+                                    <div class="hatim-half-pages">S.${halfRange.start}-${halfRange.end}</div>
+                                    <div class="hatim-half-status">-</div>
+                                </div>
+                            `;
+                        };
+
                         activeHtml += `
-                            <div class="hatim-cuz-cell mine ${statusClass}"
-                                 onclick="HatimManager.toggleReadStatus('${safeId(participation.id)}', ${!!isCompleted}, ${i})"
-                                 tabindex="0" role="button"
-                                 aria-label="${unitLabel} ${i} - ${isCompleted ? 'Okundu' : 'Okuyor'}">
+                            <div class="hatim-cuz-cell split">
                                 <div class="hatim-cuz-header">
                                     <span class="hatim-cuz-number">${i}</span>
-                                    <span class="hatim-cuz-name">${this.escapeHtml(participation.participant_name).substring(0, 10)}</span>
-                                    <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${isCompleted ? '✓' : 'Okunuyor..'}</span>
+                                    <span class="hatim-cuz-name">${contentText || unitLabel}</span>
                                 </div>
-                                ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
-                                <div class="hatim-cuz-footer">
-                                    ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
-                                    <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(participation.id)}', ${i})" title="Vazgeç">✕</button>
-                                </div>
-                            </div>
-                        `;
-                    } else if (participation) {
-                        const cellClass = participation.is_completed ? 'completed' : 'taken';
-                        const statusText = participation.is_completed ? '✓' : 'Okunuyor..';
-                        activeHtml += `
-                            <div class="hatim-cuz-cell ${cellClass}" title="${this.escapeHtml(participation.participant_name)}">
-                                <div class="hatim-cuz-header">
-                                    <span class="hatim-cuz-number">${i}</span>
-                                    <span class="hatim-cuz-name">${this.escapeHtml(participation.participant_name).substring(0, 10)}</span>
-                                    <span class="hatim-cuz-status ${participation.is_completed ? 'completed' : 'reading'}">${statusText}</span>
-                                </div>
-                                ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
-                                <div class="hatim-cuz-footer">
-                                    ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                                <div class="hatim-split-container">
+                                    ${renderPrevHalf(firstHalf, 1)}
+                                    ${renderPrevHalf(secondHalf, 2)}
                                 </div>
                             </div>
                         `;
@@ -1463,40 +1649,116 @@ Linke tıklayın ve uygulamayı yükleyin
     // ========================================
 
     showClaimModal(hatimId, roundNumber, unitNumber, unitLabel) {
+        // Get existing participations for this unit from stored data
+        const existingParticipations = (this.currentParticipations || []).filter(p => p.unit_number === unitNumber);
+
+        // Get page ranges for display
+        const fullRange = getCuzPageRange(unitNumber, null);
+        const firstHalfRange = getCuzPageRange(unitNumber, 1);
+        const secondHalfRange = getCuzPageRange(unitNumber, 2);
+
+        // Check what's already taken
+        const hasFullClaim = existingParticipations.some(p => p.half_position === null);
+        const hasFirstHalf = existingParticipations.some(p => p.half_position === 1);
+        const hasSecondHalf = existingParticipations.some(p => p.half_position === 2);
+
+        // Build option HTML
+        // Determine which option should be pre-selected
+        let defaultChecked = 'full';
+        if (hasFirstHalf && !hasSecondHalf) {
+            defaultChecked = 'half2'; // First half taken, select second half
+        } else if (hasSecondHalf && !hasFirstHalf) {
+            defaultChecked = 'half1'; // Second half taken, select first half
+        }
+
+        const buildOption = (value, label, pageRange, disabled, takenBy = null) => {
+            const disabledAttr = disabled ? 'disabled' : '';
+            const disabledStyle = disabled ? 'opacity: 0.5; cursor: not-allowed;' : 'cursor: pointer;';
+            const checkedAttr = !disabled && value === defaultChecked ? 'checked' : '';
+            const takenInfo = takenBy ? `<span style="color: #ef4444; font-size: 12px; margin-left: 8px;">(${takenBy})</span>` : '';
+
+            return `
+                <label style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; ${disabledStyle} margin-bottom: 8px; ${!disabled ? 'background: #f8fafc;' : ''}">
+                    <input type="radio" name="claimType" value="${value}" ${checkedAttr} ${disabledAttr}
+                           style="margin-top: 3px; width: 18px; height: 18px;">
+                    <div style="flex: 1;">
+                        <div style="font-weight: 500; color: ${disabled ? '#94a3b8' : '#334155'};">${label}${takenInfo}</div>
+                        <div style="font-size: 13px; color: ${disabled ? '#cbd5e1' : '#64748b'};">Sayfa ${pageRange.start}-${pageRange.end}</div>
+                    </div>
+                </label>
+            `;
+        };
+
+        // Determine which options to show
+        let optionsHtml = '';
+
+        if (hasFullClaim) {
+            // Full cüz already taken - show info only
+            const fullClaimOwner = existingParticipations.find(p => p.half_position === null)?.participant_name;
+            optionsHtml = `
+                <div style="padding: 16px; background: #fef3c7; border-radius: 8px; color: #92400e;">
+                    Bu cüz tamamen alınmış (${fullClaimOwner})
+                </div>
+            `;
+        } else if (hasFirstHalf || hasSecondHalf) {
+            // One half taken - can only take the other half, full not available
+            const firstHalfOwner = existingParticipations.find(p => p.half_position === 1)?.participant_name;
+            const secondHalfOwner = existingParticipations.find(p => p.half_position === 2)?.participant_name;
+
+            optionsHtml += buildOption('full', 'Tam Cüz (20 sayfa)', fullRange, true, 'yarısı alınmış');
+            optionsHtml += buildOption('half1', '1/2 Cüz - İlk 10 sayfa', firstHalfRange, hasFirstHalf, firstHalfOwner);
+            optionsHtml += buildOption('half2', '1/2 Cüz - Son 10 sayfa', secondHalfRange, hasSecondHalf, secondHalfOwner);
+        } else {
+            // Nothing taken - all options available
+            optionsHtml += buildOption('full', 'Tam Cüz (20 sayfa)', fullRange, false);
+            optionsHtml += buildOption('half1', '1/2 Cüz - İlk 10 sayfa', firstHalfRange, false);
+            optionsHtml += buildOption('half2', '1/2 Cüz - Son 10 sayfa', secondHalfRange, false);
+        }
+
         const html = `
             <div class="custom-modal-overlay" id="claimModal" onclick="if(event.target===this) this.remove()">
-                <div class="custom-modal modern-modal" style="max-width: 380px;">
+                <div class="custom-modal modern-modal" style="max-width: 400px;">
                     <div class="modal-header" style="padding: 20px; border-bottom: 1px solid #e2e8f0;">
                         <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
-                            <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px;">${unitNumber}. ${unitLabel}</span>
-                            Sec
+                            <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px;">${unitNumber}. Cüz</span>
+                            ${unitLabel}
                         </h3>
                     </div>
                     <div class="modal-body" style="padding: 20px;">
+                        ${!hasFullClaim ? `
                         <div style="margin-bottom: 16px;">
-                            <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #334155;">Isminiz *</label>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #334155;">Ne kadar okumak istiyorsunuz?</label>
+                            ${optionsHtml}
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #334155;">İsminiz *</label>
                             <input type="text" id="claimParticipantName"
                                    style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 15px;"
-                                   placeholder="Adinizi girin" maxlength="30"
+                                   placeholder="Adınızı girin" maxlength="30"
                                    value="${localStorage.getItem('lastHatimName') || ''}">
                         </div>
+                        ` : optionsHtml}
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
                         <button onclick="document.getElementById('claimModal').remove()"
                                 style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
-                            Iptal
+                            İptal
                         </button>
+                        ${!hasFullClaim ? `
                         <button onclick="HatimManager.doClaim('${hatimId}', ${roundNumber}, ${unitNumber})"
                                 style="padding: 12px 20px; min-height: 44px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
-                            Sec
+                            Seç
                         </button>
+                        ` : ''}
                     </div>
                 </div>
             </div>
         `;
 
         document.body.insertAdjacentHTML('beforeend', html);
-        document.getElementById('claimParticipantName').focus();
+        if (!hasFullClaim) {
+            document.getElementById('claimParticipantName')?.focus();
+        }
     },
 
     async doClaim(hatimId, roundNumber, unitNumber) {
@@ -1508,14 +1770,20 @@ Linke tıklayın ve uygulamayı yükleyin
         const participantName = document.getElementById('claimParticipantName')?.value?.trim();
         const claimBtn = document.querySelector('#claimModal button[onclick*="doClaim"]');
 
+        // Get selected claim type (full, half1, half2)
+        const selectedType = document.querySelector('input[name="claimType"]:checked')?.value || 'full';
+        let halfPosition = null;
+        if (selectedType === 'half1') halfPosition = 1;
+        else if (selectedType === 'half2') halfPosition = 2;
+
         // Validation
         if (!participantName || participantName.length < 2) {
-            showCustomAlert('Lutfen gecerli bir isim girin (min 2 karakter)', 'warning', 2500);
+            showCustomAlert('Lütfen geçerli bir isim girin (min 2 karakter)', 'warning', 2500);
             return;
         }
 
         if (participantName.length > 30) {
-            showCustomAlert('Isim 30 karakterden uzun olamaz', 'warning', 2500);
+            showCustomAlert('İsim 30 karakterden uzun olamaz', 'warning', 2500);
             return;
         }
 
@@ -1525,7 +1793,7 @@ Linke tıklayın ve uygulamayı yükleyin
         // Show loading state
         if (claimBtn) {
             claimBtn.disabled = true;
-            claimBtn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⏳</span> Seciliyor...';
+            claimBtn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⏳</span> Seçiliyor...';
             claimBtn.style.opacity = '0.7';
         }
 
@@ -1534,7 +1802,8 @@ Linke tıklayın ve uygulamayı yükleyin
                 hatimId,
                 roundNumber,
                 unitNumber,
-                participantName
+                participantName,
+                halfPosition
             });
 
             document.getElementById('claimModal')?.remove();

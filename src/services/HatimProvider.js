@@ -109,11 +109,12 @@ class HatimProvider {
     }
 
     /**
-     * Prendre une unite (Cuz ou Bab)
-     * @param {Object} data - {hatimId, roundNumber, unitNumber, participantName}
+     * Prendre une unite (Cuz ou Bab) - supporte les demi-cüz
+     * @param {Object} data - {hatimId, roundNumber, unitNumber, participantName, halfPosition}
+     * @param {number|null} halfPosition - null=tam cüz, 1=ilk yari (sayfa 1-10), 2=son yari (sayfa 11-20)
      * @returns {Promise<Object>}
      */
-    async claimUnit({ hatimId, roundNumber, unitNumber, participantName }) {
+    async claimUnit({ hatimId, roundNumber, unitNumber, participantName, halfPosition = null }) {
         const deviceId = this.getDeviceId();
 
         // Verifier que le round est toujours actif (pas obsolete)
@@ -132,15 +133,47 @@ class HatimProvider {
             throw new Error(`Bu tur artik aktif degil. Mevcut tur: ${hatim.current_round}`);
         }
 
+        // Verifier les conflits full/half pour cette unite
+        const { data: existing } = await this.supabase
+            .from('hatim_participations')
+            .select('*')
+            .eq('hatim_id', hatimId)
+            .eq('round_number', roundNumber)
+            .eq('unit_number', unitNumber);
+
+        if (existing && existing.length > 0) {
+            const hasFullClaim = existing.some(p => p.half_position === null);
+            if (hasFullClaim) {
+                throw new Error('Bu cüz tamamen alinmis');
+            }
+
+            if (halfPosition === null) {
+                // Trying to claim full but half already exists
+                throw new Error('Bu cüzün yarisi zaten alinmis, sadece diger yarisi alinabilir');
+            }
+
+            const hasThisHalf = existing.some(p => p.half_position === halfPosition);
+            if (hasThisHalf) {
+                throw new Error('Bu yarim cüz zaten alinmis');
+            }
+        }
+
+        const insertData = {
+            hatim_id: hatimId,
+            round_number: roundNumber,
+            unit_number: unitNumber,
+            participant_name: participantName,
+            device_id: deviceId
+        };
+
+        // Only add half_position if it's a half claim
+        if (halfPosition !== null) {
+            insertData.half_position = halfPosition;
+        }
+
         const { data, error } = await this.supabase
             .from('hatim_participations')
-            .insert({
-                hatim_id: hatimId,
-                round_number: roundNumber,
-                unit_number: unitNumber,
-                participant_name: participantName,
-                device_id: deviceId
-            })
+            .insert(insertData)
             .select()
             .single();
 
@@ -152,7 +185,8 @@ class HatimProvider {
             throw new Error(error.message);
         }
 
-        console.log(`Unite ${unitNumber} prise par ${participantName}`);
+        const halfLabel = halfPosition === 1 ? ' (ilk yari)' : halfPosition === 2 ? ' (son yari)' : '';
+        console.log(`Unite ${unitNumber}${halfLabel} prise par ${participantName}`);
         return data;
     }
 

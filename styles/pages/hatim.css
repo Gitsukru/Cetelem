@@ -1235,3 +1235,169 @@ details[open] > summary .details-arrow {
     background: #f8fafc;
     color: #64748b;
 }
+
+/* ===== SPLIT CELL (1/2 CÜZ) ===== */
+.hatim-cuz-cell.split {
+    padding: 8px;
+    background: white;
+    border: 2px solid #cbd5e1;
+    cursor: default;
+}
+
+.hatim-cuz-cell.split .hatim-cuz-header {
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.hatim-cuz-cell.split .hatim-cuz-name {
+    font-size: 9px;
+    text-align: left;
+}
+
+.hatim-split-container {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+}
+
+.hatim-half-cell {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 9px;
+    text-align: center;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.hatim-half-cell.available {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    cursor: pointer;
+}
+
+.hatim-half-cell.available:hover {
+    border-color: #667eea;
+    background: #eef2ff;
+    border-style: solid;
+}
+
+.hatim-half-cell.taken {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+}
+
+.hatim-half-cell.completed {
+    background: #dcfce7;
+    border: 1px solid #10b981;
+}
+
+.hatim-half-cell.mine {
+    background: #dbeafe;
+    border: 1px solid #3b82f6;
+    cursor: pointer;
+}
+
+.hatim-half-cell.mine:hover {
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.hatim-half-cell.mine.reading {
+    background: #fef3c7;
+    border-color: #f59e0b;
+}
+
+.hatim-half-cell.mine.read {
+    background: #dcfce7;
+    border-color: #10b981;
+}
+
+.hatim-half-label {
+    font-weight: 600;
+    color: #475569;
+    font-size: 8px;
+    margin-bottom: 2px;
+}
+
+.hatim-half-pages {
+    color: #94a3b8;
+    font-size: 8px;
+    margin-bottom: 4px;
+}
+
+.hatim-half-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 9px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hatim-half-status {
+    font-size: 8px;
+    color: #f59e0b;
+    margin-top: 2px;
+}
+
+.hatim-half-status.completed {
+    color: #10b981;
+    font-size: 12px;
+}
+
+.hatim-half-status.available-text {
+    color: #667eea;
+    font-weight: 500;
+}
+
+.hatim-half-release {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    border: none;
+    background: #fee2e2;
+    color: #dc2626;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.hatim-half-cell.mine:hover .hatim-half-release {
+    opacity: 0.7;
+}
+
+.hatim-half-release:hover {
+    opacity: 1 !important;
+    background: #fecaca;
+}
+
+/* Responsive for split cells */
+@media (max-width: 480px) {
+    .hatim-cuz-cell.split {
+        padding: 6px;
+    }
+
+    .hatim-half-cell {
+        padding: 4px;
+    }
+
+    .hatim-half-label,
+    .hatim-half-pages,
+    .hatim-half-name {
+        font-size: 7px;
+    }
+
+    .hatim-split-container {
+        gap: 3px;
+    }
+}
