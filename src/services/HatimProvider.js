@@ -178,6 +178,16 @@ class HatimProvider {
         if (!data || data.length === 0) {
             throw new Error('Bu birimi sadece sahibi birakabilir');
         }
+
+        // Broadcast pour notifier les autres utilisateurs
+        if (data && data.length > 0) {
+            const hatimId = data[0].hatim_id;
+            this.supabase.channel(`hatim_${hatimId}`).send({
+                type: 'broadcast',
+                event: 'unit_released',
+                payload: { participationId, hatimId }
+            });
+        }
     }
 
     /**
@@ -364,17 +374,39 @@ class HatimProvider {
 
         const channel = this.supabase
             .channel(`hatim_${hatimId}`)
-            // Ecouter les changements de participations
+            // Ecouter INSERT et UPDATE avec filtre
             .on(
                 'postgres_changes',
                 {
-                    event: '*',
+                    event: 'INSERT',
                     schema: 'public',
                     table: 'hatim_participations',
                     filter: `hatim_id=eq.${hatimId}`
                 },
                 (payload) => {
-                    console.log('Hatim participation update:', payload.eventType);
+                    console.log('Hatim participation INSERT:', payload.eventType);
+                    callback(payload);
+                }
+            )
+            .on(
+                'postgres_changes',
+                {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'hatim_participations',
+                    filter: `hatim_id=eq.${hatimId}`
+                },
+                (payload) => {
+                    console.log('Hatim participation UPDATE:', payload.eventType);
+                    callback(payload);
+                }
+            )
+            // Broadcast pour les DELETE (plus fiable)
+            .on(
+                'broadcast',
+                { event: 'unit_released' },
+                (payload) => {
+                    console.log('Hatim unit released broadcast:', payload);
                     callback(payload);
                 }
             )
@@ -415,7 +447,7 @@ class HatimProvider {
      * Se desabonner de tous les hatims
      */
     unsubscribeAll() {
-        for (const [hatimId, channel] of this.subscriptions) {
+        for (const [, channel] of this.subscriptions) {
             this.supabase.removeChannel(channel);
         }
         this.subscriptions.clear();
