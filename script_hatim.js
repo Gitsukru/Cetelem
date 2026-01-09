@@ -1828,12 +1828,13 @@ Linke tıklayın ve uygulamayı yükleyin
     // ========================================
 
     renderCevsenHatim(container) {
-        // Empty view - user should create or join a hatim via sidebar buttons
+        // Coming soon - Cevşen sharing will be different from Kur'an hatim
         container.innerHTML = `
             <div class="hatim-main-view">
-                <div style="text-align: center; padding: 40px 20px; color: #64748b;">
-                    <div style="font-size: 48px; margin-bottom: 16px;">🌙</div>
-                    <p style="margin: 0; font-size: 14px;">Cevşen hatmi başlatmak veya katılmak için soldaki butonları kullanın.</p>
+                <div style="text-align: center; padding: 60px 20px; color: #64748b;">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="margin: 0 0 12px 0; font-size: 18px; color: #475569;">Yapım Aşamasında</h3>
+                    <p style="margin: 0; font-size: 15px; color: #94a3b8;">Cevşen Paylaşımı Yakında eklenecek...</p>
                 </div>
             </div>
         `;
