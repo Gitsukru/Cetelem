@@ -275,6 +275,8 @@
     .hatim-layout {
         flex-direction: column;
         gap: 16px;
+        min-height: auto; /* Permet le scroll normal sur mobile */
+        padding-bottom: 20px; /* Espace avant footer */
     }
 
     .hatim-sidebar {
