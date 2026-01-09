@@ -142,7 +142,11 @@ class HatimProvider {
             .eq('unit_number', unitNumber);
 
         if (existing && existing.length > 0) {
-            const hasFullClaim = existing.some(p => p.half_position === null);
+            // Debug log to understand the data
+            console.log('Existing participations for unit', unitNumber, ':', JSON.stringify(existing));
+
+            // Check for full claim (half_position is null, undefined, or not set)
+            const hasFullClaim = existing.some(p => p.half_position == null); // == catches both null and undefined
             if (hasFullClaim) {
                 throw new Error('Bu cüz tamamen alinmis');
             }
@@ -152,7 +156,8 @@ class HatimProvider {
                 throw new Error('Bu cüzün yarisi zaten alinmis, sadece diger yarisi alinabilir');
             }
 
-            const hasThisHalf = existing.some(p => p.half_position === halfPosition);
+            // Check for specific half (use == for type coercion in case of string "1" vs number 1)
+            const hasThisHalf = existing.some(p => p.half_position == halfPosition);
             if (hasThisHalf) {
                 throw new Error('Bu yarim cüz zaten alinmis');
             }

@@ -1071,10 +1071,12 @@ Linke tıklayın ve uygulamayı yükleyin
             const fullPageRange = getCuzPageRange(i, null);
             const pageText = cuzInfo ? `Sayfa ${fullPageRange.start}-${fullPageRange.end}` : '';
 
-            // Check if any participation is a full claim (half_position = null)
-            const fullClaim = unitParticipations.find(p => p.half_position === null);
-            const firstHalf = unitParticipations.find(p => p.half_position === 1);
-            const secondHalf = unitParticipations.find(p => p.half_position === 2);
+            // Check if any participation is a full claim (half_position = null/undefined)
+            // Use == for null check (catches both null and undefined)
+            // Use == for half position check (handles string "1" vs number 1)
+            const fullClaim = unitParticipations.find(p => p.half_position == null);
+            const firstHalf = unitParticipations.find(p => p.half_position == 1);
+            const secondHalf = unitParticipations.find(p => p.half_position == 2);
             const hasHalfClaims = firstHalf || secondHalf;
 
             if (fullClaim) {
@@ -1378,9 +1380,9 @@ Linke tıklayın ve uygulamayı yükleyin
                     const fullPageRange = getCuzPageRange(i, null);
                     const pageText = cuzInfo ? `Sayfa ${fullPageRange.start}-${fullPageRange.end}` : '';
 
-                    const fullClaim = unitParticipations.find(p => p.half_position === null);
-                    const firstHalf = unitParticipations.find(p => p.half_position === 1);
-                    const secondHalf = unitParticipations.find(p => p.half_position === 2);
+                    const fullClaim = unitParticipations.find(p => p.half_position == null);
+                    const firstHalf = unitParticipations.find(p => p.half_position == 1);
+                    const secondHalf = unitParticipations.find(p => p.half_position == 2);
                     const hasHalfClaims = firstHalf || secondHalf;
 
                     if (fullClaim) {
@@ -1658,9 +1660,9 @@ Linke tıklayın ve uygulamayı yükleyin
         const secondHalfRange = getCuzPageRange(unitNumber, 2);
 
         // Check what's already taken
-        const hasFullClaim = existingParticipations.some(p => p.half_position === null);
-        const hasFirstHalf = existingParticipations.some(p => p.half_position === 1);
-        const hasSecondHalf = existingParticipations.some(p => p.half_position === 2);
+        const hasFullClaim = existingParticipations.some(p => p.half_position == null);
+        const hasFirstHalf = existingParticipations.some(p => p.half_position == 1);
+        const hasSecondHalf = existingParticipations.some(p => p.half_position == 2);
 
         // Build option HTML
         // Determine which option should be pre-selected
@@ -1694,7 +1696,7 @@ Linke tıklayın ve uygulamayı yükleyin
 
         if (hasFullClaim) {
             // Full cüz already taken - show info only
-            const fullClaimOwner = existingParticipations.find(p => p.half_position === null)?.participant_name;
+            const fullClaimOwner = existingParticipations.find(p => p.half_position == null)?.participant_name;
             optionsHtml = `
                 <div style="padding: 16px; background: #fef3c7; border-radius: 8px; color: #92400e;">
                     Bu cüz tamamen alınmış (${fullClaimOwner})
@@ -1702,8 +1704,8 @@ Linke tıklayın ve uygulamayı yükleyin
             `;
         } else if (hasFirstHalf || hasSecondHalf) {
             // One half taken - can only take the other half, full not available
-            const firstHalfOwner = existingParticipations.find(p => p.half_position === 1)?.participant_name;
-            const secondHalfOwner = existingParticipations.find(p => p.half_position === 2)?.participant_name;
+            const firstHalfOwner = existingParticipations.find(p => p.half_position == 1)?.participant_name;
+            const secondHalfOwner = existingParticipations.find(p => p.half_position == 2)?.participant_name;
 
             optionsHtml += buildOption('full', 'Tam Cüz (20 sayfa)', fullRange, true, 'yarısı alınmış');
             optionsHtml += buildOption('half1', '1/2 Cüz - İlk 10 sayfa', firstHalfRange, hasFirstHalf, firstHalfOwner);
