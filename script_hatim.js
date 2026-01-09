@@ -938,7 +938,7 @@ Linke tıklayın ve uygulamayı yükleyin
                             </div>
                             <span style="font-weight: 600; color: #334155; font-size: 14px;">${progressPercent}%</span>
                         </div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #64748b;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 24px; font-size: 13px; color: #64748b;">
                             <span>📋 ${claimed} alındı</span>
                             <span>✅ ${completed} okundu</span>
                             <span>⏳ ${available} müsait</span>
