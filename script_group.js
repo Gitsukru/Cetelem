@@ -779,18 +779,57 @@ async function displayGroupHistory() {
     const timeAgo = getTimeAgo(item.lastAccess)
 
     html += `
-      <div class="history-item" onclick="rejoinGroup('${item.code}')">
-        <div class="history-item-info">
-          <div class="history-item-name">${item.name}</div>
-          <div class="history-item-meta">${item.isCreator ? 'Yönetici' : 'Üye'} • ${timeAgo}</div>
+      <div class="history-item">
+        <div class="history-item-content" onclick="rejoinGroup('${item.code}')">
+          <div class="history-item-info">
+            <div class="history-item-name">${item.name}</div>
+            <div class="history-item-meta">${item.isCreator ? 'Yönetici' : 'Üye'} • ${timeAgo}</div>
+          </div>
+          <div class="history-item-status ${statusClass}">${statusText}</div>
         </div>
-        <div class="history-item-status ${statusClass}">${statusText}</div>
+        <button class="history-item-delete" onclick="event.stopPropagation(); confirmDeleteFromHistory('${item.code}', '${item.name.replace(/'/g, "\\'")}')" title="Listeden Sil">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
       </div>
     `
   }
 
   html += '</div>'
   historyContainer.innerHTML = html
+}
+
+// Confirmer la suppression d'un groupe de l'historique
+function confirmDeleteFromHistory(code, name) {
+  showCustomConfirm(
+    'Grubu Sil',
+    `"${name}" grubunu listeden silmek istiyor musunuz?`,
+    () => {
+      removeGroupFromHistory(code);
+      showCustomAlert('Grup listeden silindi', 'success', 2000);
+    }
+  );
+}
+
+// Supprimer un groupe de l'historique local
+function removeGroupFromHistory(code) {
+  try {
+    let history = JSON.parse(localStorage.getItem('groupHistory') || '[]');
+    if (!Array.isArray(history)) history = [];
+
+    const initialLength = history.length;
+    history = history.filter(item => item.code !== code);
+
+    if (history.length < initialLength) {
+      localStorage.setItem('groupHistory', JSON.stringify(history));
+      // Rafraîchir l'affichage
+      displayGroupHistory();
+      console.log('Groupe supprimé de l\'historique:', code);
+    }
+  } catch (e) {
+    console.error('Erreur suppression groupe historique:', e);
+  }
 }
 
 // Rejoindre un groupe depuis l'historique
@@ -809,7 +848,9 @@ async function rejoinGroup(code) {
       .maybeSingle()
 
     if (error || !groupData) {
-      showCustomAlert('Bu grup artık mevcut değil', 'error', 3000)
+      // Groupe n'existe plus - proposer de le supprimer de l'historique
+      showCustomAlert('Bu grup artık mevcut değil. Listeden siliniyor...', 'info', 2000)
+      removeGroupFromHistory(code)
       return
     }
 
