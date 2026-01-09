@@ -890,18 +890,21 @@ Linke tıklayın ve uygulamayı yükleyin
                 </div>
                 ` : ''}
 
-                <!-- CARD 3b: Previous Rounds History -->
+                <!-- Active Previous Rounds (with uncompleted readings) - Will be populated by JS -->
+                <div id="activePreviousRoundsContainer"></div>
+
+                <!-- Completed Previous Rounds History -->
                 ${hatim.current_round > 1 ? `
-                <details class="hatim-previous-rounds" open>
+                <details class="hatim-previous-rounds" id="completedRoundsSection" style="display: none;">
                     <summary>
                         <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
-                        <span>📖</span> Önceki Turlar
-                        <span style="font-weight: 400; font-size: 11px; color: #a16207; margin-left: auto;">Devam eden okumalar</span>
+                        <span>🏆</span> Tamamlanan Turlar
+                        <span style="font-weight: 400; font-size: 11px; color: #166534; margin-left: auto;" id="completedRoundsCount"></span>
                     </summary>
-                    <div id="previousRoundsContainer" style="padding: 16px;">
-                        <p style="color: #854d0e; font-size: 13px; margin: 0;">Yükleniyor...</p>
+                    <div id="completedRoundsContainer" style="padding: 16px;">
+                        <p style="color: #166534; font-size: 13px; margin: 0;">Yükleniyor...</p>
                     </div>
                 </details>
                 ` : ''}
@@ -942,7 +945,6 @@ Linke tıklayın ve uygulamayı yükleyin
                             <span>📋 ${claimed} alındı</span>
                             <span>✅ ${completed} okundu</span>
                             <span>⏳ ${available} müsait</span>
-                            ${hatim.current_round > 1 ? `<span style="color: #10b981;">🏆 ${hatim.current_round - 1} tur tamamlandı</span>` : ''}
                         </div>
                         ${available === 0 && isCreator ? `
                         <div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-radius: 8px; border: 1px solid #3b82f6;">
@@ -1153,113 +1155,201 @@ Linke tıklayın ve uygulamayı yükleyin
     },
 
     async loadPreviousRounds(hatimId, currentRound, totalUnits, unitLabel) {
-        const container = document.getElementById('previousRoundsContainer');
-        if (!container || !this.provider) return;
+        const activeContainer = document.getElementById('activePreviousRoundsContainer');
+        const completedSection = document.getElementById('completedRoundsSection');
+        const completedContainer = document.getElementById('completedRoundsContainer');
+        const completedCountSpan = document.getElementById('completedRoundsCount');
+
+        if (!activeContainer || !this.provider) return;
 
         try {
             const myDeviceId = this.provider.getDeviceId();
+            const isKuran = this.currentHatim?.type === 'kuran';
 
-            // Optimisé: une seule requête pour tous les rounds précédents
+            // Get all previous rounds participations
             const roundsMap = await this.provider.getAllPreviousRoundsParticipations(hatimId, currentRound);
             const roundNumbers = Object.keys(roundsMap).map(Number).sort((a, b) => b - a);
 
             if (roundNumbers.length === 0) {
-                container.innerHTML = '<p style="color: #854d0e; font-size: 13px; margin: 0;">Önceki tur bulunamadı.</p>';
+                activeContainer.innerHTML = '';
                 return;
             }
 
-            let html = '';
+            // Separate rounds into active (uncompleted) and completed
+            const activeRounds = [];
+            const completedRounds = [];
+
             for (const round of roundNumbers) {
                 const participations = roundsMap[round] || [];
                 const completedCount = participations.filter(p => p.is_completed).length;
-                const claimedCount = participations.length;
-                const myInThisRound = participations.filter(p => p.device_id === myDeviceId);
-                const myUncompletedInThisRound = myInThisRound.filter(p => !p.is_completed);
                 const isRoundComplete = completedCount === totalUnits;
 
-                // Styling based on round completion status
-                const borderColor = isRoundComplete ? '#10b981' : '#f59e0b';
-                const bgColor = isRoundComplete ? '#f0fdf4' : '#fffbeb';
-                const statusIcon = isRoundComplete ? '✅' : '📖';
-                const statusText = isRoundComplete
-                    ? 'Tamamlandı'
-                    : `${completedCount}/${claimedCount} okundu`;
+                if (isRoundComplete) {
+                    completedRounds.push({ round, participations });
+                } else {
+                    activeRounds.push({ round, participations });
+                }
+            }
 
-                html += `
-                    <div style="margin-bottom: 12px; padding: 12px; background: ${bgColor}; border-radius: 8px; border: 2px solid ${borderColor};">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span style="font-weight: 600; color: ${isRoundComplete ? '#166534' : '#854d0e'};">
-                                ${statusIcon} Tur ${round}
-                            </span>
-                            <span style="font-size: 12px; color: ${isRoundComplete ? '#166534' : '#a16207'}; font-weight: 500;">
-                                ${statusText}
-                            </span>
+            // Render ACTIVE rounds as full grid sections (like current round)
+            let activeHtml = '';
+            for (const { round, participations } of activeRounds) {
+                const claimedMap = new Map(participations.map(p => [p.unit_number, p]));
+                const claimed = participations.length;
+                const completed = participations.filter(p => p.is_completed).length;
+                const available = totalUnits - claimed;
+                const progressPercent = Math.round((claimed / totalUnits) * 100);
+
+                activeHtml += `
+                    <details open class="hatim-grid-section" style="border-color: #f59e0b; background: linear-gradient(to bottom, #fffbeb, white);">
+                        <summary style="background: #fef3c7;">
+                            <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                            <span>📖</span> ${unitLabel} Seç
+                            <span style="font-weight: 600; color: #d97706; font-size: 11px; background: rgba(217,119,6,0.15); padding: 2px 6px; border-radius: 4px; margin-left: 4px;">Tur ${round} - Devam ediyor</span>
+                            <span style="font-weight: 400; color: #92400e; font-size: 12px; margin-left: 6px;">(${completed}/${claimed} okundu)</span>
+                        </summary>
+
+                        <div class="hatim-progress">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                <div class="hatim-progress-bar" style="background: #fef3c7;">
+                                    <div style="width: ${Math.round((completed / totalUnits) * 100)}%; height: 100%; background: linear-gradient(90deg, #f59e0b, #d97706); transition: width 0.3s;"></div>
+                                </div>
+                                <span style="font-weight: 600; color: #92400e; font-size: 14px;">${Math.round((completed / totalUnits) * 100)}%</span>
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; font-size: 13px; color: #92400e;">
+                                <span>📋 ${claimed} alındı</span>
+                                <span>✅ ${completed} okundu</span>
+                                <span>⏳ ${totalUnits - completed} bekliyor</span>
+                            </div>
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(${totalUnits <= 30 ? 10 : 10}, 1fr); gap: 3px;">
+
+                        <div class="hatim-grid-content">
+                            <div class="hatim-cuz-grid ${isKuran ? '' : 'cevsen'}">
                 `;
 
+                // Render each cell
                 for (let i = 1; i <= totalUnits; i++) {
-                    const p = participations.find(x => x.unit_number === i);
-                    const isMine = p && p.device_id === myDeviceId;
-                    const isMyUncompleted = isMine && !p.is_completed;
-                    const cellBgColor = p ? (p.is_completed ? '#dcfce7' : '#fef3c7') : '#f1f5f9';
-                    const cellBorderColor = isMine ? '#3b82f6' : (p ? (p.is_completed ? '#10b981' : '#f59e0b') : '#e2e8f0');
+                    const participation = claimedMap.get(i);
+                    const isMine = participation && participation.device_id === myDeviceId;
+                    const cuzInfo = isKuran && i <= 30 ? KURAN_CUZLER[i - 1] : null;
+                    const contentText = cuzInfo ? cuzInfo.icerik : '';
+                    const pageText = cuzInfo ? `Sayfa ${cuzInfo.sayfa}` : '';
 
-                    // Make clickable if it's my uncompleted participation
-                    if (isMyUncompleted) {
-                        html += `
-                            <div onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', false, ${i})"
-                                 style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: ${cellBgColor}; border: 2px solid ${cellBorderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #1e40af; cursor: pointer; animation: pulse 2s infinite;"
-                                 title="Tıkla → Okundu olarak işaretle">
-                                ${i}
+                    if (isMine) {
+                        const isCompleted = participation.is_completed;
+                        const statusClass = isCompleted ? 'read' : 'reading';
+                        activeHtml += `
+                            <div class="hatim-cuz-cell mine ${statusClass}"
+                                 onclick="HatimManager.toggleReadStatus('${safeId(participation.id)}', ${!!isCompleted}, ${i})"
+                                 tabindex="0" role="button"
+                                 aria-label="${unitLabel} ${i} - ${isCompleted ? 'Okundu' : 'Okuyor'}">
+                                <div class="hatim-cuz-header">
+                                    <span class="hatim-cuz-number">${i}</span>
+                                    <span class="hatim-cuz-name">${this.escapeHtml(participation.participant_name).substring(0, 10)}</span>
+                                    <span class="hatim-cuz-status ${isCompleted ? 'completed' : 'reading'}">${isCompleted ? '✓' : 'Okunuyor..'}</span>
+                                </div>
+                                ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                                <div class="hatim-cuz-footer">
+                                    ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                                    <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(participation.id)}', ${i})" title="Vazgeç">✕</button>
+                                </div>
+                            </div>
+                        `;
+                    } else if (participation) {
+                        const cellClass = participation.is_completed ? 'completed' : 'taken';
+                        const statusText = participation.is_completed ? '✓' : 'Okunuyor..';
+                        activeHtml += `
+                            <div class="hatim-cuz-cell ${cellClass}" title="${this.escapeHtml(participation.participant_name)}">
+                                <div class="hatim-cuz-header">
+                                    <span class="hatim-cuz-number">${i}</span>
+                                    <span class="hatim-cuz-name">${this.escapeHtml(participation.participant_name).substring(0, 10)}</span>
+                                    <span class="hatim-cuz-status ${participation.is_completed ? 'completed' : 'reading'}">${statusText}</span>
+                                </div>
+                                ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
+                                <div class="hatim-cuz-footer">
+                                    ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
+                                </div>
                             </div>
                         `;
                     } else {
-                        html += `
-                            <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: ${cellBgColor}; border: 1px solid ${cellBorderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #64748b;" title="${p ? this.escapeHtml(p.participant_name) : 'Boş'}">
-                                ${i}
+                        // Not claimed in this round - show as empty/unavailable
+                        activeHtml += `
+                            <div class="hatim-cuz-cell" style="opacity: 0.5; border-style: dashed; background: #f8fafc;">
+                                <div class="hatim-cuz-header">
+                                    <span class="hatim-cuz-number" style="color: #94a3b8;">${i}</span>
+                                </div>
+                                ${contentText ? `<span class="hatim-cuz-content" style="color: #94a3b8;">${contentText}</span>` : ''}
+                                ${pageText ? `<div class="hatim-cuz-footer"><span class="hatim-cuz-page" style="color: #94a3b8;">${pageText}</span></div>` : ''}
                             </div>
                         `;
                     }
                 }
 
-                html += `
+                activeHtml += `
+                            </div>
+                            <div class="hatim-legend">
+                                <span class="hatim-legend-item"><span class="hatim-legend-color taken"></span> Alındı</span>
+                                <span class="hatim-legend-item"><span class="hatim-legend-color completed"></span> Tamamlandı</span>
+                                <span class="hatim-legend-item"><span class="hatim-legend-color mine"></span> Benim</span>
+                            </div>
                         </div>
+                    </details>
                 `;
+            }
+            activeContainer.innerHTML = activeHtml;
 
-                // Show user's participations with action buttons for uncompleted ones
-                if (myUncompletedInThisRound.length > 0) {
-                    html += `
-                        <div style="margin-top: 10px; padding: 10px; background: #fef3c7; border-radius: 6px; border: 1px solid #f59e0b;">
-                            <div style="font-size: 12px; font-weight: 600; color: #92400e; margin-bottom: 8px;">
-                                📋 Okumaya devam et:
+            // Render COMPLETED rounds in the collapsible history section
+            if (completedRounds.length > 0 && completedSection && completedContainer) {
+                completedSection.style.display = 'block';
+                if (completedCountSpan) {
+                    completedCountSpan.textContent = `${completedRounds.length} tur`;
+                }
+
+                let completedHtml = '';
+                for (const { round, participations } of completedRounds) {
+                    const myInThisRound = participations.filter(p => p.device_id === myDeviceId);
+
+                    completedHtml += `
+                        <div style="margin-bottom: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px; border: 2px solid #10b981;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-weight: 600; color: #166534;">✅ Tur ${round}</span>
+                                <span style="font-size: 12px; color: #166534; font-weight: 500;">Tamamlandı</span>
                             </div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                                ${myUncompletedInThisRound.map(p => `
-                                    <button onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', false, ${p.unit_number})"
-                                            style="padding: 8px 12px; background: #fff; border: 1px solid #f59e0b; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; color: #92400e;">
-                                        ${unitLabel} ${p.unit_number} → Okundu ✓
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
+                            <div style="display: grid; grid-template-columns: repeat(${totalUnits <= 30 ? 10 : 10}, 1fr); gap: 3px;">
                     `;
-                } else if (myInThisRound.length > 0) {
-                    html += `
-                        <div style="margin-top: 8px; font-size: 11px; color: #166534;">
-                            ✅ Benim (tamamlandı): ${myInThisRound.map(p => `${unitLabel} ${p.unit_number}`).join(', ')}
+
+                    for (let i = 1; i <= totalUnits; i++) {
+                        const p = participations.find(x => x.unit_number === i);
+                        const isMine = p && p.device_id === myDeviceId;
+                        const cellBorderColor = isMine ? '#3b82f6' : '#10b981';
+
+                        completedHtml += `
+                            <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #dcfce7; border: 1px solid ${cellBorderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #166534;" title="${p ? this.escapeHtml(p.participant_name) : ''}">
+                                ${i}
+                            </div>
+                        `;
+                    }
+
+                    completedHtml += `
+                            </div>
+                            ${myInThisRound.length > 0 ? `
+                            <div style="margin-top: 8px; font-size: 11px; color: #166534;">
+                                ✅ Benim: ${myInThisRound.map(p => `${unitLabel} ${p.unit_number}`).join(', ')}
+                            </div>
+                            ` : ''}
                         </div>
                     `;
                 }
-
-                html += `</div>`;
+                completedContainer.innerHTML = completedHtml;
+            } else if (completedSection) {
+                completedSection.style.display = 'none';
             }
-
-            container.innerHTML = html;
 
         } catch (error) {
             console.error('Load previous rounds error:', error);
-            container.innerHTML = '<p style="color: #dc2626; font-size: 13px; margin: 0;">Yüklenemedi.</p>';
+            activeContainer.innerHTML = '<p style="color: #dc2626; font-size: 13px; margin: 0;">Yüklenemedi.</p>';
         }
     },
 
