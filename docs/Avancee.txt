@@ -667,9 +667,40 @@
   - ✅ Cleanup ancien cache
 
   Points à Améliorer :
-  - ⚠️ SW désactivé (à réactiver après debug)
   - ⚠️ Cache statique limité (index.html + manifest)
   - ⚠️ Pas de cache API Supabase
+
+  8.1.1 Mise à Jour Automatique du Service Worker (NOUVEAU)
+
+  Problème Résolu :
+  - Oubli de mettre à jour CACHE_VERSION = perte de MAJ sur mobile
+  - Les utilisateurs gardaient l'ancienne version en cache
+
+  Solution Implémentée :
+  - Hook git pre-commit automatique
+  - Script Node.js qui génère la version: date + hash git
+
+  Fichiers :
+  - scripts/update-sw-version.js - Script de mise à jour
+  - .githooks/pre-commit - Hook git automatique
+
+  Installation (une seule fois) :
+    git config core.hooksPath .githooks
+
+  Fonctionnement :
+  1. Développeur modifie fichier JS/CSS/HTML
+  2. Développeur fait "git commit"
+  3. Hook pre-commit détecte les changements
+  4. Script génère nouvelle version: "2026-01-09-abc1234"
+  5. sw.js est mis à jour automatiquement
+  6. sw.js est ajouté au commit
+
+  Format Version :
+    YYYY-MM-DD-<git-hash-court>
+    Exemple: 2026-01-09-97ee81f
+
+  Test Manuel :
+    node scripts/update-sw-version.js
 
   8.2 Mode Offline
 
