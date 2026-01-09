@@ -1317,52 +1317,38 @@ Linke tıklayın ve uygulamayı yükleyin
                 for (const { round, participations } of completedRounds) {
                     const myInThisRound = participations.filter(p => p.device_id === myDeviceId);
 
-                    // Group participations by participant name
-                    const participantMap = new Map();
-                    participations.forEach(p => {
-                        const name = p.participant_name || 'Anonim';
-                        if (!participantMap.has(name)) {
-                            participantMap.set(name, []);
-                        }
-                        participantMap.get(name).push(p.unit_number);
-                    });
-
                     completedHtml += `
                         <div style="margin-bottom: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px; border: 2px solid #10b981;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                 <span style="font-weight: 600; color: #166534;">✅ Tur ${round}</span>
                                 <span style="font-size: 12px; color: #166534; font-weight: 500;">Tamamlandı</span>
                             </div>
-                            <div style="display: grid; grid-template-columns: repeat(${totalUnits <= 30 ? 10 : 10}, 1fr); gap: 3px;">
+                            <div style="display: grid; grid-template-columns: repeat(${totalUnits <= 30 ? 5 : 7}, 1fr); gap: 4px;">
                     `;
 
                     for (let i = 1; i <= totalUnits; i++) {
                         const p = participations.find(x => x.unit_number === i);
                         const isMine = p && p.device_id === myDeviceId;
+                        const cellBgColor = isMine ? '#dbeafe' : '#dcfce7';
                         const cellBorderColor = isMine ? '#3b82f6' : '#10b981';
+                        const textColor = isMine ? '#1e40af' : '#166534';
+                        const name = p ? this.escapeHtml(p.participant_name).substring(0, 8) : '';
 
                         completedHtml += `
-                            <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #dcfce7; border: 1px solid ${cellBorderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #166534;" title="${p ? this.escapeHtml(p.participant_name) : ''}">
-                                ${i}
+                            <div style="padding: 6px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: ${cellBgColor}; border: 1px solid ${cellBorderColor}; border-radius: 4px; min-height: 40px;">
+                                <span style="font-size: 11px; font-weight: 700; color: ${textColor};">${i}</span>
+                                <span style="font-size: 8px; color: ${textColor}; text-align: center; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;">${name}</span>
                             </div>
                         `;
                     }
 
-                    // Build participant list
-                    let participantList = '';
-                    participantMap.forEach((units, name) => {
-                        const isMine = myInThisRound.some(p => p.participant_name === name);
-                        const icon = isMine ? '🙋' : '👤';
-                        const style = isMine ? 'color: #1e40af; font-weight: 600;' : 'color: #166534;';
-                        participantList += `<div style="font-size: 11px; ${style}">${icon} ${this.escapeHtml(name)}: ${unitLabel} ${units.sort((a,b) => a-b).join(', ')}</div>`;
-                    });
-
                     completedHtml += `
                             </div>
-                            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #bbf7d0;">
-                                <div style="font-size: 11px; font-weight: 600; color: #166534; margin-bottom: 6px;">Katılımcılar:</div>
-                                ${participantList}
+                            ${myInThisRound.length > 0 ? `
+                            <div style="margin-top: 8px; font-size: 11px; color: #1e40af; font-weight: 500;">
+                                🙋 Benim: ${myInThisRound.map(p => `${unitLabel} ${p.unit_number}`).join(', ')}
                             </div>
+                            ` : ''}
                         </div>
                     `;
                 }
