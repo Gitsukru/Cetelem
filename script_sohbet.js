@@ -3,8 +3,8 @@
  * Systeme de suivi des sohbets (discussions/videos)
  */
 
-// Liste des sources predefinies
-const SOHBET_SOURCES = [
+// Liste des sources predefinies (defaults)
+const DEFAULT_SOHBET_SOURCES = [
     {
         id: 'sohbet-kaset',
         name: 'Sohbet Kaset',
@@ -62,6 +62,34 @@ const SOHBET_SOURCES = [
         description: 'Canli radyo'
     }
 ];
+
+// Fonction pour obtenir les sources depuis admin ou defaults
+function getSohbetSources() {
+    try {
+        const adminItems = localStorage.getItem('adminTavsiyeItems');
+        if (adminItems) {
+            const parsed = JSON.parse(adminItems);
+            if (parsed.sohbet && Array.isArray(parsed.sohbet) && parsed.sohbet.length > 0) {
+                // Convertir le format admin vers le format attendu
+                return parsed.sohbet.map((item, index) => ({
+                    id: item.name.toLowerCase().replace(/\s+/g, '-'),
+                    name: item.name,
+                    url: item.url || '',
+                    icon: item.icon || 'video',
+                    description: item.detail || item.description || '',
+                    dailyGoal: item.dailyGoal || 15,
+                    weeklyGoal: item.weeklyGoal || 105
+                }));
+            }
+        }
+    } catch (e) {
+        console.error('Erreur lecture adminTavsiyeItems pour sohbet:', e);
+    }
+    return DEFAULT_SOHBET_SOURCES;
+}
+
+// Sources dynamiques (mises à jour depuis admin)
+let SOHBET_SOURCES = getSohbetSources();
 
 const SohbetManager = {
     /**
@@ -451,7 +479,14 @@ const SohbetManager = {
     // INITIALIZATION
     // ========================================
 
+    refreshSources() {
+        // Rafraichir les sources depuis admin
+        SOHBET_SOURCES = getSohbetSources();
+        console.log('SohbetManager: Sources rafraichies', SOHBET_SOURCES.length, 'sources');
+    },
+
     init() {
+        this.refreshSources();
         this.renderSohbetList();
         console.log('SohbetManager initialise');
     }

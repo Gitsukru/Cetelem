@@ -2170,13 +2170,16 @@ class AdminDashboard {
 
             items[category].forEach((item, index) => {
                 let meta = '';
-                if (item.weeklyGoal) {
-                    const unit = category === 'sohbet' ? 'adet' : 'defa';
-                    meta += `Haftalik: ${item.weeklyGoal} ${unit}`;
-                }
                 if (item.dailyGoal) {
-                    const unit = category === 'cevsen' ? 'bab' : 'sayfa';
+                    let unit = 'sayfa';
+                    if (category === 'cevsen') unit = 'bab';
+                    else if (category === 'sohbet') unit = 'dk';
                     meta += `Gunluk: ${item.dailyGoal} ${unit}`;
+                }
+                if (item.weeklyGoal) {
+                    let unit = 'defa';
+                    if (category === 'sohbet') unit = 'dk';
+                    meta += (meta ? ' | ' : '') + `Haftalik: ${item.weeklyGoal} ${unit}`;
                 }
                 if (item.totalPages) {
                     const unit = category === 'cevsen' ? 'bab' : 'sayfa';
@@ -2298,13 +2301,16 @@ class AdminDashboard {
                 totalPlaceholder: '100'
             },
             sohbet: {
-                nameLabel: 'Sohbet Turu',
+                nameLabel: 'Sohbet Ismi',
                 namePlaceholder: 'ornek: Bamteli',
                 detailLabel: 'Aciklama',
                 detailPlaceholder: 'ornek: Video sohbetler',
+                showDaily: true,
                 showWeekly: true,
-                weeklyLabel: 'Haftalik Hedef (adet)',
-                weeklyPlaceholder: 'ornek: 3'
+                dailyLabel: 'Gunluk Hedef (dakika)',
+                dailyPlaceholder: 'ornek: 15',
+                weeklyLabel: 'Haftalik Hedef (dakika)',
+                weeklyPlaceholder: 'ornek: 105'
             }
         };
 

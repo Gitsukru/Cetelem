@@ -1,6 +1,6 @@
 // Version du cache - Mise à jour automatique lors du déploiement
 // Format: YYYY-MM-DD-commit-feature
-const CACHE_VERSION = '2026-01-09-31827be';
+const CACHE_VERSION = '2026-01-09-f40d027';
 const CACHE_NAME = `cetelem-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
