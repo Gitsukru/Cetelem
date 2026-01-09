@@ -132,13 +132,33 @@ const VersionListener = {
     },
 
     /**
+     * Get local cached version from Service Worker cache name or localStorage
+     */
+    getLocalVersion() {
+        // Try to get from localStorage (set by SW or index.html)
+        const localVersion = localStorage.getItem('appVersion');
+        if (localVersion) return localVersion;
+
+        // Fallback: try to extract from URL parameter if just updated
+        const urlParams = new URLSearchParams(window.location.search);
+        const wsupdate = urlParams.get('wsupdate');
+        if (wsupdate) return null; // Just updated, don't compare
+
+        return null;
+    },
+
+    /**
      * Subscribe to app_config table changes via Supabase Realtime
      */
     async subscribeToVersionUpdates() {
         if (!this.supabase) return;
 
         try {
-            // Get current version first (but don't block subscription if this fails)
+            // Get local cached version
+            const localVersion = this.getLocalVersion();
+            console.log('VersionListener: Local version:', localVersion);
+
+            // Get current version from database
             const { data, error } = await this.supabase
                 .from('app_config')
                 .select('value')
@@ -146,7 +166,20 @@ const VersionListener = {
                 .single();
 
             if (!error && data?.value) {
-                this.currentVersion = data.value;
+                const dbVersion = data.value;
+                console.log('VersionListener: DB version:', dbVersion);
+
+                // Compare local vs DB version - if different, show update banner!
+                if (localVersion && dbVersion && localVersion !== dbVersion) {
+                    console.log('VersionListener: Version mismatch! Local:', localVersion, 'DB:', dbVersion);
+                    this.showUpdateNotification(dbVersion);
+                    // DON'T update localStorage here - only after user applies update
+                } else {
+                    // Versions match OR first time - store current version
+                    localStorage.setItem('appVersion', dbVersion);
+                }
+
+                this.currentVersion = dbVersion;
             }
 
             // ALWAYS subscribe to changes (even if initial fetch failed)
@@ -180,7 +213,9 @@ const VersionListener = {
             return;
         }
 
+        console.log('VersionListener: New version received via WebSocket:', newVersion);
         this.currentVersion = newVersion;
+        // Don't update localStorage here - only after user applies update
         this.showUpdateNotification(newVersion);
     },
 
@@ -257,7 +292,7 @@ const VersionListener = {
     /**
      * Apply the update - clear caches and reload
      */
-    async applyUpdate(_newVersion) {
+    async applyUpdate(newVersion) {
         // Remove banner
         document.getElementById('versionUpdateBanner')?.remove();
 
@@ -270,6 +305,12 @@ const VersionListener = {
             // Save current data
             if (typeof autoSave === 'function') {
                 autoSave();
+            }
+
+            // Save new version to localStorage BEFORE clearing cache
+            // This prevents the banner from showing again after reload
+            if (newVersion) {
+                localStorage.setItem('appVersion', newVersion);
             }
 
             // Clear all caches
