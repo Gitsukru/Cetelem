@@ -2305,6 +2305,7 @@ class AdminDashboard {
                 namePlaceholder: 'ornek: Bamteli',
                 detailLabel: 'Aciklama',
                 detailPlaceholder: 'ornek: Video sohbetler',
+                showUrl: true,
                 showDaily: true,
                 showWeekly: true,
                 dailyLabel: 'Gunluk Hedef (dakika)',
@@ -2340,6 +2341,12 @@ class AdminDashboard {
             if (totalPagesLabel) totalPagesLabel.textContent = config.totalLabel;
             if (totalPagesInput) totalPagesInput.placeholder = config.totalPlaceholder;
         }
+
+        // URL field for sohbet
+        const urlGroup = document.getElementById('urlGroup');
+        if (urlGroup) {
+            urlGroup.style.display = config.showUrl ? 'flex' : 'none';
+        }
     }
 
     /**
@@ -2352,6 +2359,8 @@ class AdminDashboard {
         const dailyGoal = parseInt(document.getElementById('tavsiyeNewDailyGoal').value) || 0;
         const weeklyGoal = parseInt(document.getElementById('tavsiyeNewWeeklyGoal').value) || 0;
         const totalPages = parseInt(document.getElementById('tavsiyeNewTotalPages').value) || 0;
+        const urlInput = document.getElementById('tavsiyeNewUrl');
+        const url = urlInput ? urlInput.value.trim() : '';
 
         if (!name || !detail) {
             alert('Isim ve detay alanlari zorunludur!');
@@ -2368,8 +2377,13 @@ class AdminDashboard {
         const newItem = { name, detail };
 
         // Add appropriate fields based on category
-        if (category === 'zikir' || category === 'namaz' || category === 'sohbet') {
-            // Weekly goal for zikir, namaz, sohbet
+        if (category === 'sohbet') {
+            // Sohbet: daily goal (minutes), weekly goal (minutes), and URL
+            if (dailyGoal > 0) newItem.dailyGoal = dailyGoal;
+            if (weeklyGoal > 0) newItem.weeklyGoal = weeklyGoal;
+            if (url) newItem.url = url;
+        } else if (category === 'zikir' || category === 'namaz') {
+            // Weekly goal for zikir, namaz
             if (weeklyGoal > 0) newItem.weeklyGoal = weeklyGoal;
         } else {
             // Daily goal and total pages for kitap, kuran, cevsen
@@ -2386,6 +2400,7 @@ class AdminDashboard {
         document.getElementById('tavsiyeNewDailyGoal').value = '';
         document.getElementById('tavsiyeNewWeeklyGoal').value = '';
         document.getElementById('tavsiyeNewTotalPages').value = '';
+        if (urlInput) urlInput.value = '';
 
         // Refresh list
         this.renderTavsiyeItems(category);
