@@ -160,16 +160,23 @@ class SupabaseProvider extends BackendProvider {
       updated_at: new Date().toISOString()
     }
 
-    // Ajouter les statistiques détaillées par catégorie ET livres dans metadata
-    if (score.categories || score.books) {
+    // Ajouter les statistiques détaillées par catégorie, livres, namaz et sohbet dans metadata
+    if (score.categories || score.books || score.namaz || score.sohbet) {
       updateData.metadata = {
         categories: score.categories || {},
         books: score.books || {},
+        namaz: score.namaz || {},
+        sohbet: score.sohbet || {},
         lastUpdated: new Date().toISOString()
       }
-      logger.log('📊 Envoi des statistiques détaillées:', { categories: score.categories, books: score.books })
+      logger.log('📊 Envoi des statistiques détaillées:', {
+        categories: score.categories,
+        books: score.books,
+        namaz: score.namaz,
+        sohbet: score.sohbet
+      })
     } else {
-      logger.warn('⚠️ Aucune catégorie ni livre dans score:', score)
+      logger.warn('⚠️ Aucune donnée dans score:', score)
     }
 
     logger.log('📤 Données envoyées à Supabase:', updateData)

@@ -534,8 +534,15 @@ async function loadParticipantDetailedStats(participantId, container) {
     // Les statistiques détaillées sont stockées dans metadata JSON
     const detailedStats = participant?.metadata?.categories || {}
     const booksStats = participant?.metadata?.books || {}
+    const namazStats = participant?.metadata?.namaz || {}
+    const sohbetStats = participant?.metadata?.sohbet || {}
 
-    if (Object.keys(detailedStats).length === 0 && Object.keys(booksStats).length === 0) {
+    const hasData = Object.keys(detailedStats).length > 0 ||
+                    Object.keys(booksStats).length > 0 ||
+                    Object.keys(namazStats.categories || {}).length > 0 ||
+                    Object.keys(sohbetStats.sources || {}).length > 0
+
+    if (!hasData) {
       container.innerHTML = '<div class="detail-empty">Henüz detaylı istatistik paylaşılmadı</div>'
       return
     }
@@ -617,6 +624,48 @@ async function loadParticipantDetailedStats(participantId, container) {
                 Not
               </button>
             </td>
+          </tr>
+        `
+      }
+      html += '</tbody></table>'
+    }
+
+    // Section Namaz
+    const namazCategories = namazStats.categories || {}
+    if (Object.keys(namazCategories).length > 0) {
+      html += '<div class="detail-header" style="margin-top: 16px;">🕌 Namazlar</div>'
+      html += '<table class="stats-breakdown-table">'
+      html += '<thead><tr><th>Namaz</th><th>Bugün</th><th>Hafta</th><th>Ay</th></tr></thead>'
+      html += '<tbody>'
+
+      for (const [namazName, stats] of Object.entries(namazCategories)) {
+        html += `
+          <tr>
+            <td class="category-name">${namazName}</td>
+            <td class="stat-num">${stats.today || 0}</td>
+            <td class="stat-num">${stats.week || 0}</td>
+            <td class="stat-num">${stats.month || 0}</td>
+          </tr>
+        `
+      }
+      html += '</tbody></table>'
+    }
+
+    // Section Sohbet
+    const sohbetSources = sohbetStats.sources || {}
+    if (Object.keys(sohbetSources).length > 0) {
+      html += '<div class="detail-header" style="margin-top: 16px;">🎬 Sohbetler</div>'
+      html += '<table class="stats-breakdown-table">'
+      html += '<thead><tr><th>Kaynak</th><th>Bugün</th><th>Hafta</th><th>Ay</th></tr></thead>'
+      html += '<tbody>'
+
+      for (const [sourceName, stats] of Object.entries(sohbetSources)) {
+        html += `
+          <tr>
+            <td class="category-name">${sourceName}</td>
+            <td class="stat-num">${stats.today || 0}</td>
+            <td class="stat-num">${stats.week || 0}</td>
+            <td class="stat-num">${stats.month || 0}</td>
           </tr>
         `
       }
