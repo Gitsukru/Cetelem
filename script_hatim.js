@@ -1814,24 +1814,33 @@ Linke tıklayın ve uygulamayı yükleyin
 
         } catch (error) {
             console.error('Claim error:', error);
+            const errorMsg = error.message || '';
 
-            // Better error message for race condition
-            if (error.message === 'Bu birim zaten alinmis') {
+            // Handle specific error cases
+            if (errorMsg === 'Bu birim zaten alinmis' || errorMsg === 'Bu cüz tamamen alinmis') {
                 showCustomAlert('⚠️ Bu cüz az önce başkası tarafından alındı! Başka bir cüz seçin.', 'warning', 3500);
                 document.getElementById('claimModal')?.remove();
-                // Auto-refresh to show updated grid
+                await this.refreshCurrentHatim();
+            } else if (errorMsg.includes('yarisi zaten alinmis')) {
+                // Half already taken - need to select the other half
+                showCustomAlert('⚠️ Bu cüzün bir yarısı alınmış. Lütfen diğer yarıyı seçin veya başka cüz seçin.', 'warning', 3500);
+                document.getElementById('claimModal')?.remove();
+                await this.refreshCurrentHatim();
+            } else if (errorMsg === 'Bu yarim cüz zaten alinmis') {
+                showCustomAlert('⚠️ Bu yarım cüz az önce alındı! Diğer yarıyı deneyin.', 'warning', 3500);
+                document.getElementById('claimModal')?.remove();
                 await this.refreshCurrentHatim();
             } else {
-                // Message d'erreur plus informatif
-                let errorMsg = error.message || 'Bilinmeyen hata';
+                // Generic error
+                let displayMsg = errorMsg;
                 if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
-                    errorMsg = 'İnternet bağlantınızı kontrol edin';
+                    displayMsg = 'İnternet bağlantınızı kontrol edin';
                 }
-                showCustomAlert(`❌ Seçim başarısız: ${errorMsg}`, 'error', 3500);
+                showCustomAlert(`❌ Seçim başarısız: ${displayMsg}`, 'error', 3500);
                 // Reset button
                 if (claimBtn) {
                     claimBtn.disabled = false;
-                    claimBtn.innerHTML = 'Sec';
+                    claimBtn.innerHTML = 'Seç';
                     claimBtn.style.opacity = '1';
                 }
             }
