@@ -1162,6 +1162,12 @@ Linke tıklayın ve uygulamayı yükleyin
 
         if (!activeContainer || !this.provider) return;
 
+        // Helper function for safe ID
+        const safeId = (id) => {
+            if (!id) return '';
+            return String(id).replace(/[^a-f0-9-]/gi, '').substring(0, 36);
+        };
+
         try {
             const myDeviceId = this.provider.getDeviceId();
             const isKuran = this.currentHatim?.type === 'kuran';
