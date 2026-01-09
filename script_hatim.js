@@ -892,13 +892,13 @@ Linke tıklayın ve uygulamayı yükleyin
 
                 <!-- CARD 3b: Previous Rounds History -->
                 ${hatim.current_round > 1 ? `
-                <details class="hatim-previous-rounds">
+                <details class="hatim-previous-rounds" open>
                     <summary>
                         <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
-                        <span>🏆</span> Önceki Turlar (${hatim.current_round - 1} tamamlandı)
-                        <span style="font-weight: 400; font-size: 11px; color: #a16207; margin-left: auto;">Tıkla → Göster</span>
+                        <span>📖</span> Önceki Turlar
+                        <span style="font-weight: 400; font-size: 11px; color: #a16207; margin-left: auto;">Devam eden okumalar</span>
                     </summary>
                     <div id="previousRoundsContainer" style="padding: 16px;">
                         <p style="color: #854d0e; font-size: 13px; margin: 0;">Yükleniyor...</p>
@@ -1172,13 +1172,28 @@ Linke tıklayın ve uygulamayı yükleyin
             for (const round of roundNumbers) {
                 const participations = roundsMap[round] || [];
                 const completedCount = participations.filter(p => p.is_completed).length;
+                const claimedCount = participations.length;
                 const myInThisRound = participations.filter(p => p.device_id === myDeviceId);
+                const myUncompletedInThisRound = myInThisRound.filter(p => !p.is_completed);
+                const isRoundComplete = completedCount === totalUnits;
+
+                // Styling based on round completion status
+                const borderColor = isRoundComplete ? '#10b981' : '#f59e0b';
+                const bgColor = isRoundComplete ? '#f0fdf4' : '#fffbeb';
+                const statusIcon = isRoundComplete ? '✅' : '📖';
+                const statusText = isRoundComplete
+                    ? 'Tamamlandı'
+                    : `${completedCount}/${claimedCount} okundu`;
 
                 html += `
-                    <div style="margin-bottom: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid #fde047;">
+                    <div style="margin-bottom: 12px; padding: 12px; background: ${bgColor}; border-radius: 8px; border: 2px solid ${borderColor};">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span style="font-weight: 600; color: #854d0e;">Tur ${round}</span>
-                            <span style="font-size: 12px; color: #a16207;">✅ ${completedCount}/${totalUnits} okundu</span>
+                            <span style="font-weight: 600; color: ${isRoundComplete ? '#166534' : '#854d0e'};">
+                                ${statusIcon} Tur ${round}
+                            </span>
+                            <span style="font-size: 12px; color: ${isRoundComplete ? '#166534' : '#a16207'}; font-weight: 500;">
+                                ${statusText}
+                            </span>
                         </div>
                         <div style="display: grid; grid-template-columns: repeat(${totalUnits <= 30 ? 10 : 10}, 1fr); gap: 3px;">
                 `;
@@ -1186,25 +1201,58 @@ Linke tıklayın ve uygulamayı yükleyin
                 for (let i = 1; i <= totalUnits; i++) {
                     const p = participations.find(x => x.unit_number === i);
                     const isMine = p && p.device_id === myDeviceId;
-                    const bgColor = p ? (p.is_completed ? '#dcfce7' : '#fef3c7') : '#f1f5f9';
-                    const borderColor = isMine ? '#3b82f6' : (p ? (p.is_completed ? '#10b981' : '#f59e0b') : '#e2e8f0');
+                    const isMyUncompleted = isMine && !p.is_completed;
+                    const cellBgColor = p ? (p.is_completed ? '#dcfce7' : '#fef3c7') : '#f1f5f9';
+                    const cellBorderColor = isMine ? '#3b82f6' : (p ? (p.is_completed ? '#10b981' : '#f59e0b') : '#e2e8f0');
 
-                    html += `
-                        <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: ${bgColor}; border: 1px solid ${borderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #64748b;" title="${p ? this.escapeHtml(p.participant_name) : 'Boş'}">
-                            ${i}
-                        </div>
-                    `;
+                    // Make clickable if it's my uncompleted participation
+                    if (isMyUncompleted) {
+                        html += `
+                            <div onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', false, ${i})"
+                                 style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: ${cellBgColor}; border: 2px solid ${cellBorderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #1e40af; cursor: pointer; animation: pulse 2s infinite;"
+                                 title="Tıkla → Okundu olarak işaretle">
+                                ${i}
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: ${cellBgColor}; border: 1px solid ${cellBorderColor}; border-radius: 4px; font-size: 9px; font-weight: 600; color: #64748b;" title="${p ? this.escapeHtml(p.participant_name) : 'Boş'}">
+                                ${i}
+                            </div>
+                        `;
+                    }
                 }
 
                 html += `
                         </div>
-                        ${myInThisRound.length > 0 ? `
-                        <div style="margin-top: 8px; font-size: 11px; color: #64748b;">
-                            🙋 Benim: ${myInThisRound.map(p => `${unitLabel} ${p.unit_number}`).join(', ')}
-                        </div>
-                        ` : ''}
-                    </div>
                 `;
+
+                // Show user's participations with action buttons for uncompleted ones
+                if (myUncompletedInThisRound.length > 0) {
+                    html += `
+                        <div style="margin-top: 10px; padding: 10px; background: #fef3c7; border-radius: 6px; border: 1px solid #f59e0b;">
+                            <div style="font-size: 12px; font-weight: 600; color: #92400e; margin-bottom: 8px;">
+                                📋 Okumaya devam et:
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                ${myUncompletedInThisRound.map(p => `
+                                    <button onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', false, ${p.unit_number})"
+                                            style="padding: 8px 12px; background: #fff; border: 1px solid #f59e0b; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; color: #92400e;">
+                                        ${unitLabel} ${p.unit_number} → Okundu ✓
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else if (myInThisRound.length > 0) {
+                    html += `
+                        <div style="margin-top: 8px; font-size: 11px; color: #166534;">
+                            ✅ Benim (tamamlandı): ${myInThisRound.map(p => `${unitLabel} ${p.unit_number}`).join(', ')}
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
             }
 
             container.innerHTML = html;
