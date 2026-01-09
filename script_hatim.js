@@ -1317,6 +1317,16 @@ Linke tıklayın ve uygulamayı yükleyin
                 for (const { round, participations } of completedRounds) {
                     const myInThisRound = participations.filter(p => p.device_id === myDeviceId);
 
+                    // Group participations by participant name
+                    const participantMap = new Map();
+                    participations.forEach(p => {
+                        const name = p.participant_name || 'Anonim';
+                        if (!participantMap.has(name)) {
+                            participantMap.set(name, []);
+                        }
+                        participantMap.get(name).push(p.unit_number);
+                    });
+
                     completedHtml += `
                         <div style="margin-bottom: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px; border: 2px solid #10b981;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -1338,13 +1348,21 @@ Linke tıklayın ve uygulamayı yükleyin
                         `;
                     }
 
+                    // Build participant list
+                    let participantList = '';
+                    participantMap.forEach((units, name) => {
+                        const isMine = myInThisRound.some(p => p.participant_name === name);
+                        const icon = isMine ? '🙋' : '👤';
+                        const style = isMine ? 'color: #1e40af; font-weight: 600;' : 'color: #166534;';
+                        participantList += `<div style="font-size: 11px; ${style}">${icon} ${this.escapeHtml(name)}: ${unitLabel} ${units.sort((a,b) => a-b).join(', ')}</div>`;
+                    });
+
                     completedHtml += `
                             </div>
-                            ${myInThisRound.length > 0 ? `
-                            <div style="margin-top: 8px; font-size: 11px; color: #166534;">
-                                ✅ Benim: ${myInThisRound.map(p => `${unitLabel} ${p.unit_number}`).join(', ')}
+                            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #bbf7d0;">
+                                <div style="font-size: 11px; font-weight: 600; color: #166534; margin-bottom: 6px;">Katılımcılar:</div>
+                                ${participantList}
                             </div>
-                            ` : ''}
                         </div>
                     `;
                 }
