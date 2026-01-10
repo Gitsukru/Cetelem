@@ -636,62 +636,7 @@
                 </div>
             </div>
 
-            <!-- ACCORDION SECTION 5: Hatim Dua Yönetimi -->
-            <div class="settings-accordion-item">
-                <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
-                    <span class="accordion-title">
-                        <span class="accordion-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                                <path d="M12 6v4"></path>
-                                <path d="M12 14h.01"></path>
-                            </svg>
-                        </span>
-                        <span>Hatim Dua Yönetimi</span>
-                    </span>
-                    <span class="accordion-chevron">►</span>
-                </button>
-                <div class="settings-accordion-content">
-                    <p style="color: #64748b; margin-bottom: 16px; font-size: 14px;">
-                        Hatim tamamlandığında okunacak duaları yönetin. Bu dualar hatim paylaşımlarında gösterilecektir.
-                    </p>
-
-                    <div class="add-category-form">
-                        <button class="add-button" onclick="HatimDuaManager.showAddDuaModal()" style="width: 100%;">
-                            <span style="font-size: 18px; margin-right: 8px;">+</span>
-                            Yeni Dua Ekle
-                        </button>
-                    </div>
-
-                    <ul id="hatimDuaList" class="categories-list">
-                        <!-- Dualar buraya eklenecek -->
-                    </ul>
-
-                    <div class="divider"></div>
-
-                    <!-- Tavsiye Edilen Dualar -->
-                    <div style="margin-top: 20px; margin-bottom: 20px;">
-                        <h3 style="margin-bottom: 12px; font-size: 16px;">Tavsiye Edilen Dualar</h3>
-                        <button class="add-button" onclick="HatimDuaManager.showTavsiyeDuaModal()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); width: 100%;">
-                            <span style="margin-right: 8px;">🤲</span>
-                            Tavsiye Edilen Duaları Göster
-                        </button>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <h3 style="margin-top: 20px; margin-bottom: 16px; font-size: 16px;">Dua Verilerini Sil</h3>
-
-                    <div class="reset-options">
-                        <button class="reset-button danger" onclick="if(confirm('Tüm özel duaları silmek istediğinizden emin misiniz?')) HatimDuaManager.resetAllDuas()" style="width: 100%;">
-                            Tüm Özel Duaları Sil
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ACCORDION SECTION 6: Hatırlatmalar -->
+            <!-- ACCORDION SECTION 5: Hatırlatmalar -->
             <div class="settings-accordion-item">
                 <button class="settings-accordion-header" onclick="toggleSettingsAccordion(this)">
                     <span class="accordion-title">
