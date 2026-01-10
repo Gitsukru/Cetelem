@@ -174,6 +174,15 @@ const NamazManager = {
             playTickSound();
         }
 
+        // Envoyer analytics
+        if (typeof PrivacyAnalytics !== 'undefined') {
+            PrivacyAnalytics.trackEvent('namaz_increment', {
+                category: categoryName,
+                value: value,
+                total_today: counters[categoryName][today]
+            });
+        }
+
         return counters[categoryName][today];
     },
 

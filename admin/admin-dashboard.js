@@ -106,9 +106,11 @@ class AdminDashboard {
                 this.loadZikirlersData(),     // Section 2: Zikirlers (nouveau)
                 this.loadGroupsData(),        // Section 3: Analytics Groupes
                 this.loadBooksData(),         // Section 4: Analytics Livres
-                this.loadPerformanceData(),   // Section 5: Performance
-                this.loadTrendsData(),        // Section 7: Tendances
-                this.loadDebugLogs()          // Section 8: Debug
+                this.loadNamazData(),         // Section 5: Namaz Analytics
+                this.loadSohbetData(),        // Section 6: Sohbet Analytics
+                this.loadPerformanceData(),   // Section 7: Performance
+                this.loadTrendsData(),        // Section 8: Tendances
+                this.loadDebugLogs()          // Section 9: Debug
             ]);
 
             console.log('✅ Toutes les données chargées');
@@ -1170,7 +1172,265 @@ class AdminDashboard {
     }
 
     /* ========================================
-       SECTION 5: PERFORMANCE
+       SECTION 5: NAMAZ ANALYTICS
+       ======================================== */
+
+    async loadNamazData() {
+        try {
+            console.log('🕌 Chargement analytics namaz...');
+
+            const { data: events, error } = await this.supabase
+                .from('analytics_events')
+                .select('*')
+                .eq('event_name', 'namaz_increment')
+                .order('created_at', { ascending: false })
+                .limit(10000);
+
+            if (error) throw error;
+
+            // Calculer les métriques
+            const totalNamazlar = events.reduce((sum, e) => sum + (e.event_data?.value || 1), 0);
+
+            // 30 derniers jours
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const last30Days = events.filter(e => new Date(e.created_at) >= thirtyDaysAgo);
+            const namazLast30Days = last30Days.reduce((sum, e) => sum + (e.event_data?.value || 1), 0);
+            const namazPerDay = last30Days.length > 0 ? (namazLast30Days / 30).toFixed(1) : 0;
+
+            // Cette semaine
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            const thisWeek = events.filter(e => new Date(e.created_at) >= sevenDaysAgo);
+            const namazThisWeek = thisWeek.reduce((sum, e) => sum + (e.event_data?.value || 1), 0);
+
+            // Catégories uniques
+            const categories = [...new Set(events.map(e => e.event_data?.category).filter(Boolean))];
+
+            // Afficher les métriques
+            this.updateMetric('totalNamazlar', this.formatNumber(totalNamazlar));
+            this.updateMetric('namazPerDay', namazPerDay);
+            this.updateMetric('namazThisWeek', this.formatNumber(namazThisWeek));
+            this.updateMetric('namazCategoriesCount', categories.length);
+
+            // Top Namazlar
+            this.displayNamazCategories(events);
+
+            // Chart évolution
+            this.createNamazEvolutionChart(events);
+
+        } catch (error) {
+            console.error('❌ Erreur analytics namaz:', error);
+        }
+    }
+
+    displayNamazCategories(events) {
+        const container = document.getElementById('namazCategoriesList');
+        if (!container) return;
+
+        // Compter par catégorie
+        const categoryCounts = {};
+        events.forEach(e => {
+            const cat = e.event_data?.category || 'Inconnu';
+            const value = e.event_data?.value || 1;
+            categoryCounts[cat] = (categoryCounts[cat] || 0) + value;
+        });
+
+        // Trier par count
+        const sorted = Object.entries(categoryCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+
+        if (sorted.length === 0) {
+            container.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;">Henuz namaz verisi yok</p>';
+            return;
+        }
+
+        const maxCount = sorted[0][1];
+        container.innerHTML = sorted.map(([name, count]) => `
+            <div class="category-item">
+                <div class="category-info">
+                    <span class="category-name">${name}</span>
+                    <span class="category-count">${this.formatNumber(count)}</span>
+                </div>
+                <div class="category-bar">
+                    <div class="category-bar-fill" style="width: ${(count / maxCount * 100).toFixed(1)}%"></div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    createNamazEvolutionChart(events) {
+        const canvas = document.getElementById('namazEvolutionChart');
+        if (!canvas) return;
+
+        // Détruire l'ancien chart s'il existe
+        if (this.charts.namazEvolution) {
+            this.charts.namazEvolution.destroy();
+        }
+
+        // Grouper par jour (7 derniers jours)
+        const dailyData = {};
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const key = d.toISOString().split('T')[0];
+            dailyData[key] = 0;
+        }
+
+        events.forEach(e => {
+            const date = new Date(e.created_at).toISOString().split('T')[0];
+            if (dailyData[date] !== undefined) {
+                dailyData[date] += e.event_data?.value || 1;
+            }
+        });
+
+        const labels = Object.keys(dailyData).map(d => {
+            const date = new Date(d);
+            return date.toLocaleDateString('tr-TR', { weekday: 'short', day: 'numeric' });
+        });
+        const data = Object.values(dailyData);
+
+        this.charts.namazEvolution = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Namazlar',
+                    data,
+                    borderColor: '#8b5cf6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    /* ========================================
+       SECTION 6: SOHBET ANALYTICS
+       ======================================== */
+
+    async loadSohbetData() {
+        try {
+            console.log('🎬 Chargement analytics sohbet...');
+
+            const { data: events, error } = await this.supabase
+                .from('analytics_events')
+                .select('*')
+                .eq('event_name', 'sohbet_minutes')
+                .order('created_at', { ascending: false })
+                .limit(10000);
+
+            if (error) throw error;
+
+            // Calculer les métriques
+            const totalMinutes = events.reduce((sum, e) => sum + (e.event_data?.minutes || 0), 0);
+
+            // 30 derniers jours
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const last30Days = events.filter(e => new Date(e.created_at) >= thirtyDaysAgo);
+            const minutesLast30Days = last30Days.reduce((sum, e) => sum + (e.event_data?.minutes || 0), 0);
+            const minutesPerDay = last30Days.length > 0 ? (minutesLast30Days / 30).toFixed(0) : 0;
+
+            // Cette semaine
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            const thisWeek = events.filter(e => new Date(e.created_at) >= sevenDaysAgo);
+            const minutesThisWeek = thisWeek.reduce((sum, e) => sum + (e.event_data?.minutes || 0), 0);
+
+            // Sources uniques
+            const sources = [...new Set(events.map(e => e.event_data?.source).filter(Boolean))];
+
+            // Afficher les métriques
+            this.updateMetric('totalSohbetMinutes', this.formatNumber(totalMinutes));
+            this.updateMetric('sohbetPerDay', minutesPerDay);
+            this.updateMetric('sohbetThisWeek', this.formatNumber(minutesThisWeek));
+            this.updateMetric('sohbetSourcesCount', sources.length);
+
+            // Chart distribution par source
+            this.createSohbetSourcesChart(events);
+
+        } catch (error) {
+            console.error('❌ Erreur analytics sohbet:', error);
+        }
+    }
+
+    createSohbetSourcesChart(events) {
+        const canvas = document.getElementById('sohbetSourcesChart');
+        if (!canvas) return;
+
+        // Détruire l'ancien chart s'il existe
+        if (this.charts.sohbetSources) {
+            this.charts.sohbetSources.destroy();
+        }
+
+        // Compter par source
+        const sourceCounts = {};
+        events.forEach(e => {
+            const source = e.event_data?.source || 'Inconnu';
+            const minutes = e.event_data?.minutes || 0;
+            sourceCounts[source] = (sourceCounts[source] || 0) + minutes;
+        });
+
+        const labels = Object.keys(sourceCounts);
+        const data = Object.values(sourceCounts);
+
+        if (labels.length === 0) {
+            labels.push('Henuz veri yok');
+            data.push(1);
+        }
+
+        this.charts.sohbetSources = new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels,
+                datasets: [{
+                    data,
+                    backgroundColor: [
+                        '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+                        '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { padding: 15, font: { size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                return `${label}: ${value} dakika`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /* ========================================
+       SECTION 7: PERFORMANCE
        ======================================== */
 
     async loadPerformanceData() {
@@ -2395,12 +2655,14 @@ class AdminDashboard {
 
         const newItem = { name, detail };
 
+        // URL is available for all categories
+        if (url) newItem.url = url;
+
         // Add appropriate fields based on category
         if (category === 'sohbet') {
-            // Sohbet: daily goal (minutes), weekly goal (minutes), and URL
+            // Sohbet: daily goal (minutes), weekly goal (minutes)
             if (dailyGoal > 0) newItem.dailyGoal = dailyGoal;
             if (weeklyGoal > 0) newItem.weeklyGoal = weeklyGoal;
-            if (url) newItem.url = url;
         } else if (category === 'zikir' || category === 'namaz') {
             // Weekly goal for zikir, namaz
             if (weeklyGoal > 0) newItem.weeklyGoal = weeklyGoal;
@@ -2442,6 +2704,16 @@ class AdminDashboard {
 
         item.name = newName.trim() || item.name;
         item.detail = newDetail.trim() || item.detail;
+
+        // URL editing for all categories
+        const newUrl = prompt('URL (bos birakilabilir):', item.url || '');
+        if (newUrl !== null) {
+            if (newUrl.trim()) {
+                item.url = newUrl.trim();
+            } else {
+                delete item.url;
+            }
+        }
 
         // For zikir/namaz/sohbet: handle weeklyGoal
         if (category === 'zikir' || category === 'namaz' || category === 'sohbet') {

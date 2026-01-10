@@ -239,6 +239,31 @@
     font-weight: 500;
 }
 
+.tavsiye-item-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 8px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.tavsiye-item-link:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+}
+
+.tavsiye-item-link:active {
+    transform: scale(0.95);
+}
+
 .tavsiye-modal-footer {
     padding: 16px 24px;
     border-top: 1px solid #e2e8f0;

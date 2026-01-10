@@ -154,6 +154,15 @@ const SohbetManager = {
         metadata[sourceId].lastWatched = new Date().toISOString();
         this.saveMetadata(metadata);
 
+        // Envoyer analytics
+        if (typeof PrivacyAnalytics !== 'undefined') {
+            PrivacyAnalytics.trackEvent('sohbet_minutes', {
+                source: sourceId,
+                minutes: parseInt(minutes),
+                total_today: history[sourceId][today]
+            });
+        }
+
         this.renderSohbetList();
         this.updateGroupIfNeeded();
 

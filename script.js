@@ -1592,6 +1592,7 @@ function showTavsiyeModal(filter = 'all') {
         const itemsHTML = items.map(item => {
             const alreadyExists = checkTavsiyeItemExists(category, item.name);
             const currentIndex = itemIndex++;
+            const urlButton = item.url ? `<a href="${item.url}" target="_blank" rel="noopener" class="tavsiye-item-link" onclick="event.stopPropagation()" title="Linki ac">🔗</a>` : '';
             return `
                 <label class="tavsiye-item ${alreadyExists ? 'already-added' : ''}" ${alreadyExists ? 'title="Bu zaten ekli"' : ''}>
                     <input type="checkbox"
@@ -1607,6 +1608,7 @@ function showTavsiyeModal(filter = 'all') {
                         <span class="tavsiye-item-name">${item.name}</span>
                         <span class="tavsiye-item-detail">${item.detail}</span>
                     </div>
+                    ${urlButton}
                     ${alreadyExists ? '<span class="tavsiye-item-badge">Eklendi</span>' : ''}
                 </label>
             `;
