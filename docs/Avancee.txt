@@ -1572,7 +1572,7 @@ Fichiers :
 16.2 Sources prédéfinies
 
 Les sources intégrées incluent :
-- Sohbet Kaset : Cassettes audio/vidéo traditionnelles
+- Cuma Hutbeleri : Sermons du vendredi
 - Herkul.org : Site principal
 - Bamteli : Vidéos de sohbets
 - Kirik Testi : Articles écrits

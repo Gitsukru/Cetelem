@@ -6,11 +6,11 @@
 // Liste des sources predefinies (defaults)
 const DEFAULT_SOHBET_SOURCES = [
     {
-        id: 'sohbet-kaset',
-        name: 'Sohbet Kaset',
-        url: '',
-        icon: 'disc',
-        description: 'Ses/Video kasetleri'
+        id: 'cuma-hutbeleri',
+        name: 'Cuma Hutbeleri',
+        url: 'https://herkul.org/cuma-hutbeleri/cuma-hutbesi-yeniden-dua-zamani/',
+        icon: 'book-open',
+        description: 'Cuma hutbeleri'
     },
     {
         id: 'herkul',

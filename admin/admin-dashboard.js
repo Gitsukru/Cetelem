@@ -3398,7 +3398,7 @@ class AdminDashboard {
 
     getDefaultSohbetSources() {
         return [
-            { name: 'Sohbet Kaset', description: 'Ses/Video kasetleri', url: '', icon: '🎬' },
+            { name: 'Cuma Hutbeleri', description: 'Cuma hutbeleri', url: 'https://herkul.org/cuma-hutbeleri/cuma-hutbesi-yeniden-dua-zamani/', icon: '📖' },
             { name: 'Bamteli', description: 'Video sohbetler', url: '', icon: '🎬' },
             { name: 'Kirik Testi', description: 'Yazilar', url: '', icon: '📝' },
             { name: 'Herkul Nagme', description: 'Ses kayitlari', url: '', icon: '🎧' },
