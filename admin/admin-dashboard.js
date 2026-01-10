@@ -2186,6 +2186,9 @@ class AdminDashboard {
                     meta += (meta ? ' | ' : '') + `Toplam: ${item.totalPages} ${unit}`;
                 }
 
+                // URL display
+                const urlDisplay = item.url ? `<span class="tavsiye-item-url">🔗 <a href="${item.url}" target="_blank" rel="noopener">${item.url.substring(0, 40)}${item.url.length > 40 ? '...' : ''}</a></span>` : '';
+
                 html += `
                     <div class="tavsiye-admin-item" data-category="${category}" data-index="${index}">
                         <div class="tavsiye-item-info">
@@ -2194,6 +2197,7 @@ class AdminDashboard {
                                 <span class="tavsiye-category-badge">${categoryLabels[category]}</span>
                             </div>
                             <span class="tavsiye-item-detail">${item.detail}</span>
+                            ${urlDisplay}
                             ${meta ? `<span class="tavsiye-item-meta">${meta}</span>` : ''}
                         </div>
                         <div class="tavsiye-item-actions">
@@ -2251,6 +2255,8 @@ class AdminDashboard {
                 namePlaceholder: 'ornek: Ya Vedud',
                 detailLabel: 'Tekrar Sayisi',
                 detailPlaceholder: 'ornek: 100 defa',
+                showUrl: true,
+                urlPlaceholder: 'ornek: https://zikir.example.com',
                 showWeekly: true,
                 weeklyLabel: 'Haftalik Hedef (defa)',
                 weeklyPlaceholder: 'ornek: 7'
@@ -2260,6 +2266,8 @@ class AdminDashboard {
                 namePlaceholder: 'ornek: Risale-i Nur',
                 detailLabel: 'Aciklama',
                 detailPlaceholder: 'ornek: Gunluk 10 sayfa',
+                showUrl: true,
+                urlPlaceholder: 'ornek: https://risale.example.com',
                 showDaily: true,
                 showTotal: true,
                 dailyLabel: 'Gunluk Hedef (sayfa)',
@@ -2272,6 +2280,8 @@ class AdminDashboard {
                 namePlaceholder: 'ornek: Teheccud Namazi',
                 detailLabel: 'Aciklama',
                 detailPlaceholder: 'ornek: 2 rekat',
+                showUrl: true,
+                urlPlaceholder: 'ornek: https://namaz.example.com',
                 showWeekly: true,
                 weeklyLabel: 'Haftalik Hedef (defa)',
                 weeklyPlaceholder: 'ornek: 7'
@@ -2281,6 +2291,8 @@ class AdminDashboard {
                 namePlaceholder: 'ornek: Kuran-i Kerim',
                 detailLabel: 'Aciklama',
                 detailPlaceholder: 'ornek: Gunluk 3 sayfa',
+                showUrl: true,
+                urlPlaceholder: 'ornek: https://kuran.example.com',
                 showDaily: true,
                 showTotal: true,
                 dailyLabel: 'Gunluk Hedef (sayfa)',
@@ -2293,6 +2305,8 @@ class AdminDashboard {
                 namePlaceholder: 'ornek: Cevsen-ul Kebir',
                 detailLabel: 'Aciklama',
                 detailPlaceholder: 'ornek: Gunluk 10 bab',
+                showUrl: true,
+                urlPlaceholder: 'ornek: https://cevsen.example.com',
                 showDaily: true,
                 showTotal: true,
                 dailyLabel: 'Gunluk Hedef (bab)',
@@ -2306,6 +2320,7 @@ class AdminDashboard {
                 detailLabel: 'Aciklama',
                 detailPlaceholder: 'ornek: Video sohbetler',
                 showUrl: true,
+                urlPlaceholder: 'ornek: https://herkul.org/bamteli/',
                 showDaily: true,
                 showWeekly: true,
                 dailyLabel: 'Gunluk Hedef (dakika)',
@@ -2342,10 +2357,14 @@ class AdminDashboard {
             if (totalPagesInput) totalPagesInput.placeholder = config.totalPlaceholder;
         }
 
-        // URL field for sohbet
+        // URL field for all categories
         const urlGroup = document.getElementById('urlGroup');
+        const urlInput = document.getElementById('tavsiyeNewUrl');
         if (urlGroup) {
             urlGroup.style.display = config.showUrl ? 'flex' : 'none';
+            if (urlInput && config.urlPlaceholder) {
+                urlInput.placeholder = config.urlPlaceholder;
+            }
         }
     }
 

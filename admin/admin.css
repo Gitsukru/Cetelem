@@ -1530,6 +1530,20 @@ canvas {
     color: #94a3b8;
 }
 
+.tavsiye-item-url {
+    font-size: 12px;
+    color: #3b82f6;
+}
+
+.tavsiye-item-url a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.tavsiye-item-url a:hover {
+    text-decoration: underline;
+}
+
 .tavsiye-item-actions {
     display: flex;
     gap: 8px;
