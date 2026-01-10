@@ -66,6 +66,12 @@ class AdminAuth {
             );
 
             console.log('✅ Supabase client initialisé');
+
+            // Initialize version listener for real-time updates
+            if (typeof VersionListener !== 'undefined') {
+                VersionListener.init(this.supabase);
+                console.log('✅ VersionListener initialisé pour admin');
+            }
         } catch (error) {
             console.error('❌ Erreur init Supabase:', error);
             this.showError('Erreur de connexion à la base de données');
