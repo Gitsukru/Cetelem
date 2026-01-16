@@ -151,7 +151,8 @@ END $$;
 -- 8. CRÉER UNE VUE POUR LE CLASSEMENT (BONUS)
 DROP VIEW IF EXISTS leaderboard_view;
 
-CREATE VIEW leaderboard_view AS
+CREATE VIEW leaderboard_view
+WITH (security_invoker = true) AS
 SELECT
   p.id,
   p.group_id,

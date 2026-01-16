@@ -55,7 +55,8 @@ END $$;
 -- 4. VUES POUR LE DASHBOARD
 
 -- Vue: Événements par jour
-CREATE OR REPLACE VIEW analytics_daily AS
+CREATE OR REPLACE VIEW analytics_daily
+WITH (security_invoker = true) AS
 SELECT
   DATE(created_at) as date,
   event_name,
@@ -66,7 +67,8 @@ GROUP BY DATE(created_at), event_name
 ORDER BY date DESC, count DESC;
 
 -- Vue: Top catégories de zikir
-CREATE OR REPLACE VIEW analytics_top_categories AS
+CREATE OR REPLACE VIEW analytics_top_categories
+WITH (security_invoker = true) AS
 SELECT
   event_data->>'category' as category,
   COUNT(*) as total_counts,
@@ -77,7 +79,8 @@ GROUP BY category
 ORDER BY total_counts DESC;
 
 -- Vue: Statistiques groupes
-CREATE OR REPLACE VIEW analytics_groups_stats AS
+CREATE OR REPLACE VIEW analytics_groups_stats
+WITH (security_invoker = true) AS
 SELECT
   COUNT(CASE WHEN event_name = 'group_created' THEN 1 END) as groups_created,
   COUNT(CASE WHEN event_name = 'group_joined' THEN 1 END) as groups_joined,
@@ -89,7 +92,8 @@ GROUP BY DATE(created_at)
 ORDER BY date DESC;
 
 -- Vue: Résumé global
-CREATE OR REPLACE VIEW analytics_summary AS
+CREATE OR REPLACE VIEW analytics_summary
+WITH (security_invoker = true) AS
 SELECT
   event_name,
   COUNT(*) as total,
