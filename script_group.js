@@ -319,10 +319,11 @@ async function doJoinGroup() {
   const groupCode = codeValidation.value
   const participantName = nameValidation.value
 
-  // ⚡ Rate limiting (max 30 tentatives de join par 10 minutes)
+  // Rate limiting with brute force protection (max 10 attempts per 5 minutes)
   const rateLimitCheck = rateLimiter.check('joinGroup', {
-    maxAttempts: 30,
-    windowMs: 10 * 60 * 1000 // 10 minutes
+    maxAttempts: 10,
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    bruteForceProtection: true // Enable exponential backoff for repeated failures
   })
 
   if (!rateLimitCheck.allowed) {
@@ -334,6 +335,9 @@ async function doJoinGroup() {
 
   try {
     const result = await groupManager.joinGroup(groupCode, participantName)
+
+    // Clear brute force lockout on successful join
+    rateLimiter.clearLockout('joinGroup')
 
     // Render les tabs multi-groupe
     renderMultiGroupTabs()
@@ -1089,20 +1093,20 @@ async function showNotesModal(participantId, participantName, isMe) {
       <div class="custom-modal-overlay" id="notesModal">
         <div class="custom-modal" style="max-width: 600px;">
           <div class="modal-header">
-            <h3>Notlar - ${participantName}</h3>
+            <h3>Notlar - ${escapeHtml(participantName)}</h3>
             <button class="modal-close" onclick="document.getElementById('notesModal').remove()">✕</button>
           </div>
           <div class="modal-body">
             ${isMe ? `
               <div class="notes-section">
                 <label class="notes-label">Kişisel Notlarım (Sadece sen görürsün)</label>
-                <textarea id="personalNotes" class="notes-textarea" placeholder="Kişisel notlarınızı buraya yazın...">${personalNotes}</textarea>
+                <textarea id="personalNotes" class="notes-textarea" placeholder="Kişisel notlarınızı buraya yazın...">${escapeHtml(personalNotes)}</textarea>
               </div>
             ` : ''}
             
             <div class="notes-section" style="margin-top: 16px;">
               <label class="notes-label">${isMe ? 'Herkese Açık Notlarım' : 'Açık Notlar'}</label>
-              <textarea id="publicNotes" class="notes-textarea" placeholder="${isMe ? 'Gruba görünecek notlarınızı yazın...' : 'Not yok'}" ${isMe ? '' : 'readonly'}>${publicNotes}</textarea>
+              <textarea id="publicNotes" class="notes-textarea" placeholder="${isMe ? 'Gruba görünecek notlarınızı yazın...' : 'Not yok'}" ${isMe ? '' : 'readonly'}>${escapeHtml(publicNotes)}</textarea>
             </div>
           </div>
           <div class="modal-footer">
@@ -1200,7 +1204,7 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
       <div class="custom-modal-overlay" id="categoryNoteModal" onclick="if(event.target === this) this.remove()">
         <div class="custom-modal-content modern-modal">
           <div class="modal-header">
-            <h3>${category}</h3>
+            <h3>${escapeHtml(category)}</h3>
             <button class="modal-close" onclick="document.getElementById('categoryNoteModal').remove()">✕</button>
           </div>
           <div class="modal-body">
@@ -1209,7 +1213,7 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
               <label class="notes-label">Kişisel Notunuz (Sadece sen görürsün)</label>
               <textarea id="myPrivateCategoryNote" class="notes-textarea"
                 placeholder="Kişisel notunuzu buraya yazın..."
-                style="min-height: 60px;">${myPrivateNote}</textarea>
+                style="min-height: 60px;">${escapeHtml(myPrivateNote)}</textarea>
             </div>
 
             <!-- Note publique -->
@@ -1217,7 +1221,7 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
               <label class="notes-label">Herkese Açık Notunuz</label>
               <textarea id="myPublicCategoryNote" class="notes-textarea"
                 placeholder="Gruba görünecek notunuzu yazın..."
-                style="min-height: 60px;">${myNote?.note || ''}</textarea>
+                style="min-height: 60px;">${escapeHtml(myNote?.note || '')}</textarea>
             </div>
 
             <!-- Notes des autres participants -->
@@ -1227,8 +1231,8 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
                 <div class="other-notes-list">
                   ${otherNotes.map(note => `
                     <div class="other-note-item">
-                      <div class="note-author">${note.participants.name}</div>
-                      <div class="note-text">${note.note}</div>
+                      <div class="note-author">${escapeHtml(note.participants.name)}</div>
+                      <div class="note-text">${escapeHtml(note.note)}</div>
                     </div>
                   `).join('')}
                 </div>

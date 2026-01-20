@@ -40,12 +40,18 @@ class BackendProvider {
     throw new Error('Méthode unsubscribeFromGroup() non implémentée')
   }
 
-  // Utilitaire : générer un code de groupe
+  // Utilitaire : générer un code de groupe cryptographiquement sécurisé
   generateGroupCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+    const codeLength = 8 // Increased from 6 to 8 for better security
+
+    // Use cryptographically secure random number generator
+    const randomValues = new Uint32Array(codeLength)
+    crypto.getRandomValues(randomValues)
+
     let code = ''
-    for (let i = 0; i < 6; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length))
+    for (let i = 0; i < codeLength; i++) {
+      code += chars.charAt(randomValues[i] % chars.length)
     }
     return code
   }

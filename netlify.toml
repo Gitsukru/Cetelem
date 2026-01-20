@@ -94,10 +94,16 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    # Sécurité
+    # Security Headers
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    # HSTS - Force HTTPS for 1 year, include subdomains
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    # Prevent XSS attacks (legacy but still useful)
+    X-XSS-Protection = "1; mode=block"
+    # Permissions Policy - restrict sensitive features
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
     # Cache modéré pour tout le reste
     Cache-Control = "public, max-age=86400, must-revalidate"
 

@@ -14,8 +14,10 @@
     <!-- Désactiver console.log en production (CHARGER EN PREMIER) -->
     <script src="./disable-console-production.js?v=1762615531742"></script>
 
-    <!-- Chart.js pour les graphiques -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js?v=1762615531742"></script>
+    <!-- Chart.js pour les graphiques (avec SRI) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
+        integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
+        crossorigin="anonymous"></script>
 </head>
 <body class="admin-body">
 
@@ -1318,8 +1320,10 @@
     <!-- Monitoring production -->
     <script src="./src/utils/sentry-setup.js?v=1762615531742"></script>
 
-    <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.78.0/dist/umd/supabase.min.js?v=1762615531742"></script>
+    <!-- Supabase Client (avec SRI) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.78.0/dist/umd/supabase.min.js"
+        integrity="sha384-WinvaRoMKJRCGlRyxV3v+phrtvkW8UTtpu9dr/d8zjOQgdjsmwP6ui9ukRA1xI/+"
+        crossorigin="anonymous"></script>
 
     <!-- Version Listener for real-time updates -->
     <script src="src/utils/version-listener.js?v=1762615531742"></script>
