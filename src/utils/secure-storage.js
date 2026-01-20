@@ -250,10 +250,131 @@ const SecureStorage = {
   }
 };
 
+/**
+ * Backward-compatible storage helper
+ * Reads from encrypted first, falls back to unencrypted
+ * Always writes encrypted
+ */
+const SecureStorageCompat = {
+  /**
+   * Get item with backward compatibility
+   * Tries encrypted first, then falls back to unencrypted
+   */
+  async getItem(key, defaultValue = null) {
+    // First try secure storage
+    const secureValue = await SecureStorage.getItem(key, null);
+    if (secureValue !== null) {
+      return secureValue;
+    }
+
+    // Fall back to unencrypted localStorage
+    try {
+      const plainValue = localStorage.getItem(key);
+      if (plainValue) {
+        // Try to parse as JSON
+        try {
+          return JSON.parse(plainValue);
+        } catch {
+          return plainValue;
+        }
+      }
+    } catch (e) {
+      console.error('SecureStorageCompat read error:', e);
+    }
+
+    return defaultValue;
+  },
+
+  /**
+   * Set item with encryption
+   * Also keeps unencrypted copy for legacy compatibility (optional)
+   */
+  async setItem(key, value, keepLegacy = false) {
+    // Always save encrypted
+    await SecureStorage.setItem(key, value);
+
+    // Optionally keep legacy unencrypted version
+    if (keepLegacy) {
+      try {
+        const jsonValue = typeof value === 'string' ? value : JSON.stringify(value);
+        localStorage.setItem(key, jsonValue);
+      } catch (e) {
+        console.error('SecureStorageCompat legacy save error:', e);
+      }
+    }
+  },
+
+  /**
+   * Remove item from both secure and legacy storage
+   */
+  removeItem(key) {
+    SecureStorage.removeItem(key);
+    localStorage.removeItem(key);
+  },
+
+  /**
+   * Migrate a key from unencrypted to encrypted
+   * Keeps the unencrypted version for backward compatibility
+   */
+  async migrateKey(key) {
+    const plainValue = localStorage.getItem(key);
+    if (plainValue && !localStorage.getItem(`secure_${key}`)) {
+      try {
+        const parsed = JSON.parse(plainValue);
+        await SecureStorage.setItem(key, parsed);
+        console.log(`🔐 Migrated ${key} to secure storage`);
+        return true;
+      } catch {
+        await SecureStorage.setItem(key, plainValue);
+        console.log(`🔐 Migrated ${key} to secure storage`);
+        return true;
+      }
+    }
+    return false;
+  },
+
+  /**
+   * Migrate all sensitive keys
+   */
+  async migrateAllSensitiveData() {
+    const sensitiveKeys = [
+      'multiGroups',
+      'currentGroup',
+      'currentParticipant',
+      'isCreator',
+      'groupHistory'
+    ];
+
+    let migrated = 0;
+    for (const key of sensitiveKeys) {
+      if (await this.migrateKey(key)) {
+        migrated++;
+      }
+    }
+
+    // Migrate personal notes (pattern: personal_note_*)
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith('personal_note_') || key.startsWith('private_cat_note_'))) {
+        if (await this.migrateKey(key)) {
+          migrated++;
+        }
+      }
+    }
+
+    if (migrated > 0) {
+      console.log(`🔐 Migrated ${migrated} sensitive keys to secure storage`);
+    }
+
+    return migrated;
+  }
+};
+
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { SecureStorage, encrypt, decrypt };
+  module.exports = { SecureStorage, SecureStorageCompat, encrypt, decrypt };
 }
 
 // Global export
 window.SecureStorage = SecureStorage;
+window.SecureStorageCompat = SecureStorageCompat;

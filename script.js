@@ -3483,7 +3483,12 @@ function autoSave() {
 }
 
 // Initialisation
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Migrate sensitive data to encrypted storage (runs once, backward compatible)
+    if (typeof SecureStorageCompat !== 'undefined' && SecureStorageCompat.migrateAllSensitiveData) {
+        SecureStorageCompat.migrateAllSensitiveData().catch(e => console.warn('Migration skipped:', e));
+    }
+
     try {
         const savedCategories = localStorage.getItem('categories');
         const savedCounters = localStorage.getItem('counters');

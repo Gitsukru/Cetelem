@@ -1084,9 +1084,14 @@ async function showNotesModal(participantId, participantName, isMe) {
 
     if (error) throw error
 
-    // Notes personnelles stockées localement (seulement pour moi)
+    // Notes personnelles stockées localement avec chiffrement (seulement pour moi)
     const localKey = `personal_note_${participantId}`
-    const personalNotes = isMe ? (localStorage.getItem(localKey) || '') : ''
+    let personalNotes = ''
+    if (isMe && typeof SecureStorageCompat !== 'undefined') {
+      personalNotes = await SecureStorageCompat.getItem(localKey, '') || ''
+    } else if (isMe) {
+      personalNotes = localStorage.getItem(localKey) || ''
+    }
     const publicNotes = participant?.public_notes || ''
 
     const html = `
@@ -1143,12 +1148,20 @@ async function saveNotes(participantId) {
   const publicNotes = document.getElementById('publicNotes')?.value || ''
 
   try {
-    // Sauvegarder les notes personnelles LOCALEMENT (pas dans Supabase)
+    // Sauvegarder les notes personnelles avec chiffrement (pas dans Supabase)
     const localKey = `personal_note_${participantId}`
-    if (personalNotes) {
-      localStorage.setItem(localKey, personalNotes)
+    if (typeof SecureStorageCompat !== 'undefined') {
+      if (personalNotes) {
+        await SecureStorageCompat.setItem(localKey, personalNotes, true) // keepLegacy=true
+      } else {
+        SecureStorageCompat.removeItem(localKey)
+      }
     } else {
-      localStorage.removeItem(localKey)
+      if (personalNotes) {
+        localStorage.setItem(localKey, personalNotes)
+      } else {
+        localStorage.removeItem(localKey)
+      }
     }
 
     // Sauvegarder SEULEMENT les notes publiques dans Supabase
@@ -1190,9 +1203,14 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
 
     if (error) throw error
 
-    // Notes privées stockées localement
+    // Notes privées stockées localement avec chiffrement
     const localKey = `private_cat_note_${groupId}_${participantId}_${category}`
-    const myPrivateNote = localStorage.getItem(localKey) || ''
+    let myPrivateNote = ''
+    if (typeof SecureStorageCompat !== 'undefined') {
+      myPrivateNote = await SecureStorageCompat.getItem(localKey, '') || ''
+    } else {
+      myPrivateNote = localStorage.getItem(localKey) || ''
+    }
 
     // Trouver la note publique du participant actuel
     const myNote = notes?.find(n => n.participant_id === participantId)
@@ -1273,12 +1291,20 @@ async function saveGroupCategoryNote(groupId, participantId, category) {
   const publicNote = document.getElementById('myPublicCategoryNote').value.trim()
 
   try {
-    // Sauvegarder la note privée LOCALEMENT (pas dans Supabase)
+    // Sauvegarder la note privée avec chiffrement (pas dans Supabase)
     const localKey = `private_cat_note_${groupId}_${participantId}_${category}`
-    if (privateNote) {
-      localStorage.setItem(localKey, privateNote)
+    if (typeof SecureStorageCompat !== 'undefined') {
+      if (privateNote) {
+        await SecureStorageCompat.setItem(localKey, privateNote, true) // keepLegacy=true
+      } else {
+        SecureStorageCompat.removeItem(localKey)
+      }
     } else {
-      localStorage.removeItem(localKey)
+      if (privateNote) {
+        localStorage.setItem(localKey, privateNote)
+      } else {
+        localStorage.removeItem(localKey)
+      }
     }
 
     // Sauvegarder SEULEMENT la note publique dans Supabase
