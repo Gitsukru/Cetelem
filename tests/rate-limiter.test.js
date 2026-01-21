@@ -110,7 +110,7 @@ describe('RateLimiter - Protection Anti-Spam', () => {
 
       expect(result.allowed).toBe(false)
       expect(result.retryAfter).toBeDefined()
-      expect(result.message).toContain('Çok fazla deneme')
+      expect(result.message).toContain('Trop de tentatives')
     })
 
     test('should return retryAfter in seconds', () => {
@@ -132,8 +132,8 @@ describe('RateLimiter - Protection Anti-Spam', () => {
       limiter.check('messageTest', options)
       const result = limiter.check('messageTest', options)
 
-      expect(result.message).toContain('Çok fazla deneme')
-      expect(result.message).toContain('saniye bekleyin')
+      expect(result.message).toContain('Trop de tentatives')
+      expect(result.message).toContain('Réessayez dans')
     })
   })
 
@@ -322,7 +322,7 @@ describe('RateLimiter - Protection Anti-Spam', () => {
       expect(mockFn).toHaveBeenCalledTimes(1)
 
       // Deuxième appel bloqué
-      await expect(wrapped()).rejects.toThrow('Çok fazla deneme')
+      await expect(wrapped()).rejects.toThrow('Trop de tentatives')
       expect(mockFn).toHaveBeenCalledTimes(1) // Pas appelé une 2ème fois
     })
 
@@ -354,7 +354,7 @@ describe('RateLimiter - Protection Anti-Spam', () => {
       // 6ème bloquée
       const result = limiter.check('createGroup', options)
       expect(result.allowed).toBe(false)
-      expect(result.message).toContain('Çok fazla deneme')
+      expect(result.message).toContain('Trop de tentatives')
     })
 
     test('should limit chat messages (10/minute)', () => {

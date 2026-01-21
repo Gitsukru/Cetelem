@@ -116,7 +116,7 @@ class RateLimiter {
       return {
         allowed: false,
         retryAfter: Math.ceil(retryAfter / 1000),
-        message: `Çok fazla deneme. ${Math.ceil(retryAfter / 1000)} saniye bekleyin.`
+        message: `Trop de tentatives. Réessayez dans ${Math.ceil(retryAfter / 1000)} secondes.`
       }
     }
 
@@ -148,7 +148,7 @@ class RateLimiter {
           return {
             allowed: false,
             retryAfter,
-            message: `Hesap koruma aktif. ${Math.ceil(retryAfter / 60)} dakika bekleyin.`
+            message: `Protection du compte active. Réessayez dans ${Math.ceil(retryAfter / 60)} minutes.`
           }
         }
       }
