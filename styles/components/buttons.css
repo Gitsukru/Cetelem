@@ -525,3 +525,50 @@
         font-size: 16px;
     }
 }
+
+/* ============================================
+   NAMAZ TAB - Compteur rectangulaire
+   ============================================ */
+
+#namaz .tesbih-container {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: auto;
+}
+
+#namaz .tesbih-bg {
+    display: none; /* Masquer le tesbih, sera remplacé par Namaz.png */
+}
+
+#namaz .counter-button {
+    width: 100%;
+    max-width: 300px;
+    height: 180px;
+    border-radius: 20px; /* Rectangulaire avec coins arrondis */
+    background: linear-gradient(135deg, #10b981, #059669); /* Vert pour différencier */
+}
+
+#namaz .counter-button:active {
+    transform: scale(0.97);
+}
+
+#namaz .counter-number {
+    font-size: 64px;
+}
+
+#namaz .counter-label {
+    font-size: 16px;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    #namaz .counter-button {
+        max-width: 280px;
+        height: 160px;
+    }
+
+    #namaz .counter-number {
+        font-size: 52px;
+    }
+}
