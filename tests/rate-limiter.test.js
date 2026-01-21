@@ -73,8 +73,10 @@ describe('RateLimiter - Protection Anti-Spam', () => {
       limiter.check('action2')
       limiter.check('action1')
 
-      expect(limiter.limits.get('action1').length).toBe(2)
-      expect(limiter.limits.get('action2').length).toBe(1)
+      const key1 = `ratelimit_action1_${limiter.deviceId}`
+      const key2 = `ratelimit_action2_${limiter.deviceId}`
+      expect(limiter.limits.get(key1).length).toBe(2)
+      expect(limiter.limits.get(key2).length).toBe(1)
     })
 
     test('should use default options', () => {
@@ -108,7 +110,7 @@ describe('RateLimiter - Protection Anti-Spam', () => {
 
       expect(result.allowed).toBe(false)
       expect(result.retryAfter).toBeDefined()
-      expect(result.message).toContain('Trop de tentatives')
+      expect(result.message).toContain('Çok fazla deneme')
     })
 
     test('should return retryAfter in seconds', () => {
@@ -130,8 +132,8 @@ describe('RateLimiter - Protection Anti-Spam', () => {
       limiter.check('messageTest', options)
       const result = limiter.check('messageTest', options)
 
-      expect(result.message).toContain('Trop de tentatives')
-      expect(result.message).toContain('Réessayez dans')
+      expect(result.message).toContain('Çok fazla deneme')
+      expect(result.message).toContain('saniye bekleyin')
     })
   })
 
@@ -166,16 +168,17 @@ describe('RateLimiter - Protection Anti-Spam', () => {
       limiter.check('cleanTest', options)
 
       // Simuler tentatives anciennes en modifiant directement
-      const attempts = limiter.limits.get('cleanTest')
+      const key = `ratelimit_cleanTest_${limiter.deviceId}`
+      const attempts = limiter.limits.get(key)
       attempts.push(Date.now() - 2000) // 2 secondes avant (hors fenêtre)
       attempts.push(Date.now() - 1500) // 1.5 secondes avant (hors fenêtre)
-      limiter.limits.set('cleanTest', attempts)
+      limiter.limits.set(key, attempts)
 
       // Nouvelle tentative devrait nettoyer les anciennes
       const result = limiter.check('cleanTest', options)
 
       expect(result.allowed).toBe(true)
-      const currentAttempts = limiter.limits.get('cleanTest')
+      const currentAttempts = limiter.limits.get(key)
       expect(currentAttempts.length).toBe(2) // Anciennes nettoyées
     })
   })
@@ -210,15 +213,17 @@ describe('RateLimiter - Protection Anti-Spam', () => {
 
       limiter.reset('action1')
 
-      expect(limiter.limits.has('action1')).toBe(false)
-      expect(limiter.limits.has('action2')).toBe(true)
+      const key1 = `ratelimit_action1_${limiter.deviceId}`
+      const key2 = `ratelimit_action2_${limiter.deviceId}`
+      expect(limiter.limits.has(key1)).toBe(false)
+      expect(limiter.limits.has(key2)).toBe(true)
     })
 
     test('should remove from localStorage', () => {
       limiter.check('localStorageTest')
 
       // Vérifier présence
-      const key = 'ratelimit_localStorageTest'
+      const key = `ratelimit_localStorageTest_${limiter.deviceId}`
       expect(localStorage.getItem(key)).not.toBeNull()
 
       // Reset
@@ -237,7 +242,7 @@ describe('RateLimiter - Protection Anti-Spam', () => {
     test('should save attempts to localStorage', () => {
       limiter.check('persistTest')
 
-      const key = 'ratelimit_persistTest'
+      const key = `ratelimit_persistTest_${limiter.deviceId}`
       const saved = localStorage.getItem(key)
 
       expect(saved).not.toBeNull()
@@ -248,18 +253,20 @@ describe('RateLimiter - Protection Anti-Spam', () => {
     })
 
     test('should load attempts from localStorage', () => {
-      // Sauvegarder manuellement dans localStorage
-      const key = 'ratelimit_loadTest'
+      // Créer nouvelle instance pour obtenir son deviceId
+      const newLimiter = new RateLimiter()
+
+      // Sauvegarder manuellement dans localStorage avec le bon deviceId
+      const key = `ratelimit_loadTest_${newLimiter.deviceId}`
       const attempts = [Date.now(), Date.now() - 1000]
       localStorage.setItem(key, JSON.stringify(attempts))
 
-      // Créer nouvelle instance et charger
-      const newLimiter = new RateLimiter()
+      // Charger
       newLimiter.load()
 
       // Vérifier chargement
-      expect(newLimiter.limits.has('loadTest')).toBe(true)
-      expect(newLimiter.limits.get('loadTest').length).toBe(2)
+      expect(newLimiter.limits.has(key)).toBe(true)
+      expect(newLimiter.limits.get(key).length).toBe(2)
     })
 
     test('should ignore corrupted localStorage data', () => {
@@ -315,7 +322,7 @@ describe('RateLimiter - Protection Anti-Spam', () => {
       expect(mockFn).toHaveBeenCalledTimes(1)
 
       // Deuxième appel bloqué
-      await expect(wrapped()).rejects.toThrow('Trop de tentatives')
+      await expect(wrapped()).rejects.toThrow('Çok fazla deneme')
       expect(mockFn).toHaveBeenCalledTimes(1) // Pas appelé une 2ème fois
     })
 
@@ -347,7 +354,7 @@ describe('RateLimiter - Protection Anti-Spam', () => {
       // 6ème bloquée
       const result = limiter.check('createGroup', options)
       expect(result.allowed).toBe(false)
-      expect(result.message).toContain('Trop de tentatives')
+      expect(result.message).toContain('Çok fazla deneme')
     })
 
     test('should limit chat messages (10/minute)', () => {

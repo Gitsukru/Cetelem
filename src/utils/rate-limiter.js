@@ -21,17 +21,24 @@ class RateLimiter {
 
     if (!deviceId) {
       // Create fingerprint from available browser data
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      ctx.textBaseline = 'top'
-      ctx.font = '14px Arial'
-      ctx.fillText('fingerprint', 2, 2)
-      const canvasData = canvas.toDataURL()
+      let canvasData = ''
+      try {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        if (ctx) {
+          ctx.textBaseline = 'top'
+          ctx.font = '14px Arial'
+          ctx.fillText('fingerprint', 2, 2)
+          canvasData = canvas.toDataURL()
+        }
+      } catch (e) {
+        // Canvas not available (e.g., in Node.js/Jest)
+      }
 
       const fingerprint = [
-        navigator.userAgent,
-        navigator.language,
-        screen.width + 'x' + screen.height,
+        navigator.userAgent || 'unknown',
+        navigator.language || 'en',
+        (typeof screen !== 'undefined' ? screen.width + 'x' + screen.height : '0x0'),
         new Date().getTimezoneOffset(),
         canvasData.slice(-50) // Last 50 chars of canvas data
       ].join('|')
