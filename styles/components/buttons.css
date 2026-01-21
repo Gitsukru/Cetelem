@@ -527,53 +527,78 @@
 }
 
 /* ============================================
-   NAMAZ TAB - Compteur rectangulaire
+   NAMAZ TAB - Image cliquable avec compteur
    ============================================ */
 
 #namaz .tesbih-container {
+    position: relative;
     width: 100%;
-    max-width: 320px;
-    height: auto;
-    aspect-ratio: auto;
+    max-width: 280px;
+    height: 400px;
+    cursor: pointer;
 }
 
 #namaz .tesbih-bg {
-    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-image: url('/assets/images/Namaz.png');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.8;
+    z-index: 1;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Rendre l'image cliquable */
+#namaz .tesbih-bg:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
 }
 
 #namaz .counter-button {
-    width: 100%;
-    max-width: 300px;
-    height: 180px;
-    border-radius: 20px; /* Rectangulaire avec coins arrondis */
-    background: linear-gradient(135deg, #10b981, #059669); /* Vert pour différencier */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 140px;
+    height: 80px;
+    border-radius: 16px;
+    background: rgba(16, 185, 129, 0.9);
+    backdrop-filter: blur(4px);
+    z-index: 2;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 #namaz .counter-button:active {
-    transform: scale(0.97);
+    transform: translate(-50%, -50%) scale(0.95);
 }
 
 #namaz .counter-number {
-    font-size: 64px;
+    font-size: 36px;
 }
 
 #namaz .counter-label {
-    font-size: 16px;
+    font-size: 12px;
+    margin-top: 2px;
 }
 
 /* Mobile */
 @media (max-width: 480px) {
+    #namaz .tesbih-container {
+        max-width: 240px;
+        height: 340px;
+    }
+
     #namaz .counter-button {
-        max-width: 280px;
-        height: 160px;
+        width: 120px;
+        height: 70px;
     }
 
     #namaz .counter-number {
-        font-size: 52px;
+        font-size: 30px;
     }
 }
