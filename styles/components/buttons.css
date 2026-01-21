@@ -538,7 +538,12 @@
 }
 
 #namaz .tesbih-bg {
-    display: none; /* Masquer le tesbih, sera remplacé par Namaz.png */
+    display: block;
+    background-image: url('/assets/images/Namaz.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.8;
 }
 
 #namaz .counter-button {
