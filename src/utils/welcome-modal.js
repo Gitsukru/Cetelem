@@ -117,10 +117,10 @@ const WelcomeModal = {
 
           <!-- Navigation arrows -->
           <div class="welcome-nav-arrows">
-            <button class="welcome-nav-arrow" id="prevSlide" onclick="WelcomeModal.prevSlide()" title="Onceki">
+            <button class="welcome-nav-arrow" id="prevSlide" data-action="WelcomeModal.prevSlide()" title="Onceki">
               &lt;
             </button>
-            <button class="welcome-nav-arrow" id="nextSlide" onclick="WelcomeModal.nextSlide()" title="Sonraki">
+            <button class="welcome-nav-arrow" id="nextSlide" data-action="WelcomeModal.nextSlide()" title="Sonraki">
               &gt;
             </button>
           </div>
@@ -141,7 +141,7 @@ const WelcomeModal = {
             <input type="checkbox" id="dontShowAgain">
             <span>Bu mesaji bir daha gosterme</span>
           </label>
-          <button class="welcome-btn-primary" onclick="WelcomeModal.close()">
+          <button class="welcome-btn-primary" data-action="WelcomeModal.close()">
             Baslayalim
           </button>
         </div>

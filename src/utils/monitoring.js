@@ -355,11 +355,11 @@ const Monitoring = {
       }).join('');
 
     const html = `
-      <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+      <div class="custom-modal-overlay" data-action="closeModalOnOverlay(event)">
         <div class="custom-modal" style="max-width: 800px;">
           <div class="modal-header">
             <h3>📊 Dashboard Monitoring</h3>
-            <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
+            <button class="modal-close" data-action="closeModal(event)">✕</button>
           </div>
           <div class="modal-body">
             <div style="margin-bottom: 20px;">
@@ -394,7 +394,7 @@ const Monitoring = {
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
+            <button class="btn-secondary" data-action="closeModal(event)">
               Fermer
             </button>
           </div>

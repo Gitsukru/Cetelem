@@ -2461,10 +2461,10 @@ class AdminDashboard {
                             ${meta ? `<span class="tavsiye-item-meta">${meta}</span>` : ''}
                         </div>
                         <div class="tavsiye-item-actions">
-                            <button class="tavsiye-action-btn edit" onclick="adminDashboard.editTavsiyeItem('${category}', ${index})">
+                            <button class="tavsiye-action-btn edit" data-action="adminDashboard.editTavsiyeItem('${category}', ${index})">
                                 Duzenle
                             </button>
-                            <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteTavsiyeItem('${category}', ${index})">
+                            <button class="tavsiye-action-btn delete" data-action="adminDashboard.deleteTavsiyeItem('${category}', ${index})">
                                 Sil
                             </button>
                         </div>
@@ -2862,7 +2862,7 @@ class AdminDashboard {
                             </span>
                         </div>
                         <div class="tavsiye-item-actions">
-                            <button class="tavsiye-action-btn delete" onclick="adminDashboard.adminDeleteHatim('${h.id}', '${h.code}')">
+                            <button class="tavsiye-action-btn delete" data-action="adminDashboard.adminDeleteHatim('${h.id}', '${h.code}')">
                                 🗑️ Sil
                             </button>
                         </div>
@@ -3005,8 +3005,8 @@ class AdminDashboard {
                         <span class="tavsiye-item-detail">${item.description || ''} - Haftalik: ${item.weeklyGoal || 0}</span>
                     </div>
                     <div class="tavsiye-item-actions">
-                        <button class="tavsiye-action-btn edit" onclick="adminDashboard.editZikirItem(${index})">Duzenle</button>
-                        <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteZikirItem(${index})">Sil</button>
+                        <button class="tavsiye-action-btn edit" data-action="adminDashboard.editZikirItem(${index})">Duzenle</button>
+                        <button class="tavsiye-action-btn delete" data-action="adminDashboard.deleteZikirItem(${index})">Sil</button>
                     </div>
                 </div>
             `;
@@ -3117,8 +3117,8 @@ class AdminDashboard {
                         <span class="tavsiye-item-detail">${item.author} - ${item.totalPages} sayfa - Gunluk: ${item.dailyGoal} sayfa</span>
                     </div>
                     <div class="tavsiye-item-actions">
-                        <button class="tavsiye-action-btn edit" onclick="adminDashboard.editKitapItem(${index})">Duzenle</button>
-                        <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteKitapItem(${index})">Sil</button>
+                        <button class="tavsiye-action-btn edit" data-action="adminDashboard.editKitapItem(${index})">Duzenle</button>
+                        <button class="tavsiye-action-btn delete" data-action="adminDashboard.deleteKitapItem(${index})">Sil</button>
                     </div>
                 </div>
             `;
@@ -3230,8 +3230,8 @@ class AdminDashboard {
                         <span class="tavsiye-item-detail">${item.description || ''} - Haftalik: ${item.weeklyGoal || 0}</span>
                     </div>
                     <div class="tavsiye-item-actions">
-                        <button class="tavsiye-action-btn edit" onclick="adminDashboard.editNamazItem(${index})">Duzenle</button>
-                        <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteNamazItem(${index})">Sil</button>
+                        <button class="tavsiye-action-btn edit" data-action="adminDashboard.editNamazItem(${index})">Duzenle</button>
+                        <button class="tavsiye-action-btn delete" data-action="adminDashboard.deleteNamazItem(${index})">Sil</button>
                     </div>
                 </div>
             `;
@@ -3372,8 +3372,8 @@ class AdminDashboard {
                             <span class="tavsiye-item-meta">${item.turkish || ''}</span>
                         </div>
                         <div class="tavsiye-item-actions">
-                            <button class="tavsiye-action-btn edit" onclick="adminDashboard.editTesbihatItem('${category}', ${index})">Duzenle</button>
-                            <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteTesbihatItem('${category}', ${index})">Sil</button>
+                            <button class="tavsiye-action-btn edit" data-action="adminDashboard.editTesbihatItem('${category}', ${index})">Duzenle</button>
+                            <button class="tavsiye-action-btn delete" data-action="adminDashboard.deleteTesbihatItem('${category}', ${index})">Sil</button>
                         </div>
                     </div>
                 `;
@@ -3490,8 +3490,8 @@ class AdminDashboard {
                         ${item.url ? `<span class="tavsiye-item-meta">${item.url}</span>` : ''}
                     </div>
                     <div class="tavsiye-item-actions">
-                        <button class="tavsiye-action-btn edit" onclick="adminDashboard.editSohbetSource(${index})">Duzenle</button>
-                        <button class="tavsiye-action-btn delete" onclick="adminDashboard.deleteSohbetSource(${index})">Sil</button>
+                        <button class="tavsiye-action-btn edit" data-action="adminDashboard.editSohbetSource(${index})">Duzenle</button>
+                        <button class="tavsiye-action-btn delete" data-action="adminDashboard.deleteSohbetSource(${index})">Sil</button>
                     </div>
                 </div>
             `;

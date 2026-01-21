@@ -83,7 +83,7 @@ class NotificationManager {
         <div class="in-app-notification-title">${this.escapeHtml(title)}</div>
         <div class="in-app-notification-body">${this.escapeHtml(body)}</div>
       </div>
-      <button class="in-app-notification-close" onclick="this.parentElement.remove()">✕</button>
+      <button class="in-app-notification-close" data-action="closeInAppNotification(event)">✕</button>
     `
 
     // Ajouter au DOM

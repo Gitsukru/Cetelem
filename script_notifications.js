@@ -221,10 +221,10 @@ function displayReminders() {
         </div>
         <div class="reminder-actions">
           <label class="reminder-toggle">
-            <input type="checkbox" ${checkedAttr} onchange="toggleReminderStatus('${reminder.id}')">
+            <input type="checkbox" ${checkedAttr} data-onchange="toggleReminderStatus('${reminder.id}')">
             <span class="toggle-slider"></span>
           </label>
-          <button class="reminder-delete" onclick="deleteReminder('${reminder.id}')" title="Sil">
+          <button class="reminder-delete" data-action="deleteReminder('${reminder.id}')" title="Sil">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           </button>
         </div>
@@ -260,7 +260,7 @@ function showAddReminderModal() {
           </svg>
           Yeni Hatırlatma
         </h3>
-        <button class="modal-close" onclick="closeAddReminderModal()">×</button>
+        <button class="modal-close" data-action="closeAddReminderModal()">×</button>
       </div>
 
       <div class="form-group">
@@ -289,10 +289,10 @@ function showAddReminderModal() {
       </div>
 
       <div class="modal-actions">
-        <button class="modal-btn modal-btn-cancel" onclick="closeAddReminderModal()">
+        <button class="modal-btn modal-btn-cancel" data-action="closeAddReminderModal()">
           İptal
         </button>
-        <button class="modal-btn modal-btn-save" onclick="saveNewReminder()">
+        <button class="modal-btn modal-btn-save" data-action="saveNewReminder()">
           💾 Kaydet
         </button>
       </div>

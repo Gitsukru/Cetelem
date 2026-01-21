@@ -457,11 +457,11 @@ const NamazManager = {
         }).join('');
 
         const modalHTML = `
-            <div class="tavsiye-modal-overlay" onclick="if(event.target === this) NamazManager.closeTavsiyeModal()">
+            <div class="tavsiye-modal-overlay" data-action="NamazManager.closeTavsiyeModalOnOverlay(event)">
                 <div class="tavsiye-modal">
                     <div class="tavsiye-modal-header">
                         <h3>Tavsiye Edilen Namazlar</h3>
-                        <button class="tavsiye-modal-close" onclick="NamazManager.closeTavsiyeModal()">X</button>
+                        <button class="tavsiye-modal-close" data-action="NamazManager.closeTavsiyeModal()">X</button>
                     </div>
                     <div class="tavsiye-modal-body">
                         <p style="color: #64748b; font-size: 13px; margin-bottom: 16px;">
@@ -472,8 +472,8 @@ const NamazManager = {
                         </div>
                     </div>
                     <div class="tavsiye-modal-footer">
-                        <button class="tavsiye-cancel-btn" onclick="NamazManager.closeTavsiyeModal()">Iptal</button>
-                        <button class="tavsiye-add-btn" id="tavsiyeNamazAddBtn" onclick="NamazManager.addSelectedTavsiyeler()" disabled>
+                        <button class="tavsiye-cancel-btn" data-action="NamazManager.closeTavsiyeModal()">Iptal</button>
+                        <button class="tavsiye-add-btn" id="tavsiyeNamazAddBtn" data-action="NamazManager.addSelectedTavsiyeler()" disabled>
                             Secilenleri Ekle
                         </button>
                     </div>
@@ -487,6 +487,12 @@ const NamazManager = {
     closeTavsiyeModal() {
         const overlay = document.querySelector('.tavsiye-modal-overlay');
         if (overlay) overlay.remove();
+    },
+
+    closeTavsiyeModalOnOverlay(event) {
+        if (event.target === event.currentTarget || event.target.classList.contains('tavsiye-modal-overlay')) {
+            this.closeTavsiyeModal();
+        }
     },
 
     updateTavsiyeAddButton() {
@@ -542,11 +548,11 @@ const NamazManager = {
 
     showAddModal() {
         const modalHTML = `
-            <div class="modal-overlay" onclick="if(event.target === this) NamazManager.closeAddModal()">
+            <div class="modal-overlay" data-action="NamazManager.closeAddModalOnOverlay(event)">
                 <div class="modal-content" style="max-width: 400px;">
                     <div class="modal-header">
                         <h3>Yeni Namaz Ekle</h3>
-                        <button class="modal-close" onclick="NamazManager.closeAddModal()">X</button>
+                        <button class="modal-close" data-action="NamazManager.closeAddModal()">X</button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -555,8 +561,8 @@ const NamazManager = {
                         </div>
                     </div>
                     <div class="modal-footer" style="display: flex; gap: 10px; justify-content: flex-end; padding: 16px;">
-                        <button onclick="NamazManager.closeAddModal()" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer;">Iptal</button>
-                        <button onclick="NamazManager.addFromModal()" style="padding: 10px 20px; border: none; border-radius: 8px; background: #667eea; color: white; cursor: pointer;">Ekle</button>
+                        <button data-action="NamazManager.closeAddModal()" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer;">Iptal</button>
+                        <button data-action="NamazManager.addFromModal()" style="padding: 10px 20px; border: none; border-radius: 8px; background: #667eea; color: white; cursor: pointer;">Ekle</button>
                     </div>
                 </div>
             </div>
@@ -569,6 +575,12 @@ const NamazManager = {
     closeAddModal() {
         const overlay = document.querySelector('.modal-overlay');
         if (overlay) overlay.remove();
+    },
+
+    closeAddModalOnOverlay(event) {
+        if (event.target === event.currentTarget || event.target.classList.contains('modal-overlay')) {
+            this.closeAddModal();
+        }
     },
 
     addFromModal() {
@@ -615,11 +627,11 @@ const NamazManager = {
         const goals = this.getCategoryGoals(categoryName);
 
         const modalHTML = `
-            <div class="modal-overlay" onclick="if(event.target === this) NamazManager.closeEditModal()">
+            <div class="modal-overlay" data-action="NamazManager.closeEditModalOnOverlay(event)">
                 <div class="modal-content" style="max-width: 400px;">
                     <div class="modal-header">
                         <h3>${this.escapeHtml(categoryName)}</h3>
-                        <button class="modal-close" onclick="NamazManager.closeEditModal()">X</button>
+                        <button class="modal-close" data-action="NamazManager.closeEditModal()">X</button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group" style="margin-bottom: 16px;">
@@ -632,8 +644,8 @@ const NamazManager = {
                         </div>
                     </div>
                     <div class="modal-footer" style="display: flex; gap: 10px; justify-content: flex-end; padding: 16px;">
-                        <button onclick="NamazManager.closeEditModal()" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer;">Iptal</button>
-                        <button onclick="NamazManager.saveEditModal('${this.escapeHtml(categoryName)}')" style="padding: 10px 20px; border: none; border-radius: 8px; background: #667eea; color: white; cursor: pointer;">Kaydet</button>
+                        <button data-action="NamazManager.closeEditModal()" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer;">Iptal</button>
+                        <button data-action="NamazManager.saveEditModal('${this.escapeHtml(categoryName)}')" style="padding: 10px 20px; border: none; border-radius: 8px; background: #667eea; color: white; cursor: pointer;">Kaydet</button>
                     </div>
                 </div>
             </div>
@@ -645,6 +657,12 @@ const NamazManager = {
     closeEditModal() {
         const overlay = document.querySelector('.modal-overlay');
         if (overlay) overlay.remove();
+    },
+
+    closeEditModalOnOverlay(event) {
+        if (event.target === event.currentTarget || event.target.classList.contains('modal-overlay')) {
+            this.closeEditModal();
+        }
     },
 
     saveEditModal(categoryName) {
@@ -784,11 +802,11 @@ function showQuickAddNamaz() {
         .join('');
 
     const modalHTML = `
-        <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+        <div class="custom-modal-overlay" data-action="closeModalOnOverlay(event)">
             <div class="custom-modal" style="min-height: 280px;">
                 <div class="modal-header">
                     <h3 id="namaz-modal-title">Yeni Namaz Ekle</h3>
-                    <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">X</button>
+                    <button class="modal-close" data-action="closeModal(event)">X</button>
                 </div>
 
                 <!-- Indicateur de progression -->
@@ -835,13 +853,13 @@ function showQuickAddNamaz() {
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn-secondary" id="namaz-btn-back" onclick="previousStepAddNamaz()" style="display: none;">
+                    <button class="btn-secondary" id="namaz-btn-back" data-action="previousStepAddNamaz()" style="display: none;">
                         Geri
                     </button>
-                    <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
+                    <button class="btn-secondary" data-action="closeModal(event)">
                         Iptal
                     </button>
-                    <button class="btn-primary" id="namaz-btn-next" onclick="nextStepAddNamaz()">
+                    <button class="btn-primary" id="namaz-btn-next" data-action="nextStepAddNamaz()">
                         Devam
                     </button>
                 </div>

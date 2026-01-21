@@ -64,7 +64,7 @@ const URLRouter = {
                             ? 'iOS\'ta uygulamayı manuel olarak açmanız gerekiyor'
                             : 'Daha iyi deneyim için uygulamayı kullanın'}</div>
                     </div>
-                    <button onclick="URLRouter.dismissBanner()" style="padding: 8px 12px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                    <button data-action="URLRouter.dismissBanner()" style="padding: 8px 12px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
                         ✕
                     </button>
                 </div>
@@ -75,7 +75,7 @@ const URLRouter = {
                         <div style="flex: 1; background: white; color: #1e293b; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 18px; font-weight: 700; letter-spacing: 2px; text-align: center;">
                             ${code}
                         </div>
-                        <button onclick="URLRouter.copyCode('${code}')" style="padding: 10px 16px; background: white; color: #667eea; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">
+                        <button data-action="URLRouter.copyCode('${code}')" style="padding: 10px 16px; background: white; color: #667eea; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">
                             Kopyala
                         </button>
                     </div>
@@ -88,11 +88,11 @@ const URLRouter = {
                 ` : ''}
                 <div style="max-width: 500px; margin: 12px auto 0; display: flex; gap: 8px;">
                     ${!isIOS ? `
-                    <button onclick="URLRouter.openInApp()" style="flex: 1; padding: 12px; background: white; color: #667eea; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                    <button data-action="URLRouter.openInApp()" style="flex: 1; padding: 12px; background: white; color: #667eea; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
                         📲 Uygulamada Aç
                     </button>
                     ` : ''}
-                    <button onclick="URLRouter.continueInBrowser()" style="flex: 1; padding: 12px; background: ${isIOS ? 'white; color: #667eea;' : 'rgba(255,255,255,0.2); color: white;'} border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
+                    <button data-action="URLRouter.continueInBrowser()" style="flex: 1; padding: 12px; background: ${isIOS ? 'white; color: #667eea;' : 'rgba(255,255,255,0.2); color: white;'} border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
                         ${isIOS ? '✓ Tarayıcıda Devam Et' : 'Tarayıcıda Devam Et'}
                     </button>
                 </div>

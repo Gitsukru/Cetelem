@@ -4,6 +4,43 @@
  */
 
 // ========================================
+// MODAL HELPER FUNCTIONS (CSP Compliance)
+// ========================================
+
+/**
+ * Close notes modal
+ */
+function closeNotesModal() {
+  const modal = document.getElementById('notesModal')
+  if (modal) modal.remove()
+}
+
+/**
+ * Close category note modal
+ */
+function closeCategoryNoteModal() {
+  const modal = document.getElementById('categoryNoteModal')
+  if (modal) modal.remove()
+}
+
+/**
+ * Close category note modal if clicked on overlay
+ */
+function closeCategoryNoteModalOnOverlay(event) {
+  if (event.target.id === 'categoryNoteModal') {
+    event.target.remove()
+  }
+}
+
+/**
+ * Delete from history with event handling
+ */
+function deleteFromHistoryHandler(code, name, event) {
+  if (event) event.stopPropagation()
+  confirmDeleteFromHistory(code, name)
+}
+
+// ========================================
 // MULTI-GROUP TABS MANAGEMENT
 // ========================================
 
@@ -468,7 +505,7 @@ function displayLeaderboard(participants) {
     const safeName = escapeHtml(participant.name);
 
     html += `
-      <tr class="${rowClass}" onclick="toggleParticipantDetails('${participant.id}')">
+      <tr class="${rowClass}" data-action="toggleParticipantDetails('${participant.id}')">
         <td class="rank-cell">${position}</td>
         <td class="name-cell">
           ${safeName}${isMe ? ' <span class="me-badge">Sen</span>' : ''}
@@ -585,7 +622,7 @@ async function loadParticipantDetailedStats(participantId, container) {
             <td class="percent-cell">${monthPercent}%</td>
             <td style="text-align: center;">
               <button class="note-btn"
-                onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}', event)"
+                data-action="showGroupCategoryNoteModal('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}', event)"
                 title="Not ekle/görüntüle">
                 Not
               </button>
@@ -623,7 +660,7 @@ async function loadParticipantDetailedStats(participantId, container) {
             <td class="percent-cell">${monthPercent}%</td>
             <td style="text-align: center;">
               <button class="note-btn"
-                onclick="showGroupCategoryNoteModal('${groupId}', '${participantId}', '📚 ${bookName.replace(/'/g, "\\'")}', event)"
+                data-action="showGroupCategoryNoteModal('${groupId}', '${participantId}', '📚 ${bookName.replace(/'/g, "\\'")}', event)"
                 title="Not ekle/görüntüle">
                 Not
               </button>
@@ -833,14 +870,14 @@ async function displayGroupHistory() {
 
     html += `
       <div class="history-item">
-        <div class="history-item-content" onclick="rejoinGroup('${item.code}')">
+        <div class="history-item-content" data-action="rejoinGroup('${item.code}')">
           <div class="history-item-info">
             <div class="history-item-name">${item.name}</div>
             <div class="history-item-meta">${item.isCreator ? 'Yönetici' : 'Üye'} • ${timeAgo}</div>
           </div>
           <div class="history-item-status ${statusClass}">${statusText}</div>
         </div>
-        <button class="history-item-delete" onclick="event.stopPropagation(); confirmDeleteFromHistory('${item.code}', '${item.name.replace(/'/g, "\\'")}')" title="Listeden Sil">
+        <button class="history-item-delete" data-action="deleteFromHistoryHandler('${item.code}', '${item.name.replace(/'/g, "\\'")}', event)" title="Listeden Sil">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 6L6 18M6 6l12 12"/>
           </svg>
@@ -1099,7 +1136,7 @@ async function showNotesModal(participantId, participantName, isMe) {
         <div class="custom-modal" style="max-width: 600px;">
           <div class="modal-header">
             <h3>Notlar - ${escapeHtml(participantName)}</h3>
-            <button class="modal-close" onclick="document.getElementById('notesModal').remove()">✕</button>
+            <button class="modal-close" data-action="closeNotesModal()">✕</button>
           </div>
           <div class="modal-body">
             ${isMe ? `
@@ -1115,8 +1152,8 @@ async function showNotesModal(participantId, participantName, isMe) {
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn-secondary" onclick="document.getElementById('notesModal').remove()">İptal</button>
-            ${isMe ? `<button class="btn-primary" onclick="saveNotes('${participantId}')">Kaydet</button>` : ''}
+            <button class="btn-secondary" data-action="closeNotesModal()">İptal</button>
+            ${isMe ? `<button class="btn-primary" data-action="saveNotes('${participantId}')">Kaydet</button>` : ''}
           </div>
         </div>
       </div>
@@ -1219,11 +1256,11 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
     const otherNotes = notes?.filter(n => n.participant_id !== participantId) || []
 
     const html = `
-      <div class="custom-modal-overlay" id="categoryNoteModal" onclick="if(event.target === this) this.remove()">
+      <div class="custom-modal-overlay" id="categoryNoteModal" data-action="closeCategoryNoteModalOnOverlay(event)">
         <div class="custom-modal-content modern-modal">
           <div class="modal-header">
             <h3>${escapeHtml(category)}</h3>
-            <button class="modal-close" onclick="document.getElementById('categoryNoteModal').remove()">✕</button>
+            <button class="modal-close" data-action="closeCategoryNoteModal()">✕</button>
           </div>
           <div class="modal-body">
             <!-- Note privée -->
@@ -1258,8 +1295,8 @@ async function showGroupCategoryNoteModal(groupId, participantId, category, even
             ` : ''}
           </div>
           <div class="modal-footer">
-            <button class="btn-secondary" onclick="document.getElementById('categoryNoteModal').remove()">İptal</button>
-            <button class="btn-primary" onclick="saveGroupCategoryNote('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}')">Kaydet</button>
+            <button class="btn-secondary" data-action="closeCategoryNoteModal()">İptal</button>
+            <button class="btn-primary" data-action="saveGroupCategoryNote('${groupId}', '${participantId}', '${category.replace(/'/g, "\\'")}')">Kaydet</button>
           </div>
         </div>
       </div>

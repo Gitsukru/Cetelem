@@ -373,7 +373,7 @@ class AdminAuth {
                 <p style="color: #64748b; margin: 20px 0;">
                     ${message}
                 </p>
-                <button onclick="window.location.reload()"
+                <button data-action="reloadPage()"
                         style="margin-top: 20px; padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
                     Réessayer
                 </button>
@@ -525,10 +525,10 @@ class AdminAuth {
         banner.innerHTML = `
             <span style="font-size: 20px;">🎉</span>
             <span>Nouvelle version disponible !</span>
-            <button onclick="adminAuth.applyUpdate()" style="background: white; color: #059669; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;">
+            <button data-action="adminAuth.applyUpdate()" style="background: white; color: #059669; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;">
                 🚀 Mettre à jour
             </button>
-            <button onclick="document.getElementById('adminUpdateBanner').remove()" style="background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); width: 28px; height: 28px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;">
+            <button data-action="closeAdminUpdateBanner()" style="background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); width: 28px; height: 28px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;">
                 ✕
             </button>
         `;

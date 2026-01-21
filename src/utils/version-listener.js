@@ -260,7 +260,7 @@ const VersionListener = {
                     <div style="font-weight: 600; margin-bottom: 4px;">Yeni sürüm mevcut!</div>
                     <div style="font-size: 12px; opacity: 0.9;">${newVersion}</div>
                 </div>
-                <button onclick="VersionListener.applyUpdate('${newVersion}')" style="
+                <button data-action="VersionListener.applyUpdate('${newVersion}')" style="
                     background: white;
                     color: #667eea;
                     border: none;
@@ -270,7 +270,7 @@ const VersionListener = {
                     cursor: pointer;
                     white-space: nowrap;
                 ">Güncelle</button>
-                <button onclick="this.parentElement.parentElement.remove()" style="
+                <button data-action="closeVersionBanner(event)" style="
                     background: transparent;
                     border: none;
                     color: white;

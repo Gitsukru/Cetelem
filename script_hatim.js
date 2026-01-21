@@ -209,7 +209,7 @@ const HatimManager = {
         let html = `
             <div class="hatim-sidebar-list-header">
                 <span>📚 Hatimlerim (${myHatims.length})</span>
-                <button onclick="HatimManager.showManageHatimsModal()">⚙️</button>
+                <button data-action="HatimManager.showManageHatimsModal()">⚙️</button>
             </div>
             <div class="hatim-sidebar-list-content">
         `;
@@ -246,7 +246,7 @@ const HatimManager = {
 
             html += `
                 <div class="hatim-sidebar-item ${isActive ? 'active' : ''}"
-                     onclick="HatimManager.openHatim('${safeHCode}')" tabindex="0">
+                     data-action="HatimManager.openHatim('${safeHCode}')" tabindex="0">
                     <div class="hatim-sidebar-item-header">
                         <h4 style="margin: 0 0 4px; font-size: 15px; font-weight: 600;">${icon} ${typeLabel}</h4>
                         <span class="hatim-sidebar-item-code">${safeHCode}</span>
@@ -323,12 +323,12 @@ const HatimManager = {
                         </div>
                         <div style="display: flex; gap: 6px;">
                             ${isCreator ? `
-                                <button onclick="HatimManager.confirmDeleteHatim('${safeHId}', '${safeHCode}')"
+                                <button data-action="HatimManager.confirmDeleteHatim('${safeHId}', '${safeHCode}')"
                                         style="padding: 6px 10px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
                                     🗑️ Sil
                                 </button>
                             ` : `
-                                <button onclick="HatimManager.removeFromLocal('${safeHCode}')"
+                                <button data-action="HatimManager.removeFromLocal('${safeHCode}')"
                                         style="padding: 6px 10px; background: #f1f5f9; color: #64748b; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
                                     ✕ Listeden Çıkar
                                 </button>
@@ -340,7 +340,7 @@ const HatimManager = {
         }
 
         const html = `
-            <div class="custom-modal-overlay" id="manageHatimsModal" onclick="if(event.target===this) this.remove()">
+            <div class="custom-modal-overlay" id="manageHatimsModal" data-action="closeModalOnOverlay(event)">
                 <div class="custom-modal modern-modal" style="max-width: 500px;">
                     <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
                         <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
@@ -355,7 +355,7 @@ const HatimManager = {
                         ${listHtml}
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end;">
-                        <button onclick="document.getElementById('manageHatimsModal').remove()"
+                        <button data-action="closeModalById('manageHatimsModal')"
                                 style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Kapat
                         </button>
@@ -422,7 +422,7 @@ const HatimManager = {
         const icon = type === 'kuran' ? '📖' : '🌙';
 
         const html = `
-            <div class="custom-modal-overlay" id="createHatimModal" onclick="if(event.target===this) this.remove()">
+            <div class="custom-modal-overlay" id="createHatimModal" data-action="closeModalOnOverlay(event)">
                 <div class="custom-modal modern-modal" style="max-width: 450px;">
                     <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
                         <h3 style="margin: 0 0 6px; display: flex; align-items: center; gap: 10px;">
@@ -457,11 +457,11 @@ const HatimManager = {
                         </p>
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
-                        <button onclick="document.getElementById('createHatimModal').remove()"
+                        <button data-action="closeModalById('createHatimModal')"
                                 style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Iptal
                         </button>
-                        <button onclick="HatimManager.doCreateHatim('${type}')"
+                        <button data-action="HatimManager.doCreateHatim('${type}')"
                                 style="padding: 12px 20px; min-height: 44px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Olustur ve Paylas
                         </button>
@@ -573,7 +573,7 @@ const HatimManager = {
                         </p>
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px;">
-                        <button onclick="HatimManager.shareVia('${safeCodeVal}', '${safeType}')"
+                        <button data-action="HatimManager.shareVia('${safeCodeVal}', '${safeType}')"
                                 style="width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="18" cy="5" r="3"></circle>
@@ -584,11 +584,11 @@ const HatimManager = {
                             </svg>
                             Paylas (WhatsApp, SMS...)
                         </button>
-                        <button onclick="HatimManager.copyShareLink('${this.escapeHtml(shareUrl)}')"
+                        <button data-action="HatimManager.copyShareLink('${this.escapeHtml(shareUrl)}')"
                                 style="width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Linki Kopyala
                         </button>
-                        <button onclick="document.getElementById('shareHatimModal').remove(); HatimManager.openHatim('${safeCodeVal}')"
+                        <button data-action="closeModalById('shareHatimModal'); HatimManager.openHatim('${safeCodeVal}')"
                                 style="width: 100%; padding: 12px; background: white; color: #667eea; border: 1px solid #667eea; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Hatimi Ac
                         </button>
@@ -821,7 +821,7 @@ Linke tıklayın ve uygulamayı yükleyin
                     <p style="margin: 0 0 20px; color: #6b7280; font-size: 14px;">
                         Yeni tur açılmayacak. Katılımcılar okuma durumlarını güncellemeye devam edebilir.
                     </p>
-                    <button onclick="this.closest('div[style*=fixed]').remove()" style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    <button data-action="closeFixedParent(event)" style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
                         Tamam
                     </button>
                 </div>
@@ -962,7 +962,7 @@ Linke tıklayın ve uygulamayı yükleyin
 
                 <!-- CARD 4: Actions -->
                 <div class="hatim-actions">
-                    <button onclick="HatimManager.shareVia('${safeCode(hatim.code)}', '${hatim.type === 'cevsen' ? 'cevsen' : 'kuran'}')"
+                    <button data-action="HatimManager.shareVia('${safeCode(hatim.code)}', '${hatim.type === 'cevsen' ? 'cevsen' : 'kuran'}')"
                             class="hatim-btn hatim-btn-success">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="18" cy="5" r="3"></circle>
@@ -1005,11 +1005,11 @@ Linke tıklayın ve uygulamayı yükleyin
                             </div>
                             <p style="margin: 0 0 12px; font-size: 13px; color: #1e40af;">${completed}/${totalUnits} okundu. Paylaşıma devam etmek ister misiniz?</p>
                             <div style="display: flex; gap: 8px;">
-                                <button onclick="HatimManager.startNewRound('${safeId(hatim.id)}')"
+                                <button data-action="HatimManager.startNewRound('${safeId(hatim.id)}')"
                                         style="flex: 1; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
                                     🔄 Devam (Tur ${hatim.current_round + 1})
                                 </button>
-                                <button onclick="HatimManager.finishHatim('${safeId(hatim.id)}')"
+                                <button data-action="HatimManager.finishHatim('${safeId(hatim.id)}')"
                                         style="flex: 1; padding: 12px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
                                     ✓ Bitti
                                 </button>
@@ -1030,13 +1030,13 @@ Linke tıklayın ve uygulamayı yükleyin
                 const cellClass = isMine ? `mine ${isCompleted ? 'read' : 'reading'}` : (isCompleted ? 'completed' : 'taken');
                 return `
                     <div class="hatim-half-cell ${cellClass}"
-                         ${isMine ? `onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!isCompleted}, ${unitNum})"` : ''}
+                         ${isMine ? `data-action="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!isCompleted}, ${unitNum})"` : ''}
                          title="${escapeHtml(p.participant_name)}">
                         <div class="hatim-half-label">${halfLabel} 10</div>
                         <div class="hatim-half-pages">S. ${pageRange.start}-${pageRange.end}</div>
                         <div class="hatim-half-name">${escapeHtml(p.participant_name).substring(0, 8)}</div>
                         <div class="hatim-half-status ${isCompleted ? 'completed' : ''}">${isCompleted ? '✓' : '...'}</div>
-                        ${isMine ? `<button class="hatim-half-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(p.id)}', ${unitNum})" title="Vazgeç">✕</button>` : ''}
+                        ${isMine ? `<button class="hatim-half-release" data-action="releaseHatimUnit('${safeId(p.id)}', ${unitNum}, event)" title="Vazgeç">✕</button>` : ''}
                     </div>
                 `;
             } else {
@@ -1052,7 +1052,7 @@ Linke tıklayın ve uygulamayı yükleyin
                 }
                 return `
                     <div class="hatim-half-cell available"
-                         onclick="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${unitNum}, '${unitLabel}')"
+                         data-action="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${unitNum}, '${unitLabel}')"
                          tabindex="0" role="button">
                         <div class="hatim-half-label">${halfLabel} 10</div>
                         <div class="hatim-half-pages">S. ${pageRange.start}-${pageRange.end}</div>
@@ -1088,7 +1088,7 @@ Linke tıklayın ve uygulamayı yükleyin
                     const statusClass = isCompleted ? 'read' : 'reading';
                     html += `
                         <div class="hatim-cuz-cell mine ${statusClass}"
-                             onclick="HatimManager.toggleReadStatus('${safeId(fullClaim.id)}', ${!!isCompleted}, ${i})"
+                             data-action="HatimManager.toggleReadStatus('${safeId(fullClaim.id)}', ${!!isCompleted}, ${i})"
                              tabindex="0" role="button"
                              aria-label="${unitLabel} ${i} - ${isCompleted ? 'Okundu' : 'Okuyor'}">
                             <div class="hatim-cuz-header">
@@ -1099,7 +1099,7 @@ Linke tıklayın ve uygulamayı yükleyin
                             ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
                             <div class="hatim-cuz-footer">
                                 ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
-                                <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(fullClaim.id)}', ${i})" title="Vazgeç">✕</button>
+                                <button class="hatim-cuz-release" data-action="releaseHatimUnit('${safeId(fullClaim.id)}', ${i}, event)" title="Vazgeç">✕</button>
                             </div>
                         </div>
                     `;
@@ -1154,7 +1154,7 @@ Linke tıklayın ve uygulamayı yükleyin
                 } else {
                     html += `
                         <div class="hatim-cuz-cell available"
-                             onclick="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}')"
+                             data-action="HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}')"
                              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();HatimManager.showClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${i}, '${unitLabel}');}"
                              tabindex="0" role="button" aria-label="${unitLabel} ${i} seç">
                             <div class="hatim-cuz-header">
@@ -1177,7 +1177,7 @@ Linke tıklayın ve uygulamayı yükleyin
                             <span class="hatim-legend-item"><span class="hatim-legend-color mine"></span> Benim</span>
                         </div>
                         ${available > 1 && deadlineStatus !== 'passed' ? `
-                        <button onclick="HatimManager.showMultiClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${totalUnits}, '${unitLabel}')"
+                        <button data-action="HatimManager.showMultiClaimModal('${safeId(hatim.id)}', ${parseInt(hatim.current_round) || 1}, ${totalUnits}, '${unitLabel}')"
                                 class="hatim-btn hatim-btn-multi" style="width: 100%;">
                             <span>☑️</span> Çoklu Seçim (${available} müsait)
                         </button>
@@ -1393,7 +1393,7 @@ Linke tıklayın ve uygulamayı yükleyin
                             const statusClass = isCompleted ? 'read' : 'reading';
                             activeHtml += `
                                 <div class="hatim-cuz-cell mine ${statusClass}"
-                                     onclick="HatimManager.toggleReadStatus('${safeId(fullClaim.id)}', ${!!isCompleted}, ${i})"
+                                     data-action="HatimManager.toggleReadStatus('${safeId(fullClaim.id)}', ${!!isCompleted}, ${i})"
                                      tabindex="0" role="button"
                                      aria-label="${unitLabel} ${i} - ${isCompleted ? 'Okundu' : 'Okuyor'}">
                                     <div class="hatim-cuz-header">
@@ -1404,7 +1404,7 @@ Linke tıklayın ve uygulamayı yükleyin
                                     ${contentText ? `<span class="hatim-cuz-content">${contentText}</span>` : ''}
                                     <div class="hatim-cuz-footer">
                                         ${pageText ? `<span class="hatim-cuz-page">${pageText}</span>` : ''}
-                                        <button class="hatim-cuz-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(fullClaim.id)}', ${i})" title="Vazgeç">✕</button>
+                                        <button class="hatim-cuz-release" data-action="releaseHatimUnit('${safeId(fullClaim.id)}', ${i}, event)" title="Vazgeç">✕</button>
                                     </div>
                                 </div>
                             `;
@@ -1436,13 +1436,13 @@ Linke tıklayın ve uygulamayı yükleyin
                                 const cellClass = isMine ? `mine ${isCompleted ? 'read' : 'reading'}` : (isCompleted ? 'completed' : 'taken');
                                 return `
                                     <div class="hatim-half-cell ${cellClass}"
-                                         ${isMine ? `onclick="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!isCompleted}, ${i})"` : ''}
+                                         ${isMine ? `data-action="HatimManager.toggleReadStatus('${safeId(p.id)}', ${!!isCompleted}, ${i})"` : ''}
                                          title="${this.escapeHtml(p.participant_name)}">
                                         <div class="hatim-half-label">${halfLabel}</div>
                                         <div class="hatim-half-pages">S.${halfRange.start}-${halfRange.end}</div>
                                         <div class="hatim-half-name">${this.escapeHtml(p.participant_name).substring(0, 8)}</div>
                                         <div class="hatim-half-status ${isCompleted ? 'completed' : ''}">${isCompleted ? '✓' : '...'}</div>
-                                        ${isMine ? `<button class="hatim-half-release" onclick="event.stopPropagation(); HatimManager.releaseUnit('${safeId(p.id)}', ${i})" title="Vazgeç">✕</button>` : ''}
+                                        ${isMine ? `<button class="hatim-half-release" data-action="releaseHatimUnit('${safeId(p.id)}', ${i}, event)" title="Vazgeç">✕</button>` : ''}
                                     </div>
                                 `;
                             }
@@ -1553,14 +1553,14 @@ Linke tıklayın ve uygulamayı yükleyin
 
     showConfirmModal(message, confirmText, onConfirm) {
         const html = `
-            <div class="custom-modal-overlay" id="confirmModal" onclick="if(event.target===this) this.remove()">
+            <div class="custom-modal-overlay" id="confirmModal" data-action="closeModalOnOverlay(event)">
                 <div class="custom-modal modern-modal" style="max-width: 340px;">
                     <div class="modal-body" style="padding: 24px; text-align: center;">
                         <div style="font-size: 40px; margin-bottom: 12px;">📖</div>
                         <p style="margin: 0; color: #334155; font-size: 15px;">${message}</p>
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: center;">
-                        <button onclick="document.getElementById('confirmModal').remove()"
+                        <button data-action="closeModalById('confirmModal')"
                                 style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             İptal
                         </button>
@@ -1586,7 +1586,7 @@ Linke tıklayın ve uygulamayı yükleyin
      */
     showUnreadOptionsModal(participationId, unitNumber, unitLabel) {
         const html = `
-            <div class="custom-modal-overlay" id="unreadOptionsModal" onclick="if(event.target===this) this.remove()">
+            <div class="custom-modal-overlay" id="unreadOptionsModal" data-action="closeModalOnOverlay(event)">
                 <div class="custom-modal modern-modal" style="max-width: 360px;">
                     <div class="modal-body" style="padding: 24px; text-align: center;">
                         <div style="font-size: 40px; margin-bottom: 12px;">📖</div>
@@ -1602,7 +1602,7 @@ Linke tıklayın ve uygulamayı yükleyin
                                 style="padding: 14px 20px; min-height: 48px; background: #fee2e2; color: #dc2626; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
                             ✕ Vazgeç (başkalarına aç)
                         </button>
-                        <button onclick="document.getElementById('unreadOptionsModal').remove()"
+                        <button data-action="closeModalById('unreadOptionsModal')"
                                 style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; margin-top: 4px;">
                             İptal
                         </button>
@@ -1718,7 +1718,7 @@ Linke tıklayın ve uygulamayı yükleyin
         }
 
         const html = `
-            <div class="custom-modal-overlay" id="claimModal" onclick="if(event.target===this) this.remove()">
+            <div class="custom-modal-overlay" id="claimModal" data-action="closeModalOnOverlay(event)">
                 <div class="custom-modal modern-modal" style="max-width: 400px;">
                     <div class="modal-header" style="padding: 20px; border-bottom: 1px solid #e2e8f0;">
                         <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
@@ -1742,12 +1742,12 @@ Linke tıklayın ve uygulamayı yükleyin
                         ` : optionsHtml}
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
-                        <button onclick="document.getElementById('claimModal').remove()"
+                        <button data-action="closeModalById('claimModal')"
                                 style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             İptal
                         </button>
                         ${!hasFullClaim ? `
-                        <button onclick="HatimManager.doClaim('${hatimId}', ${roundNumber}, ${unitNumber})"
+                        <button data-action="HatimManager.doClaim('${hatimId}', ${roundNumber}, ${unitNumber})"
                                 style="padding: 12px 20px; min-height: 44px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Seç
                         </button>
@@ -1770,7 +1770,7 @@ Linke tıklayın ve uygulamayı yükleyin
         }
 
         const participantName = document.getElementById('claimParticipantName')?.value?.trim();
-        const claimBtn = document.querySelector('#claimModal button[onclick*="doClaim"]');
+        const claimBtn = document.querySelector('#claimModal button[data-action*="doClaim"]');
 
         // Get selected claim type (full, half1, half2)
         const selectedType = document.querySelector('input[name="claimType"]:checked')?.value || 'full';
@@ -1882,14 +1882,14 @@ Linke tıklayın ve uygulamayı yükleyin
 
         const gridHtml = availableUnits.map(unit => `
             <div class="multi-claim-unit" data-unit="${unit}"
-                 onclick="HatimManager.toggleUnitSelection(${unit}, this)"
+                 data-action="toggleHatimUnitSelection(${unit}, event)"
                  style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: white; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 700; font-size: 14px; color: #667eea; min-width: 40px;">
                 ${unit}
             </div>
         `).join('');
 
         const html = `
-            <div class="custom-modal-overlay" id="multiClaimModal" onclick="if(event.target===this) this.remove()">
+            <div class="custom-modal-overlay" id="multiClaimModal" data-action="closeModalOnOverlay(event)">
                 <div class="custom-modal modern-modal" style="max-width: 450px;">
                     <div class="modal-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
                         <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
@@ -1910,8 +1910,8 @@ Linke tıklayın ve uygulamayı yükleyin
                         <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
                             <label style="font-weight: 500; color: #334155;">${unitLabel} Seçin:</label>
                             <div style="display: flex; gap: 8px;">
-                                <button onclick="HatimManager.selectAllUnits()" style="padding: 4px 10px; font-size: 11px; background: #e0e7ff; color: #4f46e5; border: none; border-radius: 4px; cursor: pointer;">Tümünü Seç</button>
-                                <button onclick="HatimManager.clearUnitSelection()" style="padding: 4px 10px; font-size: 11px; background: #f1f5f9; color: #64748b; border: none; border-radius: 4px; cursor: pointer;">Temizle</button>
+                                <button data-action="HatimManager.selectAllUnits()" style="padding: 4px 10px; font-size: 11px; background: #e0e7ff; color: #4f46e5; border: none; border-radius: 4px; cursor: pointer;">Tümünü Seç</button>
+                                <button data-action="HatimManager.clearUnitSelection()" style="padding: 4px 10px; font-size: 11px; background: #f1f5f9; color: #64748b; border: none; border-radius: 4px; cursor: pointer;">Temizle</button>
                             </div>
                         </div>
 
@@ -1924,11 +1924,11 @@ Linke tıklayın ve uygulamayı yükleyin
                         </div>
                     </div>
                     <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
-                        <button onclick="document.getElementById('multiClaimModal').remove()"
+                        <button data-action="closeModalById('multiClaimModal')"
                                 style="padding: 12px 20px; min-height: 44px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             İptal
                         </button>
-                        <button id="multiClaimBtn" onclick="HatimManager.doMultiClaim('${hatimId}', ${roundNumber}, '${unitLabel}')"
+                        <button id="multiClaimBtn" data-action="HatimManager.doMultiClaim('${hatimId}', ${roundNumber}, '${unitLabel}')"
                                 style="padding: 12px 20px; min-height: 44px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
                             Seç
                         </button>

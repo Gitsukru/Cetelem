@@ -292,15 +292,15 @@ const DeviceBackup = {
         <div class="custom-modal">
           <div class="modal-header">
             <h3>📱 Cihaz Yedekleme</h3>
-            <button class="modal-close" onclick="document.getElementById('backupModal').remove()">✕</button>
+            <button class="modal-close" data-action="closeModalById('backupModal')">✕</button>
           </div>
           <div class="modal-body">
             <p style="margin-bottom: 16px;">Verilerinizi yeni cihaza aktarmak için bir yedekleme kodu oluşturun.</p>
             <div id="backupResult" style="text-align: center;"></div>
           </div>
           <div class="modal-footer">
-            <button class="btn-secondary" onclick="document.getElementById('backupModal').remove()">İptal</button>
-            <button class="btn-primary" onclick="DeviceBackup.executeCreateBackup()">Kod Oluştur</button>
+            <button class="btn-secondary" data-action="closeModalById('backupModal')">İptal</button>
+            <button class="btn-primary" data-action="DeviceBackup.executeCreateBackup()">Kod Oluştur</button>
           </div>
         </div>
       </div>
@@ -324,7 +324,7 @@ const DeviceBackup = {
           <p style="font-size: 14px; color: #15803d; margin-top: 12px;">
             Bu kodu 7 gün içinde yeni cihazınıza girin
           </p>
-          <button onclick="navigator.clipboard.writeText('${result.code}')" class="btn-primary" style="margin-top: 12px;">
+          <button data-action="copyToClipboard('${result.code}')" class="btn-primary" style="margin-top: 12px;">
             📋 Kodu Kopyala
           </button>
         </div>
@@ -343,7 +343,7 @@ const DeviceBackup = {
         <div class="custom-modal">
           <div class="modal-header">
             <h3>📲 Veri Geri Yükleme</h3>
-            <button class="modal-close" onclick="document.getElementById('restoreModal').remove()">✕</button>
+            <button class="modal-close" data-action="closeModalById('restoreModal')">✕</button>
           </div>
           <div class="modal-body">
             <p style="margin-bottom: 16px;">Eski cihazınızdan aldığınız 6 haneli kodu girin:</p>
@@ -352,8 +352,8 @@ const DeviceBackup = {
             <div id="restoreResult" style="margin-top: 16px; text-align: center;"></div>
           </div>
           <div class="modal-footer">
-            <button class="btn-secondary" onclick="document.getElementById('restoreModal').remove()">İptal</button>
-            <button class="btn-primary" onclick="DeviceBackup.executeRestoreBackup()">Geri Yükle</button>
+            <button class="btn-secondary" data-action="closeModalById('restoreModal')">İptal</button>
+            <button class="btn-primary" data-action="DeviceBackup.executeRestoreBackup()">Geri Yükle</button>
           </div>
         </div>
       </div>

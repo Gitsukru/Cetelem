@@ -151,11 +151,11 @@ class ErrorHandler {
     }
 
     const html = `
-      <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+      <div class="custom-modal-overlay" data-action="closeModalOnOverlay(event)">
         <div class="custom-modal-content modern-modal" style="max-width: 800px;">
           <div class="modal-header">
             <h3>🔍 Rapport d'erreurs</h3>
-            <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
+            <button class="modal-close" data-action="closeModal(event)">✕</button>
           </div>
           <div class="modal-body">
             <p style="color: #64748b; margin-bottom: 16px;">
@@ -174,10 +174,10 @@ class ErrorHandler {
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn-secondary" onclick="errorHandler.clearErrors(); this.closest('.custom-modal-overlay').remove()">
+            <button class="btn-secondary" data-action="clearErrorsAndClose(event)">
               Effacer
             </button>
-            <button class="btn-primary" onclick="navigator.clipboard.writeText(errorHandler.exportErrors()).then(() => alert('Copié!'))">
+            <button class="btn-primary" data-action="copyErrorReport()">
               Copier JSON
             </button>
           </div>

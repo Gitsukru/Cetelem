@@ -344,7 +344,7 @@ const SohbetManager = {
                             <span>Bugun: <strong style="color: #1e293b;">${this.formatMinutes(todayMinutes)}</strong></span>
                             <span>Toplam: <strong style="color: #1e293b;">${this.formatMinutes(stats.total)}</strong></span>
                         </div>
-                        <button onclick="SohbetManager.showAddTimeModal('${source.id}', '${source.name}')"
+                        <button data-action="SohbetManager.showAddTimeModal('${source.id}', '${source.name}')"
                                 style="display: flex; align-items: center; gap: 4px; padding: 8px 12px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="10"></circle>
@@ -368,11 +368,11 @@ const SohbetManager = {
 
     showAddTimeModal(sourceId, sourceName) {
         const modalHTML = `
-            <div class="modal-overlay" onclick="if(event.target === this) SohbetManager.closeModal()">
+            <div class="modal-overlay" data-action="SohbetManager.closeModalOnOverlay(event)">
                 <div class="modal-content" style="max-width: 400px;">
                     <div class="modal-header">
                         <h3>Sure Ekle - ${this.escapeHtml(sourceName)}</h3>
-                        <button class="modal-close" onclick="SohbetManager.closeModal()">X</button>
+                        <button class="modal-close" data-action="SohbetManager.closeModal()">X</button>
                     </div>
                     <div class="modal-body">
                         <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">
@@ -380,17 +380,17 @@ const SohbetManager = {
                         </p>
                         <div class="form-group">
                             <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                                <button onclick="SohbetManager.setQuickTime(15)" class="quick-time-btn" style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-weight: 500;">15 dk</button>
-                                <button onclick="SohbetManager.setQuickTime(30)" class="quick-time-btn" style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-weight: 500;">30 dk</button>
-                                <button onclick="SohbetManager.setQuickTime(60)" class="quick-time-btn" style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-weight: 500;">1 sa</button>
+                                <button data-action="SohbetManager.setQuickTime(15)" class="quick-time-btn" style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-weight: 500;">15 dk</button>
+                                <button data-action="SohbetManager.setQuickTime(30)" class="quick-time-btn" style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-weight: 500;">30 dk</button>
+                                <button data-action="SohbetManager.setQuickTime(60)" class="quick-time-btn" style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-weight: 500;">1 sa</button>
                             </div>
                             <label style="display: block; margin-bottom: 8px; font-weight: 500;">Veya manuel girin (dakika):</label>
                             <input type="number" id="sohbetMinutesInput" placeholder="Ornegin: 45" min="1" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
                         </div>
                     </div>
                     <div class="modal-footer" style="display: flex; gap: 10px; justify-content: flex-end; padding: 16px;">
-                        <button onclick="SohbetManager.closeModal()" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer;">Iptal</button>
-                        <button onclick="SohbetManager.addTimeFromModal('${sourceId}')" style="padding: 10px 20px; border: none; border-radius: 8px; background: #667eea; color: white; cursor: pointer;">Ekle</button>
+                        <button data-action="SohbetManager.closeModal()" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer;">Iptal</button>
+                        <button data-action="SohbetManager.addTimeFromModal('${sourceId}')" style="padding: 10px 20px; border: none; border-radius: 8px; background: #667eea; color: white; cursor: pointer;">Ekle</button>
                     </div>
                 </div>
             </div>
@@ -410,6 +410,12 @@ const SohbetManager = {
     closeModal() {
         const overlay = document.querySelector('.modal-overlay');
         if (overlay) overlay.remove();
+    },
+
+    closeModalOnOverlay(event) {
+        if (event.target === event.currentTarget || event.target.classList.contains('modal-overlay')) {
+            this.closeModal();
+        }
     },
 
     addTimeFromModal(sourceId) {

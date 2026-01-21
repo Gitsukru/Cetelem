@@ -98,7 +98,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <button class="logout-btn" onclick="adminAuth.logout()">
+                <button class="logout-btn" data-action="adminAuth.logout()">
                     <span>🚪</span>
                     <span>Déconnexion</span>
                 </button>
@@ -126,7 +126,7 @@
                         <span>Dernière MAJ:</span>
                         <span id="lastUpdateTime">--:--</span>
                     </div>
-                    <button class="refresh-btn" onclick="adminDashboard.refreshAll()">
+                    <button class="refresh-btn" data-action="adminDashboard.refreshAll()">
                         <span>🔄</span>
                         <span>Actualiser</span>
                     </button>
@@ -333,10 +333,10 @@
                     <div class="chart-container">
                         <h3>📈 Évolution des Zikirlers</h3>
                         <div class="chart-controls">
-                            <button class="btn-filter active" onclick="adminDashboard.filterZikirlersChart('7d')">7 jours</button>
-                            <button class="btn-filter" onclick="adminDashboard.filterZikirlersChart('30d')">30 jours</button>
-                            <button class="btn-filter" onclick="adminDashboard.filterZikirlersChart('90d')">90 jours</button>
-                            <button class="btn-filter" onclick="adminDashboard.filterZikirlersChart('all')">Tout</button>
+                            <button class="btn-filter active" data-action="adminDashboard.filterZikirlersChart('7d')">7 jours</button>
+                            <button class="btn-filter" data-action="adminDashboard.filterZikirlersChart('30d')">30 jours</button>
+                            <button class="btn-filter" data-action="adminDashboard.filterZikirlersChart('90d')">90 jours</button>
+                            <button class="btn-filter" data-action="adminDashboard.filterZikirlersChart('all')">Tout</button>
                         </div>
                         <canvas id="zikirlersEvolutionChart"></canvas>
                     </div>
@@ -744,12 +744,12 @@
 
                     <!-- Category Tabs -->
                     <div class="tavsiye-admin-tabs">
-                        <button class="tavsiye-tab active" onclick="adminDashboard.showTavsiyeCategory('zikir')">Zikirler</button>
-                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('kitap')">Kitaplar</button>
-                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('namaz')">Namazlar</button>
-                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('kuran')">Kuran</button>
-                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('cevsen')">Cevsen</button>
-                        <button class="tavsiye-tab" onclick="adminDashboard.showTavsiyeCategory('sohbet')">Sohbet</button>
+                        <button class="tavsiye-tab active" data-action="adminDashboard.showTavsiyeCategory('zikir')">Zikirler</button>
+                        <button class="tavsiye-tab" data-action="adminDashboard.showTavsiyeCategory('kitap')">Kitaplar</button>
+                        <button class="tavsiye-tab" data-action="adminDashboard.showTavsiyeCategory('namaz')">Namazlar</button>
+                        <button class="tavsiye-tab" data-action="adminDashboard.showTavsiyeCategory('kuran')">Kuran</button>
+                        <button class="tavsiye-tab" data-action="adminDashboard.showTavsiyeCategory('cevsen')">Cevsen</button>
+                        <button class="tavsiye-tab" data-action="adminDashboard.showTavsiyeCategory('sohbet')">Sohbet</button>
                     </div>
 
                     <!-- Add New Item -->
@@ -797,7 +797,7 @@
                                     <input type="number" id="tavsiyeNewTotalPages" placeholder="0">
                                 </div>
                                 <div class="form-group form-actions">
-                                    <button class="tool-btn" onclick="adminDashboard.addTavsiyeItem()">
+                                    <button class="tool-btn" data-action="adminDashboard.addTavsiyeItem()">
                                         Ekle
                                     </button>
                                 </div>
@@ -817,7 +817,7 @@
                     <div class="chart-container">
                         <h3>🔄 Varsayilanlara Sifirla</h3>
                         <p style="color: #64748b; margin-bottom: 16px;">Tum tavsiye ogelerini varsayilan degerlere sifirlar.</p>
-                        <button class="tool-btn" style="background: #dc2626;" onclick="adminDashboard.resetTavsiyeToDefaults()">
+                        <button class="tool-btn" style="background: #dc2626;" data-action="adminDashboard.resetTavsiyeToDefaults()">
                             Sifirla
                         </button>
                     </div>
@@ -838,7 +838,7 @@
                     <div class="chart-container">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                             <h3>📋 Aktif Hatimler</h3>
-                            <button class="tool-btn" onclick="adminDashboard.loadAllHatims()">
+                            <button class="tool-btn" data-action="adminDashboard.loadAllHatims()">
                                 🔄 Yenile
                             </button>
                         </div>
@@ -851,7 +851,7 @@
                     <div class="chart-container" style="border: 2px solid #fecaca;">
                         <h3 style="color: #dc2626;">⚠️ Tehlikeli Bolge</h3>
                         <p style="color: #64748b; margin-bottom: 16px;">Bu islemler geri alinamaz!</p>
-                        <button class="tool-btn" style="background: #dc2626;" onclick="adminDashboard.deleteAllHatims()">
+                        <button class="tool-btn" style="background: #dc2626;" data-action="adminDashboard.deleteAllHatims()">
                             🗑️ Tum Hatimleri Sil
                         </button>
                     </div>
@@ -1024,7 +1024,7 @@
                             <div class="tool-icon">🔄</div>
                             <h3>Forcer Mise à Jour</h3>
                             <p>Force la mise à jour pour tous les utilisateurs</p>
-                            <button class="tool-btn" onclick="adminDashboard.forceUpdate()">
+                            <button class="tool-btn" data-action="adminDashboard.forceUpdate()">
                                 Forcer MAJ
                             </button>
                         </div>
@@ -1033,7 +1033,7 @@
                             <div class="tool-icon">🧹</div>
                             <h3>Vider Cache Global</h3>
                             <p>Supprime le cache de tous les clients</p>
-                            <button class="tool-btn" onclick="adminDashboard.clearGlobalCache()">
+                            <button class="tool-btn" data-action="adminDashboard.clearGlobalCache()">
                                 Vider Cache
                             </button>
                         </div>
@@ -1042,7 +1042,7 @@
                             <div class="tool-icon">📢</div>
                             <h3>Notification Globale</h3>
                             <p>Envoie une notification à tous les users</p>
-                            <button class="tool-btn" onclick="adminDashboard.sendGlobalNotification()">
+                            <button class="tool-btn" data-action="adminDashboard.sendGlobalNotification()">
                                 Envoyer
                             </button>
                         </div>
@@ -1051,7 +1051,7 @@
                             <div class="tool-icon">🚨</div>
                             <h3>Mode Maintenance</h3>
                             <p>Active/désactive le mode maintenance</p>
-                            <button class="tool-btn" id="maintenanceBtn" onclick="adminDashboard.toggleMaintenance()">
+                            <button class="tool-btn" id="maintenanceBtn" data-action="adminDashboard.toggleMaintenance()">
                                 Activer
                             </button>
                         </div>
@@ -1060,7 +1060,7 @@
                             <div class="tool-icon">📥</div>
                             <h3>Export Base de Données</h3>
                             <p>Télécharge un backup complet</p>
-                            <button class="tool-btn" onclick="adminDashboard.exportDatabase()">
+                            <button class="tool-btn" data-action="adminDashboard.exportDatabase()">
                                 Exporter
                             </button>
                         </div>
@@ -1069,7 +1069,7 @@
                             <div class="tool-icon">🧹</div>
                             <h3>Nettoyage Données</h3>
                             <p>Supprime groupes vides > 90j</p>
-                            <button class="tool-btn" onclick="adminDashboard.cleanupOldData()">
+                            <button class="tool-btn" data-action="adminDashboard.cleanupOldData()">
                                 Nettoyer
                             </button>
                         </div>
@@ -1134,9 +1134,9 @@
                     <div class="chart-container">
                         <h3>📊 Croissance des Utilisateurs Actifs</h3>
                         <div class="chart-controls">
-                            <button class="btn-filter active" onclick="adminDashboard.filterGrowthChart('30d')">30 jours</button>
-                            <button class="btn-filter" onclick="adminDashboard.filterGrowthChart('90d')">90 jours</button>
-                            <button class="btn-filter" onclick="adminDashboard.filterGrowthChart('all')">Tout</button>
+                            <button class="btn-filter active" data-action="adminDashboard.filterGrowthChart('30d')">30 jours</button>
+                            <button class="btn-filter" data-action="adminDashboard.filterGrowthChart('90d')">90 jours</button>
+                            <button class="btn-filter" data-action="adminDashboard.filterGrowthChart('all')">Tout</button>
                         </div>
                         <canvas id="growthChart"></canvas>
                     </div>
@@ -1279,10 +1279,10 @@
                         <div class="console-header">
                             <h3>🔴 Console Erreurs</h3>
                             <div class="console-controls">
-                                <button class="console-btn" onclick="adminDashboard.clearErrorLogs()">
+                                <button class="console-btn" data-action="adminDashboard.clearErrorLogs()">
                                     Effacer
                                 </button>
-                                <button class="console-btn" onclick="adminDashboard.exportLogs()">
+                                <button class="console-btn" data-action="adminDashboard.exportLogs()">
                                     Export JSON
                                 </button>
                             </div>
@@ -1316,6 +1316,9 @@
 
     <!-- Version centrale (chargée en premier) -->
     <script src="version.js?v=1762615531742"></script>
+
+    <!-- Event Delegation System (CSP Compliance) -->
+    <script src="src/utils/event-delegation.js?v=1762615531742"></script>
 
     <!-- Monitoring production -->
     <script src="./src/utils/sentry-setup.js?v=1762615531742"></script>

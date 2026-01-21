@@ -267,7 +267,7 @@ const BooksManager = {
                 ${book.totalPages > 0 ? `/ ${book.totalPages} (${stats.progress}%)` : ''}
               </p>
             </div>
-            <button class="book-delete-btn" onclick="deleteBookConfirm('${book.id}')" title="Sil">
+            <button class="book-delete-btn" data-action="deleteBookConfirm('${book.id}')" title="Sil">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </button>
           </div>
@@ -298,10 +298,10 @@ const BooksManager = {
           </div>
 
           <div class="book-actions">
-            <button class="book-add-pages-btn" onclick="showAddPagesModal('${book.id}')">
+            <button class="book-add-pages-btn" data-action="showAddPagesModal('${book.id}')">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Sayfa Ekle
             </button>
-            <button class="book-edit-btn" onclick="showEditBookModal('${book.id}')">
+            <button class="book-edit-btn" data-action="showEditBookModal('${book.id}')">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Düzenle
             </button>
           </div>
@@ -437,11 +437,11 @@ const BooksManager = {
  */
 function showAddBookModal() {
   const modalHTML = `
-    <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+    <div class="custom-modal-overlay" data-action="closeModalOnOverlay(event)">
       <div class="custom-modal" style="min-height: 300px;">
         <div class="modal-header">
           <h3 id="modal-title">📚 Yeni Kitap Ekle</h3>
-          <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
+          <button class="modal-close" data-action="closeModal(event)">✕</button>
         </div>
 
         <!-- Indicateur de progression -->
@@ -468,11 +468,11 @@ function showAddBookModal() {
             <div class="form-group">
               <label class="form-label" style="font-size: 16px; margin-bottom: 16px;">Kitap Formatı Nedir?</label>
               <div style="display: flex; flex-direction: column; gap: 12px;">
-                <button class="format-choice-btn" onclick="selectBookFormat('digital')" data-format="digital">
+                <button class="format-choice-btn" data-action="selectBookFormat('digital')" data-format="digital">
                   <span style="font-size: 24px;">📱</span>
                   <span style="margin-left: 12px;">Dijital (e-Kitap)</span>
                 </button>
-                <button class="format-choice-btn" onclick="selectBookFormat('print')" data-format="print">
+                <button class="format-choice-btn" data-action="selectBookFormat('print')" data-format="print">
                   <span style="font-size: 24px;">📖</span>
                   <span style="margin-left: 12px;">Basılı (Kağıt)</span>
                 </button>
@@ -523,13 +523,13 @@ function showAddBookModal() {
         </div>
 
         <div class="modal-footer">
-          <button class="btn-secondary" id="btn-back" onclick="previousStepAddBook()" style="display: none;">
+          <button class="btn-secondary" id="btn-back" data-action="previousStepAddBook()" style="display: none;">
             ← Geri
           </button>
-          <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
+          <button class="btn-secondary" data-action="closeModal(event)">
             İptal
           </button>
-          <button class="btn-primary" id="btn-next" onclick="nextStepAddBook()">
+          <button class="btn-primary" id="btn-next" data-action="nextStepAddBook()">
             Devam →
           </button>
         </div>
@@ -763,11 +763,11 @@ function showAddPagesModal(bookId) {
   const todayPages = book.history[today] || 0;
 
   const modalHTML = `
-    <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+    <div class="custom-modal-overlay" data-action="closeModalOnOverlay(event)">
       <div class="custom-modal">
         <div class="modal-header">
           <h3>➕ Sayfa Ekle</h3>
-          <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
+          <button class="modal-close" data-action="closeModal(event)">✕</button>
         </div>
         <div class="modal-body">
           <p style="margin-bottom: 16px; color: #475569;">
@@ -782,10 +782,10 @@ function showAddPagesModal(bookId) {
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
+          <button class="btn-secondary" data-action="closeModal(event)">
             İptal
           </button>
-          <button class="btn-primary" onclick="addPagesFromModal('${bookId}')">
+          <button class="btn-primary" data-action="addPagesFromModal('${bookId}')">
             Ekle
           </button>
         </div>
@@ -831,11 +831,11 @@ function showEditBookModal(bookId) {
   const goals = getBookGoals(bookId);
 
   const modalHTML = `
-    <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+    <div class="custom-modal-overlay" data-action="closeModalOnOverlay(event)">
       <div class="custom-modal" style="min-height: 300px;">
         <div class="modal-header">
           <h3 id="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Kitabı Düzenle</h3>
-          <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
+          <button class="modal-close" data-action="closeModal(event)">✕</button>
         </div>
 
         <!-- Indicateur de progression -->
@@ -861,11 +861,11 @@ function showEditBookModal(bookId) {
             <div class="form-group">
               <label class="form-label" style="font-size: 16px; margin-bottom: 16px;">Kitap Formatı</label>
               <div style="display: flex; flex-direction: column; gap: 12px;">
-                <button class="format-choice-btn ${book.format === 'digital' ? 'selected' : ''}" onclick="selectEditBookFormat('digital')" data-format="digital">
+                <button class="format-choice-btn ${book.format === 'digital' ? 'selected' : ''}" data-action="selectEditBookFormat('digital')" data-format="digital">
                   <span style="font-size: 24px;">📱</span>
                   <span style="margin-left: 12px;">Dijital (e-Kitap)</span>
                 </button>
-                <button class="format-choice-btn ${book.format === 'print' ? 'selected' : ''}" onclick="selectEditBookFormat('print')" data-format="print">
+                <button class="format-choice-btn ${book.format === 'print' ? 'selected' : ''}" data-action="selectEditBookFormat('print')" data-format="print">
                   <span style="font-size: 24px;">📖</span>
                   <span style="margin-left: 12px;">Basılı (Kağıt)</span>
                 </button>
@@ -908,10 +908,10 @@ function showEditBookModal(bookId) {
         </div>
 
         <div class="modal-footer">
-          <button class="btn-secondary" id="edit-book-btn-back" onclick="previousStepEditBook()" style="display: none;">
+          <button class="btn-secondary" id="edit-book-btn-back" data-action="previousStepEditBook()" style="display: none;">
             ← Geri
           </button>
-          <button class="btn-primary" id="edit-book-btn-next" onclick="nextStepEditBook()">
+          <button class="btn-primary" id="edit-book-btn-next" data-action="nextStepEditBook()">
             İleri →
           </button>
         </div>

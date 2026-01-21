@@ -951,11 +951,11 @@ function editCategory(index) {
     const currentGoals = getCategoryGoals(oldCategoryName);
 
     const modalHTML = `
-        <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+        <div class="custom-modal-overlay" data-action="closeModalOnOverlay(event)">
             <div class="custom-modal" style="min-height: 280px;">
                 <div class="modal-header">
                     <h3 id="edit-zikir-modal-title">✏️ Zikiri Düzenle</h3>
-                    <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
+                    <button class="modal-close" data-action="closeModal(event)">✕</button>
                 </div>
 
                 <!-- Indicateur de progression -->
@@ -998,13 +998,13 @@ function editCategory(index) {
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn-secondary" id="edit-zikir-btn-back" onclick="previousStepEditZikir()" style="display: none;">
+                    <button class="btn-secondary" id="edit-zikir-btn-back" data-action="previousStepEditZikir()" style="display: none;">
                         ← Geri
                     </button>
-                    <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
+                    <button class="btn-secondary" data-action="closeModal(event)">
                         İptal
                     </button>
-                    <button class="btn-primary" id="edit-zikir-btn-next" onclick="nextStepEditZikir()">
+                    <button class="btn-primary" id="edit-zikir-btn-next" data-action="nextStepEditZikir()">
                         Devam →
                     </button>
                 </div>
@@ -1227,11 +1227,11 @@ function updateCounterDisplay() {
 // Afficher modal rapide pour ajouter un zikir - MULTI-ÉTAPES
 function showQuickAddCategory() {
     const modalHTML = `
-        <div class="custom-modal-overlay" onclick="if(event.target === this) this.remove()">
+        <div class="custom-modal-overlay" data-action="closeModalOnOverlay(event)">
             <div class="custom-modal" style="min-height: 280px;">
                 <div class="modal-header">
                     <h3 id="zikir-modal-title">✨ Yeni Zikir Ekle</h3>
-                    <button class="modal-close" onclick="this.closest('.custom-modal-overlay').remove()">✕</button>
+                    <button class="modal-close" data-action="closeModal(event)">✕</button>
                 </div>
 
                 <!-- Indicateur de progression -->
@@ -1274,13 +1274,13 @@ function showQuickAddCategory() {
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn-secondary" id="zikir-btn-back" onclick="previousStepAddZikir()" style="display: none;">
+                    <button class="btn-secondary" id="zikir-btn-back" data-action="previousStepAddZikir()" style="display: none;">
                         ← Geri
                     </button>
-                    <button class="btn-secondary" onclick="this.closest('.custom-modal-overlay').remove()">
+                    <button class="btn-secondary" data-action="closeModal(event)">
                         İptal
                     </button>
-                    <button class="btn-primary" id="zikir-btn-next" onclick="nextStepAddZikir()">
+                    <button class="btn-primary" id="zikir-btn-next" data-action="nextStepAddZikir()">
                         Devam →
                     </button>
                 </div>
@@ -1592,7 +1592,7 @@ function showTavsiyeModal(filter = 'all') {
         const itemsHTML = items.map(item => {
             const alreadyExists = checkTavsiyeItemExists(category, item.name);
             const currentIndex = itemIndex++;
-            const urlButton = item.url ? `<a href="${item.url}" target="_blank" rel="noopener" class="tavsiye-item-link" onclick="event.stopPropagation()" title="Linki ac">🔗</a>` : '';
+            const urlButton = item.url ? `<a href="${item.url}" target="_blank" rel="noopener" class="tavsiye-item-link" data-action="stopPropagation(event)" title="Linki ac">🔗</a>` : '';
             return `
                 <label class="tavsiye-item ${alreadyExists ? 'already-added' : ''}" ${alreadyExists ? 'title="Bu zaten ekli"' : ''}>
                     <input type="checkbox"
@@ -1641,11 +1641,11 @@ function showTavsiyeModal(filter = 'all') {
     const modalTitle = modalTitles[filter] || modalTitles.all;
 
     const modalHTML = `
-        <div class="tavsiye-modal-overlay" onclick="if(event.target === this) closeTavsiyeModal()">
+        <div class="tavsiye-modal-overlay" data-action="closeTavsiyeModalOnOverlay(event)">
             <div class="tavsiye-modal ${isMultiCategory ? 'tavsiye-modal-expanded' : ''}">
                 <div class="tavsiye-modal-header">
                     <h3>${modalTitle}</h3>
-                    <button class="tavsiye-modal-close" onclick="closeTavsiyeModal()">X</button>
+                    <button class="tavsiye-modal-close" data-action="closeTavsiyeModal()">X</button>
                 </div>
                 <div class="tavsiye-modal-body">
                     <p style="color: #64748b; font-size: 13px; margin-bottom: 16px;">
@@ -1656,8 +1656,8 @@ function showTavsiyeModal(filter = 'all') {
                     </div>
                 </div>
                 <div class="tavsiye-modal-footer">
-                    <button class="tavsiye-btn-cancel" onclick="closeTavsiyeModal()">Kapat</button>
-                    <button class="tavsiye-btn-add" id="tavsiyeAddBtn" onclick="addSelectedTavsiyeler()" disabled>
+                    <button class="tavsiye-btn-cancel" data-action="closeTavsiyeModal()">Kapat</button>
+                    <button class="tavsiye-btn-add" id="tavsiyeAddBtn" data-action="addSelectedTavsiyeler()" disabled>
                         Secilenleri Ekle
                     </button>
                 </div>
@@ -1678,6 +1678,13 @@ function closeTavsiyeModal() {
     const modal = document.querySelector('.tavsiye-modal-overlay');
     if (modal) {
         modal.remove();
+    }
+}
+
+// Close tavsiye modal when clicking on overlay
+function closeTavsiyeModalOnOverlay(event) {
+    if (event.target === event.currentTarget || event.target.classList.contains('tavsiye-modal-overlay')) {
+        closeTavsiyeModal();
     }
 }
 
@@ -3123,6 +3130,17 @@ function resetAllData() {
 }
 
 // Export/Import
+
+/**
+ * Trigger import file dialog (CSP-compliant helper)
+ */
+function triggerImportFile() {
+    const importFileInput = document.getElementById('importFile');
+    if (importFileInput) {
+        importFileInput.click();
+    }
+}
+
 function exportData() {
     try {
         const exportData = {
@@ -3489,6 +3507,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         SecureStorageCompat.migrateAllSensitiveData().catch(e => console.warn('Migration skipped:', e));
     }
 
+    // Update footer version display
+    if (typeof APP_VERSION !== 'undefined' && APP_VERSION.number) {
+        const footerVersion = document.getElementById('footerVersion');
+        if (footerVersion) {
+            footerVersion.textContent = `v3.5.1 ${APP_VERSION.number} • 2025`;
+        }
+    }
+
     try {
         const savedCategories = localStorage.getItem('categories');
         const savedCounters = localStorage.getItem('counters');
@@ -3805,7 +3831,7 @@ function showPWAUpdateBanner() {
                     <div style="font-size: 12px; opacity: 0.9;">Güncellemek için tıklayın</div>
                 </div>
             </div>
-            <button onclick="applyUpdateNow()" style="
+            <button data-action="applyUpdateNow()" style="
                 background: white;
                 color: #667eea;
                 border: none;
@@ -3816,7 +3842,7 @@ function showPWAUpdateBanner() {
                 cursor: pointer;
                 white-space: nowrap;
             ">Güncelle</button>
-            <button onclick="document.getElementById('pwaUpdateBanner').remove()" style="
+            <button data-action="closeModalById('pwaUpdateBanner')" style="
                 background: transparent;
                 color: white;
                 border: none;
@@ -3840,7 +3866,7 @@ function showUpdateDetailsPopup() {
             <div class="custom-modal" style="max-width: 450px;">
                 <div class="modal-header">
                     <h3>🔔 Yeni Güncelleme Mevcut!</h3>
-                    <button class="modal-close" onclick="document.getElementById('updatePopup').remove()">✕</button>
+                    <button class="modal-close" data-action="closeModalById('updatePopup')">✕</button>
                 </div>
                 <div class="modal-body">
                     <div style="text-align: center; margin-bottom: 20px;">
@@ -3875,10 +3901,10 @@ function showUpdateDetailsPopup() {
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-secondary" onclick="document.getElementById('updatePopup').remove()">
+                    <button class="btn-secondary" data-action="closeModalById('updatePopup')">
                         Daha Sonra
                     </button>
-                    <button class="btn-primary" onclick="applyUpdateFromPopup()">
+                    <button class="btn-primary" data-action="applyUpdateFromPopup()">
                         🚀 Şimdi Güncelle
                     </button>
                 </div>
