@@ -694,15 +694,15 @@ function showTab(tabName, event) {
     }
     // Synchroniser le bouton correspondant dans le menu mobile
     document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
-        const btnOnclick = btn.getAttribute('onclick');
-        if (btnOnclick && btnOnclick.includes(`'${tabName}'`)) {
+        const btnAction = btn.getAttribute('data-action');
+        if (btnAction && btnAction.includes(`'${tabName}'`)) {
             btn.classList.add('active');
         }
     });
     // Synchroniser le bouton correspondant dans le menu desktop
     document.querySelectorAll('.tab-button').forEach(btn => {
-        const btnOnclick = btn.getAttribute('onclick');
-        if (btnOnclick && btnOnclick.includes(`'${tabName}'`)) {
+        const btnAction = btn.getAttribute('data-action');
+        if (btnAction && btnAction.includes(`'${tabName}'`)) {
             btn.classList.add('active');
         }
     });

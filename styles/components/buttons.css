@@ -536,6 +536,11 @@
     max-width: 280px;
     height: 400px;
     cursor: pointer;
+    background: transparent !important;
+}
+
+#namaz .counter-display {
+    background: transparent !important;
 }
 
 #namaz .tesbih-bg {
