@@ -545,14 +545,9 @@
 
 #namaz .tesbih-bg {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('/assets/images/Namaz.svg');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 1;
     pointer-events: auto;
     cursor: pointer;
@@ -560,7 +555,7 @@
 
 /* Rendre l'image cliquable */
 #namaz .tesbih-bg:active {
-    transform: scale(0.98);
+    transform: translate(-50%, -50%) scale(0.98);
     transition: transform 0.1s ease;
 }
 
