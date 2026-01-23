@@ -3,6 +3,31 @@
  * Tests complets avec payloads OWASP
  */
 
+// Mock DOMPurify pour les tests
+global.DOMPurify = {
+  sanitize: (html, config = {}) => {
+    // Simulation simple de DOMPurify pour les tests
+    const allowedTags = config.ALLOWED_TAGS || ['b', 'i', 'em', 'strong', 'span', 'p', 'br', 'div', 'ul', 'ol', 'li', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+    const forbiddenTags = config.FORBID_TAGS || ['script', 'style', 'iframe', 'object', 'embed', 'form', 'input'];
+    const forbiddenAttrs = config.FORBID_ATTR || ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur'];
+
+    // Supprimer les tags interdits et leurs contenus
+    let result = html;
+    forbiddenTags.forEach(tag => {
+      const regex = new RegExp(`<${tag}[^>]*>.*?</${tag}>|<${tag}[^>]*/?>`, 'gis');
+      result = result.replace(regex, '');
+    });
+
+    // Supprimer les attributs interdits
+    forbiddenAttrs.forEach(attr => {
+      const regex = new RegExp(`\\s*${attr}\\s*=\\s*["'][^"']*["']|\\s*${attr}\\s*=\\s*[^\\s>]+`, 'gi');
+      result = result.replace(regex, '');
+    });
+
+    return result;
+  }
+};
+
 const {
   escapeHtml,
   html,

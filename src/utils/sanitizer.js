@@ -106,14 +106,28 @@ function createSecureElement(tag, text, attributes = {}) {
  * Remplace innerHTML de manière sécurisée avec DOMPurify
  * @param {HTMLElement} container - Élément conteneur
  * @param {string} htmlString - HTML à insérer (sera sanitisé par DOMPurify)
- * @param {Object} options - Options DOMPurify (optionnel)
+ * @param {Array<string>|Object} optionsOrUserInputs - Options DOMPurify OU tableau d'inputs utilisateur (rétrocompatibilité)
  * @returns {void}
  */
-function setInnerHTMLSafe(container, htmlString, options = {}) {
+function setInnerHTMLSafe(container, htmlString, optionsOrUserInputs = {}) {
   if (!container) return;
 
-  // Utiliser DOMPurify pour nettoyer le HTML
-  const safeHTML = purifyHTML(htmlString, options);
+  let safeHTML = htmlString;
+
+  // Rétrocompatibilité: si c'est un tableau, c'est l'ancienne signature avec userInputs
+  if (Array.isArray(optionsOrUserInputs)) {
+    // Ancienne méthode: échapper les inputs utilisateur
+    optionsOrUserInputs.forEach(input => {
+      if (input && typeof input === 'string') {
+        const escaped = escapeHtml(input);
+        safeHTML = safeHTML.split(input).join(escaped);
+      }
+    });
+  }
+
+  // Utiliser DOMPurify pour nettoyer le HTML final
+  const options = Array.isArray(optionsOrUserInputs) ? {} : optionsOrUserInputs;
+  safeHTML = purifyHTML(safeHTML, options);
   container.innerHTML = safeHTML;
 }
 
