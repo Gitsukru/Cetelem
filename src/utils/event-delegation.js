@@ -78,14 +78,14 @@
    * Execute a single action
    */
   function executeAction(actionCall, element, event) {
-    // Parse action name and inline params: "funcName('param1', 'param2')"
-    const match = actionCall.match(/^(\w+)(?:\((.*)\))?$/);
+    // Parse action name and inline params: "funcName('param1', 'param2')" or "Obj.method('param')"
+    const match = actionCall.match(/^([\w.]+)(?:\((.*)\))?$/);
     if (!match) {
       console.warn('Invalid action format:', actionCall);
       return;
     }
 
-    const actionName = match[1];
+    const actionPath = match[1];
     let params = [];
 
     // If params provided inline in data-action
@@ -112,18 +112,35 @@
     }
 
     // Try registered handler first
-    if (actionHandlers[actionName]) {
-      actionHandlers[actionName].apply(null, params);
+    if (actionHandlers[actionPath]) {
+      actionHandlers[actionPath].apply(null, params);
       return;
     }
 
-    // Fall back to global function
-    if (typeof window[actionName] === 'function') {
-      window[actionName].apply(null, params);
+    // Resolve path like "VersionListener.applyUpdate" to window.VersionListener.applyUpdate
+    const func = resolvePath(actionPath);
+    if (typeof func === 'function') {
+      func.apply(null, params);
       return;
     }
 
-    console.warn('Unknown action:', actionName);
+    console.warn('Unknown action:', actionPath);
+  }
+
+  /**
+   * Resolve a dotted path to a function (e.g., "VersionListener.applyUpdate")
+   */
+  function resolvePath(path) {
+    const parts = path.split('.');
+    let obj = window;
+    for (const part of parts) {
+      if (obj && typeof obj === 'object') {
+        obj = obj[part];
+      } else {
+        return undefined;
+      }
+    }
+    return obj;
   }
 
   /**
