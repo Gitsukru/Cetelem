@@ -1,5 +1,14 @@
 // 🔒 UTILITAIRE DE SANITISATION XSS
 // Protection contre les injections XSS (Cross-Site Scripting)
+// Utilise DOMPurify quand disponible, sinon fallback sur méthode native
+
+/**
+ * Vérifie si DOMPurify est disponible
+ * @returns {boolean}
+ */
+function isDOMPurifyAvailable() {
+  return typeof DOMPurify !== 'undefined' && DOMPurify.sanitize;
+}
 
 /**
  * Échappe le HTML pour empêcher les injections XSS
@@ -12,6 +21,36 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+/**
+ * Sanitise le HTML avec DOMPurify (méthode recommandée)
+ * Permet de conserver du HTML structuré tout en supprimant les scripts malveillants
+ * @param {string} dirtyHTML - HTML potentiellement dangereux
+ * @param {Object} options - Options DOMPurify (optionnel)
+ * @returns {string} - HTML nettoyé et sécurisé
+ */
+function purifyHTML(dirtyHTML, options = {}) {
+  if (dirtyHTML === null || dirtyHTML === undefined) return '';
+
+  // Utiliser DOMPurify si disponible
+  if (isDOMPurifyAvailable()) {
+    // Configuration par défaut sécurisée
+    const defaultConfig = {
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'span', 'p', 'br', 'div', 'ul', 'ol', 'li', 'a', 'img'],
+      ALLOWED_ATTR: ['class', 'id', 'href', 'src', 'alt', 'title', 'data-action', 'data-category', 'data-id'],
+      ALLOW_DATA_ATTR: true,
+      FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form', 'input'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur'],
+      ...options
+    };
+
+    return DOMPurify.sanitize(dirtyHTML, defaultConfig);
+  }
+
+  // Fallback: échapper tout le HTML
+  console.warn('⚠️ DOMPurify non disponible, utilisation du fallback escapeHtml');
+  return escapeHtml(dirtyHTML);
 }
 
 /**
@@ -64,21 +103,17 @@ function createSecureElement(tag, text, attributes = {}) {
 }
 
 /**
- * Remplace innerHTML de manière sécurisée en séparant texte et structure
+ * Remplace innerHTML de manière sécurisée avec DOMPurify
  * @param {HTMLElement} container - Élément conteneur
- * @param {string} htmlString - HTML à insérer (sera parsé de manière sécurisée)
- * @param {Array<string>} userInputs - Tableau des inputs utilisateur à échapper
+ * @param {string} htmlString - HTML à insérer (sera sanitisé par DOMPurify)
+ * @param {Object} options - Options DOMPurify (optionnel)
  * @returns {void}
  */
-function setInnerHTMLSafe(container, htmlString, userInputs = []) {
-  // Échapper tous les inputs utilisateur
-  let safeHTML = htmlString;
-  userInputs.forEach(input => {
-    // Remplacer les occurrences non échappées par des versions échappées
-    const escaped = escapeHtml(input);
-    safeHTML = safeHTML.replace(new RegExp(input, 'g'), escaped);
-  });
+function setInnerHTMLSafe(container, htmlString, options = {}) {
+  if (!container) return;
 
+  // Utiliser DOMPurify pour nettoyer le HTML
+  const safeHTML = purifyHTML(htmlString, options);
   container.innerHTML = safeHTML;
 }
 
@@ -160,6 +195,8 @@ function sanitizeCategoryName(name) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     escapeHtml,
+    purifyHTML,
+    isDOMPurifyAvailable,
     html,
     createSecureElement,
     setInnerHTMLSafe,
@@ -170,4 +207,13 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // Export global pour utilisation dans les scripts
 window.escapeHtml = escapeHtml;
+window.purifyHTML = purifyHTML; // 🔒 Sanitisation avec DOMPurify
+window.setInnerHTMLSafe = setInnerHTMLSafe; // 🔒 innerHTML sécurisé
 window.safeHTML = html; // Template tag global
+
+// Log de confirmation au chargement
+if (isDOMPurifyAvailable()) {
+  console.log('🔒 DOMPurify chargé - Protection XSS active');
+} else {
+  console.warn('⚠️ DOMPurify non disponible - Utilisation du fallback');
+}

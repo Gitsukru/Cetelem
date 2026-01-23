@@ -1420,6 +1420,12 @@
         crossorigin="anonymous">
     </script>
 
+    <!-- DOMPurify - Protection XSS pour HTML dynamique -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"
+        integrity="sha384-irMU7ZdT9YLOWiI1qfnHo6LiPn0ienKWc1sSVnPGKYe/vOfQiHiDpjwYU0bVdFhU"
+        crossorigin="anonymous">
+    </script>
+
     <!-- Polyfills pour compatibilité navigateurs anciens (iOS 9+, Android 4.4+) -->
     <script src="src/utils/polyfills.js?v=1762615531742"></script>
 
@@ -1428,6 +1434,7 @@
     <script src="src/utils/monitoring.js?v=1762615531742"></script>
     <script src="src/utils/sentry-setup.js?v=1762615531742"></script>
     <script src="src/utils/validators.js?v=1762615531742"></script>
+    <script src="src/utils/sanitizer.js?v=1762615531742"></script>
     <script src="src/utils/secure-storage.js?v=1762615531742"></script>
     <script src="src/utils/event-delegation.js?v=1762615531742"></script>
     <script src="src/utils/rate-limiter.js?v=1762615531742"></script>
