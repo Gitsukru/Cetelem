@@ -189,6 +189,12 @@ body {
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
+/* Icône Namaz blanche quand onglet actif */
+.tab-button.active img,
+.mobile-tab-btn.active img {
+    filter: brightness(0) invert(1);
+}
+
 /* Tab content */
 .tab-content {
     display: none;
