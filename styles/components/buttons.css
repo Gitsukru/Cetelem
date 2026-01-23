@@ -568,7 +568,7 @@
 
 #namaz .counter-button {
     position: absolute;
-    top: 73%;
+    top: 75%;
     left: 60%;
     transform: translate(-50%, -50%);
     width: 200px;
@@ -596,12 +596,17 @@
 /* Mobile */
 @media (max-width: 480px) {
     #namaz .tesbih-container {
-        max-width: 240px;
-        height: 340px;
+        max-width: 280px;
+        height: 380px;
+    }
+
+    #namaz .tesbih-bg {
+        width: 180px !important;
+        height: 180px !important;
     }
 
     #namaz .counter-button {
-        width: 120px;
+        width: 140px;
         height: 70px;
     }
 
