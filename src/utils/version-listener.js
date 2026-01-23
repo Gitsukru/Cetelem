@@ -24,6 +24,7 @@ const VersionListener = {
             return;
         }
 
+        console.log('🔌 VersionListener: Initialisation...');
         this.supabase = supabaseClient;
         this.subscribeToVersionUpdates();
         this.setupVisibilityHandler();
@@ -195,7 +196,16 @@ const VersionListener = {
                     },
                     (payload) => this.handleVersionUpdate(payload)
                 )
-                .subscribe();
+                .subscribe((status) => {
+                    console.log('🔌 VersionListener: WebSocket status:', status);
+                    if (status === 'SUBSCRIBED') {
+                        console.log('✅ VersionListener: WebSocket connecté et prêt');
+                    } else if (status === 'CHANNEL_ERROR') {
+                        console.error('❌ VersionListener: Erreur de canal WebSocket');
+                    } else if (status === 'TIMED_OUT') {
+                        console.error('❌ VersionListener: Timeout WebSocket');
+                    }
+                });
 
         } catch (error) {
             console.error('VersionListener: Subscription error:', error);

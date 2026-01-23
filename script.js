@@ -689,8 +689,13 @@ function showTab(tabName, event) {
     }
 
     // Activate the clicked button (desktop et mobile)
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
+    // Note: avec event delegation, event.currentTarget est document, pas le bouton
+    // On utilise event.target.closest() pour trouver le bouton cliqué
+    if (event && event.target) {
+        const clickedBtn = event.target.closest('.tab-button, .mobile-tab-btn');
+        if (clickedBtn) {
+            clickedBtn.classList.add('active');
+        }
     }
     // Synchroniser le bouton correspondant dans le menu mobile
     document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
