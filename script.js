@@ -4593,7 +4593,7 @@ function markBackupDone() {
 // SWIPE NAVIGATION ENTRE ONGLETS
 // ============================================
 
-const SWIPE_TABS = ['counter', 'books', 'namaz', 'sohbet', 'hatim'];
+const SWIPE_TABS = ['counter', 'books', 'namaz', 'sohbet', 'hatim', 'group', 'competition', 'management', 'stats'];
 let swipeTouchStartX = 0;
 let swipeTouchEndX = 0;
 let swipeCurrentTab = 'counter';
@@ -4613,7 +4613,7 @@ function initSwipeNavigation() {
 }
 
 function handleSwipeGesture() {
-    const threshold = 50; // Minimum pixels pour un swipe (réduit pour plus de réactivité)
+    const threshold = 40; // Minimum pixels pour un swipe (réduit pour plus de réactivité)
     const diff = swipeTouchStartX - swipeTouchEndX;
 
     // Verifier quel onglet est actuellement actif
