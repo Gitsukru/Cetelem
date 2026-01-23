@@ -4613,7 +4613,7 @@ function initSwipeNavigation() {
 }
 
 function handleSwipeGesture() {
-    const threshold = 40; // Minimum pixels pour un swipe (réduit pour plus de réactivité)
+    const threshold = 30; // Minimum pixels pour un swipe (réduit pour plus de réactivité)
     const diff = swipeTouchStartX - swipeTouchEndX;
 
     // Verifier quel onglet est actuellement actif
