@@ -551,6 +551,13 @@
     z-index: 1;
     pointer-events: auto;
     cursor: pointer;
+    /* Désactiver le background tesbih.webp de counter.css */
+    background-image: none !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    opacity: 1 !important;
+    filter: none !important;
 }
 
 /* Rendre l'image cliquable */
