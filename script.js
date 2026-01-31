@@ -1,6 +1,9 @@
 // Variables globales - SYSTÈME SIMPLIFIÉ
 // Test système de mise à jour automatique - Version 3 (TEST FINAL)
 
+// Flag pour éviter d'afficher le rappel de sauvegarde plusieurs fois par session
+let backupReminderShownThisSession = false;
+
 /**
  * Helper sécurisé pour JSON.parse avec localStorage
  * Évite les crashs si les données sont corrompues
@@ -4541,16 +4544,31 @@ if (typeof window !== 'undefined') {
 // Vérifier si un rappel de sauvegarde doit être affiché
 function checkBackupReminder() {
     try {
+        // Éviter d'afficher plusieurs fois dans la même session
+        if (backupReminderShownThisSession) {
+            return;
+        }
+
         const lastBackupReminder = localStorage.getItem('lastBackupReminder');
         const now = new Date().getTime();
         const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000; // 7 jours en millisecondes
 
         // Si jamais de rappel ou si le dernier rappel était il y a plus de 7 jours
         if (!lastBackupReminder || (now - parseInt(lastBackupReminder)) > sevenDaysInMs) {
-            // Attendre 3 secondes après le chargement pour ne pas être intrusif
+            // Marquer comme affiché pour éviter les répétitions
+            backupReminderShownThisSession = true;
+
+            // Attendre 10 secondes pour ne pas interférer avec d'autres modals (welcome, tavsiye)
             setTimeout(() => {
-                showBackupReminder();
-            }, 3000);
+                // Vérifier qu'aucun autre modal n'est ouvert
+                const existingModal = document.querySelector('.custom-confirm, .welcome-modal-overlay, .tavsiye-modal-overlay');
+                if (existingModal) {
+                    // Réessayer dans 5 secondes
+                    setTimeout(() => showBackupReminder(), 5000);
+                } else {
+                    showBackupReminder();
+                }
+            }, 10000);
         }
     } catch (error) {
         console.error('Erreur vérification rappel sauvegarde:', error);
